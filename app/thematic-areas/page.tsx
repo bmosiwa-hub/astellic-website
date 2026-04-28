@@ -1,0 +1,94 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Thematic Areas",
+  description:
+    "Astellic's four strategic domains: Health, Governance, Climate, and Education.",
+};
+
+const areas = [
+  {
+    num: "01",
+    title: "Health & Nutrition Systems",
+    desc: "Strengthening integrated systems that deliver equitable and effective services, with a focus on primary health care, service integration, and evidence-informed decision-making.",
+    accent: "bg-brand-teal",
+  },
+  {
+    num: "02",
+    title: "Governance & Public Sector Reform",
+    desc: "Improving how institutions design, implement, and deliver policy through enhanced accountability, legislative effectiveness, and institutional alignment.",
+    accent: "bg-brand-navy",
+  },
+  {
+    num: "03",
+    title: "Climate, Agriculture & Sustainability",
+    desc: "Supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
+    accent: "bg-brand-teal",
+  },
+  {
+    num: "04",
+    title: "Education & Social Services",
+    desc: "Enhancing delivery systems for education, skills development, and social protection to improve equity and human capital outcomes.",
+    accent: "bg-brand-navy",
+  },
+];
+
+export default function ThematicAreasPage() {
+  return (
+    <>
+      {/* Hero */}
+      <section className="bg-brand-navy text-white py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-brand-gold uppercase tracking-widest text-xs mb-3">
+            Domains of Expertise
+          </p>
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+            Where We Work
+          </h1>
+          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+            Astellic applies its integrated delivery model across four strategic
+            areas — each representing a domain where the gap between policy
+            intent and operational outcome demands a firm capable of bridging
+            both.
+          </p>
+        </div>
+      </section>
+
+      {/* Areas */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto space-y-8">
+          {areas.map((a) => (
+            <div
+              key={a.num}
+              className="bg-brand-light rounded-2xl overflow-hidden md:flex"
+            >
+              <div
+                className={`${a.accent} text-white flex items-center justify-center w-full md:w-32 py-10 md:py-0 text-3xl font-bold`}
+              >
+                {a.num}
+              </div>
+              <div className="p-8 flex-1">
+                <h2 className="text-xl font-bold mb-3">{a.title}</h2>
+                <p className="text-brand-muted leading-relaxed">{a.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Callout */}
+      <section className="bg-brand-light py-16 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4">
+            A model built for complexity
+          </h2>
+          <p className="text-brand-muted leading-relaxed">
+            Across all four domains, Astellic brings the same commitment: honest
+            analysis, technically sound advice, and delivery that is grounded in
+            how African systems actually work.
+          </p>
+        </div>
+      </section>
+    </>
+  );
+}
