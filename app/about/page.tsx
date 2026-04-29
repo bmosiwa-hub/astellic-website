@@ -33,21 +33,27 @@ export default function AboutPage() {
       <section className="py-20 px-6 max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Who We Are</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-6">
-          Astellic is a research, advisory, and implementation firm working at
-          the intersection of evidence, policy, and delivery. We partner with
-          governments, donors, and institutions across Africa to translate policy
-          priorities into programmes that produce measurable and sustainable
-          results.
+          Astellic is a research, advisory, and implementation firm operating at
+          the intersection of evidence, policy, and delivery. We work across
+          Health &amp; Nutrition Systems; Governance &amp; Public Sector Reform;
+          Education &amp; Social Services; and Climate, Agriculture &amp;
+          Sustainability, partnering with governments, donors, and institutions
+          across Africa to generate evidence, shape policy, and deliver
+          programmes that achieve measurable and sustained results.
+        </p>
+        <p className="text-brand-muted text-lg leading-relaxed mb-6">
+          Across the development sector, strong policies and well-funded
+          strategies often fail to deliver impact, not because of weak intent,
+          but because of a breakdown between analysis, decision-making, and
+          execution. Astellic was established to address this gap.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
-          Across the development sector, strong policies and well-funded
-          strategies often fail to deliver impact — not because of weak intent,
-          but because of a breakdown between analysis, decision-making, and
-          execution. Astellic was built to address this gap. We integrate
-          capabilities that are typically fragmented across organisations into a
-          single, coherent delivery system. Our work is grounded in context,
+          We bring together capabilities that are typically fragmented across
+          organisations — evidence generation, policy design, programme
+          development, implementation, and learning — into an integrated,
+          coherent delivery system. Our approach is grounded in context,
           institutional reality, and technical rigour, ensuring that solutions
-          are not only well-designed, but actually deliver.
+          are not only well-designed, but effectively implemented and sustained.
         </p>
       </section>
 
