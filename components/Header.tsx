@@ -16,20 +16,20 @@ export default function Header() {
 
   return (
     <header className="bg-brand-navy text-white">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"
             alt="Astellic"
-            width={140}
-            height={48}
-            className="object-contain h-10 w-auto"
+            width={180}
+            height={60}
+            className="object-contain h-14 w-auto"
             priority
           />
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8 text-sm">
+        <nav className="hidden md:flex items-center gap-8 text-base">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -41,7 +41,7 @@ export default function Header() {
           ))}
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-4 py-2 rounded text-sm transition-colors"
+            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2.5 rounded text-base transition-colors"
           >
             Get in Touch
           </Link>
@@ -53,15 +53,15 @@ export default function Header() {
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          <span className="block w-5 h-0.5 bg-white mb-1" />
-          <span className="block w-5 h-0.5 bg-white mb-1" />
-          <span className="block w-5 h-0.5 bg-white" />
+          <span className="block w-6 h-0.5 bg-white mb-1.5" />
+          <span className="block w-6 h-0.5 bg-white mb-1.5" />
+          <span className="block w-6 h-0.5 bg-white" />
         </button>
       </div>
 
       {/* Mobile nav */}
       {open && (
-        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-sm">
+        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-base">
           {nav.map((item) => (
             <Link
               key={item.href}
