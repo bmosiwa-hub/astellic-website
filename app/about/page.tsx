@@ -61,7 +61,7 @@ export default function AboutPage() {
       <section className="bg-brand-light py-20 px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10">
           <div className="bg-white rounded-xl p-8 shadow-sm">
-            <div className="w-10 h-1 bg-brand-teal mb-4 rounded" />
+            <div className="w-10 h-1 bg-brand-gold mb-4 rounded" />
             <h2 className="text-xl font-bold mb-3">Vision</h2>
             <p className="text-brand-muted text-lg leading-relaxed">
               A world where systems consistently translate evidence into

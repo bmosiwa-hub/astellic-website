@@ -110,7 +110,7 @@ export default function ApproachPage() {
             <div className="space-y-8">
               {stages.map((s) => (
                 <div key={s.num} className="md:flex gap-8 items-start">
-                  <div className="flex-shrink-0 w-16 h-16 bg-brand-teal text-white rounded-full flex items-center justify-center font-bold text-base relative z-10">
+                  <div className="flex-shrink-0 w-16 h-16 bg-brand-gold text-white rounded-full flex items-center justify-center font-bold text-base relative z-10">
                     {s.num}
                   </div>
                   <div className="mt-4 md:mt-0 bg-brand-light rounded-xl p-6 flex-1">

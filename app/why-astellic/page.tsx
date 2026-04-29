@@ -135,7 +135,7 @@ export default function WhyAstellicPage() {
           <div className="text-center">
             <Link
               href="/contact"
-              className="bg-brand-teal hover:bg-brand-teal/90 text-white px-10 py-3 rounded font-medium transition-colors"
+              className="bg-brand-gold hover:bg-brand-gold/90 text-white px-10 py-3 rounded font-medium transition-colors"
             >
               Connect with Astellic
             </Link>

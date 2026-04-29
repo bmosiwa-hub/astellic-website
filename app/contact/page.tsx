@@ -93,7 +93,7 @@ export default function ContactPage() {
                   name="name"
                   type="text"
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-gold"
                   placeholder="Your full name"
                 />
               </div>
@@ -107,7 +107,7 @@ export default function ContactPage() {
                   name="email"
                   type="email"
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-gold"
                   placeholder="you@organisation.org"
                 />
               </div>
@@ -120,7 +120,7 @@ export default function ContactPage() {
                   id="organisation"
                   name="organisation"
                   type="text"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-gold"
                   placeholder="Your organisation"
                 />
               </div>
@@ -134,14 +134,14 @@ export default function ContactPage() {
                   name="message"
                   rows={5}
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal resize-none"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-gold resize-none"
                   placeholder="Tell us about your priorities and how we might support you..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-brand-teal hover:bg-brand-teal/90 text-white py-3 rounded-lg font-medium text-lg transition-colors"
+                className="w-full bg-brand-gold hover:bg-brand-gold/90 text-white py-3 rounded-lg font-medium text-lg transition-colors"
               >
                 Send Message
               </button>

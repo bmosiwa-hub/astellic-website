@@ -59,7 +59,7 @@ export default function WorkWithUsPage() {
         {/* Open Positions */}
         <section>
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-1 h-8 bg-brand-teal rounded" />
+            <div className="w-1 h-8 bg-brand-gold rounded" />
             <h2 className="text-2xl font-bold">Open Positions</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
@@ -87,7 +87,7 @@ export default function WorkWithUsPage() {
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
+                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Apply
                     </Link>
@@ -129,7 +129,7 @@ export default function WorkWithUsPage() {
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
+                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Express Interest
                     </Link>
@@ -171,7 +171,7 @@ export default function WorkWithUsPage() {
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
+                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Submit Bid
                     </Link>
@@ -192,7 +192,7 @@ export default function WorkWithUsPage() {
           </p>
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
           >
             Get in Touch
           </Link>

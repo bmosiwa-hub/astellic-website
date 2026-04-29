@@ -41,7 +41,7 @@ export default function Header() {
           ))}
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2.5 rounded text-lg transition-colors"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded text-lg transition-colors"
           >
             Get in Touch
           </Link>

@@ -47,7 +47,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/about"
-              className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
+              className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
             >
               Learn About Us
             </Link>
@@ -73,7 +73,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {highlights.map((h) => (
               <div key={h.label} className="bg-white rounded-xl p-8 shadow-sm">
-                <div className="w-10 h-1 bg-brand-teal mb-4 rounded" />
+                <div className="w-10 h-1 bg-brand-gold mb-4 rounded" />
                 <h3 className="text-xl font-bold mb-3">{h.label}</h3>
                 <p className="text-brand-muted text-lg leading-relaxed">{h.desc}</p>
               </div>
@@ -127,7 +127,7 @@ export default function Home() {
           </p>
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-10 py-3 rounded font-medium text-lg transition-colors"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-10 py-3 rounded font-medium text-lg transition-colors"
           >
             Start a Conversation
           </Link>
