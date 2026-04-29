@@ -51,17 +51,14 @@ export default function ApproachPage() {
       {/* Hero */}
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-brand-gold uppercase tracking-widest text-xs mb-3">
-            Value Delivery System
-          </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             From Evidence to Impact
           </h1>
           <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
-            A structured, end-to-end delivery model ensuring policy priorities
-            are translated into effective and sustainable outcomes. Each stage
-            reinforces the others, with system strengthening running as a
-            continuous thread throughout.
+            Our value delivery system follows a structured, end-to-end delivery
+            model, ensuring policy priorities are translated into effective and
+            sustainable outcomes. Each stage reinforces the others, with system
+            strengthening running as a continuous thread throughout.
           </p>
         </div>
       </section>

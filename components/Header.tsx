@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 const nav = [
@@ -16,11 +17,15 @@ export default function Header() {
   return (
     <header className="bg-brand-navy text-white">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-tight">Astellic</span>
-          <span className="hidden sm:block text-xs text-brand-gold uppercase tracking-widest mt-0.5">
-            Research · Advisory · Implementation
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Astellic"
+            width={140}
+            height={48}
+            className="object-contain h-10 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
