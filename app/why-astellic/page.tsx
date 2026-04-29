@@ -44,9 +44,6 @@ export default function WhyAstellicPage() {
       {/* Hero */}
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-brand-gold uppercase tracking-widest text-xs mb-3">
-            Value Proposition
-          </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             We are not just different. We are effective.
           </h1>

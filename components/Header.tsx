@@ -8,7 +8,6 @@ const nav = [
   { label: "Our Approach", href: "/approach" },
   { label: "Thematic Areas", href: "/thematic-areas" },
   { label: "Why Astellic", href: "/why-astellic" },
-  { label: "Contact", href: "/contact" },
 ];
 
 export default function Header() {

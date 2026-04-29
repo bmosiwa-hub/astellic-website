@@ -5,7 +5,7 @@ const links = [
   { label: "Our Approach", href: "/approach" },
   { label: "Thematic Areas", href: "/thematic-areas" },
   { label: "Why Astellic", href: "/why-astellic" },
-  { label: "Contact", href: "/contact" },
+  { label: "Get in Touch", href: "/contact" },
 ];
 
 export default function Footer() {

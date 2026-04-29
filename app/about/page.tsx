@@ -11,9 +11,6 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-brand-gold uppercase tracking-widest text-sm mb-3">
-            Company Overview
-          </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Building the Future
           </h1>
