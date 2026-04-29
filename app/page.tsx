@@ -40,9 +40,9 @@ export default function Home() {
             Working at the Intersection of Evidence, Policy and Delivery.
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl mx-auto mb-10">
-            Astellic partners with governments, donors, and institutions across
-            Africa to translate evidence into policy priorities and programmes
-            that produce measurable and sustainable results.
+            Astellic Group partners with governments, donors, and institutions
+            across Africa to translate evidence into policy priorities and
+            programmes that produce measurable and sustainable results.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
