@@ -28,16 +28,13 @@ export default function Home() {
       {/* Hero */}
       <section className="bg-brand-navy text-white py-28 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-brand-gold uppercase tracking-widest text-xs mb-4">
-            Research · Advisory · Implementation
-          </p>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
             Working at the Intersection of Evidence, Policy and Delivery.
           </h1>
           <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10">
             Astellic partners with governments, donors, and institutions across
-            Africa to translate policy priorities into programmes that produce
-            measurable and sustainable results.
+            Africa to translate evidence into policy priorities and programmes
+            that produce measurable and sustainable results.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
