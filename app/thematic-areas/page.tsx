@@ -69,7 +69,7 @@ export default function ThematicAreasPage() {
               className="bg-brand-light rounded-2xl overflow-hidden md:flex"
             >
               {/* Image */}
-              <div className="relative w-full md:w-64 h-48 md:h-auto shrink-0">
+              <div className="relative w-full md:w-64 h-56 md:h-64 shrink-0">
                 <Image
                   src={a.image}
                   alt={a.imageAlt}
