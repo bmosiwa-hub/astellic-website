@@ -74,7 +74,7 @@ export default function WhyAstellicPage() {
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
             <div className="bg-white border border-gray-100 rounded-xl p-5">
               <p className="font-semibold mb-1">A research firm that stops at analysis</p>
-              <p className="text-brand-muted text-sm">
+              <p className="text-brand-muted text-base">
                 We go beyond generating evidence — we ensure it shapes policy
                 and gets implemented.
               </p>
@@ -83,7 +83,7 @@ export default function WhyAstellicPage() {
               <p className="font-semibold mb-1">
                 An implementation partner without analytical depth
               </p>
-              <p className="text-brand-muted text-sm">
+              <p className="text-brand-muted text-base">
                 Every programme we deliver is grounded in rigorous analysis and
                 sound strategy.
               </p>
@@ -105,11 +105,11 @@ export default function WhyAstellicPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {pillars.map((p) => (
               <div key={p.label} className="bg-brand-light rounded-xl p-8">
-                <p className="text-brand-teal text-xs font-bold uppercase tracking-widest mb-2">
+                <p className="text-brand-teal text-base font-bold uppercase tracking-widest mb-2">
                   {p.label}
                 </p>
                 <h3 className="text-lg font-bold mb-3">{p.title}</h3>
-                <p className="text-brand-muted text-sm leading-relaxed">{p.desc}</p>
+                <p className="text-brand-muted text-base leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -125,7 +125,7 @@ export default function WhyAstellicPage() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
             {facts.map((f) => (
               <div key={f.label} className="bg-white/5 rounded-xl p-6">
-                <p className="text-brand-gold text-xs uppercase tracking-widest mb-1">
+                <p className="text-brand-gold text-base uppercase tracking-widest mb-1">
                   {f.label}
                 </p>
                 <p className="font-semibold">{f.value}</p>

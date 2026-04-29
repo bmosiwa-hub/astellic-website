@@ -82,12 +82,12 @@ export default function WorkWithUsPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-sm">
+                    <p className="text-brand-muted text-base">
                       Closes: {job.closing}
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-sm transition-colors"
+                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Apply
                     </Link>
@@ -124,12 +124,12 @@ export default function WorkWithUsPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-sm">
+                    <p className="text-brand-muted text-base">
                       Closes: {c.closing}
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-sm transition-colors"
+                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Express Interest
                     </Link>
@@ -166,12 +166,12 @@ export default function WorkWithUsPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-sm">
+                    <p className="text-brand-muted text-base">
                       Closes: {t.closing}
                     </p>
                     <Link
                       href="/contact"
-                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-sm transition-colors"
+                      className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2 rounded text-base transition-colors"
                     >
                       Submit Bid
                     </Link>
@@ -192,7 +192,7 @@ export default function WorkWithUsPage() {
           </p>
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-base transition-colors"
+            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
           >
             Get in Touch
           </Link>

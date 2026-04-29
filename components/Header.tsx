@@ -29,7 +29,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8 text-base">
+        <nav className="hidden md:flex items-center gap-8 text-lg">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -41,7 +41,7 @@ export default function Header() {
           ))}
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2.5 rounded text-base transition-colors"
+            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-5 py-2.5 rounded text-lg transition-colors"
           >
             Get in Touch
           </Link>
@@ -61,7 +61,7 @@ export default function Header() {
 
       {/* Mobile nav */}
       {open && (
-        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-base">
+        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-lg">
           {nav.map((item) => (
             <Link
               key={item.href}

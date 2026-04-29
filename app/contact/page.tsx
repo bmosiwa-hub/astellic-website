@@ -19,13 +19,10 @@ export default function ContactPage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold uppercase tracking-widest text-xs mb-3">
-            Connect with Astellic
-          </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Let&apos;s Start a Conversation
           </h1>
-          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+          <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             We work with governments, donors, and institutions across Africa. If
             you have a challenge at the intersection of evidence, policy, and
             delivery — reach out.
@@ -41,35 +38,35 @@ export default function ContactPage() {
 
             <div className="space-y-6">
               <div>
-                <p className="text-xs text-brand-teal font-bold uppercase tracking-widest mb-1">
+                <p className="text-base text-brand-teal font-bold uppercase tracking-widest mb-1">
                   Email
                 </p>
                 <a
                   href="mailto:partnerships@astellic.com"
-                  className="text-brand-navy font-medium hover:text-brand-teal transition-colors"
+                  className="text-brand-navy font-medium hover:text-brand-teal transition-colors text-lg"
                 >
                   partnerships@astellic.com
                 </a>
               </div>
 
               <div>
-                <p className="text-xs text-brand-teal font-bold uppercase tracking-widest mb-1">
+                <p className="text-base text-brand-teal font-bold uppercase tracking-widest mb-1">
                   Website
                 </p>
-                <p className="text-brand-muted">www.astellic.com</p>
+                <p className="text-brand-muted text-lg">www.astellic.com</p>
               </div>
 
               <div>
-                <p className="text-xs text-brand-teal font-bold uppercase tracking-widest mb-1">
+                <p className="text-base text-brand-teal font-bold uppercase tracking-widest mb-1">
                   Base
                 </p>
-                <p className="text-brand-muted">Malawi / Pan-African</p>
+                <p className="text-brand-muted text-lg">Malawi / Pan-African</p>
               </div>
             </div>
 
             <div className="mt-10 bg-brand-light rounded-xl p-6">
-              <h3 className="font-semibold mb-2">Who We Work With</h3>
-              <ul className="text-brand-muted text-sm space-y-1">
+              <h3 className="font-semibold mb-2 text-lg">Who We Work With</h3>
+              <ul className="text-brand-muted text-base space-y-1">
                 <li>→ National governments and public institutions</li>
                 <li>→ Bilateral and multilateral donors</li>
                 <li>→ International development organisations</li>
@@ -88,7 +85,7 @@ export default function ContactPage() {
               className="space-y-5"
             >
               <div>
-                <label className="block text-sm font-medium mb-1" htmlFor="name">
+                <label className="block text-base font-medium mb-1" htmlFor="name">
                   Name
                 </label>
                 <input
@@ -96,16 +93,13 @@ export default function ContactPage() {
                   name="name"
                   type="text"
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
                   placeholder="Your full name"
                 />
               </div>
 
               <div>
-                <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="email"
-                >
+                <label className="block text-base font-medium mb-1" htmlFor="email">
                   Email
                 </label>
                 <input
@@ -113,32 +107,26 @@ export default function ContactPage() {
                   name="email"
                   type="email"
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
                   placeholder="you@organisation.org"
                 />
               </div>
 
               <div>
-                <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="organisation"
-                >
+                <label className="block text-base font-medium mb-1" htmlFor="organisation">
                   Organisation
                 </label>
                 <input
                   id="organisation"
                   name="organisation"
                   type="text"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal"
                   placeholder="Your organisation"
                 />
               </div>
 
               <div>
-                <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="message"
-                >
+                <label className="block text-base font-medium mb-1" htmlFor="message">
                   Message
                 </label>
                 <textarea
@@ -146,14 +134,14 @@ export default function ContactPage() {
                   name="message"
                   rows={5}
                   required
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal resize-none"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-teal resize-none"
                   placeholder="Tell us about your priorities and how we might support you..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-brand-teal hover:bg-brand-teal/90 text-white py-3 rounded-lg font-medium transition-colors"
+                className="w-full bg-brand-teal hover:bg-brand-teal/90 text-white py-3 rounded-lg font-medium text-lg transition-colors"
               >
                 Send Message
               </button>

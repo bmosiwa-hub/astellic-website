@@ -47,13 +47,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/about"
-              className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-base transition-colors"
+              className="bg-brand-teal hover:bg-brand-teal/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
             >
               Learn About Us
             </Link>
             <Link
               href="/contact"
-              className="border border-white/30 hover:border-white text-white px-8 py-3 rounded font-medium text-base transition-colors"
+              className="border border-white/30 hover:border-white text-white px-8 py-3 rounded font-medium text-lg transition-colors"
             >
               Get in Touch
             </Link>
@@ -75,7 +75,7 @@ export default function Home() {
               <div key={h.label} className="bg-white rounded-xl p-8 shadow-sm">
                 <div className="w-10 h-1 bg-brand-teal mb-4 rounded" />
                 <h3 className="text-xl font-bold mb-3">{h.label}</h3>
-                <p className="text-brand-muted text-base leading-relaxed">{h.desc}</p>
+                <p className="text-brand-muted text-lg leading-relaxed">{h.desc}</p>
               </div>
             ))}
           </div>
@@ -100,14 +100,14 @@ export default function Home() {
                 className="border border-gray-100 rounded-xl p-6 hover:shadow-md transition-shadow text-center"
               >
                 <div className="text-4xl mb-3">{a.icon}</div>
-                <p className="font-semibold text-base leading-snug">{a.title}</p>
+                <p className="font-semibold text-lg leading-snug">{a.title}</p>
               </div>
             ))}
           </div>
           <div className="text-center mt-10">
             <Link
               href="/thematic-areas"
-              className="text-brand-teal font-medium hover:underline text-base"
+              className="text-brand-teal font-medium hover:underline text-lg"
             >
               Explore our thematic areas →
             </Link>
@@ -127,7 +127,7 @@ export default function Home() {
           </p>
           <Link
             href="/contact"
-            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-10 py-3 rounded font-medium text-base transition-colors"
+            className="bg-brand-teal hover:bg-brand-teal/90 text-white px-10 py-3 rounded font-medium text-lg transition-colors"
           >
             Start a Conversation
           </Link>
