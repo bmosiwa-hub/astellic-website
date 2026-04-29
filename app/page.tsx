@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const highlights = [
   {
@@ -26,8 +27,15 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-brand-navy text-white py-28 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative bg-brand-navy text-white py-28 px-6 overflow-hidden">
+        <Image
+          src="/images/hero-home.jpg"
+          alt="African professionals in a policy meeting"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+        <div className="relative max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
             Working at the Intersection of Evidence, Policy and Delivery.
           </h1>

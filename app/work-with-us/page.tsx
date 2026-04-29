@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -33,8 +34,15 @@ export default function WorkWithUsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-brand-navy text-white py-24 px-6">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative bg-brand-navy text-white py-24 px-6 overflow-hidden">
+        <Image
+          src="/images/hero-work.jpg"
+          alt="Professionals in a job interview setting"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+        <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Work With Us
           </h1>

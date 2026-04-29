@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -9,8 +10,15 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-brand-navy text-white py-24 px-6">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative bg-brand-navy text-white py-24 px-6 overflow-hidden">
+        <Image
+          src="/images/hero-contact.jpg"
+          alt="African professionals in conversation"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+        <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold uppercase tracking-widest text-xs mb-3">
             Connect with Astellic
           </p>

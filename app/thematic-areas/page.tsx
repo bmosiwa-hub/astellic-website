@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Thematic Areas",
@@ -12,24 +13,32 @@ const areas = [
     title: "Health & Nutrition Systems",
     desc: "Strengthening integrated systems that deliver equitable and effective services, with a focus on primary health care, service integration, and evidence-informed decision-making.",
     accent: "bg-brand-teal",
+    image: "/images/thematic-health.jpg",
+    imageAlt: "African healthcare professional",
   },
   {
     num: "02",
     title: "Governance & Public Sector Reform",
     desc: "Improving how institutions design, implement, and deliver policy through enhanced accountability, legislative effectiveness, and institutional alignment.",
     accent: "bg-brand-navy",
+    image: "/images/thematic-governance.jpg",
+    imageAlt: "African government and public sector professionals",
   },
   {
     num: "03",
     title: "Climate, Agriculture & Sustainability",
     desc: "Supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
     accent: "bg-brand-teal",
+    image: "/images/thematic-climate.jpg",
+    imageAlt: "African farmer working in the field",
   },
   {
     num: "04",
     title: "Education & Social Services",
     desc: "Enhancing delivery systems for education, skills development, and social protection to improve equity and human capital outcomes.",
     accent: "bg-brand-navy",
+    image: "/images/thematic-education.jpg",
+    imageAlt: "African students learning",
   },
 ];
 
@@ -42,7 +51,7 @@ export default function ThematicAreasPage() {
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Where We Work
           </h1>
-          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
+          <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic applies its integrated delivery model across four strategic
             areas — each representing a domain where the gap between policy
             intent and operational outcome demands a firm capable of bridging
@@ -59,14 +68,22 @@ export default function ThematicAreasPage() {
               key={a.num}
               className="bg-brand-light rounded-2xl overflow-hidden md:flex"
             >
-              <div
-                className={`${a.accent} text-white flex items-center justify-center w-full md:w-32 py-10 md:py-0 text-3xl font-bold`}
-              >
-                {a.num}
+              {/* Image */}
+              <div className="relative w-full md:w-64 h-48 md:h-auto shrink-0">
+                <Image
+                  src={a.image}
+                  alt={a.imageAlt}
+                  fill
+                  className="object-cover"
+                />
+                <div className={`absolute inset-0 ${a.accent} opacity-40`} />
+                <span className="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
+                  {a.num}
+                </span>
               </div>
               <div className="p-8 flex-1">
                 <h2 className="text-xl font-bold mb-3">{a.title}</h2>
-                <p className="text-brand-muted leading-relaxed">{a.desc}</p>
+                <p className="text-brand-muted text-lg leading-relaxed">{a.desc}</p>
               </div>
             </div>
           ))}
@@ -79,7 +96,7 @@ export default function ThematicAreasPage() {
           <h2 className="text-2xl font-bold mb-4">
             A model built for complexity
           </h2>
-          <p className="text-brand-muted leading-relaxed">
+          <p className="text-brand-muted text-lg leading-relaxed">
             Across all four domains, Astellic brings the same commitment: honest
             analysis, technically sound advice, and delivery that is grounded in
             how African systems actually work.
