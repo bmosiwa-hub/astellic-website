@@ -182,19 +182,19 @@ export default function WorkWithUsPage() {
           )}
         </section>
 
-        {/* General CTA */}
+        {/* Roster CTA */}
         <section className="bg-brand-navy text-white rounded-2xl p-10 text-center">
-          <h2 className="text-2xl font-bold mb-3">Don&apos;t see a fit?</h2>
+          <h2 className="text-2xl font-bold mb-3">Join Our Roster</h2>
           <p className="text-gray-300 text-lg mb-6 max-w-xl mx-auto">
-            We welcome expressions of interest from exceptional individuals and
-            organisations aligned with our mission. Reach out and tell us how
-            you can contribute.
+            We maintain a roster of senior consultants and associates across our
+            thematic areas. If you have the experience and want to work with
+            Astellic on a consultancy basis, apply to join our roster.
           </p>
           <Link
-            href="/contact"
+            href="/join-our-roster"
             className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors"
           >
-            Get in Touch
+            Apply to Our Roster
           </Link>
         </section>
       </div>
