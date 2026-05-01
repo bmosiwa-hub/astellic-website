@@ -19,7 +19,7 @@ const documents: ResourceDoc[] = [
   {
     title: "Expression of Interest — Consultants Roster",
     description:
-      "Astellic is building a roster of qualified consultants and associates across its thematic areas. This call invites expressions of interest from experienced professionals in health systems, governance, education, and climate/agriculture.",
+      "Astellic is building a roster of qualified consultants and associates across its thematic areas in Malawi. Download the expressions of interest to learn more about the recruitment.",
     type: "Expression of Interest",
     file: "/documents/Astellic_EOI_Consultants_Roster.pdf",
   },
