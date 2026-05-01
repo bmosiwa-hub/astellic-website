@@ -44,12 +44,6 @@ export default function EducationPage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <Link href="/thematic-areas" className="inline-flex items-center gap-2 text-brand-gold text-base mb-6 hover:gap-3 transition-all">
-            <svg className="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-            All Thematic Areas
-          </Link>
           <p className="text-brand-gold text-base font-semibold uppercase tracking-widest mb-3">Thematic Area 04</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Education &amp; Social Services
