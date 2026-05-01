@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/thematic-areas", priority: 0.8, changeFrequency: "monthly" },
     { url: "/why-astellic", priority: 0.8, changeFrequency: "monthly" },
     { url: "/work-with-us", priority: 0.9, changeFrequency: "weekly" },
+    { url: "/vacancies", priority: 0.9, changeFrequency: "weekly" },
     { url: "/join-our-roster", priority: 0.8, changeFrequency: "monthly" },
     { url: "/propose-partnership", priority: 0.8, changeFrequency: "monthly" },
     { url: "/contact", priority: 0.7, changeFrequency: "yearly" },

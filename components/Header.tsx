@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const workWithUsItems = [
   { label: "Check Openings", href: "/work-with-us" },
+  { label: "Vacancies & Calls", href: "/vacancies" },
   { label: "Propose Partnership", href: "/propose-partnership" },
   { label: "Join Our Roster", href: "/join-our-roster" },
 ];
