@@ -50,10 +50,16 @@ export async function POST(request: NextRequest) {
     ]);
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.office365.com",
+      port: 587,
+      secure: false, // STARTTLS
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        ciphers: "SSLv3",
+        rejectUnauthorized: false,
       },
     });
 
@@ -83,9 +89,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Roster application error:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Roster application error:", message);
     return NextResponse.json(
-      { error: "Failed to send your application. Please try again." },
+      { error: `Delivery failed: ${message}` },
       { status: 500 }
     );
   }
