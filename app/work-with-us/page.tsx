@@ -18,6 +18,13 @@ const consultancies: {
   closing: string;
 }[] = [];
 
+const internships: {
+  title: string;
+  department: string;
+  duration: string;
+  closing: string;
+}[] = [];
+
 const tenders: { title: string; reference: string; closing: string }[] = [];
 
 function EmptyState({ label }: { label: string }) {
@@ -154,6 +161,48 @@ export default function WorkWithUsPage() {
               Apply to Our Roster
             </Link>
           </div>
+        </section>
+
+        {/* Internships */}
+        <section>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-1 h-8 bg-brand-gold rounded" />
+            <h2 className="text-2xl font-bold">Internships</h2>
+          </div>
+          <p className="text-brand-muted text-lg mb-8">
+            Opportunities for students and recent graduates to gain hands-on
+            experience across research, advisory, and operations.
+          </p>
+          {internships.length === 0 ? (
+            <EmptyState label="internships" />
+          ) : (
+            <div className="space-y-4">
+              {internships.map((i) => (
+                <div
+                  key={i.title}
+                  className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                >
+                  <div>
+                    <h3 className="font-bold text-lg">{i.title}</h3>
+                    <p className="text-brand-muted text-base mt-1">
+                      {i.department} · {i.duration}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-6 shrink-0">
+                    <p className="text-brand-muted text-base">
+                      Closes: {i.closing}
+                    </p>
+                    <Link
+                      href="/contact"
+                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
+                    >
+                      Apply
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Tenders & Bids */}
