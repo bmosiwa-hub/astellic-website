@@ -3,9 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
+const ourWorkItems = [
+  { label: "Thematic Areas", href: "/thematic-areas" },
+  { label: "Our Projects", href: "/our-projects" },
+  { label: "Resources", href: "/resources" },
+];
+
 const workWithUsItems = [
   { label: "Check Openings", href: "/work-with-us" },
-  { label: "Vacancies & Calls", href: "/vacancies" },
   { label: "Propose Partnership", href: "/propose-partnership" },
   { label: "Join Our Roster", href: "/join-our-roster" },
 ];
@@ -13,13 +18,104 @@ const workWithUsItems = [
 const nav = [
   { label: "About", href: "/about" },
   { label: "Our Approach", href: "/approach" },
-  { label: "Thematic Areas", href: "/thematic-areas" },
   { label: "Why Astellic", href: "/why-astellic" },
 ];
 
+interface DropdownItem { label: string; href: string; }
+
+function NavDropdown({
+  label,
+  items,
+  mobileOpen,
+  onToggle,
+  onClose,
+}: {
+  label: string;
+  items: DropdownItem[];
+  mobileOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      {/* Desktop */}
+      <div className="relative group hidden md:block">
+        <button
+          className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-lg"
+          aria-haspopup="true"
+        >
+          {label}
+          <svg
+            className="w-4 h-4 mt-0.5 transition-transform group-hover:rotate-180"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
+          <div className="bg-white rounded-xl shadow-xl py-2 min-w-[220px] border border-gray-100">
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile */}
+      <div className="md:hidden">
+        <button
+          className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg"
+          onClick={onToggle}
+        >
+          {label}
+          <svg
+            className={`w-4 h-4 mt-0.5 ml-1 transition-transform ${mobileOpen ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {mobileOpen && (
+          <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-gray-400 hover:text-white py-1 text-base"
+                onClick={onClose}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [workOpen, setWorkOpen] = useState(false);
+  const [ourWorkOpen, setOurWorkOpen] = useState(false);
+  const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
+
+  const closeMobile = () => {
+    setMobileOpen(false);
+    setOurWorkOpen(false);
+    setWorkWithUsOpen(false);
+  };
 
   return (
     <header className="bg-brand-navy text-white relative z-50">
@@ -47,39 +143,21 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* Work With Us dropdown */}
-          <div className="relative group">
-            <button
-              className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-lg"
-              aria-haspopup="true"
-            >
-              Work With Us
-              <svg
-                className="w-4 h-4 mt-0.5 transition-transform group-hover:rotate-180"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+          <NavDropdown
+            label="Our Work"
+            items={ourWorkItems}
+            mobileOpen={false}
+            onToggle={() => {}}
+            onClose={() => {}}
+          />
 
-            {/* Dropdown panel */}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
-              <div className="bg-white rounded-xl shadow-xl py-2 min-w-[220px] border border-gray-100">
-                {workWithUsItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+          <NavDropdown
+            label="Work With Us"
+            items={workWithUsItems}
+            mobileOpen={false}
+            onToggle={() => {}}
+            onClose={() => {}}
+          />
 
           <Link
             href="/contact"
@@ -109,49 +187,32 @@ export default function Header() {
               key={item.href}
               href={item.href}
               className="text-gray-300 hover:text-white py-1"
-              onClick={() => setMobileOpen(false)}
+              onClick={closeMobile}
             >
               {item.label}
             </Link>
           ))}
 
-          {/* Mobile Work With Us expandable */}
-          <div>
-            <button
-              className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg"
-              onClick={() => setWorkOpen(!workOpen)}
-            >
-              Work With Us
-              <svg
-                className={`w-4 h-4 mt-0.5 ml-1 transition-transform ${workOpen ? "rotate-180" : ""}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {workOpen && (
-              <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
-                {workWithUsItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-gray-400 hover:text-white py-1 text-base"
-                    onClick={() => { setMobileOpen(false); setWorkOpen(false); }}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <NavDropdown
+            label="Our Work"
+            items={ourWorkItems}
+            mobileOpen={ourWorkOpen}
+            onToggle={() => setOurWorkOpen(!ourWorkOpen)}
+            onClose={closeMobile}
+          />
+
+          <NavDropdown
+            label="Work With Us"
+            items={workWithUsItems}
+            mobileOpen={workWithUsOpen}
+            onToggle={() => setWorkWithUsOpen(!workWithUsOpen)}
+            onClose={closeMobile}
+          />
 
           <Link
             href="/contact"
             className="text-gray-300 hover:text-white py-1"
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobile}
           >
             Get in Touch
           </Link>
