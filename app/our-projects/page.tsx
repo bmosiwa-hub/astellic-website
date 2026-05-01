@@ -1,37 +1,51 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Our Projects",
   description:
-    "Explore Astellic's current and past projects across health, governance, education, and climate.",
+    "Explore Astellic's research projects, advisory work, and implementation programmes across Africa.",
 };
 
-interface Project {
-  title: string;
-  area: string;
-  client: string;
-  location: string;
-  status: "Ongoing" | "Completed";
-  description: string;
-}
-
-const projects: Project[] = [];
-
-function EmptyState() {
-  return (
-    <div className="border border-dashed border-gray-200 rounded-xl py-16 text-center">
-      <p className="text-brand-muted text-lg">
-        Project profiles are being compiled. Check back soon.
-      </p>
-    </div>
-  );
-}
-
-const statusColors: Record<Project["status"], string> = {
-  Ongoing: "bg-brand-teal/10 text-brand-teal",
-  Completed: "bg-gray-100 text-gray-500",
-};
+const categories = [
+  {
+    title: "Research Projects",
+    href: "/our-projects/research",
+    description:
+      "Evidence generation, applied research, evaluations, and analytical work that inform policy and programming across our thematic areas.",
+    accent: "bg-brand-gold",
+    icon: (
+      <svg className="w-8 h-8 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+      </svg>
+    ),
+  },
+  {
+    title: "Advisory Work",
+    href: "/our-projects/advisory",
+    description:
+      "Policy advisory, technical assistance, and strategic support to governments, donors, and institutions navigating complex development challenges.",
+    accent: "bg-brand-navy",
+    icon: (
+      <svg className="w-8 h-8 text-brand-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Implementation",
+    href: "/our-projects/implementation",
+    description:
+      "Programme design, management, and direct delivery — translating policy intent into results on the ground across health, governance, education, and climate.",
+    accent: "bg-brand-teal",
+    icon: (
+      <svg className="w-8 h-8 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+      </svg>
+    ),
+  },
+];
 
 export default function OurProjectsPage() {
   return (
@@ -51,51 +65,40 @@ export default function OurProjectsPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic delivers research, advisory, and implementation projects
-            across Africa. Below is a selection of our current and completed
-            engagements.
+            across Africa. Explore our work by category below.
           </p>
         </div>
       </section>
 
+      {/* Category cards */}
       <div className="max-w-5xl mx-auto px-6 py-20">
-        {projects.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="space-y-6">
-            {projects.map((project) => (
-              <div
-                key={project.title}
-                className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm"
-              >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                  <div>
-                    <span
-                      className={`inline-block text-sm font-semibold px-3 py-1 rounded-full mb-3 uppercase tracking-wide ${statusColors[project.status]}`}
-                    >
-                      {project.status}
-                    </span>
-                    <h2 className="text-xl font-bold text-brand-navy">
-                      {project.title}
-                    </h2>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="text-base font-semibold text-brand-gold">
-                      {project.area}
-                    </p>
-                    <p className="text-base text-brand-muted">{project.location}</p>
-                  </div>
-                </div>
-                <p className="text-brand-muted text-base leading-relaxed mb-3">
-                  {project.description}
-                </p>
-                <p className="text-base text-brand-muted">
-                  <span className="font-semibold text-brand-navy">Client:</span>{" "}
-                  {project.client}
+        <div className="grid md:grid-cols-3 gap-8">
+          {categories.map((cat) => (
+            <Link
+              key={cat.href}
+              href={cat.href}
+              className="group bg-white border border-gray-100 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-5"
+            >
+              <div className="w-14 h-14 bg-brand-light rounded-xl flex items-center justify-center">
+                {cat.icon}
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-brand-navy mb-3 group-hover:text-brand-gold transition-colors">
+                  {cat.title}
+                </h2>
+                <p className="text-brand-muted text-base leading-relaxed">
+                  {cat.description}
                 </p>
               </div>
-            ))}
-          </div>
-        )}
+              <div className="flex items-center gap-2 text-brand-gold font-semibold text-base group-hover:gap-3 transition-all">
+                View Projects
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   );
