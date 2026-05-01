@@ -29,6 +29,10 @@ const focusAreas = [
     title: "Policy & Regulatory Support",
     desc: "Advising on health policy formulation, regulatory frameworks, and sector coordination to improve system performance and accountability.",
   },
+  {
+    title: "Digital Health",
+    desc: "Supporting the design and implementation of digital health solutions — including electronic health records, telemedicine, and digital supply chain tools — that strengthen service delivery and improve health outcomes.",
+  },
 ];
 
 export default function HealthPage() {
