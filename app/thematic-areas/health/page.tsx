@@ -65,8 +65,9 @@ export default function HealthPage() {
       <section className="py-20 px-6 max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-6">Overview</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-5">
-          Astellic works with governments, donors, and implementing partners to
-          strengthen the systems that underpin health and nutrition outcomes.
+          Astellic works with governments, donors, the private sector, and
+          implementing partners to strengthen the systems that underpin health
+          and nutrition outcomes.
           Our approach recognises that sustainable improvements require
           action across governance, financing, service delivery, and community
           engagement — and that these elements must be addressed in an integrated,

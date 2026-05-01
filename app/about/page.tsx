@@ -37,8 +37,8 @@ export default function AboutPage() {
           the intersection of evidence, policy, and delivery. We work across
           Health &amp; Nutrition Systems; Governance &amp; Public Sector Reform;
           Education &amp; Social Services; and Climate, Agriculture &amp;
-          Sustainability, partnering with governments, donors, and institutions
-          across Africa to generate evidence, shape policy, and deliver
+          Sustainability, partnering with governments, donors, the private sector,
+          and institutions across Africa to generate evidence, shape policy, and deliver
           programmes that achieve measurable and sustained results.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed mb-6">

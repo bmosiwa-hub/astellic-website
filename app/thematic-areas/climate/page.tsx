@@ -69,7 +69,7 @@ export default function ClimatePage() {
           and prolonged droughts to flooding and land degradation — that directly
           threaten agricultural productivity, food security, and livelihoods.
           Astellic works at the intersection of climate, agriculture, and
-          sustainability to help governments and institutions build systems that
+          sustainability to help governments, the private sector, and institutions build systems that
           are resilient, productive, and environmentally sound.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
@@ -102,7 +102,7 @@ export default function ClimatePage() {
           <h2 className="text-2xl font-bold mb-4">Work with us on Climate &amp; Agriculture</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
             Astellic combines climate science, agricultural expertise, and
-            implementation know-how to support governments and partners in
+            implementation know-how to support governments, the private sector, and partners in
             building a more resilient and sustainable future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

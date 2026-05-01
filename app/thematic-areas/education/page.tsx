@@ -72,7 +72,7 @@ export default function EducationPage() {
           people, and vulnerable communities.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
-          Astellic works with governments, development partners, and civil society
+          Astellic works with governments, the private sector, development partners, and civil society
           to strengthen the systems, institutions, and delivery mechanisms that
           make education and social services effective, equitable, and
           sustainable. We bring analytical rigour, sector expertise, and a
@@ -101,7 +101,7 @@ export default function EducationPage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Work with us on Education &amp; Social Services</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
-            Astellic partners with governments and donors to design and deliver
+            Astellic partners with governments, donors, and the private sector to design and deliver
             education and social protection programmes that achieve lasting
             improvements in human capital and equity.
           </p>

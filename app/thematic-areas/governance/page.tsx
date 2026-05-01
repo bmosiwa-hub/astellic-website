@@ -66,7 +66,7 @@ export default function GovernancePage() {
         <h2 className="text-2xl font-bold mb-6">Overview</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-5">
           Effective governance is foundational to development outcomes. Astellic
-          works with governments, legislatures, and oversight bodies to strengthen
+          works with governments, the private sector, legislatures, and oversight bodies to strengthen
           the institutions and systems through which policy is made and delivered.
           Our work addresses both the technical dimensions of governance — systems,
           processes, and tools — and the institutional dimensions: incentives,
@@ -100,7 +100,7 @@ export default function GovernancePage() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Work with us on Governance &amp; Reform</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
-            Astellic supports governments and development partners with technically
+            Astellic supports governments, the private sector, and development partners with technically
             sound, politically informed governance reform — from diagnostic through
             to implementation.
           </p>

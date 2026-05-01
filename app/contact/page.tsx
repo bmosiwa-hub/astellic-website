@@ -23,9 +23,9 @@ export default function ContactPage() {
             Let&apos;s Start a Conversation
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            We work with governments, donors, and institutions across Africa. If
-            you have a challenge at the intersection of evidence, policy, and
-            delivery — reach out.
+            We work with governments, donors, the private sector, and institutions
+            across Africa. If you have a challenge at the intersection of evidence,
+            policy, and delivery — reach out.
           </p>
         </div>
       </section>
@@ -70,6 +70,7 @@ export default function ContactPage() {
                 <li>→ National governments and public institutions</li>
                 <li>→ Bilateral and multilateral donors</li>
                 <li>→ International development organisations</li>
+                <li>→ Private sector organisations and firms</li>
                 <li>→ Civil society and research institutions</li>
               </ul>
             </div>
