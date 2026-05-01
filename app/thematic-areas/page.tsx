@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Thematic Areas",
@@ -15,6 +16,7 @@ const areas = [
     accent: "bg-brand-gold",
     image: "/images/thematic-health.jpg",
     imageAlt: "African healthcare professional",
+    href: "/thematic-areas/health",
   },
   {
     num: "02",
@@ -23,6 +25,7 @@ const areas = [
     accent: "bg-brand-navy",
     image: "/images/thematic-governance.jpg",
     imageAlt: "African government and public sector professionals",
+    href: "/thematic-areas/governance",
   },
   {
     num: "03",
@@ -31,6 +34,7 @@ const areas = [
     accent: "bg-brand-gold",
     image: "/images/thematic-climate.jpg",
     imageAlt: "African farmer working in the field",
+    href: "/thematic-areas/climate",
   },
   {
     num: "04",
@@ -39,6 +43,7 @@ const areas = [
     accent: "bg-brand-navy",
     image: "/images/thematic-education.jpg",
     imageAlt: "African students learning",
+    href: "/thematic-areas/education",
   },
 ];
 
@@ -89,9 +94,22 @@ export default function ThematicAreasPage() {
                   {a.num}
                 </span>
               </div>
-              <div className="p-8 flex-1">
-                <h2 className="text-xl font-bold mb-3">{a.title}</h2>
-                <p className="text-brand-muted text-lg leading-relaxed">{a.desc}</p>
+              <div className="p-8 flex-1 flex flex-col justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold mb-3">{a.title}</h2>
+                  <p className="text-brand-muted text-lg leading-relaxed">{a.desc}</p>
+                </div>
+                <div>
+                  <Link
+                    href={a.href}
+                    className="inline-flex items-center gap-2 text-brand-gold font-semibold text-base hover:gap-3 transition-all"
+                  >
+                    Learn More
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
