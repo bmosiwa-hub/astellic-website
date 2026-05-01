@@ -97,8 +97,8 @@ export default function JoinOurRosterPage() {
   const [position, setPosition] = useState("");
   const [cv, setCv] = useState<FileState>(emptyFile());
   const [statement, setStatement] = useState<FileState>(emptyFile());
-  const [sample1, setSample1] = useState<FileState>(emptyFile());
-  const [sample2, setSample2] = useState<FileState>(emptyFile());
+  const [sample, setSample] = useState<FileState>(emptyFile());
+  const [reference, setReference] = useState<FileState>(emptyFile());
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -111,8 +111,8 @@ export default function JoinOurRosterPage() {
     position.trim() &&
     cv.file &&
     statement.file &&
-    sample1.file &&
-    sample2.file;
+    sample.file &&
+    reference.file;
 
   const missing: string[] = [];
   if (!name.trim()) missing.push("Name");
@@ -120,8 +120,8 @@ export default function JoinOurRosterPage() {
   if (!position.trim()) missing.push("Position Applied For");
   if (!cv.file) missing.push("CV");
   if (!statement.file) missing.push("Statement of Interest");
-  if (!sample1.file) missing.push("Sample Work 1");
-  if (!sample2.file) missing.push("Sample Work 2");
+  if (!sample.file) missing.push("Sample of Work");
+  if (!reference.file) missing.push("Reference Letter from Previous Engagement");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,8 +137,8 @@ export default function JoinOurRosterPage() {
     formData.append("position", position.trim());
     formData.append("cv", cv.file!);
     formData.append("statement", statement.file!);
-    formData.append("sample1", sample1.file!);
-    formData.append("sample2", sample2.file!);
+    formData.append("sample", sample.file!);
+    formData.append("reference", reference.file!);
 
     try {
       const res = await fetch("/api/apply", { method: "POST", body: formData });
@@ -300,16 +300,16 @@ export default function JoinOurRosterPage() {
                 onChange={setStatement}
               />
               <FileUpload
-                id="sample1"
-                label="Sample Work 1"
-                value={sample1}
-                onChange={setSample1}
+                id="sample"
+                label="Sample of Work"
+                value={sample}
+                onChange={setSample}
               />
               <FileUpload
-                id="sample2"
-                label="Sample Work 2"
-                value={sample2}
-                onChange={setSample2}
+                id="reference"
+                label="Reference Letter from Previous Engagement"
+                value={reference}
+                onChange={setReference}
               />
             </div>
 
