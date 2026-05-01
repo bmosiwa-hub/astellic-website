@@ -14,11 +14,11 @@ export async function POST(request: NextRequest) {
     const position = (formData.get("position") as string)?.trim();
     const cv = formData.get("cv") as File | null;
     const statement = formData.get("statement") as File | null;
-    const sample = formData.get("sample") as File | null;
-    const reference = formData.get("reference") as File | null;
+    const doc1 = formData.get("doc1") as File | null;
+    const doc2 = formData.get("doc2") as File | null;
 
     // Server-side validation
-    if (!name || !email || !position || !cv || !statement || !sample || !reference) {
+    if (!name || !email || !position || !cv || !statement || !doc1 || !doc2) {
       return NextResponse.json(
         { error: "All fields and documents are required." },
         { status: 400 }
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
     const files = [
       { file: cv, label: "CV" },
       { file: statement, label: "Statement of Interest" },
-      { file: sample, label: "Sample of Work" },
-      { file: reference, label: "Reference Letter" },
+      { file: doc1, label: "Sample of Work / Reference 1" },
+      { file: doc2, label: "Sample of Work / Reference 2" },
     ];
 
     for (const { file, label } of files) {
@@ -42,11 +42,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert files to buffers
-    const [cvBuf, statBuf, sampleBuf, refBuf] = await Promise.all([
+    const [cvBuf, statBuf, doc1Buf, doc2Buf] = await Promise.all([
       cv.arrayBuffer().then(Buffer.from),
       statement.arrayBuffer().then(Buffer.from),
-      sample.arrayBuffer().then(Buffer.from),
-      reference.arrayBuffer().then(Buffer.from),
+      doc1.arrayBuffer().then(Buffer.from),
+      doc2.arrayBuffer().then(Buffer.from),
     ]);
 
     const transporter = nodemailer.createTransport({
@@ -76,14 +76,14 @@ export async function POST(request: NextRequest) {
           <tr><td style="padding:4px 12px 4px 0;font-weight:bold;">Position</td><td>${position}</td></tr>
         </table>
         <p style="margin-top:16px;color:#555;font-size:14px;">
-          4 documents are attached: CV, Statement of Interest, Sample of Work, Reference Letter from Previous Engagement.
+          4 documents are attached: CV, Statement of Interest, and 2 × Sample of Work / Reference from Previous Engagement.
         </p>
       `,
       attachments: [
         { filename: cv.name || "CV.pdf", content: cvBuf },
         { filename: statement.name || "Statement.pdf", content: statBuf },
-        { filename: sample.name || "Sample-of-Work.pdf", content: sampleBuf },
-        { filename: reference.name || "Reference-Letter.pdf", content: refBuf },
+        { filename: doc1.name || "Document-1.pdf", content: doc1Buf },
+        { filename: doc2.name || "Document-2.pdf", content: doc2Buf },
       ],
     });
 

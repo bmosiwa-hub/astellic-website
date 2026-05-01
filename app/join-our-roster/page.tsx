@@ -97,8 +97,8 @@ export default function JoinOurRosterPage() {
   const [position, setPosition] = useState("");
   const [cv, setCv] = useState<FileState>(emptyFile());
   const [statement, setStatement] = useState<FileState>(emptyFile());
-  const [sample, setSample] = useState<FileState>(emptyFile());
-  const [reference, setReference] = useState<FileState>(emptyFile());
+  const [doc1, setDoc1] = useState<FileState>(emptyFile());
+  const [doc2, setDoc2] = useState<FileState>(emptyFile());
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -111,8 +111,8 @@ export default function JoinOurRosterPage() {
     position.trim() &&
     cv.file &&
     statement.file &&
-    sample.file &&
-    reference.file;
+    doc1.file &&
+    doc2.file;
 
   const missing: string[] = [];
   if (!name.trim()) missing.push("Name");
@@ -120,8 +120,8 @@ export default function JoinOurRosterPage() {
   if (!position.trim()) missing.push("Position Applied For");
   if (!cv.file) missing.push("CV");
   if (!statement.file) missing.push("Statement of Interest");
-  if (!sample.file) missing.push("Sample of Work");
-  if (!reference.file) missing.push("Reference Letter from Previous Engagement");
+  if (!doc1.file) missing.push("Sample of Work / Reference 1");
+  if (!doc2.file) missing.push("Sample of Work / Reference 2");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,8 +137,8 @@ export default function JoinOurRosterPage() {
     formData.append("position", position.trim());
     formData.append("cv", cv.file!);
     formData.append("statement", statement.file!);
-    formData.append("sample", sample.file!);
-    formData.append("reference", reference.file!);
+    formData.append("doc1", doc1.file!);
+    formData.append("doc2", doc2.file!);
 
     try {
       const res = await fetch("/api/apply", { method: "POST", body: formData });
@@ -287,9 +287,11 @@ export default function JoinOurRosterPage() {
             <div className="space-y-5">
               <h2 className="text-2xl font-bold text-brand-navy">Documents</h2>
               <p className="text-base text-brand-muted">
-                All four documents are required. Maximum{" "}
-                <strong>{MAX_MB} MB</strong> per file. Accepted formats: PDF,
-                DOC, DOCX.
+                All four documents are required. For each of the two slots below,
+                upload either a <strong>sample of work</strong> or a{" "}
+                <strong>reference letter from a previous engagement</strong> —
+                whichever is most relevant to your field. Maximum{" "}
+                <strong>{MAX_MB} MB</strong> per file. Accepted formats: PDF, DOC, DOCX.
               </p>
 
               <FileUpload id="cv" label="CV" value={cv} onChange={setCv} />
@@ -300,16 +302,16 @@ export default function JoinOurRosterPage() {
                 onChange={setStatement}
               />
               <FileUpload
-                id="sample"
-                label="Sample of Work"
-                value={sample}
-                onChange={setSample}
+                id="doc1"
+                label="Sample of Work or Reference from Previous Engagement (1)"
+                value={doc1}
+                onChange={setDoc1}
               />
               <FileUpload
-                id="reference"
-                label="Reference Letter from Previous Engagement"
-                value={reference}
-                onChange={setReference}
+                id="doc2"
+                label="Sample of Work or Reference from Previous Engagement (2)"
+                value={doc2}
+                onChange={setDoc2}
               />
             </div>
 
