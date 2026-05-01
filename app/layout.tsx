@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description:
     "Astellic is a research, advisory, and implementation firm working at the intersection of evidence, policy, and delivery across Africa.",
   metadataBase: new URL("https://astellic.com"),
+  icons: {
+    icon: [
+      { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-48.png", sizes: "any" },
+    ],
+    apple: { url: "/favicon-48.png", sizes: "48x48", type: "image/png" },
+  },
 };
 
 export default function RootLayout({
