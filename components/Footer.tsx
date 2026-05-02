@@ -51,8 +51,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 text-center py-4 text-base text-gray-600">
-        © {new Date().getFullYear()} Astellic. All rights reserved.
+      <div className="border-t border-white/10 text-center py-4 text-base text-gray-600 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <span>© {new Date().getFullYear()} Astellic. All rights reserved.</span>
+        <span className="hidden sm:inline text-gray-700">·</span>
+        <Link href="/privacy" className="hover:text-white transition-colors">
+          Privacy Policy
+        </Link>
       </div>
     </footer>
   );

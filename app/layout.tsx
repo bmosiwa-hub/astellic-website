@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: {
@@ -32,8 +32,8 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
-      <GoogleAnalytics gaId="G-WGNFBR5C4G" />
     </html>
   );
 }
