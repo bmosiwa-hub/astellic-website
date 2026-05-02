@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 interface TeamMember {
   name: string;
   title: string;
+  photo?: string;
   bio?: string;
 }
 
@@ -17,6 +18,7 @@ const executiveTeam: TeamMember[] = [
   {
     name: "Dr. Benjamin Azariah Mosiwa",
     title: "Founder & Chief Executive Officer",
+    photo: "/images/team-benjamin-mosiwa.jpg",
     bio: "With over a decade of experience across health and development systems strengthening, policy research, strategic advisory, and the evaluation of complex programmes, Dr. Benjamin Azariah Mosiwa brings a distinctive blend of technical rigor and strategic influence to every engagement.\n\nHe has worked directly within government ministries, supported donor-funded reform initiatives, contributed to peer-reviewed research, and strengthened health programmes through evaluation and high-level advisory. His work is consistently driven by a clear objective: translating evidence and analysis into actionable decisions that improve health and development outcomes.\n\nAs Founder and CEO of Astellic, he provides strategic leadership to a growing research, advisory and implementation firm, setting its vision, building high-performing multidisciplinary teams, and positioning the organization within competitive regional and global health and development markets. He leads on business development, partnership cultivation, and quality assurance across all engagements, ensuring that Astellic delivers innovative, evidence-driven solutions while maintaining strong operational sustainability and growth.",
   },
 ];
@@ -34,16 +36,32 @@ function EmptyState({ label }: { label: string }) {
 
 function TeamCard({ member }: { member: TeamMember }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex flex-col gap-3">
-      <div className="w-16 h-16 rounded-full bg-brand-light flex items-center justify-center shrink-0">
-        <svg className="w-8 h-8 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-        </svg>
+    <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex flex-col gap-5">
+      {/* Photo + name row */}
+      <div className="flex items-center gap-5">
+        <div className="w-20 h-20 rounded-full overflow-hidden bg-brand-light shrink-0">
+          {member.photo ? (
+            <Image
+              src={member.photo}
+              alt={member.name}
+              width={80}
+              height={80}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </div>
+          )}
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-brand-navy">{member.name}</h3>
+          <p className="text-brand-gold font-medium text-base">{member.title}</p>
+        </div>
       </div>
-      <div>
-        <h3 className="text-lg font-bold text-brand-navy">{member.name}</h3>
-        <p className="text-brand-gold font-medium text-base">{member.title}</p>
-      </div>
+      {/* Bio */}
       {member.bio && (
         <div className="space-y-4">
           {member.bio.split("\n\n").map((para, i) => (
