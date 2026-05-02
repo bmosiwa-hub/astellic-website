@@ -19,7 +19,7 @@ interface TeamMember {
 const executiveTeam: TeamMember[] = [
   {
     name: "Dr. Benjamin Azariah Mosiwa",
-    title: "Founder & Chief Executive Officer",
+    title: "Founder & CEO",
     photo: "/images/team-benjamin-mosiwa.jpg",
     profileUrl: "https://azariahmosiwa.com/",
     profileLabel: "Read Dr. Mosiwa's full profile",
