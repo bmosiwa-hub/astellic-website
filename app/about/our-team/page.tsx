@@ -12,6 +12,8 @@ interface TeamMember {
   title: string;
   photo?: string;
   bio?: string;
+  profileUrl?: string;
+  profileLabel?: string;
 }
 
 const executiveTeam: TeamMember[] = [
@@ -19,6 +21,8 @@ const executiveTeam: TeamMember[] = [
     name: "Dr. Benjamin Azariah Mosiwa",
     title: "Founder & Chief Executive Officer",
     photo: "/images/team-benjamin-mosiwa.jpg",
+    profileUrl: "https://azariahmosiwa.com/",
+    profileLabel: "Read Dr. Mosiwa's full profile",
     bio: "With over a decade of experience across health and development systems strengthening, policy research, strategic advisory, and the evaluation of complex programmes, Dr. Benjamin Azariah Mosiwa brings a distinctive blend of technical rigor and strategic influence to every engagement.\n\nHe has worked directly within government ministries, supported donor-funded reform initiatives, contributed to peer-reviewed research, and strengthened health programmes through evaluation and high-level advisory. His work is consistently driven by a clear objective: translating evidence and analysis into actionable decisions that improve health and development outcomes.\n\nAs Founder and CEO of Astellic, he provides strategic leadership to a growing research, advisory and implementation firm, setting its vision, building high-performing multidisciplinary teams, and positioning the organization within competitive regional and global health and development markets. He leads on business development, partnership cultivation, and quality assurance across all engagements, ensuring that Astellic delivers innovative, evidence-driven solutions while maintaining strong operational sustainability and growth.",
   },
 ];
@@ -68,6 +72,20 @@ function TeamCard({ member }: { member: TeamMember }) {
             <p key={i} className="text-brand-muted text-base leading-relaxed">{para}</p>
           ))}
         </div>
+      )}
+      {/* External profile link */}
+      {member.profileUrl && (
+        <a
+          href={member.profileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors self-start"
+        >
+          {member.profileLabel ?? "View Full Profile"}
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
       )}
     </div>
   );
