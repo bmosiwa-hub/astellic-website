@@ -22,12 +22,8 @@ const focusAreas = [
     desc: "Advising on the design, targeting, financing, and delivery of social protection programmes — including cash transfers, public works, and social insurance — to reduce poverty and vulnerability.",
   },
   {
-    title: "Education Data & Learning Outcomes",
-    desc: "Strengthening education management information systems and supporting the use of learning assessment data to drive improvements in teaching quality and student outcomes.",
-  },
-  {
-    title: "Inclusive Education & Gender Equity",
-    desc: "Integrating gender-responsive and inclusive approaches into education and social services programmes to reduce disparities and improve outcomes for marginalised groups.",
+    title: "Human Rights & Gender",
+    desc: "Integrating human rights-based approaches and gender-responsive programming into education and social services to reduce disparities and improve outcomes for marginalised groups.",
   },
 ];
 
