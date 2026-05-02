@@ -7,7 +7,7 @@ const thematicAreas = [
   { label: "Health & Nutrition Systems", href: "/thematic-areas/health" },
   { label: "Governance & Public Sector Reform", href: "/thematic-areas/governance" },
   { label: "Climate, Agriculture & Sustainability", href: "/thematic-areas/climate" },
-  { label: "Education & Social Services", href: "/thematic-areas/education" },
+  { label: "Human Development & Social Systems", href: "/thematic-areas/education" },
 ];
 
 const workWithUsItems = [

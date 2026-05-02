@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Education & Social Services",
+  title: "Human Development & Social Systems",
   description:
-    "Astellic's work in education and social services — enhancing delivery systems for education, skills development, and social protection to improve equity and human capital outcomes.",
+    "Astellic's work in human development and social systems — enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
 };
 
 const focusAreas = [
@@ -42,11 +42,12 @@ export default function EducationPage() {
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-base font-semibold uppercase tracking-widest mb-3">Thematic Area 04</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            Education &amp; Social Services
+            Human Development &amp; Social Systems
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Enhancing delivery systems for education, skills development, and
-            social protection to improve equity and human capital outcomes.
+            Enhancing delivery systems for education, skills development,
+            social protection, and human rights to improve equity and human
+            capital outcomes across Africa.
           </p>
         </div>
       </section>
@@ -89,7 +90,7 @@ export default function EducationPage() {
       {/* CTA */}
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Work with us on Education &amp; Social Services</h2>
+          <h2 className="text-2xl font-bold mb-4">Work with us on Human Development &amp; Social Systems</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
             Astellic partners with governments, donors, and the private sector to design and deliver
             education and social protection programmes that achieve lasting

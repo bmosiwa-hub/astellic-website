@@ -20,7 +20,7 @@ const areas = [
   { title: "Health & Nutrition Systems", icon: "🏥" },
   { title: "Governance & Public Sector Reform", icon: "🏛️" },
   { title: "Climate, Agriculture & Sustainability", icon: "🌱" },
-  { title: "Education & Social Services", icon: "📚" },
+  { title: "Human Development & Social Systems", icon: "📚" },
 ];
 
 export default function Home() {

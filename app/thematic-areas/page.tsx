@@ -38,8 +38,8 @@ const areas = [
   },
   {
     num: "04",
-    title: "Education & Social Services",
-    desc: "Enhancing delivery systems for education, skills development, and social protection to improve equity and human capital outcomes.",
+    title: "Human Development & Social Systems",
+    desc: "Enhancing delivery systems for education, skills development, social protection, and human rights to improve equity and human capital outcomes.",
     accent: "bg-brand-navy",
     image: "/images/thematic-education.jpg",
     imageAlt: "African students learning",
