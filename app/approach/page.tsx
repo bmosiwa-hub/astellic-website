@@ -40,12 +40,6 @@ const stages = [
   },
 ];
 
-const principles = [
-  "We prioritise honest analysis over convenience",
-  "We design solutions that work within systems, not around them",
-  "We measure success by outcomes, not outputs",
-];
-
 export default function ApproachPage() {
   return (
     <>
@@ -68,33 +62,6 @@ export default function ApproachPage() {
             sustainable outcomes. Each stage reinforces the others, with system
             strengthening running as a continuous thread throughout.
           </p>
-        </div>
-      </section>
-
-      {/* The problem */}
-      <section className="py-20 px-6 bg-brand-light">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-4">The Problem We Solve</h2>
-          <p className="text-brand-muted leading-relaxed mb-6">
-            The development sector is not short of evidence, strategies, funding,
-            or technical expertise. What is consistently scarce is the ability to
-            translate them into results at scale. This is not a technical
-            failure — it is a systems failure. Astellic was created to fill that
-            gap.
-          </p>
-          <div className="bg-brand-navy text-white rounded-xl p-8">
-            <h3 className="font-semibold text-brand-gold mb-4">
-              Professional Trust — How We Work
-            </h3>
-            <ul className="space-y-3">
-              {principles.map((p) => (
-                <li key={p} className="flex gap-3 text-gray-300 text-base">
-                  <span className="text-brand-teal mt-0.5">→</span>
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </section>
 

@@ -16,8 +16,13 @@ const workWithUsItems = [
   { label: "Join Our Roster", href: "/join-our-roster" },
 ];
 
+const whoWeAreItems = [
+  { label: "About Astellic", href: "/about" },
+  { label: "Vision & Mission", href: "/about/vision-mission" },
+  { label: "Our Team", href: "/about/our-team" },
+];
+
 const nav = [
-  { label: "About", href: "/about" },
   { label: "Our Approach", href: "/approach" },
   { label: "Why Astellic", href: "/why-astellic" },
 ];
@@ -97,12 +102,14 @@ function OurWorkDropdown() {
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [whoWeAreOpen, setWhoWeAreOpen] = useState(false);
   const [ourWorkOpen, setOurWorkOpen] = useState(false);
   const [thematicOpen, setThematicOpen] = useState(false);
   const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
 
   const closeMobile = () => {
     setMobileOpen(false);
+    setWhoWeAreOpen(false);
     setOurWorkOpen(false);
     setThematicOpen(false);
     setWorkWithUsOpen(false);
@@ -117,6 +124,7 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8 text-lg">
+          <FlatDropdown label="Who We Are" items={whoWeAreItems} />
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="text-gray-300 hover:text-white transition-colors">
               {item.label}
@@ -140,6 +148,26 @@ export default function Header() {
       {/* Mobile nav */}
       {mobileOpen && (
         <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-lg">
+
+          {/* Who We Are mobile accordion */}
+          <div>
+            <button className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg" onClick={() => setWhoWeAreOpen(!whoWeAreOpen)}>
+              Who We Are
+              <svg className={`w-4 h-4 ml-1 transition-transform ${whoWeAreOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {whoWeAreOpen && (
+              <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
+                {whoWeAreItems.map((item) => (
+                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           {nav.map((item) => (
             <Link key={item.href} href={item.href} className="text-gray-300 hover:text-white py-1" onClick={closeMobile}>
               {item.label}

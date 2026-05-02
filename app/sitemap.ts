@@ -6,6 +6,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     { url: "/", priority: 1.0, changeFrequency: "monthly" },
     { url: "/about", priority: 0.9, changeFrequency: "monthly" },
+    { url: "/about/vision-mission", priority: 0.8, changeFrequency: "monthly" },
+    { url: "/about/our-team", priority: 0.8, changeFrequency: "monthly" },
     { url: "/approach", priority: 0.8, changeFrequency: "monthly" },
     { url: "/thematic-areas", priority: 0.8, changeFrequency: "monthly" },
     { url: "/thematic-areas/health", priority: 0.7, changeFrequency: "monthly" },
