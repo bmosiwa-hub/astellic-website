@@ -13,7 +13,13 @@ interface TeamMember {
   bio?: string;
 }
 
-const executiveTeam: TeamMember[] = [];
+const executiveTeam: TeamMember[] = [
+  {
+    name: "Dr. Benjamin Azariah Mosiwa",
+    title: "Founder & Chief Executive Officer",
+    bio: "With over a decade of experience across health and development systems strengthening, policy research, strategic advisory, and the evaluation of complex programmes, Dr. Benjamin Azariah Mosiwa brings a distinctive blend of technical rigor and strategic influence to every engagement.\n\nHe has worked directly within government ministries, supported donor-funded reform initiatives, contributed to peer-reviewed research, and strengthened health programmes through evaluation and high-level advisory. His work is consistently driven by a clear objective: translating evidence and analysis into actionable decisions that improve health and development outcomes.\n\nAs Founder and CEO of Astellic, he provides strategic leadership to a growing research, advisory and implementation firm, setting its vision, building high-performing multidisciplinary teams, and positioning the organization within competitive regional and global health and development markets. He leads on business development, partnership cultivation, and quality assurance across all engagements, ensuring that Astellic delivers innovative, evidence-driven solutions while maintaining strong operational sustainability and growth.",
+  },
+];
 const boardMembers: TeamMember[] = [];
 
 function EmptyState({ label }: { label: string }) {
@@ -39,7 +45,11 @@ function TeamCard({ member }: { member: TeamMember }) {
         <p className="text-brand-gold font-medium text-base">{member.title}</p>
       </div>
       {member.bio && (
-        <p className="text-brand-muted text-base leading-relaxed">{member.bio}</p>
+        <div className="space-y-4">
+          {member.bio.split("\n\n").map((para, i) => (
+            <p key={i} className="text-brand-muted text-base leading-relaxed">{para}</p>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -84,7 +94,7 @@ export default function OurTeamPage() {
           {executiveTeam.length === 0 ? (
             <EmptyState label="Executive team" />
           ) : (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className={`grid gap-6 ${executiveTeam.length === 1 ? "max-w-3xl" : "md:grid-cols-2"}`}>
               {executiveTeam.map((member) => (
                 <TeamCard key={member.name} member={member} />
               ))}
