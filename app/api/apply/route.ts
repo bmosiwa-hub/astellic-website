@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Email to Astellic team with attachments
     await transporter.sendMail({
       from: `"Astellic Roster Applications" <${process.env.SMTP_USER}>`,
       replyTo: `"${name}" <${email}>`,
@@ -85,6 +86,43 @@ export async function POST(request: NextRequest) {
         { filename: doc1.name || "Document-1.pdf", content: doc1Buf },
         { filename: doc2.name || "Document-2.pdf", content: doc2Buf },
       ],
+    });
+
+    // Acknowledgement email to applicant
+    await transporter.sendMail({
+      from: `"Astellic" <${process.env.SMTP_USER}>`,
+      to: `"${name}" <${email}>`,
+      subject: `Application Received — Astellic Consultants Roster`,
+      html: `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1B2A4A;">
+          <div style="background:#1B2A4A;padding:32px 40px;border-radius:8px 8px 0 0;">
+            <h1 style="color:#C9A84C;font-size:24px;margin:0;">Astellic</h1>
+          </div>
+          <div style="padding:40px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;">
+            <p style="font-size:16px;line-height:1.6;margin-top:0;">Dear ${name},</p>
+            <p style="font-size:16px;line-height:1.6;">
+              Thank you for submitting your application to join the Astellic Consultants Roster
+              for the position of <strong>${position}</strong>.
+            </p>
+            <p style="font-size:16px;line-height:1.6;">
+              We confirm that we have received your documents and your application is now
+              under review. Our team will carefully assess your qualifications and experience
+              against our thematic areas and requirements.
+            </p>
+            <p style="font-size:16px;line-height:1.6;">
+              We will be in touch when opportunities arise that align with your profile.
+              In the meantime, please do not hesitate to reach out should you have any
+              questions.
+            </p>
+            <p style="font-size:16px;line-height:1.6;margin-bottom:0;">
+              Warm regards,<br/>
+              <strong>The Astellic Team</strong><br/>
+              <a href="mailto:admin@astellic.com" style="color:#C9A84C;">admin@astellic.com</a><br/>
+              <a href="https://www.astellic.com" style="color:#C9A84C;">www.astellic.com</a>
+            </p>
+          </div>
+        </div>
+      `,
     });
 
     return NextResponse.json({ success: true });
