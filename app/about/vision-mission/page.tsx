@@ -13,7 +13,7 @@ export default function VisionMissionPage() {
       {/* Hero */}
       <section className="relative bg-brand-navy text-white py-24 px-6 overflow-hidden">
         <Image
-          src="/images/hero-about.jpg"
+          src="/images/hero-thematic.jpg"
           alt="Astellic vision and mission"
           fill
           className="object-cover opacity-20"
