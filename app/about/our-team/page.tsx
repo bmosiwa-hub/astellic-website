@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 interface TeamMember {
   name: string;
   title: string;
+  shortName: string; // e.g. "Dr. Mosiwa" — used in the accordion label
   photo?: string;
   bio?: string;
   profileUrl?: string;
@@ -20,6 +21,7 @@ const executiveTeam: TeamMember[] = [
   {
     name: "Dr. Benjamin Azariah Mosiwa",
     title: "Founder & CEO",
+    shortName: "Dr. Mosiwa",
     photo: "/images/team-benjamin-mosiwa.jpg",
     profileUrl: "https://azariahmosiwa.com/",
     profileLabel: "Read Dr. Mosiwa's full profile",
@@ -65,27 +67,41 @@ function TeamCard({ member }: { member: TeamMember }) {
           <p className="text-brand-gold font-medium text-base">{member.title}</p>
         </div>
       </div>
-      {/* Bio */}
+      {/* Bio accordion */}
       {member.bio && (
-        <div className="space-y-4">
-          {member.bio.split("\n\n").map((para, i) => (
-            <p key={i} className="text-brand-muted text-base leading-relaxed">{para}</p>
-          ))}
-        </div>
-      )}
-      {/* External profile link */}
-      {member.profileUrl && (
-        <a
-          href={member.profileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors self-start"
-        >
-          {member.profileLabel ?? "View Full Profile"}
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-          </svg>
-        </a>
+        <details className="group border-t border-gray-100 pt-4">
+          <summary className="flex items-center justify-between cursor-pointer list-none select-none text-brand-navy font-semibold text-base hover:text-brand-gold transition-colors">
+            About {member.shortName}
+            <svg
+              className="w-5 h-5 shrink-0 transition-transform group-open:rotate-180 text-brand-gold"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="mt-4 space-y-4">
+            {member.bio.split("\n\n").map((para, i) => (
+              <p key={i} className="text-brand-muted text-base leading-relaxed">{para}</p>
+            ))}
+            {/* External profile link inside accordion */}
+            {member.profileUrl && (
+              <a
+                href={member.profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors mt-2"
+              >
+                {member.profileLabel ?? "View Full Profile"}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            )}
+          </div>
+        </details>
       )}
     </div>
   );
