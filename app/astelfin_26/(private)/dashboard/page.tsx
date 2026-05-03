@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Dashboard | Astellic Finance",
@@ -10,6 +11,12 @@ export const metadata = {
 
 export default async function DashboardPage() {
   const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+
+  // Staff and Consultants have their own portal; redirect them
+  if (session.user.role === "STAFF" || session.user.role === "CONSULTANT") {
+    redirect("/astelfin_26/my/submissions");
+  }
 
   // Aggregate totals
   const [totalIncome, totalExpenses, activeProjects, recentAudit, activeDebts] =

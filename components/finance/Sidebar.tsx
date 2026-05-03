@@ -4,7 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
-const navItems = [
+const ROLE_LABELS: Record<string, string> = {
+  CEO: "Executive Director",
+  FINANCE_MANAGER: "Finance Manager",
+  STAFF: "Staff",
+  CONSULTANT: "Consultant",
+};
+
+const managementNav = [
   {
     label: "Dashboard",
     href: "/astelfin_26/dashboard",
@@ -86,13 +93,24 @@ const navItems = [
       </svg>
     ),
   },
+];
+
+const myNav = [
   {
-    label: "Settings",
-    href: "/astelfin_26/settings",
+    label: "My Submissions",
+    href: "/astelfin_26/my/submissions",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    ),
+  },
+  {
+    label: "My Liquidations",
+    href: "/astelfin_26/my/liquidations",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
       </svg>
     ),
   },
@@ -102,11 +120,46 @@ interface SidebarProps {
   userName: string;
   userRole: string;
   pendingApprovals?: number;
+  pendingInvoices?: number;
+  pendingLiquidations?: number;
 }
 
-export default function Sidebar({ userName, userRole, pendingApprovals = 0 }: SidebarProps) {
+export default function Sidebar({
+  userName,
+  userRole,
+  pendingApprovals = 0,
+  pendingInvoices = 0,
+  pendingLiquidations = 0,
+}: SidebarProps) {
   const pathname = usePathname();
   const isCEO = userRole === "CEO";
+  const isFM = userRole === "FINANCE_MANAGER";
+  const isStaffOrConsultant = userRole === "STAFF" || userRole === "CONSULTANT";
+
+  const navLink = (href: string, label: string, icon: React.ReactNode, badge?: number) => {
+    const active =
+      pathname === href ||
+      (href !== "/astelfin_26/dashboard" && pathname.startsWith(href));
+    return (
+      <Link
+        key={href}
+        href={href}
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+          active
+            ? "bg-brand-gold text-white"
+            : "text-gray-300 hover:bg-white/10 hover:text-white"
+        }`}
+      >
+        {icon}
+        <span className="flex-1">{label}</span>
+        {badge !== undefined && badge > 0 && (
+          <span className="bg-orange-400 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
+            {badge}
+          </span>
+        )}
+      </Link>
+    );
+  };
 
   return (
     <aside className="w-64 bg-brand-navy text-white flex flex-col min-h-screen shrink-0">
@@ -120,59 +173,67 @@ export default function Sidebar({ userName, userRole, pendingApprovals = 0 }: Si
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const active =
-            pathname === item.href ||
-            (item.href !== "/astelfin_26/dashboard" && pathname.startsWith(item.href));
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                active
-                  ? "bg-brand-gold text-white"
-                  : "text-gray-300 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          );
-        })}
+        {isStaffOrConsultant ? (
+          /* Staff / Consultant — limited nav */
+          <>
+            {myNav.map((item) => navLink(item.href, item.label, item.icon))}
+          </>
+        ) : (
+          /* FM / CEO — full management nav */
+          <>
+            {managementNav.map((item) => navLink(item.href, item.label, item.icon))}
 
-        {/* Approvals — always visible; badge only for CEO */}
-        {(() => {
-          const href = "/astelfin_26/approvals";
-          const active = pathname.startsWith(href);
-          return (
-            <Link
-              href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                active
-                  ? "bg-brand-gold text-white"
-                  : "text-gray-300 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {/* check-circle icon */}
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            {/* Divider */}
+            <div className="my-2 border-t border-white/10" />
+
+            {/* Invoices & Requests */}
+            {navLink(
+              "/astelfin_26/invoices",
+              "Invoices & Requests",
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>,
+              pendingInvoices
+            )}
+
+            {/* Liquidations */}
+            {navLink(
+              "/astelfin_26/liquidations",
+              "Liquidations",
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+              </svg>,
+              pendingLiquidations
+            )}
+
+            {/* Approvals — CEO badge, FM read-only */}
+            {navLink(
+              "/astelfin_26/approvals",
+              "Approvals",
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>,
+              isCEO ? pendingApprovals : undefined
+            )}
+
+            {/* Settings — CEO only */}
+            {isCEO && navLink(
+              "/astelfin_26/settings",
+              "Settings",
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span className="flex-1">Approvals</span>
-              {isCEO && pendingApprovals > 0 && (
-                <span className="bg-orange-400 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
-                  {pendingApprovals}
-                </span>
-              )}
-            </Link>
-          );
-        })()}
+            )}
+          </>
+        )}
       </nav>
 
       {/* User info + sign out */}
       <div className="px-4 py-4 border-t border-white/10">
         <p className="text-sm font-semibold text-white truncate">{userName}</p>
-        <p className="text-xs text-gray-400 capitalize">
-          {userRole === "CEO" ? "CEO" : "Finance Manager"}
+        <p className="text-xs text-gray-400">
+          {ROLE_LABELS[userRole] ?? userRole}
         </p>
         <button
           onClick={() => signOut({ callbackUrl: "/astelfin_26/login" })}
