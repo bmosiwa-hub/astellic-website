@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   const session = await auth();
 
   // Aggregate totals
-  const [totalIncome, totalExpenses, activeProjects, recentAudit] =
+  const [totalIncome, totalExpenses, activeProjects, recentAudit, activeDebts] =
     await Promise.all([
       prisma.income.aggregate({ _sum: { amount: true } }),
       prisma.expense.aggregate({ _sum: { amount: true } }),
@@ -22,11 +22,19 @@ export default async function DashboardPage() {
         orderBy: { createdAt: "desc" },
         include: { user: { select: { name: true } } },
       }),
+      prisma.debt.findMany({
+        where: { status: "ACTIVE" },
+        include: { repayments: { select: { amount: true } } },
+      }),
     ]);
 
   const income = totalIncome._sum.amount ?? 0;
   const expenses = totalExpenses._sum.amount ?? 0;
   const balance = income - expenses;
+  const totalDebtOutstanding = activeDebts.reduce((s: number, d) => {
+    const repaid = d.repayments.reduce((r: number, p) => r + p.amount, 0);
+    return s + Math.max(0, d.principal - repaid);
+  }, 0);
 
   const stats = [
     {
@@ -40,6 +48,12 @@ export default async function DashboardPage() {
       value: formatCurrency(expenses),
       color: "text-red-600",
       bg: "bg-red-50",
+    },
+    {
+      label: "Outstanding Debt",
+      value: formatCurrency(totalDebtOutstanding),
+      color: "text-orange-600",
+      bg: "bg-orange-50",
     },
     {
       label: "Net Balance",
@@ -65,7 +79,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
         {stats.map((s) => (
           <div
             key={s.label}
