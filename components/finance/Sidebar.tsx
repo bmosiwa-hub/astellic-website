@@ -101,10 +101,12 @@ const navItems = [
 interface SidebarProps {
   userName: string;
   userRole: string;
+  pendingApprovals?: number;
 }
 
-export default function Sidebar({ userName, userRole }: SidebarProps) {
+export default function Sidebar({ userName, userRole, pendingApprovals = 0 }: SidebarProps) {
   const pathname = usePathname();
+  const isCEO = userRole === "CEO";
 
   return (
     <aside className="w-64 bg-brand-navy text-white flex flex-col min-h-screen shrink-0">
@@ -137,6 +139,33 @@ export default function Sidebar({ userName, userRole }: SidebarProps) {
             </Link>
           );
         })}
+
+        {/* Approvals — always visible; badge only for CEO */}
+        {(() => {
+          const href = "/astelfin_26/approvals";
+          const active = pathname.startsWith(href);
+          return (
+            <Link
+              href={href}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                active
+                  ? "bg-brand-gold text-white"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              {/* check-circle icon */}
+              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="flex-1">Approvals</span>
+              {isCEO && pendingApprovals > 0 && (
+                <span className="bg-orange-400 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
+                  {pendingApprovals}
+                </span>
+              )}
+            </Link>
+          );
+        })()}
       </nav>
 
       {/* User info + sign out */}

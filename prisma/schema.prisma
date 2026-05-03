@@ -39,15 +39,17 @@ enum PaymentStatus {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  name         String
-  email        String     @unique
-  passwordHash String
-  role         Role       @default(FINANCE_MANAGER)
-  active       Boolean    @default(true)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  auditLogs    AuditLog[]
+  id               String          @id @default(cuid())
+  name             String
+  email            String          @unique
+  passwordHash     String
+  role             Role            @default(FINANCE_MANAGER)
+  active           Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  auditLogs        AuditLog[]
+  requestedChanges PendingChange[] @relation("RequestedChanges")
+  approvedChanges  PendingChange[] @relation("ApprovedChanges")
 }
 
 model Project {
@@ -217,4 +219,33 @@ model AuditLog {
   entityId  String?
   detail    String?
   createdAt DateTime @default(now())
+}
+
+enum ChangeType {
+  EDIT
+  DELETE
+}
+
+enum ChangeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model PendingChange {
+  id          String       @id @default(cuid())
+  entity      String       // "Income" | "Expense"
+  entityId    String
+  changeType  ChangeType
+  status      ChangeStatus @default(PENDING)
+  requestedBy String
+  requester   User         @relation("RequestedChanges", fields: [requestedBy], references: [id])
+  approvedBy  String?
+  approver    User?        @relation("ApprovedChanges", fields: [approvedBy], references: [id])
+  snapshot    Json         // original record at time of request
+  proposed    Json?        // new values for EDIT (null for DELETE)
+  reason      String?
+  reviewNote  String?
+  createdAt   DateTime     @default(now())
+  reviewedAt  DateTime?
 }
