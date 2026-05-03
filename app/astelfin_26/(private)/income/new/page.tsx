@@ -14,6 +14,7 @@ async function createIncome(formData: FormData) {
   if (!session?.user) redirect("/astelfin_26/login");
 
   const data = {
+    incomeType: (formData.get("incomeType") as "GRANT" | "PRIVATE_SERVICE" | "DONATION") || "GRANT",
     description: formData.get("description") as string,
     amount: parseFloat(formData.get("amount") as string),
     currency: (formData.get("currency") as string) || "MWK",
@@ -55,13 +56,28 @@ export default async function NewIncomePage() {
           <div className="grid grid-cols-2 gap-5">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Income Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="incomeType"
+                required
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              >
+                <option value="GRANT">Grant</option>
+                <option value="PRIVATE_SERVICE">Private Service</option>
+                <option value="DONATION">Donation</option>
+              </select>
+            </div>
+
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Description <span className="text-red-500">*</span>
               </label>
               <input
                 name="description"
                 required
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                placeholder="e.g. Consulting fee — Q1 deliverable"
+                placeholder="e.g. Q1 consulting fee — Health Systems project"
               />
             </div>
 

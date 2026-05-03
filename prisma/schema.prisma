@@ -6,6 +6,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum IncomeType {
+  GRANT
+  PRIVATE_SERVICE
+  DONATION
+}
+
 enum DebtStatus {
   ACTIVE
   PAID_OFF
@@ -62,18 +68,19 @@ model Project {
 }
 
 model Income {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   projectId     String?
-  project       Project? @relation(fields: [projectId], references: [id])
+  project       Project?    @relation(fields: [projectId], references: [id])
+  incomeType    IncomeType  @default(GRANT)
   description   String
   amount        Float
-  currency      String   @default("MWK")
+  currency      String      @default("MWK")
   receivedDate  DateTime
   source        String?
   invoiceNumber String?
   notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Expense {

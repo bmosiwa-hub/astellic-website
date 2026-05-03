@@ -7,16 +7,31 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
+const TYPE_LABELS: Record<string, string> = {
+  GRANT: "Grant",
+  PRIVATE_SERVICE: "Private Service",
+  DONATION: "Donation",
+};
+
+const TYPE_COLORS: Record<string, string> = {
+  GRANT: "bg-blue-100 text-blue-700",
+  PRIVATE_SERVICE: "bg-purple-100 text-purple-700",
+  DONATION: "bg-green-100 text-green-700",
+};
+
 export default async function IncomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ project?: string }>;
+  searchParams: Promise<{ project?: string; type?: string }>;
 }) {
-  const { project } = await searchParams;
+  const { project, type } = await searchParams;
 
   const [income, projects] = await Promise.all([
     prisma.income.findMany({
-      where: project ? { projectId: project } : undefined,
+      where: {
+        ...(project ? { projectId: project } : {}),
+        ...(type ? { incomeType: type as "GRANT" | "PRIVATE_SERVICE" | "DONATION" } : {}),
+      },
       orderBy: { receivedDate: "desc" },
       include: { project: { select: { name: true } } },
     }),
@@ -35,6 +50,10 @@ export default async function IncomePage({
           <h1 className="text-2xl font-bold text-brand-navy">Income</h1>
           <p className="text-gray-500 text-sm mt-1">
             Total: <span className="font-semibold text-green-600">{formatCurrency(total)}</span>
+            {" · "}
+            <Link href="/astelfin_26/income/breakdown" className="text-brand-gold hover:underline text-sm font-semibold">
+              View breakdown →
+            </Link>
           </p>
         </div>
         <Link
@@ -46,7 +65,7 @@ export default async function IncomePage({
       </div>
 
       {/* Filter */}
-      <form method="get" className="flex items-center gap-3">
+      <form method="get" className="flex items-center gap-3 flex-wrap">
         <select
           name="project"
           defaultValue={project ?? ""}
@@ -54,18 +73,23 @@ export default async function IncomePage({
         >
           <option value="">All Projects</option>
           {projects.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
+            <option key={p.id} value={p.id}>{p.name}</option>
           ))}
         </select>
-        <button
-          type="submit"
-          className="bg-brand-navy text-white px-4 py-2 rounded-lg text-sm font-medium"
+        <select
+          name="type"
+          defaultValue={type ?? ""}
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
         >
+          <option value="">All Types</option>
+          <option value="GRANT">Grant</option>
+          <option value="PRIVATE_SERVICE">Private Service</option>
+          <option value="DONATION">Donation</option>
+        </select>
+        <button type="submit" className="bg-brand-navy text-white px-4 py-2 rounded-lg text-sm font-medium">
           Filter
         </button>
-        {project && (
+        {(project || type) && (
           <Link href="/astelfin_26/income" className="text-sm text-brand-gold hover:underline">
             Clear
           </Link>
@@ -80,6 +104,7 @@ export default async function IncomePage({
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Date</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Type</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Description</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Project</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Source</th>
@@ -91,6 +116,11 @@ export default async function IncomePage({
                 <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3 text-gray-500 whitespace-nowrap">
                     {formatDate(r.receivedDate)}
+                  </td>
+                  <td className="px-5 py-3">
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TYPE_COLORS[r.incomeType]}`}>
+                      {TYPE_LABELS[r.incomeType]}
+                    </span>
                   </td>
                   <td className="px-5 py-3 font-medium text-brand-navy">{r.description}</td>
                   <td className="px-5 py-3 text-gray-500">
@@ -105,9 +135,7 @@ export default async function IncomePage({
             </tbody>
             <tfoot className="border-t-2 border-gray-200 bg-gray-50">
               <tr>
-                <td colSpan={4} className="px-5 py-3 font-bold text-brand-navy">
-                  Total
-                </td>
+                <td colSpan={5} className="px-5 py-3 font-bold text-brand-navy">Total</td>
                 <td className="px-5 py-3 text-right font-bold text-green-600">
                   {formatCurrency(total)}
                 </td>

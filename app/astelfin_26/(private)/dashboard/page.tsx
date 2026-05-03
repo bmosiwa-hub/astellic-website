@@ -42,30 +42,35 @@ export default async function DashboardPage() {
       value: formatCurrency(income),
       color: "text-green-600",
       bg: "bg-green-50",
+      href: "/astelfin_26/income/breakdown",
     },
     {
       label: "Total Expenses",
       value: formatCurrency(expenses),
       color: "text-red-600",
       bg: "bg-red-50",
+      href: null,
     },
     {
       label: "Outstanding Debt",
       value: formatCurrency(totalDebtOutstanding),
       color: "text-orange-600",
       bg: "bg-orange-50",
+      href: "/astelfin_26/debt",
     },
     {
       label: "Net Balance",
       value: formatCurrency(balance),
       color: balance >= 0 ? "text-brand-navy" : "text-red-600",
       bg: "bg-brand-light",
+      href: null,
     },
     {
       label: "Active Projects",
       value: activeProjects.toString(),
       color: "text-brand-gold",
       bg: "bg-yellow-50",
+      href: "/astelfin_26/projects",
     },
   ];
 
@@ -80,17 +85,27 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className={`${s.bg} rounded-2xl p-5 border border-gray-100`}
-          >
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
-              {s.label}
-            </p>
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-          </div>
-        ))}
+        {stats.map((s) => {
+          const card = (
+            <div
+              key={s.label}
+              className={`${s.bg} rounded-2xl p-5 border border-gray-100 ${s.href ? "hover:shadow-md transition-shadow cursor-pointer" : ""}`}
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
+                {s.label}
+              </p>
+              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+              {s.href && (
+                <p className="text-xs text-gray-400 mt-1">Click to view breakdown</p>
+              )}
+            </div>
+          );
+          return s.href ? (
+            <Link key={s.label} href={s.href}>{card}</Link>
+          ) : (
+            <div key={s.label}>{card}</div>
+          );
+        })}
       </div>
 
       {/* Quick actions */}
