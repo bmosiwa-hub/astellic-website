@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { notifySubmitterOfFMAction, notifyFMOfCEOAction } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -155,7 +156,13 @@ export async function reviewSubmission(
 
   const note = (formData.get("note") as string) || null;
 
-  await prisma.submission.findUniqueOrThrow({ where: { id: submissionId } });
+  // Fetch submission + submitter email in one query
+  const sub = await prisma.submission.findUniqueOrThrow({
+    where: { id: submissionId },
+    include: {
+      submitter: { select: { name: true, email: true } },
+    },
+  });
 
   // Determine new status
   let newStatus: "PENDING_FM" | "FM_CHANGES_REQUESTED" | "PENDING_CEO" | "CEO_CHANGES_REQUESTED" | "APPROVED" | "REJECTED";
@@ -193,6 +200,48 @@ export async function reviewSubmission(
     entityId: submissionId,
     detail: note || undefined,
   });
+
+  // ── Email notifications ──────────────────────────────────────────────────
+  const submissionLabel =
+    sub.type === "INVOICE"
+      ? `Invoice${sub.milestone ? ` — ${sub.milestone}` : ""}`
+      : `Expense Request${sub.purpose ? ` — ${sub.purpose}` : ""}`;
+
+  if (action === "CHANGES_REQUESTED" || action === "REJECTED") {
+    try {
+      if (reviewerRole === "FM") {
+        // FM acted → notify the submitter
+        await notifySubmitterOfFMAction({
+          to: sub.submitter.email,
+          submitterName: sub.submitter.name,
+          action,
+          note,
+          submissionId,
+          submissionLabel,
+        });
+      } else {
+        // CEO acted → notify all active Finance Managers
+        const fms = await prisma.user.findMany({
+          where: { role: "FINANCE_MANAGER", active: true },
+          select: { email: true },
+        });
+        if (fms.length > 0) {
+          await notifyFMOfCEOAction({
+            to: fms.map((u) => u.email),
+            submitterName: sub.submitter.name,
+            action,
+            note,
+            submissionId,
+            submissionLabel,
+          });
+        }
+      }
+    } catch (err) {
+      // Email failure must never block the review action
+      console.error("[reviewSubmission] email failed:", err);
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────
 
   revalidatePath("/astelfin_26/invoices");
   revalidatePath(`/astelfin_26/invoices/${submissionId}`);
