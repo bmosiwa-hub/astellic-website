@@ -41,22 +41,25 @@ enum PaymentStatus {
 }
 
 model User {
-  id               String             @id @default(cuid())
-  name             String
-  email            String             @unique
-  passwordHash     String
-  role             Role               @default(FINANCE_MANAGER)
-  active           Boolean            @default(true)
-  employeeId       String?            // links to Employee.id for STAFF users
-  consultantId     String?            // links to Consultant.id for CONSULTANT users
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  auditLogs        AuditLog[]
-  requestedChanges PendingChange[]    @relation("RequestedChanges")
-  approvedChanges  PendingChange[]    @relation("ApprovedChanges")
-  submissions      Submission[]       @relation("SubmittedBy")
+  id                String             @id @default(cuid())
+  name              String
+  email             String             @unique
+  passwordHash      String
+  role              Role               @default(FINANCE_MANAGER)
+  active            Boolean            @default(true)
+  employeeId        String?            // links to Employee.id for STAFF users
+  consultantId      String?            // links to Consultant.id for CONSULTANT users
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  auditLogs         AuditLog[]
+  requestedChanges  PendingChange[]    @relation("RequestedChanges")
+  approvedChanges   PendingChange[]    @relation("ApprovedChanges")
+  submissions       Submission[]       @relation("SubmittedBy")
   submissionReviews SubmissionReview[] @relation("ReviewedBy")
-  liquidations     Liquidation[]      @relation("LiquidationBy")
+  liquidations      Liquidation[]      @relation("LiquidationBy")
+  recurringExpenses RecurringExpense[]
+  accountPayables   AccountPayable[]   @relation("APCreatedBy")
+  accountReceivables AccountReceivable[] @relation("ARCreatedBy")
 }
 
 model Project {
@@ -75,6 +78,7 @@ model Project {
   expenses           Expense[]
   consultantPayments ConsultantPayment[]
   submissions        Submission[]
+  receivables        AccountReceivable[]
 }
 
 model Income {
@@ -385,4 +389,89 @@ model LiquidationDocument {
   url           String
   filename      String
   uploadedAt    DateTime    @default(now())
+}
+
+// ── Recurring Expenses & AP/AR ───────────────────────────────────
+
+enum RecurringFrequency {
+  WEEKLY
+  FORTNIGHTLY
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUAL
+  ANNUAL
+}
+
+enum PayableStatus {
+  UPCOMING
+  DUE
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ReceivableStatus {
+  EXPECTED
+  RECEIVED
+  PARTIAL
+  OVERDUE
+  CANCELLED
+}
+
+model RecurringExpense {
+  id          String             @id @default(cuid())
+  name        String
+  description String?
+  amount      Float
+  currency    String             @default("MWK")
+  category    String?
+  budgetLine  String?
+  vendor      String?
+  frequency   RecurringFrequency
+  startDate   DateTime
+  endDate     DateTime?
+  active      Boolean            @default(true)
+  createdBy   String
+  creator     User               @relation(fields: [createdBy], references: [id])
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  payables    AccountPayable[]
+}
+
+model AccountPayable {
+  id                 String            @id @default(cuid())
+  description        String
+  vendor             String?
+  amount             Float
+  currency           String            @default("MWK")
+  dueDate            DateTime
+  paidDate           DateTime?
+  status             PayableStatus     @default(UPCOMING)
+  note               String?
+  budgetLine         String?
+  reminderSent       Boolean           @default(false)
+  recurringExpenseId String?
+  recurringExpense   RecurringExpense? @relation(fields: [recurringExpenseId], references: [id])
+  createdBy          String
+  creator            User              @relation("APCreatedBy", fields: [createdBy], references: [id])
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model AccountReceivable {
+  id           String           @id @default(cuid())
+  description  String
+  payer        String?
+  amount       Float
+  currency     String           @default("MWK")
+  expectedDate DateTime
+  receivedDate DateTime?
+  status       ReceivableStatus @default(EXPECTED)
+  note         String?
+  projectId    String?
+  project      Project?         @relation(fields: [projectId], references: [id])
+  createdBy    String
+  creator      User             @relation("ARCreatedBy", fields: [createdBy], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }

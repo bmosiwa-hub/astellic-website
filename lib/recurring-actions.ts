@@ -1,0 +1,253 @@
+"use server";
+
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { auditLog } from "@/lib/audit";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import type { RecurringFrequency } from "@prisma/client";
+
+/* ── Date arithmetic ──────────────────────────────────────────────── */
+
+export function addFrequency(date: Date, frequency: RecurringFrequency): Date {
+  const d = new Date(date);
+  switch (frequency) {
+    case "WEEKLY":      d.setDate(d.getDate() + 7);          break;
+    case "FORTNIGHTLY": d.setDate(d.getDate() + 14);         break;
+    case "MONTHLY":     d.setMonth(d.getMonth() + 1);        break;
+    case "QUARTERLY":   d.setMonth(d.getMonth() + 3);        break;
+    case "SEMI_ANNUAL": d.setMonth(d.getMonth() + 6);        break;
+    case "ANNUAL":      d.setFullYear(d.getFullYear() + 1);  break;
+  }
+  return d;
+}
+
+/** Generate all due dates from startDate up to endDate or 24 occurrences */
+function generateDueDates(
+  startDate: Date,
+  frequency: RecurringFrequency,
+  endDate: Date | null,
+  maxOccurrences = 24
+): Date[] {
+  const dates: Date[] = [];
+  let current = new Date(startDate);
+  const cutoff = endDate ?? addYears(startDate, 2);
+
+  while (current <= cutoff && dates.length < maxOccurrences) {
+    dates.push(new Date(current));
+    current = addFrequency(current, frequency);
+  }
+  return dates;
+}
+
+function addYears(date: Date, years: number): Date {
+  const d = new Date(date);
+  d.setFullYear(d.getFullYear() + years);
+  return d;
+}
+
+/* ── Server actions ───────────────────────────────────────────────── */
+
+/** CEO creates a new recurring expense and pre-generates AccountPayable entries */
+export async function createRecurringExpense(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const name        = formData.get("name") as string;
+  const description = (formData.get("description") as string) || null;
+  const amount      = parseFloat(formData.get("amount") as string);
+  const currency    = (formData.get("currency") as string) || "MWK";
+  const category    = (formData.get("category") as string) || null;
+  const budgetLine  = (formData.get("budgetLine") as string) || null;
+  const vendor      = (formData.get("vendor") as string) || null;
+  const frequency   = formData.get("frequency") as RecurringFrequency;
+  const startDate   = new Date(formData.get("startDate") as string);
+  const endDateRaw  = formData.get("endDate") as string;
+  const endDate     = endDateRaw ? new Date(endDateRaw) : null;
+
+  const rec = await prisma.recurringExpense.create({
+    data: {
+      name, description, amount, currency, category, budgetLine, vendor,
+      frequency, startDate, endDate, createdBy: session.user.id!,
+    },
+  });
+
+  // Generate AccountPayable entries
+  const dueDates = generateDueDates(startDate, frequency, endDate);
+  const now = new Date();
+
+  await prisma.accountPayable.createMany({
+    data: dueDates.map((dueDate) => ({
+      description: name,
+      vendor: vendor ?? null,
+      amount,
+      currency,
+      budgetLine: budgetLine ?? null,
+      dueDate,
+      status: dueDate < now ? "OVERDUE" : "UPCOMING",
+      recurringExpenseId: rec.id,
+      createdBy: session.user.id!,
+    })),
+  });
+
+  await auditLog({
+    userId: session.user.id!,
+    action: "CREATE",
+    entity: "RecurringExpense",
+    entityId: rec.id,
+    detail: `${name} — ${currency} ${amount} ${frequency}`,
+  });
+
+  revalidatePath("/astelfin_26/recurring");
+  revalidatePath("/astelfin_26/payables");
+  redirect("/astelfin_26/recurring");
+}
+
+/** Deactivate / reactivate a recurring expense */
+export async function toggleRecurringExpense(id: string, active: boolean): Promise<void> {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  await prisma.recurringExpense.update({ where: { id }, data: { active } });
+
+  // Cancel upcoming payables if deactivating
+  if (!active) {
+    await prisma.accountPayable.updateMany({
+      where: { recurringExpenseId: id, status: "UPCOMING" },
+      data: { status: "CANCELLED" },
+    });
+  }
+
+  revalidatePath("/astelfin_26/recurring");
+  revalidatePath("/astelfin_26/payables");
+}
+
+/* ── Account Payable actions ──────────────────────────────────────── */
+
+/** FM / CEO creates a one-off manual payable */
+export async function createAccountPayable(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  const description = formData.get("description") as string;
+  const vendor      = (formData.get("vendor") as string) || null;
+  const amount      = parseFloat(formData.get("amount") as string);
+  const currency    = (formData.get("currency") as string) || "MWK";
+  const dueDate     = new Date(formData.get("dueDate") as string);
+  const budgetLine  = (formData.get("budgetLine") as string) || null;
+  const note        = (formData.get("note") as string) || null;
+
+  const ap = await prisma.accountPayable.create({
+    data: {
+      description, vendor, amount, currency, dueDate, budgetLine, note,
+      status: dueDate < new Date() ? "OVERDUE" : "UPCOMING",
+      createdBy: session.user.id!,
+    },
+  });
+
+  await auditLog({
+    userId: session.user.id!,
+    action: "CREATE",
+    entity: "AccountPayable",
+    entityId: ap.id,
+    detail: `${description} — due ${dueDate.toISOString().slice(0, 10)}`,
+  });
+
+  revalidatePath("/astelfin_26/payables");
+  redirect("/astelfin_26/payables");
+}
+
+/** FM / CEO marks a payable as paid */
+export async function markPayablePaid(id: string, formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  const note     = (formData.get("note") as string) || null;
+  const paidDate = new Date();
+
+  await prisma.accountPayable.update({
+    where: { id },
+    data: { status: "PAID", paidDate, note: note ?? undefined },
+  });
+
+  await auditLog({
+    userId: session.user.id!,
+    action: "PAID",
+    entity: "AccountPayable",
+    entityId: id,
+    detail: note || "Marked as paid",
+  });
+
+  revalidatePath("/astelfin_26/payables");
+}
+
+/* ── Account Receivable actions ───────────────────────────────────── */
+
+/** FM / CEO creates a receivable */
+export async function createAccountReceivable(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  const description  = formData.get("description") as string;
+  const payer        = (formData.get("payer") as string) || null;
+  const amount       = parseFloat(formData.get("amount") as string);
+  const currency     = (formData.get("currency") as string) || "MWK";
+  const expectedDate = new Date(formData.get("expectedDate") as string);
+  const projectId    = (formData.get("projectId") as string) || null;
+  const note         = (formData.get("note") as string) || null;
+
+  const ar = await prisma.accountReceivable.create({
+    data: {
+      description, payer, amount, currency, expectedDate, projectId, note,
+      status: expectedDate < new Date() ? "OVERDUE" : "EXPECTED",
+      createdBy: session.user.id!,
+    },
+  });
+
+  await auditLog({
+    userId: session.user.id!,
+    action: "CREATE",
+    entity: "AccountReceivable",
+    entityId: ar.id,
+    detail: `${description} — ${currency} ${amount}`,
+  });
+
+  revalidatePath("/astelfin_26/receivables");
+  redirect("/astelfin_26/receivables");
+}
+
+/** FM / CEO marks a receivable as received (full or partial) */
+export async function markReceivableReceived(id: string, formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  const partial = formData.get("partial") === "true";
+  const note    = (formData.get("note") as string) || null;
+
+  await prisma.accountReceivable.update({
+    where: { id },
+    data: {
+      status: partial ? "PARTIAL" : "RECEIVED",
+      receivedDate: new Date(),
+      note: note ?? undefined,
+    },
+  });
+
+  await auditLog({
+    userId: session.user.id!,
+    action: partial ? "PARTIAL_RECEIVED" : "RECEIVED",
+    entity: "AccountReceivable",
+    entityId: id,
+    detail: note || undefined,
+  });
+
+  revalidatePath("/astelfin_26/receivables");
+}

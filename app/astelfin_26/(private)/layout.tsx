@@ -33,24 +33,32 @@ export default async function PrivateFinanceLayout({
   }
 
   // Fetch sidebar badge counts (skip expensive counts for Staff/Consultant)
-  const [pendingCount, pendingInvoices, pendingLiquidations] = isStaffOrConsultant
-    ? [0, 0, 0]
-    : await Promise.all([
-        prisma.pendingChange.count({ where: { status: "PENDING" } }),
-        prisma.submission.count({
-          where: {
-            status: {
-              in:
-                role === "FINANCE_MANAGER"
-                  ? ["PENDING_FM"]
-                  : ["PENDING_CEO", "APPROVED"],
+  const now = new Date();
+  const [pendingCount, pendingInvoices, pendingLiquidations, overduePayables, overdueReceivables] =
+    isStaffOrConsultant
+      ? [0, 0, 0, 0, 0]
+      : await Promise.all([
+          prisma.pendingChange.count({ where: { status: "PENDING" } }),
+          prisma.submission.count({
+            where: {
+              status: {
+                in:
+                  role === "FINANCE_MANAGER"
+                    ? ["PENDING_FM"]
+                    : ["PENDING_CEO", "APPROVED"],
+              },
             },
-          },
-        }),
-        prisma.liquidation.count({
-          where: { status: { in: ["PENDING_FM", "CHANGES_REQUESTED"] } },
-        }),
-      ]);
+          }),
+          prisma.liquidation.count({
+            where: { status: { in: ["PENDING_FM", "CHANGES_REQUESTED"] } },
+          }),
+          prisma.accountPayable.count({
+            where: { dueDate: { lt: now }, status: { in: ["UPCOMING", "DUE", "OVERDUE"] } },
+          }),
+          prisma.accountReceivable.count({
+            where: { expectedDate: { lt: now }, status: { in: ["EXPECTED", "PARTIAL"] } },
+          }),
+        ]);
 
   return (
     <>
@@ -61,6 +69,8 @@ export default async function PrivateFinanceLayout({
         pendingApprovals={pendingCount}
         pendingInvoices={pendingInvoices}
         pendingLiquidations={pendingLiquidations}
+        overduePayables={overduePayables}
+        overdueReceivables={overdueReceivables}
       />
       <div className="flex-1 flex flex-col min-w-0">
         <main className="flex-1 p-8 overflow-y-auto">{children}</main>

@@ -150,3 +150,45 @@ export async function notifyFMOfCEOAction({
 
   await sendMail({ to, subject, html: layout(body) });
 }
+
+/**
+ * Remind FM(s) that a recurring payable is due in 7 days.
+ */
+export async function notifyFMOfUpcomingPayable({
+  to,
+  payableName,
+  amount,
+  currency,
+  dueDate,
+  vendor,
+}: {
+  to: string | string[];
+  payableName: string;
+  amount: number;
+  currency: string;
+  dueDate: Date;
+  vendor?: string | null;
+}): Promise<void> {
+  const dueDateStr = dueDate.toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+  const amountStr = new Intl.NumberFormat("en-MW", {
+    style: "currency", currency, minimumFractionDigits: 2,
+  }).format(amount).replace("MWK", "MWK ");
+
+  const subject = `Upcoming payment due in 7 days — ${payableName}`;
+
+  const body = `
+    <h2>Upcoming Payment Reminder</h2>
+    <p>The following recurring payment is due in <strong>7 days</strong>. Please initiate the payment request.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
+      <tr><td style="padding:8px 0;color:#6b7280;width:40%">Payment</td><td style="padding:8px 0;font-weight:bold">${payableName}</td></tr>
+      ${vendor ? `<tr><td style="padding:8px 0;color:#6b7280">Vendor</td><td style="padding:8px 0">${vendor}</td></tr>` : ""}
+      <tr><td style="padding:8px 0;color:#6b7280">Amount</td><td style="padding:8px 0;font-weight:bold;color:#0a1628">${amountStr}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280">Due Date</td><td style="padding:8px 0">${dueDateStr}</td></tr>
+    </table>
+    <a class="btn" href="${BASE_URL}/astelfin_26/payables">View Accounts Payable</a>
+  `;
+
+  await sendMail({ to, subject, html: layout(body) });
+}
