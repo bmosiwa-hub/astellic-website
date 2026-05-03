@@ -9,9 +9,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-// Routes that Staff / Consultant are allowed to visit
-const MY_ROUTES_PREFIX = "/astelfin_26/my/";
-const ALLOWED_STAFF_ROUTES = ["/astelfin_26/my/"];
+// Routes each role is allowed to visit (prefix match)
+const STAFF_ALLOWED    = ["/astelfin_26/my/"];
+const PM_ALLOWED       = ["/astelfin_26/my/", "/astelfin_26/projects", "/astelfin_26/deliverables"];
 
 export default async function PrivateFinanceLayout({
   children,
@@ -23,19 +23,29 @@ export default async function PrivateFinanceLayout({
 
   const role = session.user.role;
   const isStaffOrConsultant = role === "STAFF" || role === "CONSULTANT";
+  const isPM = role === "PROJECT_MANAGER";
 
-  // Redirect Staff / Consultant away from management pages
+  // Redirect restricted roles away from pages they cannot access
   if (isStaffOrConsultant) {
     const headersList = await headers();
     const pathname = headersList.get("x-pathname") ?? "";
-    const isAllowed = ALLOWED_STAFF_ROUTES.some((p) => pathname.startsWith(p));
-    if (!isAllowed) redirect("/astelfin_26/my/submissions");
+    const allowed = STAFF_ALLOWED.some((p) => pathname.startsWith(p));
+    if (!allowed) redirect("/astelfin_26/my/submissions");
   }
 
-  // Fetch sidebar badge counts (skip expensive counts for Staff/Consultant)
+  if (isPM) {
+    const headersList = await headers();
+    const pathname = headersList.get("x-pathname") ?? "";
+    const allowed = PM_ALLOWED.some((p) => pathname.startsWith(p));
+    if (!allowed) redirect("/astelfin_26/projects");
+  }
+
+  const isLimitedRole = isStaffOrConsultant || isPM;
+
+  // Fetch sidebar badge counts (skip expensive counts for limited roles)
   const now = new Date();
   const [pendingCount, pendingInvoices, pendingLiquidations, overduePayables, overdueReceivables] =
-    isStaffOrConsultant
+    isLimitedRole
       ? [0, 0, 0, 0, 0]
       : await Promise.all([
           prisma.pendingChange.count({ where: { status: "PENDING" } }),

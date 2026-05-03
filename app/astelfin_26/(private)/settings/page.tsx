@@ -6,13 +6,14 @@ import bcrypt from "bcryptjs";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Settings | Astellic Finance",
+  title: "Settings | Astelfin",
   robots: { index: false, follow: false },
 };
 
 const ROLE_LABELS: Record<string, string> = {
   CEO:              "Executive Director",
   FINANCE_MANAGER:  "Finance Manager",
+  PROJECT_MANAGER:  "Project Manager",
   STAFF:            "Staff",
   CONSULTANT:       "Consultant",
 };
@@ -20,6 +21,7 @@ const ROLE_LABELS: Record<string, string> = {
 const ROLE_COLORS: Record<string, string> = {
   CEO:              "bg-brand-gold/20 text-brand-navy",
   FINANCE_MANAGER:  "bg-blue-100 text-blue-800",
+  PROJECT_MANAGER:  "bg-green-100 text-green-800",
   STAFF:            "bg-purple-100 text-purple-800",
   CONSULTANT:       "bg-teal-100 text-teal-800",
 };
@@ -34,7 +36,7 @@ async function createUser(formData: FormData) {
   const name         = formData.get("name") as string;
   const email        = formData.get("email") as string;
   const password     = formData.get("password") as string;
-  const role         = (formData.get("role") as "CEO" | "FINANCE_MANAGER" | "STAFF" | "CONSULTANT") || "STAFF";
+  const role         = (formData.get("role") as "CEO" | "FINANCE_MANAGER" | "PROJECT_MANAGER" | "STAFF" | "CONSULTANT") || "STAFF";
   const employeeId   = (formData.get("employeeId") as string) || null;
   const consultantId = (formData.get("consultantId") as string) || null;
 
@@ -62,7 +64,7 @@ async function updateUser(formData: FormData) {
   const userId       = formData.get("userId") as string;
   const name         = formData.get("name") as string;
   const email        = formData.get("email") as string;
-  const role         = formData.get("role") as "CEO" | "FINANCE_MANAGER" | "STAFF" | "CONSULTANT";
+  const role         = formData.get("role") as "CEO" | "FINANCE_MANAGER" | "PROJECT_MANAGER" | "STAFF" | "CONSULTANT";
   const employeeId   = (formData.get("employeeId") as string) || null;
   const consultantId = (formData.get("consultantId") as string) || null;
 
@@ -244,6 +246,7 @@ export default async function SettingsPage({
                     className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold">
                     <option value="CEO">Executive Director (CEO)</option>
                     <option value="FINANCE_MANAGER">Finance Manager</option>
+                    <option value="PROJECT_MANAGER">Project Manager</option>
                     <option value="STAFF">Staff</option>
                     <option value="CONSULTANT">Consultant</option>
                   </select>
@@ -323,6 +326,7 @@ export default async function SettingsPage({
                   className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold">
                   <option value="STAFF">Staff</option>
                   <option value="CONSULTANT">Consultant</option>
+                  <option value="PROJECT_MANAGER">Project Manager</option>
                   <option value="FINANCE_MANAGER">Finance Manager</option>
                   <option value="CEO">Executive Director (CEO)</option>
                 </select>

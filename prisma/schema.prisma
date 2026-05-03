@@ -22,8 +22,28 @@ enum DebtStatus {
 enum Role {
   CEO
   FINANCE_MANAGER
+  PROJECT_MANAGER
   STAFF
   CONSULTANT
+}
+
+enum ThematicArea {
+  ECONOMIC_DEVELOPMENT
+  GOVERNANCE
+  SOCIAL_DEVELOPMENT
+  HEALTH
+}
+
+enum ProjectType {
+  PRIVATE
+  PUBLIC
+}
+
+enum MilestoneStatus {
+  PENDING
+  COMPLETION_REQUESTED
+  APPROVED
+  REJECTED
 }
 
 enum ProjectStatus {
@@ -51,15 +71,17 @@ model User {
   consultantId      String?            // links to Consultant.id for CONSULTANT users
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
-  auditLogs         AuditLog[]
-  requestedChanges  PendingChange[]    @relation("RequestedChanges")
-  approvedChanges   PendingChange[]    @relation("ApprovedChanges")
-  submissions       Submission[]       @relation("SubmittedBy")
-  submissionReviews SubmissionReview[] @relation("ReviewedBy")
-  liquidations      Liquidation[]      @relation("LiquidationBy")
-  recurringExpenses RecurringExpense[]
-  accountPayables   AccountPayable[]   @relation("APCreatedBy")
-  accountReceivables AccountReceivable[] @relation("ARCreatedBy")
+  auditLogs           AuditLog[]
+  requestedChanges    PendingChange[]     @relation("RequestedChanges")
+  approvedChanges     PendingChange[]     @relation("ApprovedChanges")
+  submissions         Submission[]        @relation("SubmittedBy")
+  submissionReviews   SubmissionReview[]  @relation("ReviewedBy")
+  liquidations        Liquidation[]       @relation("LiquidationBy")
+  recurringExpenses   RecurringExpense[]
+  accountPayables     AccountPayable[]    @relation("APCreatedBy")
+  accountReceivables  AccountReceivable[] @relation("ARCreatedBy")
+  milestoneCompletions Milestone[]        @relation("MilestoneCompleter")
+  milestoneApprovals  Milestone[]         @relation("MilestoneApprover")
 }
 
 model Project {
@@ -68,6 +90,9 @@ model Project {
   client             String
   description        String?
   status             ProjectStatus       @default(ACTIVE)
+  thematicArea       ThematicArea?
+  projectType        ProjectType?
+  projectLead        String?
   startDate          DateTime
   endDate            DateTime?
   budget             Float?
@@ -79,6 +104,8 @@ model Project {
   consultantPayments ConsultantPayment[]
   submissions        Submission[]
   receivables        AccountReceivable[]
+  members            ProjectMember[]
+  milestones         Milestone[]
 }
 
 model Income {
@@ -159,6 +186,7 @@ model Employee {
   currency    String    @default("MWK")
   taxPin      String?
   nssf        String?
+  pensionRate Float     @default(5)   // employee pension % of gross
   startDate   DateTime
   endDate     DateTime?
   active      Boolean   @default(true)
@@ -470,8 +498,45 @@ model AccountReceivable {
   note         String?
   projectId    String?
   project      Project?         @relation(fields: [projectId], references: [id])
+  milestoneId  String?          @unique
+  milestone    Milestone?       @relation(fields: [milestoneId], references: [id])
   createdBy    String
   creator      User             @relation("ARCreatedBy", fields: [createdBy], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+}
+
+// ── Project Members & Milestones ─────────────────────────────────
+
+model ProjectMember {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  role      String
+  createdAt DateTime @default(now())
+}
+
+model Milestone {
+  id              String          @id @default(cuid())
+  projectId       String
+  project         Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  deliveryDate    DateTime
+  paymentExpected Float?
+  currency        String          @default("MWK")
+  order           Int             @default(0)
+  status          MilestoneStatus @default(PENDING)
+  completedBy     String?
+  completedAt     DateTime?
+  approvedBy      String?
+  approvedAt      DateTime?
+  rejectionNote   String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  completer       User?           @relation("MilestoneCompleter", fields: [completedBy], references: [id])
+  approver        User?           @relation("MilestoneApprover", fields: [approvedBy], references: [id])
+  receivable      AccountReceivable?
 }
