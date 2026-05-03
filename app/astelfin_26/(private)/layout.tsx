@@ -15,16 +15,14 @@ export default async function PrivateFinanceLayout({
   if (!session?.user) redirect("/astelfin_26/login");
 
   return (
-    <html lang="en">
-      <body className="flex min-h-screen bg-gray-50">
-        <Sidebar
-          userName={session.user.name ?? "User"}
-          userRole={session.user.role}
-        />
-        <div className="flex-1 flex flex-col min-w-0">
-          <main className="flex-1 p-8 overflow-y-auto">{children}</main>
-        </div>
-      </body>
-    </html>
+    <>
+      <Sidebar
+        userName={session.user.name ?? "User"}
+        userRole={session.user.role}
+      />
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 p-8 overflow-y-auto">{children}</main>
+      </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: {
@@ -21,18 +22,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "";
+  const isFinance = pathname.startsWith("/astelfin_26");
+
   return (
     <html lang="en">
-      <body className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CookieBanner />
+      <body className={isFinance ? "flex min-h-screen bg-gray-50" : "flex flex-col min-h-screen"}>
+        {!isFinance && <Header />}
+        {isFinance ? children : <main className="flex-1">{children}</main>}
+        {!isFinance && <Footer />}
+        {!isFinance && <CookieBanner />}
       </body>
     </html>
   );
