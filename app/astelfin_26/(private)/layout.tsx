@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/finance/Sidebar";
+import InactivityGuard from "@/components/finance/InactivityGuard";
 
 export const metadata = {
   robots: { index: false, follow: false },
@@ -16,6 +17,7 @@ export default async function PrivateFinanceLayout({
 
   return (
     <>
+      <InactivityGuard />
       <Sidebar
         userName={session.user.name ?? "User"}
         userRole={session.user.role}
