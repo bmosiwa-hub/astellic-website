@@ -39,7 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/finance/login",
+    signIn: "/astelfin_26/login",
   },
   callbacks: {
     async jwt({ token, user }) {

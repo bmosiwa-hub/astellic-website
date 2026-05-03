@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
-  // Protect all /finance routes except /finance/login
-  if (pathname.startsWith("/finance") && pathname !== "/finance/login") {
+  // Protect all /astelfin_26 routes except /astelfin_26/login
+  if (pathname.startsWith("/astelfin_26") && pathname !== "/astelfin_26/login") {
     if (!req.auth) {
-      const loginUrl = new URL("/finance/login", req.url);
+      const loginUrl = new URL("/astelfin_26/login", req.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -17,5 +17,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/finance/:path*"],
+  matcher: ["/astelfin_26/:path*"],
 };
