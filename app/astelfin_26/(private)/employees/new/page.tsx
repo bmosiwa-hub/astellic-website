@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
-import EmployeeForm from "@/components/finance/EmployeeForm";
+import EmployeeForm, { type StoredRate } from "@/components/finance/EmployeeForm";
 
 export const metadata = {
   title: "Add Employee | Astelfin",
@@ -30,24 +30,46 @@ async function createEmployee(formData: FormData) {
 
   const record = await prisma.employee.create({ data });
   await auditLog({
-    userId: session.user.id,
-    action: "CREATE",
-    entity: "Employee",
+    userId:   session.user.id,
+    action:   "CREATE",
+    entity:   "Employee",
     entityId: record.id,
-    detail: `${data.name} — ${data.position}`,
+    detail:   `${data.name} — ${data.position}`,
   });
 
   redirect("/astelfin_26/employees");
 }
 
-export default function NewEmployeePage() {
+export default async function NewEmployeePage() {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+
+  // Fetch stored exchange rates to pass to the form for live conversion
+  const rawRates = await prisma.exchangeRate.findMany({
+    where:   { currency: { not: "MWK" } },
+    orderBy: { currency: "asc" },
+    select:  { currency: true, middleRate: true, effectiveDate: true, source: true },
+  });
+
+  const rates: StoredRate[] = rawRates.map((r) => ({
+    currency:         r.currency,
+    middleRate:       r.middleRate,
+    effectiveDateStr: new Date(r.effectiveDate).toLocaleDateString("en-GB", {
+      day: "2-digit", month: "short", year: "numeric",
+    }),
+    source: r.source,
+  }));
+
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-navy">Add Employee</h1>
-        <p className="text-gray-500 text-sm mt-1">Register a new employee and calculate their net salary.</p>
+        <p className="text-gray-500 text-sm mt-1">
+          Register a new employee and calculate their net salary. For foreign-currency salaries,
+          taxes are computed on the MWK equivalent using the RBM middle rate.
+        </p>
       </div>
-      <EmployeeForm action={createEmployee} />
+      <EmployeeForm action={createEmployee} rates={rates} />
     </div>
   );
 }

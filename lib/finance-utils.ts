@@ -46,26 +46,69 @@ export function calculatePAYE(monthlyGross: number): number {
 
 /**
  * Calculate net pay after PAYE, NSSF and optional pension deductions.
+ *
+ * When the employee's salary is quoted in a foreign currency, pass `middleRate`
+ * (MWK per 1 unit of that currency, e.g. 1734 for USD).  The function:
+ *   1. Converts grossSalary → MWK equivalent
+ *   2. Calculates PAYE, NSSF, pension on the MWK figure
+ *   3. Converts deductions and net back to the original currency
+ *
+ * If `middleRate` is omitted or 1, the salary is assumed to be in MWK and no
+ * conversion step is applied.
+ *
+ * @param grossSalary  Gross monthly salary in the employee's quoted currency
+ * @param nssfRate     NSSF employee contribution rate (default 3 %)
  * @param pensionRate  Employee pension contribution as a percentage (default 5 %)
- * @param nssfRate     NSSF contribution rate (default 3 %)
+ * @param middleRate   MWK per 1 unit of the salary currency (default 1 = MWK)
  */
 export function calculateNetPay(
   grossSalary: number,
   nssfRate = 0.03,
-  pensionRate = 5
+  pensionRate = 5,
+  middleRate = 1
 ): {
+  // Amounts in the employee's quoted currency
   paye: number;
   nssfEmployee: number;
   nssfEmployer: number;
   pension: number;
   netPay: number;
+  // MWK equivalents (always populated; same as above when middleRate === 1)
+  grossMWK: number;
+  payeMWK: number;
+  nssfEmployeeMWK: number;
+  nssfEmployerMWK: number;
+  pensionMWK: number;
+  netPayMWK: number;
 } {
-  const paye         = calculatePAYE(grossSalary);
-  const nssfEmployee = Math.round(grossSalary * nssfRate * 100) / 100;
-  const nssfEmployer = Math.round(grossSalary * nssfRate * 100) / 100;
-  const pension      = Math.round(grossSalary * (pensionRate / 100) * 100) / 100;
-  const netPay       = grossSalary - paye - nssfEmployee - pension;
-  return { paye, nssfEmployee, nssfEmployer, pension, netPay };
+  const rate = middleRate > 0 ? middleRate : 1;
+
+  // Step 1: convert to MWK
+  const grossMWK = Math.round(grossSalary * rate * 100) / 100;
+
+  // Step 2: compute deductions on MWK equivalent
+  const payeMWK         = calculatePAYE(grossMWK);
+  const nssfEmployeeMWK = Math.round(grossMWK * nssfRate * 100) / 100;
+  const nssfEmployerMWK = Math.round(grossMWK * nssfRate * 100) / 100;
+  const pensionMWK      = Math.round(grossMWK * (pensionRate / 100) * 100) / 100;
+  const netPayMWK       = grossMWK - payeMWK - nssfEmployeeMWK - pensionMWK;
+
+  // Step 3: convert back to original currency
+  const r = (mwk: number) => Math.round((mwk / rate) * 100) / 100;
+
+  return {
+    paye:           r(payeMWK),
+    nssfEmployee:   r(nssfEmployeeMWK),
+    nssfEmployer:   r(nssfEmployerMWK),
+    pension:        r(pensionMWK),
+    netPay:         r(netPayMWK),
+    grossMWK,
+    payeMWK,
+    nssfEmployeeMWK,
+    nssfEmployerMWK,
+    pensionMWK,
+    netPayMWK,
+  };
 }
 
 /**
