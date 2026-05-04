@@ -187,8 +187,9 @@ model Employee {
   currency    String    @default("MWK")
   taxPin      String?
   nssf        String?
-  pensionRate Float     @default(5)   // employee pension % of gross
-  startDate   DateTime
+  pensionRate        Float     @default(5)   // employee pension % of gross
+  salaryExchangeRate Float?                  // MWK per 1 unit of currency (null when MWK)
+  startDate          DateTime
   endDate     DateTime?
   active      Boolean   @default(true)
   notes       String?

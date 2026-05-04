@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
-import { buildRateMap } from "@/lib/currency-utils";
 import Link from "next/link";
 
 export const metadata = {
@@ -9,17 +8,16 @@ export const metadata = {
 };
 
 export default async function EmployeesPage() {
-  const [employees, exchangeRates] = await Promise.all([
-    prisma.employee.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
-    prisma.exchangeRate.findMany({ select: { currency: true, middleRate: true } }),
-  ]);
+  const employees = await prisma.employee.findMany({
+    where:   { active: true },
+    orderBy: { name: "asc" },
+  });
 
-  const rateMap = buildRateMap(exchangeRates);
-
-  function getNetInfo(e: (typeof employees)[number]) {
-    const middleRate = e.currency === "MWK" ? 1 : (rateMap[e.currency] ?? 0);
-    if (middleRate === 0) return null; // no rate available
-    return calculateNetPay(e.grossSalary, 0.03, e.pensionRate, middleRate);
+  function getNet(e: (typeof employees)[number]) {
+    const isMWK = e.currency === "MWK";
+    const rate  = isMWK ? 1 : (e.salaryExchangeRate ?? 0);
+    if (rate === 0) return null;
+    return calculateNetPay(e.grossSalary, 0.03, e.pensionRate, rate);
   }
 
   return (
@@ -41,19 +39,22 @@ export default async function EmployeesPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Name</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Position</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Department</th>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Name</th>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Position</th>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Department</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross Salary</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross (MWK)</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">PAYE (MWK)</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Salary</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Start Date</th>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Since</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {employees.map((e) => {
-                const net = getNetInfo(e);
-                const isForeign = e.currency !== "MWK";
+                const net     = getNet(e);
+                const isMWK   = e.currency === "MWK";
+                const noRate  = !isMWK && !e.salaryExchangeRate;
+
                 return (
                   <tr key={e.id} className="hover:bg-gray-50">
                     <td className="px-5 py-3">
@@ -62,19 +63,33 @@ export default async function EmployeesPage() {
                     </td>
                     <td className="px-5 py-3 text-gray-600">{e.position}</td>
                     <td className="px-5 py-3 text-gray-500 text-xs">{e.department ?? "—"}</td>
+
+                    {/* Gross (original currency) */}
                     <td className="px-5 py-3 text-right">
                       <p className="font-semibold text-brand-navy">
                         {formatCurrency(e.grossSalary, e.currency)}
                       </p>
-                      {isForeign && net && (
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          ≈ {formatCurrency(net.grossMWK, "MWK")}
+                      {!isMWK && e.salaryExchangeRate && (
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          @ {e.salaryExchangeRate.toLocaleString("en-MW", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                         </p>
                       )}
-                      {isForeign && !net && (
-                        <p className="text-xs text-amber-500 mt-0.5">no rate</p>
+                    </td>
+
+                    {/* Gross MWK equivalent */}
+                    <td className="px-5 py-3 text-right">
+                      {net ? (
+                        <p className="text-sm text-gray-700">
+                          {formatCurrency(net.grossMWK, "MWK")}
+                        </p>
+                      ) : noRate ? (
+                        <span className="text-xs text-amber-500">no rate</span>
+                      ) : (
+                        <span className="text-gray-400">—</span>
                       )}
                     </td>
+
+                    {/* PAYE in MWK */}
                     <td className="px-5 py-3 text-right">
                       {net ? (
                         <p className="text-sm font-semibold text-gray-700">
@@ -84,13 +99,15 @@ export default async function EmployeesPage() {
                         <span className="text-gray-300">—</span>
                       )}
                     </td>
+
+                    {/* Net salary */}
                     <td className="px-5 py-3 text-right">
                       {net ? (
                         <>
                           <p className="font-semibold text-green-700">
                             {formatCurrency(net.netPay, e.currency)}
                           </p>
-                          {isForeign && (
+                          {!isMWK && (
                             <p className="text-xs text-gray-400 mt-0.5">
                               ≈ {formatCurrency(net.netPayMWK, "MWK")}
                             </p>
@@ -100,7 +117,10 @@ export default async function EmployeesPage() {
                         <span className="text-gray-300">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-gray-500 text-xs">{formatDate(e.startDate)}</td>
+
+                    <td className="px-5 py-3 text-gray-500 text-xs">
+                      {formatDate(e.startDate)}
+                    </td>
                   </tr>
                 );
               })}
