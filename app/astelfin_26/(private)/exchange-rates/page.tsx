@@ -1,0 +1,306 @@
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { updateRateManually, refreshRatesFromRBM } from "@/lib/exchange-rate-actions";
+import Link from "next/link";
+
+export const metadata = {
+  title: "Exchange Rates | Astelfin",
+  robots: { index: false, follow: false },
+};
+
+// Currencies the system actively uses — highlighted at the top
+const PRIMARY_CURRENCIES = ["USD", "GBP", "EUR", "ZAR", "MWK"];
+
+function fmt4(n: number) {
+  return n.toLocaleString("en-MW", { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+}
+
+function fmtDate(d: Date) {
+  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+export default async function ExchangeRatesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ edit?: string; error?: string }>;
+}) {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  const { edit, error } = await searchParams;
+
+  const rates = await prisma.exchangeRate.findMany({
+    orderBy: { currency: "asc" },
+    include: { updatedBy: { select: { name: true } } },
+  });
+
+  type Rate = (typeof rates)[number];
+
+  const primaryRates: Rate[] = rates.filter((r) => PRIMARY_CURRENCIES.includes(r.currency));
+  const otherRates: Rate[]   = rates.filter((r) => !PRIMARY_CURRENCIES.includes(r.currency));
+
+  // When was the last RBM pull?
+  const latestRBM = rates
+    .filter((r) => r.source === "RBM")
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
+
+  const editingCurrency = edit ? rates.find((r) => r.currency === edit) : null;
+
+  return (
+    <div className="space-y-6 max-w-5xl">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-navy">Exchange Rates</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Middle rates from the Reserve Bank of Malawi (RBM). Used for currency conversion across the system.
+          </p>
+          {latestRBM && (
+            <p className="text-xs text-gray-400 mt-1">
+              Last RBM pull: <strong>{fmtDate(latestRBM.updatedAt)}</strong>
+              {" · "}Effective date: <strong>{fmtDate(latestRBM.effectiveDate)}</strong>
+            </p>
+          )}
+          {!latestRBM && rates.length === 0 && (
+            <p className="text-xs text-amber-600 mt-1 font-medium">
+              ⚠ No rates loaded yet. Click &ldquo;Refresh from RBM&rdquo; to fetch current rates.
+            </p>
+          )}
+        </div>
+
+        {/* Refresh from RBM */}
+        <form action={refreshRatesFromRBM}>
+          <button
+            type="submit"
+            className="flex items-center gap-2 bg-brand-navy hover:bg-brand-navy/90 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh from RBM
+          </button>
+        </form>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Error: {error === "invalid" ? "Invalid currency or rate values." : error}
+        </div>
+      )}
+
+      {/* Manual override form */}
+      {editingCurrency ? (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+          <h2 className="font-bold text-brand-navy mb-4">
+            Edit Rate: {editingCurrency.currency}
+          </h2>
+          <form action={updateRateManually} className="grid grid-cols-3 gap-4">
+            <input type="hidden" name="currency" value={editingCurrency.currency} />
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Buy Rate (MWK per 1 {editingCurrency.currency})
+              </label>
+              <input
+                name="buyRate"
+                type="number"
+                step="0.0001"
+                min="0"
+                defaultValue={editingCurrency.buyRate}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Middle Rate <span className="text-red-500">*</span>
+              </label>
+              <input
+                name="middleRate"
+                type="number"
+                step="0.0001"
+                min="0.0001"
+                required
+                defaultValue={editingCurrency.middleRate}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Sell Rate (MWK per 1 {editingCurrency.currency})
+              </label>
+              <input
+                name="sellRate"
+                type="number"
+                step="0.0001"
+                min="0"
+                defaultValue={editingCurrency.sellRate}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+              />
+            </div>
+            <div className="col-span-3 flex gap-3">
+              <button type="submit"
+                className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold">
+                Save Manual Rate
+              </button>
+              <Link href="/astelfin_26/exchange-rates"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg text-sm font-semibold">
+                Cancel
+              </Link>
+            </div>
+          </form>
+        </div>
+      ) : (
+        /* Add custom currency form */
+        <details className="group">
+          <summary className="cursor-pointer text-sm font-semibold text-brand-gold hover:underline list-none flex items-center gap-1">
+            <span className="group-open:hidden">＋ Add / override a currency manually</span>
+            <span className="hidden group-open:inline">▴ Hide form</span>
+          </summary>
+          <div className="mt-3 bg-gray-50 border border-gray-200 rounded-2xl p-5">
+            <form action={updateRateManually} className="grid grid-cols-4 gap-4 items-end">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Currency Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  name="currency"
+                  required
+                  maxLength={4}
+                  placeholder="e.g. USD"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Buy Rate (MWK)</label>
+                <input name="buyRate" type="number" step="0.0001" min="0" placeholder="e.g. 1717"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Middle Rate <span className="text-red-500">*</span></label>
+                <input name="middleRate" type="number" step="0.0001" min="0.0001" required placeholder="e.g. 1734"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Sell Rate (MWK)</label>
+                <input name="sellRate" type="number" step="0.0001" min="0" placeholder="e.g. 1751"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div className="col-span-4">
+                <button type="submit"
+                  className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold">
+                  Save Rate
+                </button>
+              </div>
+            </form>
+          </div>
+        </details>
+      )}
+
+      {rates.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-16 text-center text-gray-400 text-sm">
+          No rates loaded yet. Click &ldquo;Refresh from RBM&rdquo; above to fetch the latest rates.
+        </div>
+      ) : (
+        <>
+          {/* Primary currencies card */}
+          {primaryRates.length > 0 && (
+            <div className="bg-white rounded-2xl border border-brand-gold/30 shadow-sm overflow-hidden">
+              <div className="px-5 py-3 bg-brand-gold/10 border-b border-brand-gold/20">
+                <h2 className="font-bold text-brand-navy text-sm">Key Currencies</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Currencies actively used in the system</p>
+              </div>
+              <RateTable rates={primaryRates} />
+            </div>
+          )}
+
+          {/* All other currencies */}
+          {otherRates.length > 0 && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
+                <h2 className="font-bold text-brand-navy text-sm">All RBM Currencies</h2>
+                <p className="text-xs text-gray-500 mt-0.5">{otherRates.length} additional currencies from the RBM table</p>
+              </div>
+              <RateTable rates={otherRates} />
+            </div>
+          )}
+        </>
+      )}
+
+      <p className="text-xs text-gray-400 text-center">
+        Rates are updated automatically on the 1st of each month from{" "}
+        <a href="https://www.rbm.mw/Statistics/MajorRates/" target="_blank" rel="noopener noreferrer"
+          className="underline hover:text-brand-gold">rbm.mw</a>.
+        FM or CEO can refresh at any time or override individual rates manually.
+      </p>
+    </div>
+  );
+}
+
+function RateTable({
+  rates,
+}: {
+  rates: {
+    currency: string;
+    buyRate: number;
+    middleRate: number;
+    sellRate: number;
+    effectiveDate: Date;
+    source: string;
+    updatedAt: Date;
+    updatedBy: { name: string } | null;
+  }[];
+}) {
+  return (
+    <table className="w-full text-sm">
+      <thead className="bg-gray-50 border-b border-gray-100">
+        <tr>
+          <th className="text-left px-5 py-3 font-semibold text-gray-600">Currency</th>
+          <th className="text-right px-5 py-3 font-semibold text-gray-600">Buy (MWK)</th>
+          <th className="text-right px-5 py-3 font-semibold text-brand-navy">Middle (MWK)</th>
+          <th className="text-right px-5 py-3 font-semibold text-gray-600">Sell (MWK)</th>
+          <th className="text-center px-5 py-3 font-semibold text-gray-600">Effective</th>
+          <th className="text-center px-5 py-3 font-semibold text-gray-600">Source</th>
+          <th className="text-right px-5 py-3 font-semibold text-gray-600">Updated</th>
+          <th className="px-5 py-3"></th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-50">
+        {rates.map((r) => (
+          <tr key={r.currency} className="hover:bg-gray-50">
+            <td className="px-5 py-3 font-bold text-brand-navy">{r.currency}</td>
+            <td className="px-5 py-3 text-right text-gray-500 tabular-nums">{fmt4(r.buyRate)}</td>
+            <td className="px-5 py-3 text-right font-semibold text-gray-800 tabular-nums">{fmt4(r.middleRate)}</td>
+            <td className="px-5 py-3 text-right text-gray-500 tabular-nums">{fmt4(r.sellRate)}</td>
+            <td className="px-5 py-3 text-center text-xs text-gray-500">
+              {new Date(r.effectiveDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+            </td>
+            <td className="px-5 py-3 text-center">
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                r.source === "MANUAL"
+                  ? "bg-amber-100 text-amber-700"
+                  : "bg-blue-100 text-blue-700"
+              }`}>
+                {r.source}
+              </span>
+            </td>
+            <td className="px-5 py-3 text-right text-xs text-gray-400">
+              {r.updatedBy ? r.updatedBy.name : "Auto"}
+              <br />
+              {new Date(r.updatedAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+            </td>
+            <td className="px-5 py-3 text-right">
+              <Link
+                href={`/astelfin_26/exchange-rates?edit=${r.currency}`}
+                className="text-xs text-brand-gold font-semibold hover:underline"
+              >
+                Edit
+              </Link>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}

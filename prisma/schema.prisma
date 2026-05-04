@@ -82,6 +82,7 @@ model User {
   accountReceivables  AccountReceivable[] @relation("ARCreatedBy")
   milestoneCompletions Milestone[]        @relation("MilestoneCompleter")
   milestoneApprovals  Milestone[]         @relation("MilestoneApprover")
+  exchangeRateUpdates ExchangeRate[]
 }
 
 model Project {
@@ -516,6 +517,21 @@ model ProjectMember {
   email     String?
   role      String
   createdAt DateTime @default(now())
+}
+
+// ── Exchange Rates (RBM middle rates) ───────────────────────────
+
+model ExchangeRate {
+  id            String   @id @default(cuid())
+  currency      String   @unique          // ISO code e.g. "USD"
+  buyRate       Float
+  middleRate    Float
+  sellRate      Float
+  effectiveDate DateTime                  // Date on the RBM table
+  source        String   @default("RBM") // "RBM" | "MANUAL"
+  updatedAt     DateTime @updatedAt
+  updatedById   String?
+  updatedBy     User?    @relation(fields: [updatedById], references: [id])
 }
 
 model Milestone {
