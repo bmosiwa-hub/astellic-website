@@ -21,27 +21,34 @@ async function backfillEmployeeNumbers() {
   const unNumbered = await prisma.employee.findMany({
     where:   { employeeNumber: null },
     orderBy: [{ startDate: "asc" }, { createdAt: "asc" }],
-    select:  { id: true },
+    select:  { id: true, startDate: true },
   });
 
-  // Find current highest number to continue from
-  const maxRecord = await prisma.employee.findFirst({
-    where:   { employeeNumber: { not: null } },
-    orderBy: { employeeNumber: "desc" },
-    select:  { employeeNumber: true },
-  });
-
-  let counter = 0;
-  if (maxRecord?.employeeNumber) {
-    const match = maxRecord.employeeNumber.match(/EMP-(\d+)/);
-    if (match) counter = parseInt(match[1], 10);
-  }
+  // Assign AST-{year}-{seq} per joining year, continuing from highest existing seq in that year
+  // Track counters per year as we assign
+  const yearCounters: Record<number, number> = {};
 
   for (const emp of unNumbered) {
-    counter++;
+    const year = emp.startDate.getFullYear();
+
+    if (!(year in yearCounters)) {
+      // Find the highest existing sequence for this year
+      const existing = await prisma.employee.findMany({
+        where:  { employeeNumber: { startsWith: `AST-${year}-` } },
+        select: { employeeNumber: true },
+      });
+      let max = 0;
+      for (const e of existing) {
+        const match = e.employeeNumber?.match(/AST-\d{4}-(\d+)/);
+        if (match) max = Math.max(max, parseInt(match[1], 10));
+      }
+      yearCounters[year] = max;
+    }
+
+    yearCounters[year]++;
     await prisma.employee.update({
       where: { id: emp.id },
-      data:  { employeeNumber: `EMP-${String(counter).padStart(3, "0")}` },
+      data:  { employeeNumber: `AST-${year}-${String(yearCounters[year]).padStart(3, "0")}` },
     });
   }
 

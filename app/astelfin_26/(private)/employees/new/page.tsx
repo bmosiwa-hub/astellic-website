@@ -21,9 +21,13 @@ async function createEmployee(formData: FormData) {
       ? null
       : parseFloat(rateRaw) || null;
 
-  // Auto-generate employee number: count existing + 1
-  const count = await prisma.employee.count();
-  const employeeNumber = `EMP-${String(count + 1).padStart(3, "0")}`;
+  // Auto-generate employee number: AST-{joinYear}-{sequential within that year}
+  const startDate = new Date(formData.get("startDate") as string);
+  const joinYear  = startDate.getFullYear();
+  const countInYear = await prisma.employee.count({
+    where: { employeeNumber: { startsWith: `AST-${joinYear}-` } },
+  });
+  const employeeNumber = `AST-${joinYear}-${String(countInYear + 1).padStart(3, "0")}`;
 
   const data = {
     employeeNumber,
