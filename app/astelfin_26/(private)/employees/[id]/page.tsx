@@ -117,22 +117,37 @@ async function updateEmploymentTerms(formData: FormData) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
 
-  const employeeId             = formData.get("employeeId") as string;
-  const contractType           = formData.get("contractType") as string;
-  const contractLengthRaw      = formData.get("contractLengthMonths") as string;
-  const contractLengthMonths   = contractLengthRaw ? parseInt(contractLengthRaw) || null : null;
+  const employeeId   = formData.get("employeeId") as string;
+  const contractType = formData.get("contractType") as string;
+  const endDateRaw   = formData.get("endDate") as string;
+  const endDate      = endDateRaw ? new Date(endDateRaw) : null;
 
-  // Recalculate end date from startDate + new contract length
-  const employee = await prisma.employee.findUnique({ where: { id: employeeId }, select: { startDate: true } });
-  let endDate: Date | null = null;
-  if (employee && contractLengthMonths && contractLengthMonths > 0) {
-    endDate = new Date(employee.startDate);
-    endDate.setMonth(endDate.getMonth() + contractLengthMonths);
+  // Contract length: approximate from end date minus start date for record-keeping
+  const emp = await prisma.employee.findUnique({ where: { id: employeeId }, select: { startDate: true } });
+  let contractLengthMonths: number | null = null;
+  if (emp && endDate) {
+    contractLengthMonths =
+      (endDate.getFullYear() - emp.startDate.getFullYear()) * 12 +
+      (endDate.getMonth() - emp.startDate.getMonth());
+    if (contractLengthMonths <= 0) contractLengthMonths = null;
   }
+
+  // Optional contract details editable by CEO
+  const grossSalaryRaw = formData.get("grossSalary") as string;
+  const grossSalary    = grossSalaryRaw ? parseFloat(grossSalaryRaw) : undefined;
+  const department     = (formData.get("department") as string) || null;
+  const email          = (formData.get("email") as string) || null;
 
   await prisma.employee.update({
     where: { id: employeeId },
-    data:  { contractType, contractLengthMonths, endDate },
+    data:  {
+      contractType,
+      contractLengthMonths,
+      endDate,
+      ...(grossSalary !== undefined ? { grossSalary } : {}),
+      department,
+      email,
+    },
   });
 
   await auditLog({
@@ -140,10 +155,34 @@ async function updateEmploymentTerms(formData: FormData) {
     action:   "UPDATE",
     entity:   "Employee",
     entityId: employeeId,
-    detail:   `Employment terms updated: ${contractType}${contractLengthMonths ? `, ${contractLengthMonths} months` : ""}`,
+    detail:   `Contract updated: ${contractType}${endDate ? `, ends ${endDate.toISOString().slice(0, 10)}` : ""}`,
   });
 
   redirect(`/astelfin_26/employees/${employeeId}?success=terms_updated`);
+}
+
+async function terminateContract(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId = formData.get("employeeId") as string;
+  const reason     = (formData.get("reason") as string) || null;
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data:  { active: false, endDate: new Date() },
+  });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "TERMINATE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   reason ? `Contract terminated: ${reason}` : "Contract terminated by CEO",
+  });
+
+  redirect(`/astelfin_26/employees/${employeeId}?success=terminated`);
 }
 
 /* ── Page ────────────────────────────────────────────────────── */
@@ -243,7 +282,12 @@ export default async function EmployeeDetailPage({
       )}
       {success === "terms_updated" && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
-          Employment terms updated successfully.
+          Contract details updated successfully.
+        </div>
+      )}
+      {success === "terminated" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Contract terminated. Employee marked as inactive.
         </div>
       )}
 
@@ -287,14 +331,11 @@ export default async function EmployeeDetailPage({
         </div>
       </div>
 
-      {/* ── Employment Terms (CEO edit) ─────────────────────────── */}
+      {/* ── Edit Contract Details (CEO only) ────────────────────── */}
       {isCEO && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Edit Employment Terms</h2>
-          <p className="text-xs text-gray-500">
-            Only the Chief Executive Officer can change employment type and contract length.
-            Updating contract length will automatically recalculate the contract end date.
-          </p>
+          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Edit Contract Details</h2>
+          <p className="text-xs text-gray-500">CEO-only. Changes are audit-logged.</p>
           <form action={updateEmploymentTerms} className="space-y-4">
             <input type="hidden" name="employeeId" value={employee.id} />
             <div className="grid grid-cols-2 gap-4">
@@ -309,27 +350,74 @@ export default async function EmployeeDetailPage({
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Contract Length (months)
-                  <span className="ml-1 font-normal text-gray-400">— leave blank for permanent</span>
+                  Contract End Date
+                  <span className="ml-1.5 font-normal text-gray-400">— leave blank for permanent</span>
                 </label>
                 <input
-                  name="contractLengthMonths"
-                  type="number" min="1" max="120" step="1"
-                  defaultValue={employee.contractLengthMonths ?? ""}
-                  placeholder="e.g. 12"
+                  name="endDate"
+                  type="date"
+                  defaultValue={employee.endDate ? employee.endDate.toISOString().slice(0, 10) : ""}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary ({employee.currency})</label>
+                <input
+                  name="grossSalary"
+                  type="number" min="0" step="0.01"
+                  defaultValue={employee.grossSalary}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Department</label>
+                <select name="department" defaultValue={employee.department ?? ""}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+                  <option value="">— None —</option>
+                  {["Administration","Finance","Human Resources","Projects","Senior Management","Support Staff"].map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
+                <input
+                  name="email"
+                  type="email"
+                  defaultValue={employee.email ?? ""}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
                 />
               </div>
             </div>
-            {employee.endDate && (
-              <p className="text-xs text-gray-500">
-                Current contract end date: <span className="font-semibold text-amber-700">{formatDate(employee.endDate)}</span>
-                {" "}— will be recalculated if you change the contract length above.
-              </p>
-            )}
             <button type="submit"
               className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
-              Save Employment Terms
+              Save Changes
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* ── Terminate Contract (CEO only) ────────────────────────── */}
+      {isCEO && employee.active && (
+        <div className="bg-red-50 rounded-2xl border border-red-200 p-6 space-y-3">
+          <h2 className="font-bold text-red-700 text-sm uppercase tracking-wide">Terminate Contract</h2>
+          <p className="text-xs text-red-600">
+            This will mark the employee as inactive and set today as the contract end date.
+            This action is audit-logged and can be reversed by editing the contract details above.
+          </p>
+          <form action={terminateContract} className="space-y-3">
+            <input type="hidden" name="employeeId" value={employee.id} />
+            <div>
+              <label className="block text-xs font-medium text-red-700 mb-1">Reason for Termination</label>
+              <input
+                name="reason"
+                placeholder="e.g. End of contract, resignation, redundancy…"
+                className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 bg-white"
+              />
+            </div>
+            <button type="submit"
+              className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+              Terminate Contract
             </button>
           </form>
         </div>

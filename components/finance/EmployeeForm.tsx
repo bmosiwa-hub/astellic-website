@@ -9,6 +9,7 @@ const DEPARTMENTS = [
   "Finance",
   "Human Resources",
   "Projects",
+  "Senior Management",
   "Support Staff",
 ] as const;
 
@@ -20,8 +21,6 @@ const CONTRACT_TYPES = [
   { value: "VOLUNTEER",   label: "Volunteer" },
 ] as const;
 
-// Types that have a defined end date / contract length
-const FIXED_TERM_TYPES = new Set(["CONTRACT", "CONSULTANCY", "INTERNSHIP", "VOLUNTEER"]);
 
 const CURRENCIES = ["MWK", "USD", "GBP", "EUR", "ZAR", "AUD", "CAD", "NOK", "SEK", "DKK"];
 
@@ -54,7 +53,6 @@ interface Props {
     position?: string;
     department?: string;
     contractType?: string;
-    contractLengthMonths?: number;
     endDate?: string;   // ISO date string e.g. "2025-12-31"
     grossSalary?: number;
     currency?: string;
@@ -77,55 +75,8 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
   const [currency,             setCurrency]             = useState(defaultValues?.currency     ?? "MWK");
   const [exchangeRate,         setExchangeRate]         = useState(defaultValues?.salaryExchangeRate ?? 0);
   const [department,           setDepartment]           = useState(defaultValues?.department   ?? "");
-  const [contractType,         setContractType]         = useState(defaultValues?.contractType ?? "PERMANENT");
-  const [contractLengthMonths, setContractLengthMonths] = useState<number | "">(defaultValues?.contractLengthMonths ?? "");
-  const [contractEndDate,      setContractEndDate]      = useState(defaultValues?.endDate ?? "");
-  const [startDate,            setStartDate]            = useState(defaultValues?.startDate ?? "");
-
-  const isFixedTerm = FIXED_TERM_TYPES.has(contractType);
-
-  // ── Sync helpers ──────────────────────────────────────────────────────────
-  // When months change → update the end date field
-  function handleMonthsChange(raw: string) {
-    const months = raw === "" ? "" : parseInt(raw);
-    setContractLengthMonths(months);
-    if (months && startDate) {
-      const d = new Date(startDate);
-      d.setMonth(d.getMonth() + Number(months));
-      setContractEndDate(d.toISOString().slice(0, 10));
-    } else {
-      setContractEndDate("");
-    }
-  }
-
-  // When end date changes → back-calculate approximate months
-  function handleEndDateChange(raw: string) {
-    setContractEndDate(raw);
-    if (raw && startDate) {
-      const start = new Date(startDate);
-      const end   = new Date(raw);
-      const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-      setContractLengthMonths(months > 0 ? months : "");
-    } else {
-      setContractLengthMonths("");
-    }
-  }
-
-  // When start date changes → keep end date fixed, recalculate months from it
-  function handleStartDateChange(raw: string) {
-    setStartDate(raw);
-    if (raw && contractEndDate) {
-      const start = new Date(raw);
-      const end   = new Date(contractEndDate);
-      const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-      setContractLengthMonths(months > 0 ? months : "");
-    } else if (raw && contractLengthMonths) {
-      // Re-derive end date from new start + existing months
-      const d = new Date(raw);
-      d.setMonth(d.getMonth() + Number(contractLengthMonths));
-      setContractEndDate(d.toISOString().slice(0, 10));
-    }
-  }
+  const [contractType, setContractType] = useState(defaultValues?.contractType ?? "PERMANENT");
+  const [startDate,    setStartDate]    = useState(defaultValues?.startDate ?? "");
 
   const isMWK    = currency === "MWK";
   const rate     = isMWK ? 1 : exchangeRate;
@@ -184,7 +135,7 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>
             <select name="contractType" value={contractType}
-              onChange={e => { setContractType(e.target.value); setContractLengthMonths(""); }}
+              onChange={e => setContractType(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
               {CONTRACT_TYPES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
@@ -195,52 +146,23 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             </label>
             <input name="startDate" type="date" required
               value={startDate}
-              onChange={e => handleStartDateChange(e.target.value)}
+              onChange={e => setStartDate(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
           </div>
 
-          {/* Contract length + end date — only shown for fixed-term types */}
-          {isFixedTerm && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Contract Length (months)
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    name="contractLengthMonths"
-                    type="number" min="1" max="600" step="1"
-                    value={contractLengthMonths}
-                    onChange={e => handleMonthsChange(e.target.value)}
-                    placeholder="e.g. 12"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                  />
-                </div>
-                <p className="text-xs text-gray-400 mt-1">Fills in end date automatically.</p>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Contract End Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="endDate"
-                  type="date"
-                  required={isFixedTerm}
-                  value={contractEndDate}
-                  onChange={e => handleEndDateChange(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
-                <p className="text-xs text-gray-400 mt-1">Or pick a date to back-fill months.</p>
-              </div>
-            </>
-          )}
-          {/* Hidden fields keep values null for permanent employees */}
-          {!isFixedTerm && (
-            <>
-              <input type="hidden" name="contractLengthMonths" value="" />
-              <input type="hidden" name="endDate" value="" />
-            </>
-          )}
+          {/* Contract End Date — shown for all types; leave blank for permanent */}
+          <div className="col-span-2">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Contract End Date
+              <span className="ml-1.5 font-normal text-gray-400">— leave blank for permanent employees</span>
+            </label>
+            <input
+              name="endDate"
+              type="date"
+              defaultValue={defaultValues?.endDate ?? ""}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+            />
+          </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Currency</label>
             <select name="currency" value={currency} onChange={e => { setCurrency(e.target.value); setExchangeRate(0); }}
