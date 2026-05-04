@@ -38,9 +38,9 @@ export default function LoginPage() {
     <div className="w-full max-w-md px-6">
       {/* Logo / Brand */}
       <div className="text-center mb-8">
-        <p className="text-2xl font-bold text-brand-navy">Astellic</p>
+        <p className="text-2xl font-bold text-brand-navy">Astelfin IMS</p>
         <p className="text-sm uppercase tracking-widest text-brand-gold mt-1">
-          Financial Management
+          Integrated Management System
         </p>
       </div>
 
