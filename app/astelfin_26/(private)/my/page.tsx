@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  CEO:             "Executive Director",
+  CEO:             "Chief Executive Officer",
   FINANCE_MANAGER: "Finance Manager",
   PROJECT_MANAGER: "Project Manager",
   STAFF:           "Staff",
@@ -185,7 +185,7 @@ export default async function MyPage({
             <div className="bg-gray-50 rounded-2xl border border-dashed border-gray-200 p-5 flex items-center justify-center text-center">
               <div>
                 <p className="text-gray-400 text-sm">No employee record linked to your account.</p>
-                <p className="text-gray-400 text-xs mt-1">Contact the Executive Director to link your record.</p>
+                <p className="text-gray-400 text-xs mt-1">Contact the Chief Executive Officer to link your record.</p>
               </div>
             </div>
           )}

@@ -30,7 +30,7 @@ async function submitEditRequest(incomeId: string, formData: FormData): Promise<
   };
 
   if (session.user.role === "CEO") {
-    // Executive Director: apply immediately
+    // Chief Executive Officer: apply immediately
     await prisma.income.update({
       where: { id: incomeId },
       data: {
@@ -119,8 +119,8 @@ export default async function EditIncomePage({
           <h1 className="text-2xl font-bold text-brand-navy">Edit Income</h1>
           <p className="text-gray-500 text-sm mt-1">
             {isCEO
-              ? "As Executive Director, your changes apply immediately."
-              : "Your changes will be sent to the Executive Director for approval."}
+              ? "As Chief Executive Officer, your changes apply immediately."
+              : "Your changes will be sent to the Chief Executive Officer for approval."}
           </p>
         </div>
         <Link
@@ -137,7 +137,7 @@ export default async function EditIncomePage({
           {existingPending.requester?.name
             ? ` (requested by ${existingPending.requester.name})`
             : ""}
-          . Please wait for the Executive Director to review it before submitting another.
+          . Please wait for the Chief Executive Officer to review it before submitting another.
         </div>
       )}
 

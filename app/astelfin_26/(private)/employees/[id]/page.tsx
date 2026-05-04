@@ -345,7 +345,7 @@ export default async function EmployeeDetailPage({
 
         {!linkedUser && !isCEO && (
           <p className="text-xs text-amber-600">
-            Ask the Executive Director to create or link a system user account for this employee.
+            Ask the Chief Executive Officer to create or link a system user account for this employee.
           </p>
         )}
       </div>

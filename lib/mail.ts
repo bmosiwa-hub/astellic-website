@@ -141,7 +141,7 @@ export async function notifyFMOfCEOAction({
 
   const body = `
     <h2>Action Required</h2>
-    <p>The <strong>Executive Director</strong> has <strong>${verb}</strong> a submission from <strong>${submitterName}</strong>:</p>
+    <p>The <strong>Chief Executive Officer</strong> has <strong>${verb}</strong> a submission from <strong>${submitterName}</strong>:</p>
     <p><strong>${submissionLabel}</strong></p>
     ${note ? `<div class="note-box"><strong>Note:</strong> ${note}</div>` : ""}
     <p>Please review the CEO's feedback and follow up with the submitter as appropriate.</p>

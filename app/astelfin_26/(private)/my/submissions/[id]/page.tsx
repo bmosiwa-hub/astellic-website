@@ -23,8 +23,8 @@ const STATUS_STYLES: Record<string, string> = {
 const STATUS_LABELS: Record<string, string> = {
   PENDING_FM:            "Awaiting Finance Manager Review",
   FM_CHANGES_REQUESTED:  "Finance Manager Requested Changes",
-  PENDING_CEO:           "Awaiting Executive Director Review",
-  CEO_CHANGES_REQUESTED: "Executive Director Requested Changes",
+  PENDING_CEO:           "Awaiting Chief Executive Officer Review",
+  CEO_CHANGES_REQUESTED: "Chief Executive Officer Requested Changes",
   APPROVED:              "Approved — Awaiting Payment",
   PAID:                  "Paid",
   REJECTED:              "Rejected",
@@ -155,7 +155,7 @@ export default async function SubmissionDetailPage({
                 </span>
                 <div>
                   <p className="font-medium text-gray-800">
-                    {r.reviewerRole === "FM" ? "Finance Manager" : "Executive Director"} — {r.reviewer.name}
+                    {r.reviewerRole === "FM" ? "Finance Manager" : "Chief Executive Officer"} — {r.reviewer.name}
                   </p>
                   {r.note && <p className="text-gray-600 mt-1">{r.note}</p>}
                   <p className="text-xs text-gray-400 mt-1">{formatDate(r.createdAt)}</p>

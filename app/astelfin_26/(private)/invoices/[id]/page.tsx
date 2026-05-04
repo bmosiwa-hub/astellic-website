@@ -137,7 +137,7 @@ export default async function ReviewSubmissionPage({
                   {r.action === "CHANGES_REQUESTED" ? "Changes" : r.action}
                 </span>
                 <div>
-                  <p className="font-medium">{r.reviewerRole === "FM" ? "Finance Manager" : "Executive Director"} — {r.reviewer.name}</p>
+                  <p className="font-medium">{r.reviewerRole === "FM" ? "Finance Manager" : "Chief Executive Officer"} — {r.reviewer.name}</p>
                   {r.note && <p className="text-gray-600 mt-1">{r.note}</p>}
                   <p className="text-xs text-gray-400 mt-1">{formatDate(r.createdAt)}</p>
                 </div>
@@ -181,7 +181,7 @@ export default async function ReviewSubmissionPage({
       {/* CEO action panel */}
       {canCEOAction && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-          <h2 className="font-bold text-brand-navy">Executive Director Review</h2>
+          <h2 className="font-bold text-brand-navy">Chief Executive Officer Review</h2>
 
           <form action={approveCEO} className="flex items-center gap-3">
             <input name="note" placeholder="Optional note…"
@@ -214,7 +214,7 @@ export default async function ReviewSubmissionPage({
         <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
           <h2 className="font-bold text-brand-navy mb-3">Mark as Paid</h2>
           <p className="text-sm text-gray-600 mb-4">
-            The Executive Director has approved this submission. Once payment is processed, mark it as paid below.
+            The Chief Executive Officer has approved this submission. Once payment is processed, mark it as paid below.
           </p>
           <form action={markSubmissionPaid.bind(null, id)} className="flex items-center gap-3">
             <input name="paymentNote" placeholder="Payment reference or note…"

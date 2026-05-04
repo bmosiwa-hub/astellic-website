@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  CEO:              "Executive Director",
+  CEO:              "Chief Executive Officer",
   FINANCE_MANAGER:  "Finance Manager",
   PROJECT_MANAGER:  "Project Manager",
   STAFF:            "Staff",
@@ -130,14 +130,43 @@ async function toggleActive(formData: FormData) {
   redirect("/astelfin_26/settings");
 }
 
+async function deleteUser(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const userId  = formData.get("userId") as string;
+  const confirm = formData.get("confirm") as string;
+
+  // Cannot delete yourself
+  if (userId === session.user.id) redirect("/astelfin_26/settings?error=self_delete");
+  // Require the word "DELETE" typed as confirmation
+  if (confirm !== "DELETE") redirect("/astelfin_26/settings?error=confirm_mismatch");
+
+  const target = await prisma.user.findUnique({ where: { id: userId } });
+  if (!target) redirect("/astelfin_26/settings");
+
+  await auditLog({
+    userId: session.user.id,
+    action: "DELETE",
+    entity: "User",
+    entityId: userId,
+    detail: `Permanently deleted user ${target.name} (${target.email})`,
+  });
+
+  await prisma.user.delete({ where: { id: userId } });
+
+  redirect("/astelfin_26/settings?success=deleted");
+}
+
 /* ── Page ────────────────────────────────────────────────────── */
 
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ editUser?: string }>;
+  searchParams: Promise<{ editUser?: string; deleteUser?: string; error?: string; success?: string }>;
 }) {
-  const { editUser } = await searchParams;
+  const { editUser, deleteUser: deleteUserId, error, success } = await searchParams;
   const session = await auth();
   const isCEO = session?.user?.role === "CEO";
 
@@ -147,7 +176,8 @@ export default async function SettingsPage({
     isCEO ? prisma.consultant.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
   ]);
 
-  const editingUser = editUser ? users.find((u) => u.id === editUser) : null;
+  const editingUser  = editUser     ? users.find((u) => u.id === editUser)     : null;
+  const deletingUser = deleteUserId ? users.find((u) => u.id === deleteUserId) : null;
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -167,13 +197,71 @@ export default async function SettingsPage({
         </div>
       </div>
 
+      {error === "self_delete" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          You cannot delete your own account.
+        </div>
+      )}
+      {error === "confirm_mismatch" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Confirmation text did not match. User was not deleted.
+        </div>
+      )}
+      {success === "deleted" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          User account permanently deleted.
+        </div>
+      )}
+
       {isCEO ? (
         <>
+          {/* Delete confirmation panel */}
+          {deletingUser && deletingUser.id !== session?.user?.id && (
+            <div className="bg-red-50 border border-red-300 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-red-200 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-bold text-red-800">Permanently Delete User Account</p>
+                  <p className="text-xs text-red-600">This action cannot be undone. All login access for this user will be removed.</p>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl border border-red-200 px-4 py-3 text-sm space-y-1">
+                <p><span className="text-gray-500">Name:</span> <span className="font-semibold text-gray-800">{deletingUser.name}</span></p>
+                <p><span className="text-gray-500">Email:</span> <span className="font-semibold text-gray-800">{deletingUser.email}</span></p>
+                <p><span className="text-gray-500">Role:</span> <span className="font-semibold text-gray-800">{ROLE_LABELS[deletingUser.role] ?? deletingUser.role}</span></p>
+              </div>
+              <form action={deleteUser} className="flex items-center gap-3">
+                <input type="hidden" name="userId" value={deletingUser.id} />
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-red-700 mb-1">
+                    Type <strong>DELETE</strong> to confirm permanent deletion
+                  </label>
+                  <input name="confirm" required placeholder="DELETE"
+                    className="w-full border border-red-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400/40 bg-white" />
+                </div>
+                <div className="flex gap-2 pt-5">
+                  <button type="submit"
+                    className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-bold transition-colors whitespace-nowrap">
+                    Delete Permanently
+                  </button>
+                  <Link href="/astelfin_26/settings"
+                    className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+                    Cancel
+                  </Link>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* User list */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-bold text-brand-navy">User Accounts</h2>
-              <p className="text-xs text-gray-400">{users.length} total · Only the Executive Director can manage users</p>
+              <p className="text-xs text-gray-400">{users.length} total · Only the Chief Executive Officer can manage users</p>
             </div>
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-100">
@@ -207,14 +295,20 @@ export default async function SettingsPage({
                           Edit
                         </Link>
                         {u.id !== session?.user?.id && (
-                          <form action={toggleActive}>
-                            <input type="hidden" name="userId" value={u.id} />
-                            <input type="hidden" name="active" value={u.active ? "false" : "true"} />
-                            <button type="submit"
-                              className={`text-xs font-semibold hover:underline ${u.active ? "text-red-500" : "text-green-600"}`}>
-                              {u.active ? "Deactivate" : "Reactivate"}
-                            </button>
-                          </form>
+                          <>
+                            <form action={toggleActive}>
+                              <input type="hidden" name="userId" value={u.id} />
+                              <input type="hidden" name="active" value={u.active ? "false" : "true"} />
+                              <button type="submit"
+                                className={`text-xs font-semibold hover:underline ${u.active ? "text-orange-500" : "text-green-600"}`}>
+                                {u.active ? "Deactivate" : "Reactivate"}
+                              </button>
+                            </form>
+                            <Link href={`/astelfin_26/settings?deleteUser=${u.id}`}
+                              className="text-xs font-semibold text-red-500 hover:underline">
+                              Delete
+                            </Link>
+                          </>
                         )}
                       </div>
                     </td>
@@ -244,7 +338,7 @@ export default async function SettingsPage({
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
                   <select name="role" defaultValue={editingUser.role}
                     className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold">
-                    <option value="CEO">Executive Director (CEO)</option>
+                    <option value="CEO">Chief Executive Officer (CEO)</option>
                     <option value="FINANCE_MANAGER">Finance Manager</option>
                     <option value="PROJECT_MANAGER">Project Manager</option>
                     <option value="STAFF">Staff</option>
@@ -328,7 +422,7 @@ export default async function SettingsPage({
                   <option value="CONSULTANT">Consultant</option>
                   <option value="PROJECT_MANAGER">Project Manager</option>
                   <option value="FINANCE_MANAGER">Finance Manager</option>
-                  <option value="CEO">Executive Director (CEO)</option>
+                  <option value="CEO">Chief Executive Officer (CEO)</option>
                 </select>
               </div>
               <div>
@@ -358,7 +452,7 @@ export default async function SettingsPage({
         </>
       ) : (
         <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400">
-          <p>User management is available to the Executive Director only.</p>
+          <p>User management is available to the Chief Executive Officer only.</p>
         </div>
       )}
     </div>

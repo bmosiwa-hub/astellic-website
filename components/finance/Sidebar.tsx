@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 
 const ROLE_LABELS: Record<string, string> = {
-  CEO:             "Executive Director",
+  CEO:             "Chief Executive Officer",
   FINANCE_MANAGER: "Finance Manager",
   PROJECT_MANAGER: "Project Manager",
   STAFF:           "Staff",

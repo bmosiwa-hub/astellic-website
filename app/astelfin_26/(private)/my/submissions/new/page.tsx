@@ -29,7 +29,7 @@ export default async function NewSubmissionPage() {
         <h1 className="text-2xl font-bold text-brand-navy">New Submission</h1>
         <p className="text-gray-500 text-sm mt-1">
           Submit an invoice for services rendered, or request funds for an upcoming activity.
-          Your submission will be reviewed by the Finance Manager, then the Executive Director.
+          Your submission will be reviewed by the Finance Manager, then the Chief Executive Officer.
         </p>
       </div>
 

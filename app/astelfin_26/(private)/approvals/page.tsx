@@ -264,7 +264,7 @@ export default async function ApprovalsPage() {
                     {!isCEO && (
                       <div className="flex items-center gap-2 text-sm text-orange-600">
                         <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse inline-block" />
-                        Awaiting Executive Director review
+                        Awaiting Chief Executive Officer review
                       </div>
                     )}
                   </div>

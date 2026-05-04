@@ -37,7 +37,7 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
       action: "DELETE",
       entity,
       entityId,
-      detail: "Deleted directly by Executive Director",
+      detail: "Deleted directly by Chief Executive Officer",
     });
   } else {
     // Guard: don't duplicate pending changes
@@ -60,7 +60,7 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
       action: "REQUEST_DELETE",
       entity,
       entityId,
-      detail: "Delete request submitted for Executive Director approval",
+      detail: "Delete request submitted for Chief Executive Officer approval",
     });
   }
 

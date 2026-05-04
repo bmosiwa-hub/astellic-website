@@ -9,6 +9,45 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
+async function backfillEmployeeNumbers() {
+  "use server";
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") {
+    redirect("/astelfin_26/dashboard");
+  }
+
+  // Fetch employees without a number, ordered by startDate then createdAt
+  const unNumbered = await prisma.employee.findMany({
+    where:   { employeeNumber: null },
+    orderBy: [{ startDate: "asc" }, { createdAt: "asc" }],
+    select:  { id: true },
+  });
+
+  // Find current highest number to continue from
+  const maxRecord = await prisma.employee.findFirst({
+    where:   { employeeNumber: { not: null } },
+    orderBy: { employeeNumber: "desc" },
+    select:  { employeeNumber: true },
+  });
+
+  let counter = 0;
+  if (maxRecord?.employeeNumber) {
+    const match = maxRecord.employeeNumber.match(/EMP-(\d+)/);
+    if (match) counter = parseInt(match[1], 10);
+  }
+
+  for (const emp of unNumbered) {
+    counter++;
+    await prisma.employee.update({
+      where: { id: emp.id },
+      data:  { employeeNumber: `EMP-${String(counter).padStart(3, "0")}` },
+    });
+  }
+
+  redirect("/astelfin_26/employees");
+}
+
 export default async function EmployeesPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
@@ -29,6 +68,7 @@ export default async function EmployeesPage() {
   const linkedSet = new Set(linkedUserIds.map((u) => u.employeeId));
 
   const isCEO = role === "CEO";
+  const unnumberedCount = employees.filter((e) => !e.employeeNumber).length;
 
   function getNet(e: (typeof employees)[number]) {
     const isMWK = e.currency === "MWK";
@@ -48,6 +88,22 @@ export default async function EmployeesPage() {
           + Add Employee
         </Link>
       </div>
+
+      {/* Backfill banner for employees without numbers */}
+      {unnumberedCount > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 flex items-center justify-between gap-4">
+          <p className="text-sm text-amber-800">
+            <span className="font-bold">{unnumberedCount} employee{unnumberedCount !== 1 ? "s" : ""}</span>
+            {" "}without an employment number. Click to auto-assign sequential numbers.
+          </p>
+          <form action={backfillEmployeeNumbers}>
+            <button type="submit"
+              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors">
+              Assign Numbers Now
+            </button>
+          </form>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         {employees.length === 0 ? (

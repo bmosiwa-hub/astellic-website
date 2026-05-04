@@ -53,7 +53,7 @@ export default async function IncomePage({
     <div className="space-y-6">
       {edit_requested && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 text-sm text-blue-800">
-          Your edit request has been submitted. The Executive Director will review it shortly.
+          Your edit request has been submitted. The Chief Executive Officer will review it shortly.
         </div>
       )}
       {error === "already_pending" && (
