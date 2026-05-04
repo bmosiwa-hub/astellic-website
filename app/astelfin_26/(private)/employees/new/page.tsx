@@ -33,9 +33,12 @@ async function createEmployee(formData: FormData) {
   const contractLengthRaw    = formData.get("contractLengthMonths") as string;
   const contractLengthMonths = contractLengthRaw ? parseInt(contractLengthRaw) || null : null;
 
-  // Calculate end date from start date + contract length (if fixed-term)
+  // Prefer the explicit end date from the form; fall back to computing from months
+  const endDateRaw = formData.get("endDate") as string;
   let endDate: Date | null = null;
-  if (contractLengthMonths && contractLengthMonths > 0) {
+  if (endDateRaw) {
+    endDate = new Date(endDateRaw);
+  } else if (contractLengthMonths && contractLengthMonths > 0) {
     endDate = new Date(startDate);
     endDate.setMonth(endDate.getMonth() + contractLengthMonths);
   }
