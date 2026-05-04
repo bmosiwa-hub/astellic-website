@@ -82,7 +82,9 @@ model User {
   accountReceivables  AccountReceivable[] @relation("ARCreatedBy")
   milestoneCompletions Milestone[]        @relation("MilestoneCompleter")
   milestoneApprovals  Milestone[]         @relation("MilestoneApprover")
-  exchangeRateUpdates ExchangeRate[]
+  exchangeRateUpdates   ExchangeRate[]
+  procurementsRequested Procurement[]      @relation("ProcurementRequester")
+  procurementsReviewed  Procurement[]      @relation("ProcurementReviewer")
 }
 
 model Project {
@@ -544,6 +546,87 @@ model ExchangeRate {
   updatedAt     DateTime @updatedAt
   updatedById   String?
   updatedBy     User?    @relation(fields: [updatedById], references: [id])
+}
+
+// ── Assets Register ──────────────────────────────────────────────────────────
+
+model Asset {
+  id            String          @id @default(cuid())
+  assetNumber   String?         @unique    // auto-generated e.g. A-0001
+  name          String
+  category      String                     // FURNITURE | IT_EQUIPMENT | MOTOR_VEHICLE | OFFICE_EQUIPMENT | LAND_BUILDING | OTHER
+  description   String?
+  serialNumber  String?
+  location      String?
+  condition     String          @default("GOOD") // EXCELLENT | GOOD | FAIR | POOR | WRITTEN_OFF
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  currency      String          @default("MWK")
+  supplier      String?
+  insurable     Boolean         @default(false)
+  active        Boolean         @default(true)
+  notes         String?
+  insurance     AssetInsurance?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model AssetInsurance {
+  id             String   @id @default(cuid())
+  assetId        String   @unique
+  asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  insurer        String
+  policyNumber   String?
+  premium        Float?
+  currency       String   @default("MWK")
+  coverageAmount Float?
+  startDate      DateTime
+  expiryDate     DateTime
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ── Procurement ───────────────────────────────────────────────────────────────
+
+enum ProcurementStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+model Procurement {
+  id            String               @id @default(cuid())
+  title         String
+  description   String?
+  category      String?
+  estimatedCost Float
+  currency      String               @default("MWK")
+  status        ProcurementStatus    @default(DRAFT)
+  requestedBy   String
+  requester     User                 @relation("ProcurementRequester", fields: [requestedBy], references: [id])
+  reviewedBy    String?
+  reviewer      User?                @relation("ProcurementReviewer", fields: [reviewedBy], references: [id])
+  reviewNote    String?
+  reviewedAt    DateTime?
+  quotations    ProcurementQuotation[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model ProcurementQuotation {
+  id            String      @id @default(cuid())
+  procurementId String
+  procurement   Procurement @relation(fields: [procurementId], references: [id], onDelete: Cascade)
+  supplier      String
+  amount        Float
+  currency      String      @default("MWK")
+  documentUrl   String?     // link to uploaded quotation document
+  notes         String?
+  uploadedAt    DateTime    @default(now())
 }
 
 model Milestone {
