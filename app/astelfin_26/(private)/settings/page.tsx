@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Settings | Astelfin",
+  title: "Settings | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import EmployeeForm from "@/components/finance/EmployeeForm";
 
 export const metadata = {
-  title: "Add Employee | Astelfin",
+  title: "Add Employee | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

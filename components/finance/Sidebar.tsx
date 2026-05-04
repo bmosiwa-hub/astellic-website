@@ -270,7 +270,7 @@ export default function Sidebar({
       <div className="px-5 py-5 border-b border-white/10">
         <p className="font-bold text-lg tracking-tight">Astelfin</p>
         <p className="text-[10px] uppercase tracking-widest text-brand-gold mt-0.5">
-          Astellic Financial System
+          Integrated Management System
         </p>
       </div>
 

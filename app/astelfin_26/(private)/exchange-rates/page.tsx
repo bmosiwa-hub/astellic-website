@@ -5,7 +5,7 @@ import { updateRateManually } from "@/lib/exchange-rate-actions";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Exchange Rates | Astelfin",
+  title: "Exchange Rates | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

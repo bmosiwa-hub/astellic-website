@@ -4,7 +4,7 @@ import Link from "next/link";
 import ProjectForm from "@/components/projects/ProjectForm";
 
 export const metadata = {
-  title: "New Project | Astelfin",
+  title: "New Project | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

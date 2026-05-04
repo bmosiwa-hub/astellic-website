@@ -5,7 +5,7 @@ import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils
 import Link from "next/link";
 
 export const metadata = {
-  title: "My Page | Astelfin",
+  title: "My Page | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

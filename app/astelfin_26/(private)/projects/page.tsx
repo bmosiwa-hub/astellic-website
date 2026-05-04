@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Projects | Astelfin",
+  title: "Projects | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

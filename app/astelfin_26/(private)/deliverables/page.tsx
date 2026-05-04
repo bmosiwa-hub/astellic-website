@@ -6,7 +6,7 @@ import Link from "next/link";
 import { requestMilestoneCompletion, approveMilestone, rejectMilestone } from "@/lib/project-actions";
 
 export const metadata = {
-  title: "Deliverables | Astelfin",
+  title: "Deliverables | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

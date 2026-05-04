@@ -5,7 +5,7 @@ import { calculateNetPay, formatCurrency } from "@/lib/finance-utils";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Run Payroll | Astelfin",
+  title: "Run Payroll | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 

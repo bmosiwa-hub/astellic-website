@@ -7,7 +7,7 @@ import Link from "next/link";
 import bcrypt from "bcryptjs";
 
 export const metadata = {
-  title: "Employee | Astelfin",
+  title: "Employee | Astelfin IMS",
   robots: { index: false, follow: false },
 };
 
