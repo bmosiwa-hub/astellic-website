@@ -12,6 +12,13 @@ const DEPARTMENTS = [
   "Support Staff",
 ] as const;
 
+const CONTRACT_TYPES = [
+  { value: "PERMANENT", label: "Permanent" },
+  { value: "CONTRACT",  label: "Fixed-Term Contract" },
+  { value: "CASUAL",    label: "Casual / Part-Time" },
+  { value: "INTERN",    label: "Intern" },
+] as const;
+
 const CURRENCIES = ["MWK", "USD", "GBP", "EUR", "ZAR", "AUD", "CAD", "NOK", "SEK", "DKK"];
 
 // ── Tax helpers ───────────────────────────────────────────────────────────────
@@ -42,6 +49,7 @@ interface Props {
     email?: string;
     position?: string;
     department?: string;
+    contractType?: string;
     grossSalary?: number;
     currency?: string;
     salaryExchangeRate?: number;
@@ -116,6 +124,13 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
               <option value="">— Select department —</option>
               {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Contract Type</label>
+            <select name="contractType" defaultValue={defaultValues?.contractType ?? "PERMANENT"}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+              {CONTRACT_TYPES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
           </div>
           <div>

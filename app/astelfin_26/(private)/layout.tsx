@@ -10,8 +10,8 @@ export const metadata = {
 };
 
 // Routes each role is allowed to visit (prefix match)
-const STAFF_ALLOWED    = ["/astelfin_26/my/"];
-const PM_ALLOWED       = ["/astelfin_26/my/", "/astelfin_26/projects", "/astelfin_26/deliverables"];
+const STAFF_ALLOWED    = ["/astelfin_26/my"];
+const PM_ALLOWED       = ["/astelfin_26/my", "/astelfin_26/projects", "/astelfin_26/deliverables"];
 
 export default async function PrivateFinanceLayout({
   children,
@@ -30,7 +30,7 @@ export default async function PrivateFinanceLayout({
     const headersList = await headers();
     const pathname = headersList.get("x-pathname") ?? "";
     const allowed = STAFF_ALLOWED.some((p) => pathname.startsWith(p));
-    if (!allowed) redirect("/astelfin_26/my/submissions");
+    if (!allowed) redirect("/astelfin_26/my");
   }
 
   if (isPM) {

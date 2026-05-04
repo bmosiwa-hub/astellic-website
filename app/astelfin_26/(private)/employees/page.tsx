@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const metadata = {
@@ -8,10 +10,25 @@ export const metadata = {
 };
 
 export default async function EmployeesPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  // Fetch employees with their linked user accounts
   const employees = await prisma.employee.findMany({
     where:   { active: true },
-    orderBy: { name: "asc" },
+    orderBy: [{ employeeNumber: "asc" }, { name: "asc" }],
   });
+
+  // Map employee id → whether they have a linked user
+  const linkedUserIds = await prisma.user.findMany({
+    where:  { employeeId: { in: employees.map((e) => e.id) } },
+    select: { employeeId: true },
+  });
+  const linkedSet = new Set(linkedUserIds.map((u) => u.employeeId));
+
+  const isCEO = role === "CEO";
 
   function getNet(e: (typeof employees)[number]) {
     const isMWK = e.currency === "MWK";
@@ -39,78 +56,66 @@ export default async function EmployeesPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Emp No.</th>
                 <th className="text-left  px-5 py-3 font-semibold text-gray-600">Name</th>
-                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Position</th>
-                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Department</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross Salary</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross (MWK)</th>
+                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Position / Dept</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">PAYE (MWK)</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Salary</th>
-                <th className="text-left  px-5 py-3 font-semibold text-gray-600">Since</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Pay</th>
+                <th className="text-center px-5 py-3 font-semibold text-gray-600">User</th>
+                <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {employees.map((e) => {
-                const net     = getNet(e);
-                const isMWK   = e.currency === "MWK";
-                const noRate  = !isMWK && !e.salaryExchangeRate;
+                const net    = getNet(e);
+                const isMWK  = e.currency === "MWK";
+                const noRate = !isMWK && !e.salaryExchangeRate;
+                const hasUser = linkedSet.has(e.id);
 
                 return (
                   <tr key={e.id} className="hover:bg-gray-50">
                     <td className="px-5 py-3">
+                      <span className="text-xs font-bold text-brand-navy bg-brand-navy/5 px-2 py-0.5 rounded">
+                        {e.employeeNumber ?? "—"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
                       <p className="font-medium text-brand-navy">{e.name}</p>
                       {e.email && <p className="text-xs text-gray-400">{e.email}</p>}
                     </td>
-                    <td className="px-5 py-3 text-gray-600">{e.position}</td>
-                    <td className="px-5 py-3 text-gray-500 text-xs">{e.department ?? "—"}</td>
+                    <td className="px-5 py-3">
+                      <p className="text-gray-700">{e.position}</p>
+                      <p className="text-xs text-gray-400">{e.department ?? "—"} · {e.contractType}</p>
+                    </td>
 
-                    {/* Gross (original currency) */}
+                    {/* Gross */}
                     <td className="px-5 py-3 text-right">
-                      <p className="font-semibold text-brand-navy">
-                        {formatCurrency(e.grossSalary, e.currency)}
-                      </p>
+                      <p className="font-semibold text-brand-navy">{formatCurrency(e.grossSalary, e.currency)}</p>
                       {!isMWK && e.salaryExchangeRate && (
                         <p className="text-[11px] text-gray-400 mt-0.5">
-                          @ {e.salaryExchangeRate.toLocaleString("en-MW", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+                          @ {e.salaryExchangeRate.toLocaleString("en-MW", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}
                         </p>
                       )}
+                      {noRate && <span className="text-xs text-amber-500">no rate</span>}
                     </td>
 
-                    {/* Gross MWK equivalent */}
+                    {/* PAYE */}
                     <td className="px-5 py-3 text-right">
                       {net ? (
-                        <p className="text-sm text-gray-700">
-                          {formatCurrency(net.grossMWK, "MWK")}
-                        </p>
-                      ) : noRate ? (
-                        <span className="text-xs text-amber-500">no rate</span>
-                      ) : (
-                        <span className="text-gray-400">—</span>
-                      )}
-                    </td>
-
-                    {/* PAYE in MWK */}
-                    <td className="px-5 py-3 text-right">
-                      {net ? (
-                        <p className="text-sm font-semibold text-gray-700">
-                          {formatCurrency(net.payeMWK, "MWK")}
-                        </p>
+                        <p className="text-sm text-orange-600 font-semibold">{formatCurrency(net.payeMWK, "MWK")}</p>
                       ) : (
                         <span className="text-gray-300">—</span>
                       )}
                     </td>
 
-                    {/* Net salary */}
+                    {/* Net */}
                     <td className="px-5 py-3 text-right">
                       {net ? (
                         <>
-                          <p className="font-semibold text-green-700">
-                            {formatCurrency(net.netPay, e.currency)}
-                          </p>
+                          <p className="font-semibold text-green-700">{formatCurrency(net.netPay, e.currency)}</p>
                           {!isMWK && (
-                            <p className="text-xs text-gray-400 mt-0.5">
-                              ≈ {formatCurrency(net.netPayMWK, "MWK")}
-                            </p>
+                            <p className="text-xs text-gray-400 mt-0.5">≈ {formatCurrency(net.netPayMWK, "MWK")}</p>
                           )}
                         </>
                       ) : (
@@ -118,8 +123,25 @@ export default async function EmployeesPage() {
                       )}
                     </td>
 
-                    <td className="px-5 py-3 text-gray-500 text-xs">
-                      {formatDate(e.startDate)}
+                    {/* User linked badge */}
+                    <td className="px-5 py-3 text-center">
+                      {hasUser ? (
+                        <span className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Linked</span>
+                      ) : isCEO ? (
+                        <Link href={`/astelfin_26/employees/${e.id}`}
+                          className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full hover:bg-amber-200 transition-colors">
+                          Assign
+                        </Link>
+                      ) : (
+                        <span className="text-xs text-gray-400">—</span>
+                      )}
+                    </td>
+
+                    <td className="px-5 py-3 text-right">
+                      <Link href={`/astelfin_26/employees/${e.id}`}
+                        className="text-xs text-brand-gold font-semibold hover:underline">
+                        View →
+                      </Link>
                     </td>
                   </tr>
                 );

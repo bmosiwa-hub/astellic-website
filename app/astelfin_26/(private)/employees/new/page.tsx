@@ -21,19 +21,25 @@ async function createEmployee(formData: FormData) {
       ? null
       : parseFloat(rateRaw) || null;
 
+  // Auto-generate employee number: count existing + 1
+  const count = await prisma.employee.count();
+  const employeeNumber = `EMP-${String(count + 1).padStart(3, "0")}`;
+
   const data = {
+    employeeNumber,
     name:               formData.get("name") as string,
-    email:              (formData.get("email") as string)      || null,
+    email:              (formData.get("email") as string)        || null,
     position:           formData.get("position") as string,
-    department:         (formData.get("department") as string) || null,
+    department:         (formData.get("department") as string)   || null,
+    contractType:       (formData.get("contractType") as string) || "PERMANENT",
     grossSalary:        parseFloat(formData.get("grossSalary") as string),
     currency,
     salaryExchangeRate,
-    taxPin:             (formData.get("taxPin") as string)     || null,
-    nssf:               (formData.get("nssf") as string)       || null,
+    taxPin:             (formData.get("taxPin") as string)       || null,
+    nssf:               (formData.get("nssf") as string)         || null,
     pensionRate:        parseFloat(formData.get("pensionRate") as string) || 5,
     startDate:          new Date(formData.get("startDate") as string),
-    notes:              (formData.get("notes") as string)      || null,
+    notes:              (formData.get("notes") as string)        || null,
   };
 
   const record = await prisma.employee.create({ data });
@@ -42,10 +48,11 @@ async function createEmployee(formData: FormData) {
     action:   "CREATE",
     entity:   "Employee",
     entityId: record.id,
-    detail:   `${data.name} — ${data.position}`,
+    detail:   `${data.name} — ${data.position} (${employeeNumber})`,
   });
 
-  redirect("/astelfin_26/employees");
+  // Redirect to detail page so CEO can assign a system user
+  redirect(`/astelfin_26/employees/${record.id}`);
 }
 
 export default async function NewEmployeePage() {

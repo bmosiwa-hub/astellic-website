@@ -178,24 +178,26 @@ model ConsultantPayment {
 }
 
 model Employee {
-  id          String    @id @default(cuid())
-  name        String
-  email       String?
-  position    String
-  department  String?
-  grossSalary Float
-  currency    String    @default("MWK")
-  taxPin      String?
-  nssf        String?
+  id                 String    @id @default(cuid())
+  employeeNumber     String?   @unique       // auto-generated e.g. EMP-001
+  name               String
+  email              String?
+  position           String
+  department         String?
+  contractType       String    @default("PERMANENT") // PERMANENT | CONTRACT | CASUAL | INTERN
+  grossSalary        Float
+  currency           String    @default("MWK")
+  taxPin             String?
+  nssf               String?
   pensionRate        Float     @default(5)   // employee pension % of gross
   salaryExchangeRate Float?                  // MWK per 1 unit of currency (null when MWK)
   startDate          DateTime
-  endDate     DateTime?
-  active      Boolean   @default(true)
-  notes       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  payrolls    Payroll[]
+  endDate            DateTime?
+  active             Boolean   @default(true)
+  notes              String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  payrolls           Payroll[]
 }
 
 model Payroll {
