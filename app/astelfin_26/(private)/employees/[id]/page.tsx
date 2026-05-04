@@ -12,11 +12,22 @@ export const metadata = {
 };
 
 const CONTRACT_LABELS: Record<string, string> = {
-  PERMANENT: "Permanent",
-  CONTRACT:  "Fixed-Term Contract",
-  CASUAL:    "Casual / Part-Time",
-  INTERN:    "Intern",
+  PERMANENT:   "Permanent",
+  CONTRACT:    "Fixed-Term Contract",
+  CONSULTANCY: "Consultancy",
+  INTERNSHIP:  "Internship",
+  VOLUNTEER:   "Volunteer",
 };
+
+const CONTRACT_TYPES = [
+  { value: "PERMANENT",   label: "Permanent" },
+  { value: "CONTRACT",    label: "Fixed-Term Contract" },
+  { value: "CONSULTANCY", label: "Consultancy" },
+  { value: "INTERNSHIP",  label: "Internship" },
+  { value: "VOLUNTEER",   label: "Volunteer" },
+];
+
+const FIXED_TERM_TYPES = new Set(["CONTRACT", "CONSULTANCY", "INTERNSHIP", "VOLUNTEER"]);
 
 /* ── Server Actions ──────────────────────────────────────────── */
 
@@ -99,6 +110,40 @@ async function unlinkUser(formData: FormData) {
 
   const employeeId = formData.get("employeeId") as string;
   redirect(`/astelfin_26/employees/${employeeId}?success=user_unlinked`);
+}
+
+async function updateEmploymentTerms(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId             = formData.get("employeeId") as string;
+  const contractType           = formData.get("contractType") as string;
+  const contractLengthRaw      = formData.get("contractLengthMonths") as string;
+  const contractLengthMonths   = contractLengthRaw ? parseInt(contractLengthRaw) || null : null;
+
+  // Recalculate end date from startDate + new contract length
+  const employee = await prisma.employee.findUnique({ where: { id: employeeId }, select: { startDate: true } });
+  let endDate: Date | null = null;
+  if (employee && contractLengthMonths && contractLengthMonths > 0) {
+    endDate = new Date(employee.startDate);
+    endDate.setMonth(endDate.getMonth() + contractLengthMonths);
+  }
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data:  { contractType, contractLengthMonths, endDate },
+  });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "UPDATE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   `Employment terms updated: ${contractType}${contractLengthMonths ? `, ${contractLengthMonths} months` : ""}`,
+  });
+
+  redirect(`/astelfin_26/employees/${employeeId}?success=terms_updated`);
 }
 
 /* ── Page ────────────────────────────────────────────────────── */
@@ -196,17 +241,27 @@ export default async function EmployeeDetailPage({
           User account has been unlinked from this employee.
         </div>
       )}
+      {success === "terms_updated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Employment terms updated successfully.
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-5">
 
         {/* Employment details */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
-          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Employment Details</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Employment Details</h2>
+          </div>
           <Field label="Employee Number"  value={employee.employeeNumber ?? "Not assigned"} />
-          <Field label="Contract Type"    value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
+          <Field label="Employment Type"  value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
+          {employee.contractLengthMonths && (
+            <Field label="Contract Length" value={`${employee.contractLengthMonths} months`} />
+          )}
           <Field label="Department"       value={employee.department ?? "—"} />
           <Field label="Start Date"       value={formatDate(employee.startDate)} />
-          {employee.endDate && <Field label="End Date" value={formatDate(employee.endDate)} />}
+          {employee.endDate && <Field label="Contract Ends" value={formatDate(employee.endDate)} />}
           {employee.taxPin && <Field label="TPIN"    value={employee.taxPin} />}
           {employee.email  && <Field label="Email"   value={employee.email} />}
           {employee.notes  && <Field label="Notes"   value={employee.notes} />}
@@ -231,6 +286,54 @@ export default async function EmployeeDetailPage({
           </div>
         </div>
       </div>
+
+      {/* ── Employment Terms (CEO edit) ─────────────────────────── */}
+      {isCEO && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Edit Employment Terms</h2>
+          <p className="text-xs text-gray-500">
+            Only the Chief Executive Officer can change employment type and contract length.
+            Updating contract length will automatically recalculate the contract end date.
+          </p>
+          <form action={updateEmploymentTerms} className="space-y-4">
+            <input type="hidden" name="employeeId" value={employee.id} />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>
+                <select name="contractType" defaultValue={employee.contractType}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+                  {CONTRACT_TYPES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Contract Length (months)
+                  <span className="ml-1 font-normal text-gray-400">— leave blank for permanent</span>
+                </label>
+                <input
+                  name="contractLengthMonths"
+                  type="number" min="1" max="120" step="1"
+                  defaultValue={employee.contractLengthMonths ?? ""}
+                  placeholder="e.g. 12"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+            </div>
+            {employee.endDate && (
+              <p className="text-xs text-gray-500">
+                Current contract end date: <span className="font-semibold text-amber-700">{formatDate(employee.endDate)}</span>
+                {" "}— will be recalculated if you change the contract length above.
+              </p>
+            )}
+            <button type="submit"
+              className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+              Save Employment Terms
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* ── System User Account ─────────────────────────────────── */}
       <div className={`rounded-2xl border p-6 space-y-4 ${linkedUser ? "bg-green-50 border-green-200" : "bg-amber-50 border-amber-200"}`}>

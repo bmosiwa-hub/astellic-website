@@ -13,11 +13,15 @@ const DEPARTMENTS = [
 ] as const;
 
 const CONTRACT_TYPES = [
-  { value: "PERMANENT", label: "Permanent" },
-  { value: "CONTRACT",  label: "Fixed-Term Contract" },
-  { value: "CASUAL",    label: "Casual / Part-Time" },
-  { value: "INTERN",    label: "Intern" },
+  { value: "PERMANENT",   label: "Permanent" },
+  { value: "CONTRACT",    label: "Fixed-Term Contract" },
+  { value: "CONSULTANCY", label: "Consultancy" },
+  { value: "INTERNSHIP",  label: "Internship" },
+  { value: "VOLUNTEER",   label: "Volunteer" },
 ] as const;
+
+// Types that have a defined end date / contract length
+const FIXED_TERM_TYPES = new Set(["CONTRACT", "CONSULTANCY", "INTERNSHIP", "VOLUNTEER"]);
 
 const CURRENCIES = ["MWK", "USD", "GBP", "EUR", "ZAR", "AUD", "CAD", "NOK", "SEK", "DKK"];
 
@@ -50,6 +54,7 @@ interface Props {
     position?: string;
     department?: string;
     contractType?: string;
+    contractLengthMonths?: number;
     grossSalary?: number;
     currency?: string;
     salaryExchangeRate?: number;
@@ -66,11 +71,24 @@ interface Props {
 export default function EmployeeForm({ action, defaultValues }: Props) {
   const [isPending, startTransition] = useTransition();
 
-  const [gross,        setGross]        = useState(defaultValues?.grossSalary ?? 0);
-  const [pensionRate,  setPensionRate]  = useState(defaultValues?.pensionRate  ?? 5);
-  const [currency,     setCurrency]     = useState(defaultValues?.currency     ?? "MWK");
-  const [exchangeRate, setExchangeRate] = useState(defaultValues?.salaryExchangeRate ?? 0);
-  const [department,   setDepartment]  = useState(defaultValues?.department   ?? "");
+  const [gross,                setGross]                = useState(defaultValues?.grossSalary ?? 0);
+  const [pensionRate,          setPensionRate]          = useState(defaultValues?.pensionRate  ?? 5);
+  const [currency,             setCurrency]             = useState(defaultValues?.currency     ?? "MWK");
+  const [exchangeRate,         setExchangeRate]         = useState(defaultValues?.salaryExchangeRate ?? 0);
+  const [department,           setDepartment]           = useState(defaultValues?.department   ?? "");
+  const [contractType,         setContractType]         = useState(defaultValues?.contractType ?? "PERMANENT");
+  const [contractLengthMonths, setContractLengthMonths] = useState<number | "">(defaultValues?.contractLengthMonths ?? "");
+  const [startDate,            setStartDate]            = useState(defaultValues?.startDate ?? "");
+
+  const isFixedTerm = FIXED_TERM_TYPES.has(contractType);
+
+  // Calculate contract expiry date from startDate + contractLengthMonths
+  const expiryDate = (() => {
+    if (!isFixedTerm || !startDate || !contractLengthMonths) return null;
+    const d = new Date(startDate);
+    d.setMonth(d.getMonth() + Number(contractLengthMonths));
+    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+  })();
 
   const isMWK    = currency === "MWK";
   const rate     = isMWK ? 1 : exchangeRate;
@@ -127,8 +145,9 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Contract Type</label>
-            <select name="contractType" defaultValue={defaultValues?.contractType ?? "PERMANENT"}
+            <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>
+            <select name="contractType" value={contractType}
+              onChange={e => { setContractType(e.target.value); setContractLengthMonths(""); }}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
               {CONTRACT_TYPES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
@@ -137,9 +156,42 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             <label className="block text-xs font-medium text-gray-600 mb-1">
               Start Date <span className="text-red-500">*</span>
             </label>
-            <input name="startDate" type="date" required defaultValue={defaultValues?.startDate}
+            <input name="startDate" type="date" required
+              value={startDate}
+              onChange={e => setStartDate(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
           </div>
+
+          {/* Contract length — only shown for fixed-term types */}
+          {isFixedTerm && (
+            <div className="col-span-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Contract Length (months) <span className="text-red-500">*</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  name="contractLengthMonths"
+                  type="number" min="1" max="120" step="1"
+                  required={isFixedTerm}
+                  value={contractLengthMonths}
+                  onChange={e => setContractLengthMonths(e.target.value === "" ? "" : parseInt(e.target.value))}
+                  placeholder="e.g. 12"
+                  className="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+                <span className="text-sm text-gray-500">months</span>
+                {expiryDate && (
+                  <span className="text-sm text-brand-navy font-medium">
+                    → Expires <span className="text-amber-600">{expiryDate}</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Enter the total duration. The contract end date will be calculated automatically.
+              </p>
+            </div>
+          )}
+          {/* Hidden field keeps contractLengthMonths null for permanent employees */}
+          {!isFixedTerm && <input type="hidden" name="contractLengthMonths" value="" />}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Currency</label>
             <select name="currency" value={currency} onChange={e => { setCurrency(e.target.value); setExchangeRate(0); }}

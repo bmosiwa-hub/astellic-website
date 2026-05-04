@@ -184,7 +184,8 @@ model Employee {
   email              String?
   position           String
   department         String?
-  contractType       String    @default("PERMANENT") // PERMANENT | CONTRACT | CASUAL | INTERN
+  contractType         String    @default("PERMANENT") // PERMANENT | CONTRACT | CONSULTANCY | INTERNSHIP | VOLUNTEER
+  contractLengthMonths Int?                           // null = indefinite; populated for fixed-term types
   grossSalary        Float
   currency           String    @default("MWK")
   taxPin             String?

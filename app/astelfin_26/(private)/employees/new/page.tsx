@@ -22,28 +22,41 @@ async function createEmployee(formData: FormData) {
       : parseFloat(rateRaw) || null;
 
   // Auto-generate employee number: AST-{joinYear}-{sequential within that year}
-  const startDate = new Date(formData.get("startDate") as string);
-  const joinYear  = startDate.getFullYear();
+  const startDate  = new Date(formData.get("startDate") as string);
+  const joinYear   = startDate.getFullYear();
   const countInYear = await prisma.employee.count({
     where: { employeeNumber: { startsWith: `AST-${joinYear}-` } },
   });
   const employeeNumber = `AST-${joinYear}-${String(countInYear + 1).padStart(3, "0")}`;
 
+  const contractType         = (formData.get("contractType") as string) || "PERMANENT";
+  const contractLengthRaw    = formData.get("contractLengthMonths") as string;
+  const contractLengthMonths = contractLengthRaw ? parseInt(contractLengthRaw) || null : null;
+
+  // Calculate end date from start date + contract length (if fixed-term)
+  let endDate: Date | null = null;
+  if (contractLengthMonths && contractLengthMonths > 0) {
+    endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + contractLengthMonths);
+  }
+
   const data = {
     employeeNumber,
-    name:               formData.get("name") as string,
-    email:              (formData.get("email") as string)        || null,
-    position:           formData.get("position") as string,
-    department:         (formData.get("department") as string)   || null,
-    contractType:       (formData.get("contractType") as string) || "PERMANENT",
-    grossSalary:        parseFloat(formData.get("grossSalary") as string),
+    name:                formData.get("name") as string,
+    email:               (formData.get("email") as string)  || null,
+    position:            formData.get("position") as string,
+    department:          (formData.get("department") as string) || null,
+    contractType,
+    contractLengthMonths,
+    grossSalary:         parseFloat(formData.get("grossSalary") as string),
     currency,
     salaryExchangeRate,
-    taxPin:             (formData.get("taxPin") as string)       || null,
-    nssf:               (formData.get("nssf") as string)         || null,
-    pensionRate:        parseFloat(formData.get("pensionRate") as string) || 5,
-    startDate:          new Date(formData.get("startDate") as string),
-    notes:              (formData.get("notes") as string)        || null,
+    taxPin:              (formData.get("taxPin") as string)  || null,
+    nssf:                (formData.get("nssf") as string)    || null,
+    pensionRate:         parseFloat(formData.get("pensionRate") as string) || 5,
+    startDate,
+    endDate,
+    notes:               (formData.get("notes") as string)   || null,
   };
 
   const record = await prisma.employee.create({ data });

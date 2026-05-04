@@ -18,10 +18,11 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const CONTRACT_LABELS: Record<string, string> = {
-  PERMANENT: "Permanent",
-  CONTRACT:  "Fixed-Term Contract",
-  CASUAL:    "Casual / Part-Time",
-  INTERN:    "Intern",
+  PERMANENT:   "Permanent",
+  CONTRACT:    "Fixed-Term Contract",
+  CONSULTANCY: "Consultancy",
+  INTERNSHIP:  "Internship",
+  VOLUNTEER:   "Volunteer",
 };
 
 const SUBMISSION_STATUS_LABELS: Record<string, string> = {
