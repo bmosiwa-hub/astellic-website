@@ -268,10 +268,7 @@ export default function Sidebar({
 
       {/* Brand */}
       <div className="px-5 py-5 border-b border-white/10">
-        <p className="font-bold text-lg tracking-tight">Astelfin IMS</p>
-        <p className="text-[10px] uppercase tracking-widest text-brand-gold mt-0.5">
-          Integrated Management System
-        </p>
+        <p className="font-bold text-lg tracking-tight">Astelfin</p>
       </div>
 
       {/* Nav */}
