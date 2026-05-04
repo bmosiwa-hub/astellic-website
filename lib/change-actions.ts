@@ -8,6 +8,23 @@ import { redirect } from "next/navigation";
 
 type Entity = "Income" | "Expense";
 
+/** Build a human-readable summary from a record snapshot for audit logs. */
+function snapshotSummary(snapshot: object): string {
+  const s = snapshot as Record<string, unknown>;
+  // description covers Income & Expense; lender covers Debt
+  const desc     = (s.description as string) || (s.lender as string) || "record";
+  const amount   = s.amount ?? s.principal;         // Income/Expense use amount; Debt uses principal
+  const currency = (s.currency as string) || "MWK";
+  if (amount !== undefined && amount !== null) {
+    const formatted = Number(amount).toLocaleString("en-MW", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return `${desc} — ${currency} ${formatted}`;
+  }
+  return desc;
+}
+
 /**
  * Delete a transaction.
  * - CEO: deletes immediately and writes an audit log.
@@ -37,7 +54,7 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
       action: "DELETE",
       entity,
       entityId,
-      detail: "Deleted directly by Chief Executive Officer",
+      detail: `Deleted by CEO — ${snapshotSummary(snapshot)}`,
     });
   } else {
     // Guard: don't duplicate pending changes
@@ -60,7 +77,7 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
       action: "REQUEST_DELETE",
       entity,
       entityId,
-      detail: "Delete request submitted for Chief Executive Officer approval",
+      detail: `Delete requested — ${snapshotSummary(snapshot)}`,
     });
   }
 
@@ -139,12 +156,13 @@ export async function approveChange(changeId: string, formData: FormData) {
     },
   });
 
+  const approvedSummary = snapshotSummary(change.snapshot as object);
   await auditLog({
     userId: session.user.id!,
     action: "APPROVED",
     entity: change.entity,
     entityId: change.entityId,
-    detail: `${change.changeType} request approved${reviewNote ? ` — ${reviewNote}` : ""}`,
+    detail: `${change.changeType} approved — ${approvedSummary}${reviewNote ? ` · ${reviewNote}` : ""}`,
   });
 
   revalidatePath("/astelfin_26/approvals");
