@@ -17,7 +17,7 @@ export default async function EmployeesPage() {
     const isMWK = e.currency === "MWK";
     const rate  = isMWK ? 1 : (e.salaryExchangeRate ?? 0);
     if (rate === 0) return null;
-    return calculateNetPay(e.grossSalary, 0.03, e.pensionRate, rate);
+    return calculateNetPay(e.grossSalary, e.pensionRate, rate);
   }
 
   return (

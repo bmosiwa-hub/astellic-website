@@ -134,7 +134,6 @@ export default async function PayrollPage() {
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Employee</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">PAYE</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">NSSF</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Pay</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Status</th>
               </tr>
@@ -149,7 +148,6 @@ export default async function PayrollPage() {
                   </td>
                   <td className="px-5 py-3 text-right text-gray-700">{formatCurrency(p.grossSalary, p.currency)}</td>
                   <td className="px-5 py-3 text-right text-orange-600">{formatCurrency(p.paye, p.currency)}</td>
-                  <td className="px-5 py-3 text-right text-gray-500">{formatCurrency(p.nssfEmployee, p.currency)}</td>
                   <td className="px-5 py-3 text-right font-bold text-brand-navy">{formatCurrency(p.netPay, p.currency)}</td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-gray-600"}`}>

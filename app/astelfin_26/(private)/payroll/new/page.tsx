@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { calculateNetPay, formatCurrency } from "@/lib/finance-utils";
-import { buildRateMap } from "@/lib/currency-utils";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -22,31 +21,28 @@ async function runPayroll(formData: FormData) {
   const grossSalary     = parseFloat(formData.get("grossSalary") as string);
   const otherDeductions = parseFloat((formData.get("otherDeductions") as string) || "0");
 
-  // Look up the RBM middle rate for this employee's currency
+  // Use the exchange rate stored on the employee record
   let middleRate = 1;
   if (employee.currency !== "MWK") {
-    const rate = await prisma.exchangeRate.findUnique({ where: { currency: employee.currency } });
-    middleRate = rate?.middleRate ?? 0;
+    middleRate = employee.salaryExchangeRate ?? 0;
     if (middleRate === 0) {
-      // Cannot compute — redirect with error
       redirect("/astelfin_26/payroll/new?error=no_rate&currency=" + employee.currency);
     }
   }
 
-  const { paye, nssfEmployee, nssfEmployer, pension, netPay,
-          payeMWK, nssfEmployeeMWK, nssfEmployerMWK, pensionMWK, netPayMWK, grossMWK } =
-    calculateNetPay(grossSalary, 0.03, employee.pensionRate, middleRate);
+  const { paye, pension, netPay, payeMWK, pensionMWK, netPayMWK, grossMWK } =
+    calculateNetPay(grossSalary, employee.pensionRate, middleRate);
 
   const data = {
     employeeId,
     period:         formData.get("period") as string,
     grossSalary,
-    // Store PAYE & NSSF in MWK (these are remitted to MRA/NSSF in Kwacha)
+    // PAYE stored in MWK (remitted to MRA in Kwacha)
     paye:           payeMWK,
-    nssfEmployee:   nssfEmployeeMWK,
-    nssfEmployer:   nssfEmployerMWK,
+    nssfEmployee:   0,
+    nssfEmployer:   0,
     otherDeductions,
-    // Net is converted back to the employee's quoted currency
+    // Net converted back to the employee's quoted currency
     netPay:         Math.max(0, netPay - otherDeductions),
     currency:       employee.currency,
     paidDate:       formData.get("paidDate") ? new Date(formData.get("paidDate") as string) : null,
@@ -68,8 +64,8 @@ async function runPayroll(formData: FormData) {
     detail:   `${employee.name} — ${data.period} — Net ${netDisplay}`,
   });
 
-  // Suppress unused var warning — these are available for audit/logging
-  void (grossMWK + paye + nssfEmployee + nssfEmployer + pension + pensionMWK);
+  // Suppress unused var warnings
+  void (grossMWK + paye + pension + pensionMWK);
 
   redirect("/astelfin_26/payroll");
 }
@@ -81,23 +77,18 @@ export default async function NewPayrollPage({
 }) {
   const { error, currency: errorCurrency } = await searchParams;
 
-  const [employees, exchangeRates] = await Promise.all([
-    prisma.employee.findMany({
-      where:   { active: true },
-      orderBy: { name: "asc" },
-      select:  { id: true, name: true, position: true, grossSalary: true, currency: true, pensionRate: true },
-    }),
-    prisma.exchangeRate.findMany({ select: { currency: true, middleRate: true } }),
-  ]);
-
-  const rateMap = buildRateMap(exchangeRates);
+  const employees = await prisma.employee.findMany({
+    where:   { active: true },
+    orderBy: { name: "asc" },
+    select:  { id: true, name: true, position: true, grossSalary: true, currency: true, pensionRate: true, salaryExchangeRate: true },
+  });
 
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-navy">Run Payroll</h1>
         <p className="text-gray-500 text-sm mt-1">
-          PAYE and NSSF are calculated on the MWK equivalent of the gross salary.
+          PAYE and pension are calculated on the MWK equivalent of the gross salary.
           Net is converted back to the employee&apos;s quoted currency.
         </p>
       </div>
@@ -122,8 +113,9 @@ export default async function NewPayrollPage({
                 <option value="">— Select employee —</option>
                 {employees.map((e) => {
                   const isForeign = e.currency !== "MWK";
-                  const rate = isForeign ? rateMap[e.currency] : null;
-                  const grossMWK = rate ? e.grossSalary * rate : null;
+                  const grossMWK = isForeign && e.salaryExchangeRate
+                    ? e.grossSalary * e.salaryExchangeRate
+                    : null;
                   return (
                     <option key={e.id} value={e.id}>
                       {e.name} ({e.position}) —{" "}
@@ -184,12 +176,12 @@ export default async function NewPayrollPage({
           <div className="bg-brand-light rounded-xl p-4 text-sm text-brand-navy space-y-1.5">
             <p className="font-semibold">Malawi PAYE Bands (monthly, on MWK equivalent)</p>
             <p className="text-gray-500 text-xs">
-              MWK 0–14,167: 0% · MWK 14,167–130,833: 30% · MWK 130,833–833,333: 35% · Above: 40%
+              MWK 0 – 170,000: 0% &nbsp;·&nbsp; MWK 170,001 – 1,570,000: 30% &nbsp;·&nbsp; Above MWK 1,570,000: 35%
             </p>
-            <p className="text-gray-500 text-xs">NSSF: 3% of gross · Pension: per employee record</p>
+            <p className="text-gray-500 text-xs">Pension: per employee record · No NSSF deduction</p>
             <p className="text-gray-500 text-xs font-medium">
-              For foreign-currency employees, PAYE &amp; NSSF are stored in MWK (the amount remitted
-              to MRA/NSSF). Net salary is converted back to the employee&apos;s currency at the current RBM rate.
+              For foreign-currency employees, PAYE is stored in MWK (the amount remitted to MRA).
+              Net salary is converted back to the employee&apos;s currency at the rate recorded on the employee.
             </p>
           </div>
 

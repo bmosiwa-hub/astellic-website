@@ -17,14 +17,12 @@ const CURRENCIES = ["MWK", "USD", "GBP", "EUR", "ZAR", "AUD", "CAD", "NOK", "SEK
 // ── Tax helpers ───────────────────────────────────────────────────────────────
 
 function calcPAYE(mwkGross: number): number {
-  const B1 = 170_000 / 12;      // 14,166.67  → 0%
-  const B2 = 1_570_000 / 12;    // 130,833.33 → 30%
-  const B3 = 10_000_000 / 12;   // 833,333.33 → 35%
+  const B1 = 170_000;    // 0% up to here
+  const B2 = 1_570_000;  // 30% up to here, 35% above
   if (mwkGross <= B1) return 0;
   let tax = 0;
   tax += (Math.min(mwkGross, B2) - B1) * 0.30;
-  if (mwkGross > B2) tax += (Math.min(mwkGross, B3) - B2) * 0.35;
-  if (mwkGross > B3) tax += (mwkGross - B3) * 0.40;
+  if (mwkGross > B2) tax += (mwkGross - B2) * 0.35;
   return r2(tax);
 }
 
@@ -74,9 +72,8 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
 
   const grossMWK    = r2(gross * rate);
   const payeMWK     = hasRate ? calcPAYE(grossMWK) : 0;
-  const nssfMWK     = hasRate ? r2(grossMWK * 0.03) : 0;
   const pensionMWK  = hasRate ? r2(grossMWK * (pensionRate / 100)) : 0;
-  const netMWK      = hasRate ? r2(grossMWK - payeMWK - nssfMWK - pensionMWK) : 0;
+  const netMWK      = hasRate ? r2(grossMWK - payeMWK - pensionMWK) : 0;
   const netFX       = !isMWK && rate > 0 ? r2(netMWK / rate) : 0;
 
   const showBreakdown = gross > 0 && hasRate;
@@ -269,16 +266,14 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
                   PAYE — calculated on MWK {fmtMWK(isMWK ? gross : grossMWK)}
                 </p>
                 <div className="pl-2 space-y-0.5">
-                  <BandRow label={`Band 1:  0%  up to MWK ${fmtMWK(170_000/12)}`}                                            hit={(isMWK ? gross : grossMWK) > 0} />
-                  <BandRow label={`Band 2: 30%  MWK ${fmtMWK(170_000/12)} – ${fmtMWK(1_570_000/12)}`}   hit={(isMWK ? gross : grossMWK) > 170_000/12} />
-                  <BandRow label={`Band 3: 35%  MWK ${fmtMWK(1_570_000/12)} – ${fmtMWK(10_000_000/12)}`} hit={(isMWK ? gross : grossMWK) > 1_570_000/12} />
-                  <BandRow label={`Band 4: 40%  above MWK ${fmtMWK(10_000_000/12)}`}                      hit={(isMWK ? gross : grossMWK) > 10_000_000/12} />
+                  <BandRow label="Band 1:  0%   MWK 0 – 170,000"                  hit={(isMWK ? gross : grossMWK) > 0} />
+                  <BandRow label="Band 2: 30%   MWK 170,001 – 1,570,000"          hit={(isMWK ? gross : grossMWK) > 170_000} />
+                  <BandRow label="Band 3: 35%   above MWK 1,570,000"              hit={(isMWK ? gross : grossMWK) > 1_570_000} />
                 </div>
               </div>
 
-              <DeductionRow label="PAYE"                          mwk={payeMWK}    fx={isMWK ? null : { currency, val: r2(payeMWK   / rate) }} />
-              <DeductionRow label="NSSF Employee Contribution (3%)" mwk={nssfMWK}  fx={isMWK ? null : { currency, val: r2(nssfMWK   / rate) }} />
-              <DeductionRow label={`Pension (${pensionRate}%)`}   mwk={pensionMWK} fx={isMWK ? null : { currency, val: r2(pensionMWK/ rate) }} />
+              <DeductionRow label="PAYE"                        mwk={payeMWK}    fx={isMWK ? null : { currency, val: r2(payeMWK   / rate) }} />
+              <DeductionRow label={`Pension (${pensionRate}%)`} mwk={pensionMWK} fx={isMWK ? null : { currency, val: r2(pensionMWK/ rate) }} />
 
               {/* Separator */}
               <div className="border-t-2 border-gray-300" />
@@ -315,7 +310,7 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
         )}
 
         <p className="text-xs text-gray-400 italic">
-          Note: For consultants, Withholding Tax (WHT) of 20% applies instead of PAYE and NSSF.
+          Note: For consultants, Withholding Tax (WHT) of 20% applies instead of PAYE.
           Manage consultant payments separately under Requests.
         </p>
       </div>
