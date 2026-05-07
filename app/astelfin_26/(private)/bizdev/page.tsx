@@ -24,10 +24,10 @@ const CLASSIFICATION_COLORS: Record<string, string> = {
 };
 
 const THEMATIC_LABELS: Record<string, string> = {
-  ECONOMIC_DEVELOPMENT: "Economic Development",
-  GOVERNANCE:           "Governance",
-  SOCIAL_DEVELOPMENT:   "Social Development",
-  HEALTH:               "Health",
+  HEALTH_NUTRITION:        "Health & Nutrition Systems",
+  GOVERNANCE_PUBLIC_SECTOR:"Governance & Public Sector Reform",
+  HUMAN_DEVELOPMENT:       "Human Development & Social Systems",
+  CLIMATE_AGRICULTURE:     "Climate, Agriculture & Sustainability",
 };
 
 // ── Server Actions ────────────────────────────────────────────────────────────

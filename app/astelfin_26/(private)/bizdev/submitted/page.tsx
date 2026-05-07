@@ -24,10 +24,10 @@ const CLASSIFICATION_COLORS: Record<string, string> = {
 };
 
 const THEMATIC_LABELS: Record<string, string> = {
-  ECONOMIC_DEVELOPMENT: "Economic Development",
-  GOVERNANCE:           "Governance",
-  SOCIAL_DEVELOPMENT:   "Social Development",
-  HEALTH:               "Health",
+  HEALTH_NUTRITION:        "Health & Nutrition Systems",
+  GOVERNANCE_PUBLIC_SECTOR:"Governance & Public Sector Reform",
+  HUMAN_DEVELOPMENT:       "Human Development & Social Systems",
+  CLIMATE_AGRICULTURE:     "Climate, Agriculture & Sustainability",
 };
 
 // Three months in ms
@@ -203,6 +203,19 @@ export default async function SubmittedOpportunitiesPage({
   // Deletion requests (CEO sees these)
   const pendingDeletion = noFeedback.filter((o) => o.deletionRequestedBy && !o.deletionApprovedBy);
 
+  // ── Success rate analytics (only from decided outcomes) ───────
+  const decided = allSubmitted.filter((o) => o.bidStatus === "WON" || o.bidStatus === "REJECTED");
+  const wonTotal = decided.filter((o) => o.bidStatus === "WON").length;
+  const overallRate = decided.length > 0 ? Math.round((wonTotal / decided.length) * 100) : null;
+
+  const CATEGORIES = ["CONSULTANCY", "ADVISORY", "IMPLEMENTATION"] as const;
+  const categoryStats = CATEGORIES.map((cat) => {
+    const dec  = decided.filter((o) => o.classification === cat);
+    const won  = dec.filter((o) => o.bidStatus === "WON").length;
+    const rate = dec.length > 0 ? Math.round((won / dec.length) * 100) : null;
+    return { cat, won, total: dec.length, rate };
+  });
+
   const currentList = activeTab === "nofeedback" ? noFeedback : activeTab === "closed" ? closed : active;
 
   function OppRow({ opp, showBidActions, showDelete }: {
@@ -346,6 +359,77 @@ export default async function SubmittedOpportunitiesPage({
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Closed (Won / Rejected)</p>
           <p className="text-2xl font-bold text-gray-600 mt-1">{closed.length}</p>
         </div>
+      </div>
+
+      {/* ── Bid Success Rate ───────────────────────────────────── */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Bid Success Rate</h2>
+          <span className="text-xs text-gray-400">Based on decided outcomes only (Won or Rejected)</span>
+        </div>
+
+        {decided.length === 0 ? (
+          <p className="text-sm text-gray-400 italic">No decided outcomes yet — success rate will appear once bids are marked Won or Rejected.</p>
+        ) : (
+          <>
+            {/* Overall rate */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-gray-700">Overall</span>
+                  <span className="text-sm font-bold text-brand-navy">
+                    {wonTotal} / {decided.length} won
+                    {overallRate !== null && (
+                      <span className={`ml-2 text-base font-extrabold ${overallRate >= 50 ? "text-green-600" : overallRate >= 30 ? "text-amber-600" : "text-red-500"}`}>
+                        {overallRate}%
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className={`h-2.5 rounded-full transition-all ${overallRate! >= 50 ? "bg-green-500" : overallRate! >= 30 ? "bg-amber-400" : "bg-red-400"}`}
+                    style={{ width: `${overallRate ?? 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* By category */}
+            <div className="grid grid-cols-3 gap-3 pt-1">
+              {categoryStats.map(({ cat, won, total, rate }) => {
+                const label  = CLASSIFICATION_LABELS[cat] ?? cat;
+                const color  = CLASSIFICATION_COLORS[cat] ?? "bg-gray-100 text-gray-600";
+                const barColor = rate === null ? "bg-gray-200"
+                  : rate >= 50 ? "bg-green-500"
+                  : rate >= 30 ? "bg-amber-400"
+                  : "bg-red-400";
+                return (
+                  <div key={cat} className="bg-gray-50 rounded-xl border border-gray-100 p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>{label}</span>
+                      {rate !== null && (
+                        <span className={`text-sm font-extrabold ${rate >= 50 ? "text-green-600" : rate >= 30 ? "text-amber-600" : "text-red-500"}`}>
+                          {rate}%
+                        </span>
+                      )}
+                    </div>
+                    {total === 0 ? (
+                      <p className="text-xs text-gray-400">No decided bids</p>
+                    ) : (
+                      <>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div className={`h-1.5 rounded-full ${barColor}`} style={{ width: `${rate ?? 0}%` }} />
+                        </div>
+                        <p className="text-xs text-gray-500">{won} won · {total - won} rejected · {total} total</p>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Tabs */}

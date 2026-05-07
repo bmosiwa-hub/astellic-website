@@ -17,24 +17,24 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const THEMATIC_LABELS: Record<string, string> = {
-  ECONOMIC_DEVELOPMENT: "Economic Development",
-  GOVERNANCE:           "Governance",
-  SOCIAL_DEVELOPMENT:   "Social Development",
-  HEALTH:               "Health",
+  HEALTH_NUTRITION:        "Health & Nutrition Systems",
+  GOVERNANCE_PUBLIC_SECTOR:"Governance & Public Sector Reform",
+  HUMAN_DEVELOPMENT:       "Human Development & Social Systems",
+  CLIMATE_AGRICULTURE:     "Climate, Agriculture & Sustainability",
 };
 
 const THEMATIC_COLORS: Record<string, string> = {
-  ECONOMIC_DEVELOPMENT: "bg-amber-50 border-amber-200",
-  GOVERNANCE:           "bg-blue-50 border-blue-200",
-  SOCIAL_DEVELOPMENT:   "bg-purple-50 border-purple-200",
-  HEALTH:               "bg-green-50 border-green-200",
+  HEALTH_NUTRITION:        "bg-green-50 border-green-200",
+  GOVERNANCE_PUBLIC_SECTOR:"bg-blue-50 border-blue-200",
+  HUMAN_DEVELOPMENT:       "bg-purple-50 border-purple-200",
+  CLIMATE_AGRICULTURE:     "bg-amber-50 border-amber-200",
 };
 
 const THEMATIC_HEADER: Record<string, string> = {
-  ECONOMIC_DEVELOPMENT: "text-amber-800",
-  GOVERNANCE:           "text-blue-800",
-  SOCIAL_DEVELOPMENT:   "text-purple-800",
-  HEALTH:               "text-green-800",
+  HEALTH_NUTRITION:        "text-green-800",
+  GOVERNANCE_PUBLIC_SECTOR:"text-blue-800",
+  HUMAN_DEVELOPMENT:       "text-purple-800",
+  CLIMATE_AGRICULTURE:     "text-amber-800",
 };
 
 export default async function ProjectsPage() {
@@ -65,7 +65,7 @@ export default async function ProjectsPage() {
 
   // Order: known themes first, then unclassified
   const orderedKeys = [
-    "ECONOMIC_DEVELOPMENT", "GOVERNANCE", "SOCIAL_DEVELOPMENT", "HEALTH", "UNCLASSIFIED",
+    "HEALTH_NUTRITION", "GOVERNANCE_PUBLIC_SECTOR", "HUMAN_DEVELOPMENT", "CLIMATE_AGRICULTURE", "UNCLASSIFIED",
   ].filter((k) => grouped[k]);
 
   return (

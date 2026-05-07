@@ -7,10 +7,10 @@ import { createProject } from "@/lib/project-actions";
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const THEMATIC_AREAS = [
-  { value: "ECONOMIC_DEVELOPMENT", label: "Economic Development" },
-  { value: "GOVERNANCE",           label: "Governance" },
-  { value: "SOCIAL_DEVELOPMENT",   label: "Social Development" },
-  { value: "HEALTH",               label: "Health" },
+  { value: "HEALTH_NUTRITION",        label: "Health & Nutrition Systems" },
+  { value: "GOVERNANCE_PUBLIC_SECTOR",label: "Governance & Public Sector Reform" },
+  { value: "HUMAN_DEVELOPMENT",       label: "Human Development & Social Systems" },
+  { value: "CLIMATE_AGRICULTURE",     label: "Climate, Agriculture & Sustainability" },
 ];
 
 const CURRENCIES = ["MWK", "USD", "EUR", "GBP", "ZAR"];
