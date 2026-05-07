@@ -67,6 +67,7 @@ model User {
   passwordHash      String
   role              Role               @default(FINANCE_MANAGER)
   active            Boolean            @default(true)
+  permissions       Json?              // null = use role defaults; see lib/permissions.ts
   employeeId        String?            // links to Employee.id for STAFF users
   consultantId      String?            // links to Consultant.id for CONSULTANT users
   createdAt         DateTime           @default(now())
@@ -85,6 +86,7 @@ model User {
   exchangeRateUpdates   ExchangeRate[]
   procurementsRequested Procurement[]      @relation("ProcurementRequester")
   procurementsReviewed  Procurement[]      @relation("ProcurementReviewer")
+  opportunities       Opportunity[]       @relation("OpportunityCreator")
 }
 
 model Project {
@@ -192,7 +194,7 @@ model Employee {
   name               String
   email              String?
   position           String
-  department         String?
+  departments        String[] @default([])  // e.g. ["Finance","Projects","Business Development"]
   contractType         String    @default("PERMANENT") // PERMANENT | CONTRACT | CONSULTANCY | INTERNSHIP | VOLUNTEER
   contractLengthMonths Int?                           // null = indefinite; populated for fixed-term types
   grossSalary        Float
@@ -627,6 +629,31 @@ model ProcurementQuotation {
   documentUrl   String?     // link to uploaded quotation document
   notes         String?
   uploadedAt    DateTime    @default(now())
+}
+
+// ── Business Development ──────────────────────────────────────────────────────
+
+model Opportunity {
+  id                    String    @id @default(cuid())
+  name                  String
+  classification        String    // CONSULTANCY | ADVISORY | IMPLEMENTATION
+  funder                String?
+  thematicArea          String?   // mirrors ThematicArea enum values
+  deadline              DateTime?
+  link                  String?
+  notes                 String?
+  status                String    @default("OPEN") // OPEN | SUBMITTED
+  submittedAt           DateTime?
+  bidStatus             String?   // null | WON | REJECTED
+  linkedProjectId       String?   // project created when won
+  // Deletion workflow for no-feedback opportunities
+  deletionRequestedBy   String?
+  deletionRequestedAt   DateTime?
+  deletionApprovedBy    String?
+  createdBy             String
+  creator               User      @relation("OpportunityCreator", fields: [createdBy], references: [id])
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model Milestone {

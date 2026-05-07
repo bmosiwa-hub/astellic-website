@@ -117,7 +117,7 @@ export default async function MyPage({
           <h1 className="text-2xl font-bold text-white">{user.name}</h1>
           <p className="text-brand-gold text-sm font-medium mt-0.5">
             {ROLE_LABELS[user.role] ?? user.role}
-            {employee?.department ? ` · ${employee.department}` : ""}
+            {(employee?.departments?.length ?? 0) > 0 ? ` · ${employee!.departments.join(", ")}` : ""}
           </p>
           {employee && (
             <p className="text-white/50 text-xs mt-1">
@@ -174,7 +174,7 @@ export default async function MyPage({
                 <InfoRow label="Employee Number" value={employee.employeeNumber} valueClass="font-bold text-brand-navy" />
               )}
               <InfoRow label="Position"      value={employee.position} />
-              <InfoRow label="Department"    value={employee.department ?? "—"} />
+              <InfoRow label="Department(s)"  value={employee.departments.length > 0 ? employee.departments.join(", ") : "—"} />
               <InfoRow label="Contract Type" value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
               <InfoRow label="Start Date"    value={formatDate(employee.startDate)} />
               {employee.endDate && (

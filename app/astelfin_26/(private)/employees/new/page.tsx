@@ -29,37 +29,29 @@ async function createEmployee(formData: FormData) {
   });
   const employeeNumber = `AST-${joinYear}-${String(countInYear + 1).padStart(3, "0")}`;
 
-  const contractType         = (formData.get("contractType") as string) || "PERMANENT";
-  const contractLengthRaw    = formData.get("contractLengthMonths") as string;
-  const contractLengthMonths = contractLengthRaw ? parseInt(contractLengthRaw) || null : null;
+  const contractType = (formData.get("contractType") as string) || "PERMANENT";
+  const endDateRaw   = formData.get("endDate") as string;
+  const endDate: Date | null = endDateRaw ? new Date(endDateRaw) : null;
 
-  // Prefer the explicit end date from the form; fall back to computing from months
-  const endDateRaw = formData.get("endDate") as string;
-  let endDate: Date | null = null;
-  if (endDateRaw) {
-    endDate = new Date(endDateRaw);
-  } else if (contractLengthMonths && contractLengthMonths > 0) {
-    endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + contractLengthMonths);
-  }
+  // Multi-department: getAll returns array of values for repeated name="departments"
+  const departments = formData.getAll("departments").map(String).filter(Boolean);
 
   const data = {
     employeeNumber,
-    name:                formData.get("name") as string,
-    email:               (formData.get("email") as string)  || null,
-    position:            formData.get("position") as string,
-    department:          (formData.get("department") as string) || null,
+    name:              formData.get("name") as string,
+    email:             (formData.get("email") as string)  || null,
+    position:          formData.get("position") as string,
+    departments,
     contractType,
-    contractLengthMonths,
-    grossSalary:         parseFloat(formData.get("grossSalary") as string),
+    grossSalary:       parseFloat(formData.get("grossSalary") as string),
     currency,
     salaryExchangeRate,
-    taxPin:              (formData.get("taxPin") as string)  || null,
-    nssf:                (formData.get("nssf") as string)    || null,
-    pensionRate:         parseFloat(formData.get("pensionRate") as string) || 5,
+    taxPin:            (formData.get("taxPin") as string)  || null,
+    nssf:              (formData.get("nssf") as string)    || null,
+    pensionRate:       parseFloat(formData.get("pensionRate") as string) || 5,
     startDate,
     endDate,
-    notes:               (formData.get("notes") as string)   || null,
+    notes:             (formData.get("notes") as string)   || null,
   };
 
   const record = await prisma.employee.create({ data });

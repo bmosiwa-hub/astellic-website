@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import type { EffectivePermissions } from "@/lib/permissions";
 
 const ROLE_LABELS: Record<string, string> = {
   CEO:             "Chief Executive Officer",
@@ -127,6 +128,11 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
     </svg>
   ),
+  bizdev: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -142,6 +148,7 @@ const Icons = {
 interface SidebarProps {
   userName: string;
   userRole: string;
+  permissions?: EffectivePermissions;
   pendingApprovals?: number;
   pendingInvoices?: number;
   pendingLiquidations?: number;
@@ -162,6 +169,7 @@ function pathIn(pathname: string, prefixes: string[]) {
 export default function Sidebar({
   userName,
   userRole,
+  permissions,
   pendingApprovals = 0,
   pendingInvoices = 0,
   pendingLiquidations = 0,
@@ -170,13 +178,14 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
 
-  const isCEO  = userRole === "CEO";
-  const isFM   = userRole === "FINANCE_MANAGER";
-  const isPM   = userRole === "PROJECT_MANAGER";
-  const isStaff = userRole === "STAFF" || userRole === "CONSULTANT";
+  const isCEO   = userRole === "CEO";
+  const isFM    = userRole === "FINANCE_MANAGER";
 
-  const showFinance  = isCEO || isFM;
-  const showProjects = isCEO || isPM;
+  // Show sections based on role OR granted permissions
+  const showFinance    = isCEO || isFM || !!(permissions?.tabs.finance);
+  const showOperations = isCEO || isFM || !!(permissions?.tabs.operations);
+  const showProjects   = isCEO || userRole === "PROJECT_MANAGER" || !!(permissions?.tabs.projects);
+  const showBizDev     = !!(permissions?.tabs.bizdev);
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
@@ -189,11 +198,14 @@ export default function Sidebar({
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
   const myPaths         = ["/astelfin_26/my"];
 
+  const bizdevPaths = ["/astelfin_26/bizdev"];
+
   const [open, setOpen] = useState<Record<string, boolean>>({
     finance:    pathIn(pathname, financePaths),
     operations: pathIn(pathname, operationsPaths),
     projects:   pathIn(pathname, projectsPaths),
-    mypage:     pathIn(pathname, myPaths) || isStaff || isPM,
+    bizdev:     pathIn(pathname, bizdevPaths),
+    mypage:     pathIn(pathname, myPaths),
   });
 
   // Keep sections in sync when navigating
@@ -202,6 +214,7 @@ export default function Sidebar({
       finance:    prev.finance    || pathIn(pathname, financePaths),
       operations: prev.operations || pathIn(pathname, operationsPaths),
       projects:   prev.projects   || pathIn(pathname, projectsPaths),
+      bizdev:     prev.bizdev     || pathIn(pathname, ["/astelfin_26/bizdev"]),
       mypage:     prev.mypage     || pathIn(pathname, myPaths),
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -318,8 +331,8 @@ export default function Sidebar({
           </>
         )}
 
-        {/* ── Operations (FM + CEO) ───────────────────────── */}
-        {showFinance && (
+        {/* ── Operations (FM + CEO + granted) ─────────────── */}
+        {showOperations && (
           <>
             <div className="pt-1" />
             {sectionHeader(
@@ -337,6 +350,20 @@ export default function Sidebar({
                 {navLink("/astelfin_26/approvals",    "Approvals",            Icons.approvals,    isCEO ? pendingApprovals : undefined)}
                 {navLink("/astelfin_26/procurement",  "Procurement",          Icons.procurement)}
                 {isCEO && navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── Business Development (CEO + granted) ────────── */}
+        {showBizDev && (
+          <>
+            <div className="pt-1" />
+            {sectionHeader("bizdev", "Business Development", Icons.bizdev)}
+            {open.bizdev && (
+              <div className="space-y-0.5 mb-1">
+                {navLink("/astelfin_26/bizdev",           "Opportunities",       Icons.bizdev)}
+                {navLink("/astelfin_26/bizdev/submitted", "Submitted",           Icons.submissions)}
               </div>
             )}
           </>

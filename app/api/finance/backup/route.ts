@@ -127,7 +127,7 @@ export async function GET() {
       Name: e.name,
       Email: e.email ?? "",
       Position: e.position,
-      Department: e.department ?? "",
+      Department: e.departments.join(", "),
       Currency: e.currency,
       "Gross Salary": e.grossSalary,
       "Tax PIN": e.taxPin ?? "",

@@ -4,14 +4,11 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/finance/Sidebar";
 import InactivityGuard from "@/components/finance/InactivityGuard";
+import { getEffectivePermissions, canAccessPath } from "@/lib/permissions";
 
 export const metadata = {
   robots: { index: false, follow: false },
 };
-
-// Routes each role is allowed to visit (prefix match)
-const STAFF_ALLOWED    = ["/astelfin_26/my"];
-const PM_ALLOWED       = ["/astelfin_26/my", "/astelfin_26/projects", "/astelfin_26/deliverables"];
 
 export default async function PrivateFinanceLayout({
   children,
@@ -22,27 +19,37 @@ export default async function PrivateFinanceLayout({
   if (!session?.user) redirect("/astelfin_26/login");
 
   const role = session.user.role;
-  const isStaffOrConsultant = role === "STAFF" || role === "CONSULTANT";
-  const isPM = role === "PROJECT_MANAGER";
 
-  // Redirect restricted roles away from pages they cannot access
-  if (isStaffOrConsultant) {
+  // Fetch the user's stored permissions
+  const dbUser = await prisma.user.findUnique({
+    where:  { id: session.user.id! },
+    select: { permissions: true },
+  });
+
+  const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
+
+  // CEO and FM always have unrestricted access (role defaults cover everything)
+  // For other roles: check if current pathname is permitted
+  const isCEO = role === "CEO";
+  const isFM  = role === "FINANCE_MANAGER";
+
+  if (!isCEO && !isFM) {
     const headersList = await headers();
-    const pathname = headersList.get("x-pathname") ?? "";
-    const allowed = STAFF_ALLOWED.some((p) => pathname.startsWith(p));
-    if (!allowed) redirect("/astelfin_26/my");
+    const pathname    = headersList.get("x-pathname") ?? "";
+
+    if (!canAccessPath(pathname, perms)) {
+      // Redirect to the first accessible area
+      if (perms.tabs.finance)    redirect("/astelfin_26/dashboard");
+      if (perms.tabs.operations) redirect("/astelfin_26/invoices");
+      if (perms.tabs.projects)   redirect("/astelfin_26/projects");
+      if (perms.tabs.bizdev)     redirect("/astelfin_26/bizdev");
+      redirect("/astelfin_26/my");
+    }
   }
 
-  if (isPM) {
-    const headersList = await headers();
-    const pathname = headersList.get("x-pathname") ?? "";
-    const allowed = PM_ALLOWED.some((p) => pathname.startsWith(p));
-    if (!allowed) redirect("/astelfin_26/projects");
-  }
+  const isLimitedRole = !isCEO && !isFM;
 
-  const isLimitedRole = isStaffOrConsultant || isPM;
-
-  // Fetch sidebar badge counts (skip expensive counts for limited roles)
+  // Fetch sidebar badge counts
   const now = new Date();
   const [pendingCount, pendingInvoices, pendingLiquidations, overduePayables, overdueReceivables] =
     isLimitedRole
@@ -52,10 +59,7 @@ export default async function PrivateFinanceLayout({
           prisma.submission.count({
             where: {
               status: {
-                in:
-                  role === "FINANCE_MANAGER"
-                    ? ["PENDING_FM"]
-                    : ["PENDING_CEO", "APPROVED"],
+                in: isFM ? ["PENDING_FM"] : ["PENDING_CEO", "APPROVED"],
               },
             },
           }),
@@ -76,6 +80,7 @@ export default async function PrivateFinanceLayout({
       <Sidebar
         userName={session.user.name ?? "User"}
         userRole={role}
+        permissions={perms}
         pendingApprovals={pendingCount}
         pendingInvoices={pendingInvoices}
         pendingLiquidations={pendingLiquidations}

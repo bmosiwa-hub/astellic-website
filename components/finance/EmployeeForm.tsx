@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 
 const DEPARTMENTS = [
   "Administration",
+  "Business Development",
   "Finance",
   "Human Resources",
   "Projects",
@@ -51,9 +52,9 @@ interface Props {
     name?: string;
     email?: string;
     position?: string;
-    department?: string;
+    departments?: string[];  // multi-department
     contractType?: string;
-    endDate?: string;   // ISO date string e.g. "2025-12-31"
+    endDate?: string;
     grossSalary?: number;
     currency?: string;
     salaryExchangeRate?: number;
@@ -74,7 +75,7 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
   const [pensionRate,          setPensionRate]          = useState(defaultValues?.pensionRate  ?? 5);
   const [currency,             setCurrency]             = useState(defaultValues?.currency     ?? "MWK");
   const [exchangeRate,         setExchangeRate]         = useState(defaultValues?.salaryExchangeRate ?? 0);
-  const [department,           setDepartment]           = useState(defaultValues?.department   ?? "");
+  const [selectedDepts, setSelectedDepts] = useState<string[]>(defaultValues?.departments ?? []);
   const [contractType, setContractType] = useState(defaultValues?.contractType ?? "PERMANENT");
   const [startDate,    setStartDate]    = useState(defaultValues?.startDate ?? "");
 
@@ -124,13 +125,36 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             <input name="position" required defaultValue={defaultValues?.position}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
           </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Department</label>
-            <select name="department" value={department} onChange={e => setDepartment(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
-              <option value="">— Select department —</option>
-              {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
+          <div className="col-span-2">
+            <label className="block text-xs font-medium text-gray-600 mb-2">
+              Departments
+              <span className="ml-1.5 font-normal text-gray-400">— select all that apply</span>
+            </label>
+            {/* Hidden inputs for each selected department */}
+            {selectedDepts.map((d) => (
+              <input key={d} type="hidden" name="departments" value={d} />
+            ))}
+            <div className="grid grid-cols-2 gap-1.5">
+              {DEPARTMENTS.map((d) => {
+                const checked = selectedDepts.includes(d);
+                return (
+                  <label key={d}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors text-sm ${
+                      checked ? "bg-brand-gold/10 border-brand-gold/40 text-brand-navy font-medium" : "bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100"
+                    }`}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => setSelectedDepts((prev) =>
+                        checked ? prev.filter((x) => x !== d) : [...prev, d]
+                      )}
+                      className="accent-brand-gold w-4 h-4"
+                    />
+                    <span className="text-xs">{d}</span>
+                  </label>
+                );
+              })}
+            </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>

@@ -3,8 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { redirect, notFound } from "next/navigation";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getEffectivePermissions } from "@/lib/permissions";
 import Link from "next/link";
 import bcrypt from "bcryptjs";
+import PermissionEditor from "@/components/finance/PermissionEditor";
 
 export const metadata = {
   title: "Employee | Astelfin IMS",
@@ -27,7 +29,15 @@ const CONTRACT_TYPES = [
   { value: "VOLUNTEER",   label: "Volunteer" },
 ];
 
-const FIXED_TERM_TYPES = new Set(["CONTRACT", "CONSULTANCY", "INTERNSHIP", "VOLUNTEER"]);
+const DEPARTMENTS = [
+  "Administration",
+  "Business Development",
+  "Finance",
+  "Human Resources",
+  "Projects",
+  "Senior Management",
+  "Support Staff",
+];
 
 /* ── Server Actions ──────────────────────────────────────────── */
 
@@ -122,30 +132,18 @@ async function updateEmploymentTerms(formData: FormData) {
   const endDateRaw   = formData.get("endDate") as string;
   const endDate      = endDateRaw ? new Date(endDateRaw) : null;
 
-  // Contract length: approximate from end date minus start date for record-keeping
-  const emp = await prisma.employee.findUnique({ where: { id: employeeId }, select: { startDate: true } });
-  let contractLengthMonths: number | null = null;
-  if (emp && endDate) {
-    contractLengthMonths =
-      (endDate.getFullYear() - emp.startDate.getFullYear()) * 12 +
-      (endDate.getMonth() - emp.startDate.getMonth());
-    if (contractLengthMonths <= 0) contractLengthMonths = null;
-  }
-
-  // Optional contract details editable by CEO
   const grossSalaryRaw = formData.get("grossSalary") as string;
   const grossSalary    = grossSalaryRaw ? parseFloat(grossSalaryRaw) : undefined;
-  const department     = (formData.get("department") as string) || null;
+  const departments    = formData.getAll("departments").map(String).filter(Boolean);
   const email          = (formData.get("email") as string) || null;
 
   await prisma.employee.update({
     where: { id: employeeId },
     data:  {
       contractType,
-      contractLengthMonths,
       endDate,
+      departments,
       ...(grossSalary !== undefined ? { grossSalary } : {}),
-      department,
       email,
     },
   });
@@ -159,6 +157,31 @@ async function updateEmploymentTerms(formData: FormData) {
   });
 
   redirect(`/astelfin_26/employees/${employeeId}?success=terms_updated`);
+}
+
+async function updateUserPermissions(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const userId      = formData.get("userId") as string;
+  const permsJson   = formData.get("permissions") as string;
+
+  let permissions: object;
+  try { permissions = JSON.parse(permsJson); }
+  catch { redirect(`/astelfin_26/employees/${formData.get("employeeId") as string}?error=bad_perms`); }
+
+  await prisma.user.update({ where: { id: userId }, data: { permissions } });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "UPDATE",
+    entity:   "User",
+    entityId: userId,
+    detail:   "Permissions updated by CEO",
+  });
+
+  // No redirect — client component handles "saved" state
 }
 
 async function terminateContract(formData: FormData) {
@@ -212,7 +235,10 @@ export default async function EmployeeDetailPage({
       },
     }),
     // Users linked to this employee
-    prisma.user.findMany({ where: { employeeId: id } }),
+    prisma.user.findMany({
+      where:  { employeeId: id },
+      select: { id: true, name: true, email: true, role: true, permissions: true },
+    }),
     // Users that have no employee linked (for CEO to link)
     isCEO
       ? prisma.user.findMany({
@@ -244,7 +270,10 @@ export default async function EmployeeDetailPage({
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-brand-navy">{employee.name}</h1>
-            <p className="text-gray-500 text-sm">{employee.position}{employee.department ? ` · ${employee.department}` : ""}</p>
+            <p className="text-gray-500 text-sm">
+            {employee.position}
+            {employee.departments.length > 0 ? ` · ${employee.departments.join(", ")}` : ""}
+          </p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -300,10 +329,7 @@ export default async function EmployeeDetailPage({
           </div>
           <Field label="Employee Number"  value={employee.employeeNumber ?? "Not assigned"} />
           <Field label="Employment Type"  value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
-          {employee.contractLengthMonths && (
-            <Field label="Contract Length" value={`${employee.contractLengthMonths} months`} />
-          )}
-          <Field label="Department"       value={employee.department ?? "—"} />
+          <Field label="Department(s)"    value={employee.departments.length > 0 ? employee.departments.join(", ") : "—"} />
           <Field label="Start Date"       value={formatDate(employee.startDate)} />
           {employee.endDate && <Field label="Contract Ends" value={formatDate(employee.endDate)} />}
           {employee.taxPin && <Field label="TPIN"    value={employee.taxPin} />}
@@ -369,15 +395,8 @@ export default async function EmployeeDetailPage({
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Department</label>
-                <select name="department" defaultValue={employee.department ?? ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
-                  <option value="">— None —</option>
-                  {["Administration","Finance","Human Resources","Projects","Senior Management","Support Staff"].map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
+              <div className="col-span-2">
+                <DeptCheckboxes current={employee.departments} />
               </div>
               <div className="col-span-2">
                 <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
@@ -420,6 +439,23 @@ export default async function EmployeeDetailPage({
               Terminate Contract
             </button>
           </form>
+        </div>
+      )}
+
+      {/* ── Access Permissions (CEO only, linked user only) ─────── */}
+      {isCEO && linkedUser && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+          <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Access Permissions</h2>
+          <p className="text-xs text-gray-500">
+            Control which tabs and functions {employee.name} can access.
+            Changes take effect on their next page load.
+          </p>
+          <PermissionEditor
+            userId={linkedUser.id}
+            userName={employee.name}
+            current={getEffectivePermissions(linkedUser.role, linkedUser.permissions as object | null)}
+            saveAction={updateUserPermissions}
+          />
         </div>
       )}
 
@@ -583,6 +619,39 @@ export default async function EmployeeDetailPage({
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
+function DeptCheckboxes({ current }: { current: string[] }) {
+  return (
+    <div>
+      <label className="block text-xs font-medium text-gray-600 mb-1.5">
+        Departments — select all that apply
+      </label>
+      <div className="grid grid-cols-2 gap-1.5">
+        {DEPARTMENTS.map((d) => {
+          const checked = current.includes(d);
+          return (
+            <label
+              key={d}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors
+                ${checked
+                  ? "border-brand-gold bg-brand-gold/5 text-brand-navy font-medium"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"}`}
+            >
+              <input
+                type="checkbox"
+                name="departments"
+                value={d}
+                defaultChecked={checked}
+                className="accent-[var(--brand-gold,#c9a84c)] w-3.5 h-3.5 shrink-0"
+              />
+              {d}
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
