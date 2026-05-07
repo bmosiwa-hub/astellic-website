@@ -34,6 +34,7 @@ export async function createProject(formData: FormData): Promise<void> {
   const personnelCosts = formData.get("personnelCosts")  ? parseFloat(formData.get("personnelCosts")  as string) : null;
   const fieldworkCosts = formData.get("fieldworkCosts")  ? parseFloat(formData.get("fieldworkCosts")  as string) : null;
 
+  const oppId         = (formData.get("oppId") as string) || null;
   const membersRaw    = (formData.get("members") as string) || "[]";
   const milestonesRaw = (formData.get("milestones") as string) || "[]";
   const members:    MemberInput[]    = JSON.parse(membersRaw);
@@ -75,6 +76,14 @@ export async function createProject(formData: FormData): Promise<void> {
       } : undefined,
     },
   });
+
+  // Link to source opportunity if coming from a Won bid
+  if (oppId) {
+    await prisma.opportunity.update({
+      where: { id: oppId },
+      data:  { linkedProjectId: project.id },
+    });
+  }
 
   await auditLog({ userId: session.user.id!, action: "CREATE", entity: "Project", entityId: project.id, detail: name });
   revalidatePath("/astelfin_26/projects");

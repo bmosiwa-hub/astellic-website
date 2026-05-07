@@ -43,13 +43,33 @@ function pf(v: string) { return parseFloat(v) || 0; }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function ProjectForm({ defaultCurrency = "MWK" }: { defaultCurrency?: string }) {
+interface ProjectFormProps {
+  defaultCurrency?: string;
+  // Pre-fill from a won opportunity
+  oppId?:      string;
+  oppName?:    string;
+  oppClient?:  string;
+  oppThematic?: string;
+  oppType?:    string; // "CONSULTANCY" | "ADVISORY" | "IMPLEMENTATION"
+}
+
+export default function ProjectForm({
+  defaultCurrency = "MWK",
+  oppId,
+  oppName,
+  oppClient,
+  oppThematic,
+  oppType,
+}: ProjectFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Core state
-  const [category,       setCategory]       = useState<"REGULAR" | "CONSULTANCY">("REGULAR");
+  // Core state — pre-fill from opportunity if provided
+  const defaultCategory: "REGULAR" | "CONSULTANCY" =
+    oppType === "CONSULTANCY" ? "CONSULTANCY" : "REGULAR";
+
+  const [category,       setCategory]       = useState<"REGULAR" | "CONSULTANCY">(defaultCategory);
   const [currency,       setCurrency]       = useState(defaultCurrency);
   const [members,        setMembers]        = useState<Member[]>([]);
   const [milestones,     setMilestones]     = useState<Milestone[]>([]);
@@ -126,6 +146,20 @@ export default function ProjectForm({ defaultCurrency = "MWK" }: { defaultCurren
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
 
+      {/* ── Opportunity pre-fill banner ───────────────────────── */}
+      {oppId && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z" />
+          </svg>
+          <span>
+            Pre-filled from won opportunity: <strong>{oppName}</strong>.
+            Review the details below and complete any missing fields before saving.
+          </span>
+        </div>
+      )}
+      {oppId && <input type="hidden" name="oppId" value={oppId} />}
+
       {/* ── Project Details ───────────────────────────────────── */}
       <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
         <h2 className="font-bold text-brand-navy">Project Details</h2>
@@ -137,6 +171,7 @@ export default function ProjectForm({ defaultCurrency = "MWK" }: { defaultCurren
             <select
               name="category"
               value={category}
+
               onChange={(e) => {
                 setCategory(e.target.value as "REGULAR" | "CONSULTANCY");
                 // Reset per-person fees when switching
@@ -153,7 +188,7 @@ export default function ProjectForm({ defaultCurrency = "MWK" }: { defaultCurren
 
           <div>
             <label className={lbl}>Thematic Area</label>
-            <select name="thematicArea" className={inp}>
+            <select name="thematicArea" className={inp} defaultValue={oppThematic ?? ""}>
               <option value="">— Select —</option>
               {THEMATIC_AREAS.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
             </select>
@@ -171,12 +206,14 @@ export default function ProjectForm({ defaultCurrency = "MWK" }: { defaultCurren
           <div className="col-span-2">
             <label className={lbl}>Project Name <span className="text-red-500">*</span></label>
             <input name="name" required className={inp}
+              defaultValue={oppName ?? ""}
               placeholder="e.g. Health Systems Strengthening — Phase II" />
           </div>
 
           <div className="col-span-2">
             <label className={lbl}>Client / Funder <span className="text-red-500">*</span></label>
             <input name="client" required className={inp}
+              defaultValue={oppClient ?? ""}
               placeholder="e.g. Ministry of Health, UNICEF" />
           </div>
 
