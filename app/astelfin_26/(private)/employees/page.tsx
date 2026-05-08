@@ -149,7 +149,11 @@ export default async function EmployeesPage() {
                     </td>
                     <td className="px-5 py-3">
                       <p className="text-gray-700">{e.position}</p>
-                      <p className="text-xs text-gray-400">{e.departments.length > 0 ? e.departments.join(", ") : "—"} · {e.contractType}</p>
+                      <p className="text-xs text-gray-400">
+                        {e.level ? <span className="font-medium text-brand-navy/70">{e.level}</span> : null}
+                        {e.level && " · "}
+                        {e.departments.length > 0 ? e.departments.join(", ") : "—"}
+                      </p>
                     </td>
 
                     {/* Gross */}

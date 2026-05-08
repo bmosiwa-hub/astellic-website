@@ -1,7 +1,9 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
+import bcrypt from "bcryptjs";
 import Link from "next/link";
 
 export const metadata = {
@@ -49,15 +51,52 @@ function fmt(n: number) {
   return n.toLocaleString("en-MW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+/* ── Server action: self-service password change ──────────────── */
+async function changeOwnPassword(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+
+  const currentPassword = formData.get("currentPassword") as string;
+  const newPassword     = formData.get("newPassword") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (!newPassword || newPassword.length < 8) {
+    redirect("/astelfin_26/my?tab=general&pwError=too_short");
+  }
+  if (newPassword !== confirmPassword) {
+    redirect("/astelfin_26/my?tab=general&pwError=mismatch");
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: session.user.id! } });
+  if (!user) redirect("/astelfin_26/login");
+
+  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!valid) redirect("/astelfin_26/my?tab=general&pwError=wrong_current");
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
+
+  await auditLog({
+    userId:   user.id,
+    action:   "RESET_PASSWORD",
+    entity:   "User",
+    entityId: user.id,
+    detail:   "Password changed by user",
+  });
+
+  redirect("/astelfin_26/my?tab=general&pwSuccess=1");
+}
+
 export default async function MyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; pwError?: string; pwSuccess?: string }>;
 }) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const { tab = "general" } = await searchParams;
+  const { tab = "general", pwError, pwSuccess } = await searchParams;
 
   // Load the current user with all linked data
   const user = await prisma.user.findUnique({
@@ -158,7 +197,30 @@ export default async function MyPage({
 
       {/* ── GENERAL ─────────────────────────────────────────────────────── */}
       {tab === "general" && (
-        <div className="grid grid-cols-2 gap-5">
+        <div className="space-y-5">
+          {/* Password feedback */}
+          {pwError === "wrong_current" && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+              Current password is incorrect.
+            </div>
+          )}
+          {pwError === "mismatch" && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+              New passwords do not match.
+            </div>
+          )}
+          {pwError === "too_short" && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+              New password must be at least 8 characters.
+            </div>
+          )}
+          {pwSuccess === "1" && (
+            <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+              Password changed successfully.
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-5">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
             <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Account Details</h2>
             <InfoRow label="Full Name"    value={user.name} />
@@ -174,6 +236,7 @@ export default async function MyPage({
                 <InfoRow label="Employee Number" value={employee.employeeNumber} valueClass="font-bold text-brand-navy" />
               )}
               <InfoRow label="Position"      value={employee.position} />
+              {employee.level && <InfoRow label="Level" value={employee.level} />}
               <InfoRow label="Department(s)"  value={employee.departments.length > 0 ? employee.departments.join(", ") : "—"} />
               <InfoRow label="Contract Type" value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
               <InfoRow label="Start Date"    value={formatDate(employee.startDate)} />
@@ -190,6 +253,45 @@ export default async function MyPage({
               </div>
             </div>
           )}
+          </div>
+
+          {/* Password change */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+            <div>
+              <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Change Password</h2>
+              <p className="text-xs text-gray-400 mt-0.5">You can update your own password at any time.</p>
+            </div>
+            <form action={changeOwnPassword} className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Current Password <span className="text-red-500">*</span>
+                </label>
+                <input name="currentPassword" type="password" required
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  New Password <span className="text-red-500">*</span>
+                </label>
+                <input name="newPassword" type="password" required minLength={8}
+                  placeholder="Min 8 characters"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Confirm New Password <span className="text-red-500">*</span>
+                </label>
+                <input name="confirmPassword" type="password" required minLength={8}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+              </div>
+              <div className="col-span-3">
+                <button type="submit"
+                  className="bg-brand-navy hover:bg-brand-navy/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+                  Update Password
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

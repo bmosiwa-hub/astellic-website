@@ -29,6 +29,14 @@ const CONTRACT_TYPES = [
   { value: "VOLUNTEER",   label: "Volunteer" },
 ];
 
+const LEVELS = [
+  "Executive",
+  "Senior Manager",
+  "Manager",
+  "Officer",
+  "Support Staff",
+];
+
 const DEPARTMENTS = [
   "Administration",
   "Business Development",
@@ -129,21 +137,28 @@ async function updateEmploymentTerms(formData: FormData) {
 
   const employeeId   = formData.get("employeeId") as string;
   const contractType = formData.get("contractType") as string;
+  const startDateRaw = formData.get("startDate") as string;
   const endDateRaw   = formData.get("endDate") as string;
+  const startDate    = startDateRaw ? new Date(startDateRaw) : undefined;
   const endDate      = endDateRaw ? new Date(endDateRaw) : null;
 
   const grossSalaryRaw = formData.get("grossSalary") as string;
   const grossSalary    = grossSalaryRaw ? parseFloat(grossSalaryRaw) : undefined;
   const departments    = formData.getAll("departments").map(String).filter(Boolean);
   const email          = (formData.get("email") as string) || null;
+  const position       = (formData.get("position") as string) || undefined;
+  const level          = (formData.get("level") as string) || null;
 
   await prisma.employee.update({
     where: { id: employeeId },
     data:  {
       contractType,
+      ...(startDate ? { startDate } : {}),
       endDate,
       departments,
       ...(grossSalary !== undefined ? { grossSalary } : {}),
+      ...(position ? { position } : {}),
+      level,
       email,
     },
   });
@@ -153,7 +168,7 @@ async function updateEmploymentTerms(formData: FormData) {
     action:   "UPDATE",
     entity:   "Employee",
     entityId: employeeId,
-    detail:   `Contract updated: ${contractType}${endDate ? `, ends ${endDate.toISOString().slice(0, 10)}` : ""}`,
+    detail:   `Contract updated: ${contractType}${startDate ? `, starts ${startDate.toISOString().slice(0, 10)}` : ""}${endDate ? `, ends ${endDate.toISOString().slice(0, 10)}` : ""}`,
   });
 
   redirect(`/astelfin_26/employees/${employeeId}?success=terms_updated`);
@@ -328,6 +343,8 @@ export default async function EmployeeDetailPage({
             <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Employment Details</h2>
           </div>
           <Field label="Employee Number"  value={employee.employeeNumber ?? "Not assigned"} />
+          <Field label="Position"         value={employee.position} />
+          {employee.level && <Field label="Level" value={employee.level} />}
           <Field label="Employment Type"  value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
           <Field label="Department(s)"    value={employee.departments.length > 0 ? employee.departments.join(", ") : "—"} />
           <Field label="Start Date"       value={formatDate(employee.startDate)} />
@@ -366,6 +383,25 @@ export default async function EmployeeDetailPage({
             <input type="hidden" name="employeeId" value={employee.id} />
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Position / Job Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  name="position"
+                  required
+                  defaultValue={employee.position}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Level</label>
+                <select name="level" defaultValue={employee.level ?? ""}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+                  <option value="">— Select Level —</option>
+                  {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>
                 <select name="contractType" defaultValue={employee.contractType}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
@@ -373,6 +409,24 @@ export default async function EmployeeDetailPage({
                     <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary ({employee.currency})</label>
+                <input
+                  name="grossSalary"
+                  type="number" min="0" step="0.01"
+                  defaultValue={employee.grossSalary}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Contract Start Date</label>
+                <input
+                  name="startDate"
+                  type="date"
+                  defaultValue={employee.startDate ? employee.startDate.toISOString().slice(0, 10) : ""}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
+                />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -383,15 +437,6 @@ export default async function EmployeeDetailPage({
                   name="endDate"
                   type="date"
                   defaultValue={employee.endDate ? employee.endDate.toISOString().slice(0, 10) : ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary ({employee.currency})</label>
-                <input
-                  name="grossSalary"
-                  type="number" min="0" step="0.01"
-                  defaultValue={employee.grossSalary}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
                 />
               </div>

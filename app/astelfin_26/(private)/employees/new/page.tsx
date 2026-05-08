@@ -41,6 +41,7 @@ async function createEmployee(formData: FormData) {
     name:              formData.get("name") as string,
     email:             (formData.get("email") as string)  || null,
     position:          formData.get("position") as string,
+    level:             (formData.get("level") as string)  || null,
     departments,
     contractType,
     grossSalary:       parseFloat(formData.get("grossSalary") as string),

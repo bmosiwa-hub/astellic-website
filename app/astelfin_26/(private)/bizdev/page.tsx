@@ -197,16 +197,28 @@ export default async function BizDevPage({
                   <tr key={opp.id} className="hover:bg-gray-50">
                     <td className="px-5 py-3">
                       <p className="font-medium text-brand-navy">{opp.name}</p>
-                      <p className="text-xs text-gray-400">
-                        Added by {opp.creator.name}
-                        {opp.notes ? ` · ${opp.notes.slice(0, 50)}${opp.notes.length > 50 ? "…" : ""}` : ""}
-                      </p>
-                      {opp.link && (
-                        <a href={opp.link} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-brand-gold hover:underline">
-                          View Link ↗
-                        </a>
-                      )}
+                      <p className="text-xs text-gray-400">Added by {opp.creator.name}</p>
+                      <div className="flex items-center gap-3 mt-0.5 flex-wrap">
+                        {opp.link && (
+                          <a href={opp.link} target="_blank" rel="noopener noreferrer"
+                            className="text-xs text-brand-gold hover:underline">
+                            View Link ↗
+                          </a>
+                        )}
+                        {opp.notes && (
+                          <details className="inline">
+                            <summary className="text-xs text-gray-400 hover:text-brand-navy cursor-pointer list-none inline-flex items-center gap-0.5">
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Notes
+                            </summary>
+                            <p className="mt-1.5 text-xs text-gray-600 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 max-w-xs whitespace-pre-wrap">
+                              {opp.notes}
+                            </p>
+                          </details>
+                        )}
+                      </div>
                     </td>
                     <td className="px-5 py-3">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${CLASSIFICATION_COLORS[opp.classification] ?? "bg-gray-100 text-gray-600"}`}>
@@ -227,7 +239,11 @@ export default async function BizDevPage({
                       )}
                     </td>
                     <td className="px-5 py-3 text-right">
-                      <div className="inline-flex items-center gap-2">
+                      <div className="inline-flex items-center gap-2 flex-wrap justify-end">
+                        <Link href={`/astelfin_26/bizdev/${opp.id}/edit`}
+                          className="text-xs font-semibold text-brand-navy hover:underline">
+                          Edit
+                        </Link>
                         {perms.functions.canSubmitOpportunity && (
                           <form action={markSubmitted}>
                             <input type="hidden" name="id" value={opp.id} />

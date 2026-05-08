@@ -14,6 +14,14 @@ const DEPARTMENTS = [
   "Support Staff",
 ] as const;
 
+const LEVELS = [
+  "Executive",
+  "Senior Manager",
+  "Manager",
+  "Officer",
+  "Support Staff",
+] as const;
+
 const CONTRACT_TYPES = [
   { value: "PERMANENT",   label: "Permanent" },
   { value: "CONTRACT",    label: "Fixed-Term Contract" },
@@ -52,6 +60,7 @@ interface Props {
     name?: string;
     email?: string;
     position?: string;
+    level?: string;
     departments?: string[];  // multi-department
     contractType?: string;
     endDate?: string;
@@ -124,6 +133,14 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             </label>
             <input name="position" required defaultValue={defaultValues?.position}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Level</label>
+            <select name="level" defaultValue={defaultValues?.level ?? ""}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+              <option value="">— Select Level —</option>
+              {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
           </div>
           <div className="col-span-2">
             <label className="block text-xs font-medium text-gray-600 mb-2">
