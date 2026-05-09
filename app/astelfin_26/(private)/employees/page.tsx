@@ -25,14 +25,12 @@ async function backfillEmployeeNumbers() {
   });
 
   // Assign AST-{year}-{seq} per joining year, continuing from highest existing seq in that year
-  // Track counters per year as we assign
   const yearCounters: Record<number, number> = {};
 
   for (const emp of unNumbered) {
     const year = emp.startDate.getFullYear();
 
     if (!(year in yearCounters)) {
-      // Find the highest existing sequence for this year
       const existing = await prisma.employee.findMany({
         where:  { employeeNumber: { startsWith: `AST-${year}-` } },
         select: { employeeNumber: true },
@@ -61,23 +59,25 @@ export default async function EmployeesPage() {
   const role = session.user.role;
   if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
-  // Fetch employees with their linked user accounts
-  const employees = await prisma.employee.findMany({
-    where:   { active: true },
-    orderBy: [{ employeeNumber: "asc" }, { name: "asc" }],
+  // Fetch ALL employees (active and former)
+  const allEmployees = await prisma.employee.findMany({
+    orderBy: [{ active: "desc" }, { employeeNumber: "asc" }, { name: "asc" }],
   });
+
+  const activeEmployees = allEmployees.filter((e) => e.active);
+  const formerEmployees = allEmployees.filter((e) => !e.active);
 
   // Map employee id → whether they have a linked user
   const linkedUserIds = await prisma.user.findMany({
-    where:  { employeeId: { in: employees.map((e) => e.id) } },
+    where:  { employeeId: { in: allEmployees.map((e) => e.id) } },
     select: { employeeId: true },
   });
   const linkedSet = new Set(linkedUserIds.map((u) => u.employeeId));
 
   const isCEO = role === "CEO";
-  const unnumberedCount = employees.filter((e) => !e.employeeNumber).length;
+  const unnumberedCount = activeEmployees.filter((e) => !e.employeeNumber).length;
 
-  function getNet(e: (typeof employees)[number]) {
+  function getNet(e: (typeof allEmployees)[number]) {
     const isMWK = e.currency === "MWK";
     const rate  = isMWK ? 1 : (e.salaryExchangeRate ?? 0);
     if (rate === 0) return null;
@@ -87,16 +87,24 @@ export default async function EmployeesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-brand-navy">Employees</h1>
-        <Link
-          href="/astelfin_26/employees/new"
-          className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
-        >
-          + Add Employee
-        </Link>
+        <div>
+          <h1 className="text-2xl font-bold text-brand-navy">Employees</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {activeEmployees.length} active
+            {formerEmployees.length > 0 && ` · ${formerEmployees.length} former`}
+          </p>
+        </div>
+        {isCEO && (
+          <Link
+            href="/astelfin_26/employees/new"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+          >
+            + Add Employee
+          </Link>
+        )}
       </div>
 
-      {/* Backfill banner for employees without numbers */}
+      {/* Backfill banner */}
       {unnumberedCount > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 flex items-center justify-between gap-4">
           <p className="text-sm text-amber-800">
@@ -112,9 +120,10 @@ export default async function EmployeesPage() {
         </div>
       )}
 
+      {/* ── Active Employees ──────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {employees.length === 0 ? (
-          <p className="text-center py-12 text-gray-400">No employees registered yet.</p>
+        {activeEmployees.length === 0 ? (
+          <p className="text-center py-12 text-gray-400">No active employees.</p>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
@@ -130,7 +139,7 @@ export default async function EmployeesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {employees.map((e) => {
+              {activeEmployees.map((e) => {
                 const net    = getNet(e);
                 const isMWK  = e.currency === "MWK";
                 const noRate = !isMWK && !e.salaryExchangeRate;
@@ -217,6 +226,55 @@ export default async function EmployeesPage() {
           </table>
         )}
       </div>
+
+      {/* ── Former Employees ─────────────────────────────────────── */}
+      {formerEmployees.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide">Former Employees</h2>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden opacity-80">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-500">Emp No.</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-500">Name</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-500">Last Position</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-500">Contract Period</th>
+                  <th className="px-5 py-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {formerEmployees.map((e) => (
+                  <tr key={e.id} className="hover:bg-gray-50">
+                    <td className="px-5 py-3">
+                      <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                        {e.employeeNumber ?? "—"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3">
+                      <p className="font-medium text-gray-600">{e.name}</p>
+                      {e.email && <p className="text-xs text-gray-400">{e.email}</p>}
+                    </td>
+                    <td className="px-5 py-3">
+                      <p className="text-gray-500">{e.position}</p>
+                      {e.level && <p className="text-xs text-gray-400">{e.level}</p>}
+                    </td>
+                    <td className="px-5 py-3 text-xs text-gray-500">
+                      {formatDate(e.startDate)}
+                      {e.endDate ? ` → ${formatDate(e.endDate)}` : ""}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <Link href={`/astelfin_26/employees/${e.id}`}
+                        className="text-xs text-gray-400 font-semibold hover:text-brand-gold hover:underline">
+                        View →
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

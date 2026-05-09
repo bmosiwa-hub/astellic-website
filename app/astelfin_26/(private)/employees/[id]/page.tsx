@@ -62,7 +62,6 @@ async function createUserForEmployee(formData: FormData) {
   const employee = await prisma.employee.findUnique({ where: { id: employeeId } });
   if (!employee) redirect("/astelfin_26/employees");
 
-  // Check email not already taken
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     redirect(`/astelfin_26/employees/${employeeId}?error=email_taken`);
@@ -195,8 +194,6 @@ async function updateUserPermissions(formData: FormData) {
     entityId: userId,
     detail:   "Permissions updated by CEO",
   });
-
-  // No redirect — client component handles "saved" state
 }
 
 async function terminateContract(formData: FormData) {
@@ -223,6 +220,99 @@ async function terminateContract(formData: FormData) {
   redirect(`/astelfin_26/employees/${employeeId}?success=terminated`);
 }
 
+async function reinstateEmployee(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId = formData.get("employeeId") as string;
+  const employee   = await prisma.employee.findUnique({ where: { id: employeeId }, select: { name: true } });
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data:  { active: true, endDate: null },
+  });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "UPDATE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   `Contract reinstated: ${employee?.name}`,
+  });
+
+  redirect(`/astelfin_26/employees/${employeeId}?success=reinstated`);
+}
+
+async function rehireEmployee(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId     = formData.get("employeeId") as string;
+  const contractType   = formData.get("contractType") as string;
+  const startDateRaw   = formData.get("startDate") as string;
+  const endDateRaw     = formData.get("endDate") as string;
+  const grossSalaryRaw = formData.get("grossSalary") as string;
+
+  const startDate  = startDateRaw ? new Date(startDateRaw) : new Date();
+  const endDate    = endDateRaw   ? new Date(endDateRaw)   : null;
+  const grossSalary = grossSalaryRaw ? parseFloat(grossSalaryRaw) : undefined;
+
+  const employee = await prisma.employee.findUnique({ where: { id: employeeId }, select: { name: true } });
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data:  {
+      active: true,
+      contractType,
+      startDate,
+      endDate,
+      ...(grossSalary !== undefined ? { grossSalary } : {}),
+    },
+  });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "UPDATE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   `Employee rehired: ${employee?.name}, new contract starts ${startDate.toISOString().slice(0, 10)}`,
+  });
+
+  redirect(`/astelfin_26/employees/${employeeId}?success=rehired`);
+}
+
+async function deleteEmployee(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId = formData.get("employeeId") as string;
+  const employee   = await prisma.employee.findUnique({ where: { id: employeeId }, select: { name: true, active: true } });
+
+  // Safety: only allow deleting inactive employees
+  if (employee?.active) redirect(`/astelfin_26/employees/${employeeId}?error=still_active`);
+
+  // Unlink any user accounts first
+  await prisma.user.updateMany({
+    where: { employeeId },
+    data:  { employeeId: null },
+  });
+
+  await prisma.employee.delete({ where: { id: employeeId } });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "DELETE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   `Employee permanently deleted: ${employee?.name}`,
+  });
+
+  redirect("/astelfin_26/employees");
+}
+
 /* ── Page ────────────────────────────────────────────────────── */
 
 export default async function EmployeeDetailPage({
@@ -230,7 +320,7 @@ export default async function EmployeeDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; success?: string }>;
+  searchParams: Promise<{ error?: string; success?: string; confirm?: string }>;
 }) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
@@ -239,7 +329,7 @@ export default async function EmployeeDetailPage({
   if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const { id } = await params;
-  const { error, success } = await searchParams;
+  const { error, success, confirm } = await searchParams;
   const isCEO = role === "CEO";
 
   const [employee, allUsers, unlinkedUsers] = await Promise.all([
@@ -249,12 +339,10 @@ export default async function EmployeeDetailPage({
         payrolls: { orderBy: { period: "desc" }, take: 6 },
       },
     }),
-    // Users linked to this employee
     prisma.user.findMany({
       where:  { employeeId: id },
       select: { id: true, name: true, email: true, role: true, permissions: true },
     }),
-    // Users that have no employee linked (for CEO to link)
     isCEO
       ? prisma.user.findMany({
           where:   { employeeId: null, active: true },
@@ -272,6 +360,8 @@ export default async function EmployeeDetailPage({
   const rate = employee.currency === "MWK" ? 1 : (employee.salaryExchangeRate ?? 1);
   const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate);
 
+  const inp = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40";
+
   return (
     <div className="max-w-4xl space-y-6">
 
@@ -286,9 +376,9 @@ export default async function EmployeeDetailPage({
           <div>
             <h1 className="text-2xl font-bold text-brand-navy">{employee.name}</h1>
             <p className="text-gray-500 text-sm">
-            {employee.position}
-            {employee.departments.length > 0 ? ` · ${employee.departments.join(", ")}` : ""}
-          </p>
+              {employee.position}
+              {employee.departments.length > 0 ? ` · ${employee.departments.join(", ")}` : ""}
+            </p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -298,7 +388,7 @@ export default async function EmployeeDetailPage({
             </span>
           )}
           <span className={`text-sm font-semibold px-3 py-1 rounded-lg ${employee.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-            {employee.active ? "Active" : "Inactive"}
+            {employee.active ? "Active" : "Former"}
           </span>
         </div>
       </div>
@@ -307,6 +397,11 @@ export default async function EmployeeDetailPage({
       {error === "email_taken" && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
           That email address is already in use by another system user. Choose a different email.
+        </div>
+      )}
+      {error === "still_active" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Cannot permanently delete an active employee. Terminate the contract first.
         </div>
       )}
       {success === "user_created" && (
@@ -331,7 +426,17 @@ export default async function EmployeeDetailPage({
       )}
       {success === "terminated" && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
-          Contract terminated. Employee marked as inactive.
+          Contract terminated. Employee marked as former.
+        </div>
+      )}
+      {success === "reinstated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Employee reinstated. Contract is now active again.
+        </div>
+      )}
+      {success === "rehired" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Employee rehired successfully with a new contract.
         </div>
       )}
 
@@ -374,8 +479,118 @@ export default async function EmployeeDetailPage({
         </div>
       </div>
 
-      {/* ── Edit Contract Details (CEO only) ────────────────────── */}
-      {isCEO && (
+      {/* ── Former Employee Actions (CEO only) ──────────────────── */}
+      {isCEO && !employee.active && (
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
+          <div>
+            <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Former Employee</h2>
+            <p className="text-xs text-gray-500 mt-1">
+              This employee&#39;s record is retained. Choose how to proceed.
+            </p>
+          </div>
+
+          {/* Reinstate */}
+          <div className="border border-green-200 rounded-xl p-4 space-y-2 bg-green-50">
+            <p className="text-sm font-semibold text-green-800">Reinstate</p>
+            <p className="text-xs text-green-700">
+              Continue the existing contract as if termination never happened — active status restored, end date cleared.
+            </p>
+            <form action={reinstateEmployee}>
+              <input type="hidden" name="employeeId" value={employee.id} />
+              <button type="submit"
+                className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-colors">
+                Reinstate Employee
+              </button>
+            </form>
+          </div>
+
+          {/* Rehire */}
+          <div className="border border-brand-gold/40 rounded-xl p-4 space-y-3 bg-brand-gold/5">
+            <p className="text-sm font-semibold text-brand-navy">Rehire</p>
+            <p className="text-xs text-gray-600">
+              Start a new contract — retains the employee profile but sets a fresh start date and contract type.
+            </p>
+            <form action={rehireEmployee} className="grid grid-cols-2 gap-3">
+              <input type="hidden" name="employeeId" value={employee.id} />
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  New Start Date <span className="text-red-500">*</span>
+                </label>
+                <input name="startDate" type="date" required
+                  defaultValue={new Date().toISOString().slice(0, 10)}
+                  className={inp} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Contract Type</label>
+                <select name="contractType" defaultValue={employee.contractType}
+                  className={`${inp} bg-white`}>
+                  {CONTRACT_TYPES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Contract End Date
+                  <span className="ml-1.5 font-normal text-gray-400">— leave blank if open</span>
+                </label>
+                <input name="endDate" type="date" className={inp} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  New Gross Salary ({employee.currency})
+                  <span className="ml-1.5 font-normal text-gray-400">— leave blank to keep current</span>
+                </label>
+                <input name="grossSalary" type="number" min="0" step="0.01"
+                  placeholder={String(employee.grossSalary)}
+                  className={inp} />
+              </div>
+              <div className="col-span-2">
+                <button type="submit"
+                  className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-xs font-semibold transition-colors">
+                  Rehire with New Contract
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Permanent delete (CEO only, with confirmation) */}
+          {confirm === "delete" ? (
+            <div className="border border-red-300 rounded-xl p-4 space-y-3 bg-red-50">
+              <p className="text-sm font-bold text-red-700">⚠ Permanently Delete Employee Record?</p>
+              <p className="text-xs text-red-600">
+                This will permanently delete <strong>{employee.name}</strong> and all associated payroll records.
+                This action <strong>cannot be undone</strong>.
+              </p>
+              <div className="flex gap-3">
+                <form action={deleteEmployee}>
+                  <input type="hidden" name="employeeId" value={employee.id} />
+                  <button type="submit"
+                    className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition-colors">
+                    Yes, Permanently Delete
+                  </button>
+                </form>
+                <Link href={`/astelfin_26/employees/${employee.id}`}
+                  className="px-5 py-2 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                  Cancel
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-end pt-2 border-t border-gray-100">
+              <Link
+                href={`/astelfin_26/employees/${employee.id}?confirm=delete`}
+                className="text-xs text-gray-400 hover:text-red-600 hover:underline transition-colors"
+              >
+                Permanently delete record…
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Edit Contract Details (CEO only, active employees) ──── */}
+      {isCEO && employee.active && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
           <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Edit Contract Details</h2>
           <p className="text-xs text-gray-500">CEO-only. Changes are audit-logged.</p>
@@ -386,25 +601,18 @@ export default async function EmployeeDetailPage({
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Position / Job Title <span className="text-red-500">*</span>
                 </label>
-                <input
-                  name="position"
-                  required
-                  defaultValue={employee.position}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
+                <input name="position" required defaultValue={employee.position} className={inp} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Level</label>
-                <select name="level" defaultValue={employee.level ?? ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+                <select name="level" defaultValue={employee.level ?? ""} className={`${inp} bg-white`}>
                   <option value="">— Select Level —</option>
                   {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Employment Type</label>
-                <select name="contractType" defaultValue={employee.contractType}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white">
+                <select name="contractType" defaultValue={employee.contractType} className={`${inp} bg-white`}>
                   {CONTRACT_TYPES.map((c) => (
                     <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
@@ -412,45 +620,30 @@ export default async function EmployeeDetailPage({
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary ({employee.currency})</label>
-                <input
-                  name="grossSalary"
-                  type="number" min="0" step="0.01"
-                  defaultValue={employee.grossSalary}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
+                <input name="grossSalary" type="number" min="0" step="0.01"
+                  defaultValue={employee.grossSalary} className={inp} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Contract Start Date</label>
-                <input
-                  name="startDate"
-                  type="date"
+                <input name="startDate" type="date"
                   defaultValue={employee.startDate ? employee.startDate.toISOString().slice(0, 10) : ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
+                  className={inp} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Contract End Date
                   <span className="ml-1.5 font-normal text-gray-400">— leave blank for permanent</span>
                 </label>
-                <input
-                  name="endDate"
-                  type="date"
+                <input name="endDate" type="date"
                   defaultValue={employee.endDate ? employee.endDate.toISOString().slice(0, 10) : ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
+                  className={inp} />
               </div>
               <div className="col-span-2">
                 <DeptCheckboxes current={employee.departments} />
               </div>
               <div className="col-span-2">
                 <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                <input
-                  name="email"
-                  type="email"
-                  defaultValue={employee.email ?? ""}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40"
-                />
+                <input name="email" type="email" defaultValue={employee.email ?? ""} className={inp} />
               </div>
             </div>
             <button type="submit"
@@ -461,30 +654,57 @@ export default async function EmployeeDetailPage({
         </div>
       )}
 
-      {/* ── Terminate Contract (CEO only) ────────────────────────── */}
+      {/* ── Terminate Contract (CEO only, active, with confirmation) */}
       {isCEO && employee.active && (
-        <div className="bg-red-50 rounded-2xl border border-red-200 p-6 space-y-3">
-          <h2 className="font-bold text-red-700 text-sm uppercase tracking-wide">Terminate Contract</h2>
-          <p className="text-xs text-red-600">
-            This will mark the employee as inactive and set today as the contract end date.
-            This action is audit-logged and can be reversed by editing the contract details above.
-          </p>
-          <form action={terminateContract} className="space-y-3">
-            <input type="hidden" name="employeeId" value={employee.id} />
+        confirm === "terminate" ? (
+          /* Confirmation panel */
+          <div className="bg-red-50 rounded-2xl border border-red-300 p-6 space-y-4">
             <div>
-              <label className="block text-xs font-medium text-red-700 mb-1">Reason for Termination</label>
-              <input
-                name="reason"
-                placeholder="e.g. End of contract, resignation, redundancy…"
-                className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 bg-white"
-              />
+              <h2 className="font-bold text-red-700 text-sm uppercase tracking-wide">Confirm Termination</h2>
+              <p className="text-xs text-red-600 mt-1">
+                You are about to terminate <strong>{employee.name}</strong>&#39;s contract.
+                Their profile will be retained as a former employee.
+                This action is audit-logged.
+              </p>
             </div>
-            <button type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
-              Terminate Contract
-            </button>
-          </form>
-        </div>
+            <form action={terminateContract} className="space-y-3">
+              <input type="hidden" name="employeeId" value={employee.id} />
+              <div>
+                <label className="block text-xs font-medium text-red-700 mb-1">Reason for Termination</label>
+                <input name="reason"
+                  placeholder="e.g. End of contract, resignation, redundancy…"
+                  className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 bg-white"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button type="submit"
+                  className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+                  Confirm Termination
+                </button>
+                <Link href={`/astelfin_26/employees/${employee.id}`}
+                  className="px-5 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50">
+                  Cancel
+                </Link>
+              </div>
+            </form>
+          </div>
+        ) : (
+          /* Terminate button — Link to ?confirm=terminate */
+          <div className="bg-red-50 rounded-2xl border border-red-200 p-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold text-red-700">Terminate Contract</p>
+              <p className="text-xs text-red-500 mt-0.5">
+                Marks the employee as former. Their record is kept and can be reinstated or rehired later.
+              </p>
+            </div>
+            <Link
+              href={`/astelfin_26/employees/${employee.id}?confirm=terminate`}
+              className="shrink-0 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+            >
+              Terminate…
+            </Link>
+          </div>
+        )
       )}
 
       {/* ── Access Permissions (CEO only, linked user only) ─────── */}

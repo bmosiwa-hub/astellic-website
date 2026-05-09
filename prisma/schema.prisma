@@ -216,7 +216,7 @@ model Employee {
 model Payroll {
   id              String        @id @default(cuid())
   employeeId      String
-  employee        Employee      @relation(fields: [employeeId], references: [id])
+  employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   period          String
   grossSalary     Float
   paye            Float         @default(0)
