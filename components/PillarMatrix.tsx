@@ -44,10 +44,10 @@ const PILLARS: Pillar[] = [
         label: "Research & Analytics",
         href:  "/what-we-do/evidence/research-analytics",
         activities: {
-          health:     ["Public health research", "Health systems analysis", "Programme evaluations", "Landscape assessments"],
-          governance: ["Institutional & governance research", "Public sector analysis", "Programme evaluations", "Landscape assessments"],
-          education:  ["Social sector research", "Human development analysis", "Programme evaluations", "Sector assessments"],
-          climate:    ["Climate & environmental research", "Agricultural systems analysis", "Programme evaluations", "Landscape assessments"],
+          health:     ["Public health research", "Health systems analysis", "Applied & mixed-methods research", "Landscape & needs assessments"],
+          governance: ["Institutional & governance research", "Public sector analysis", "Political economy analysis", "Landscape assessments"],
+          education:  ["Social sector research", "Human development analysis", "Applied social research", "Sector needs assessments"],
+          climate:    ["Climate & environmental research", "Agricultural systems analysis", "Applied analytics & data analysis", "Landscape assessments"],
         },
       },
       {
@@ -186,11 +186,11 @@ export default function PillarMatrix() {
         <thead>
           <tr>
             {/* Pillar header */}
-            <th className="w-20 border border-gray-200 bg-gray-50 p-2 text-left text-[10px] font-bold text-brand-muted uppercase tracking-wide">
+            <th className="w-20 border border-gray-200 bg-gray-50 p-2 text-left text-[12px] font-bold text-brand-muted uppercase tracking-wide">
               Pillar
             </th>
             {/* Sub-unit header */}
-            <th className="w-40 border border-gray-200 bg-gray-50 p-2 text-left text-[10px] font-bold text-brand-muted uppercase tracking-wide">
+            <th className="w-40 border border-gray-200 bg-gray-50 p-2 text-left text-[12px] font-bold text-brand-muted uppercase tracking-wide">
               Sub-unit
             </th>
             {/* Domain headers */}
@@ -208,7 +208,7 @@ export default function PillarMatrix() {
               >
                 <Link
                   href={d.href}
-                  className="hover:text-brand-gold transition-colors leading-snug block text-[11px]"
+                  className="hover:text-brand-gold transition-colors leading-snug block text-[13px]"
                 >
                   {d.label}
                 </Link>
@@ -241,9 +241,9 @@ export default function PillarMatrix() {
                         href={pillar.href}
                         className="flex flex-col items-center justify-center gap-1.5 h-full py-4 px-2 group"
                       >
-                        <span className="text-[10px] font-bold text-white/60 tracking-widest">{pillar.num}</span>
+                        <span className="text-[12px] font-bold text-white/60 tracking-widest">{pillar.num}</span>
                         <span
-                          className="text-white font-bold text-[10px] leading-snug tracking-wide group-hover:underline text-center"
+                          className="text-white font-bold text-[12px] leading-snug tracking-wide group-hover:underline text-center"
                           style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", whiteSpace: "nowrap" }}
                         >
                           {pillar.label}
@@ -260,7 +260,7 @@ export default function PillarMatrix() {
                   >
                     <Link
                       href={su.href}
-                      className={`text-[11px] font-semibold leading-snug hover:underline transition-colors ${pillar.text}`}
+                      className={`text-[13px] font-semibold leading-snug hover:underline transition-colors ${pillar.text}`}
                     >
                       {su.label}
                     </Link>
@@ -282,7 +282,7 @@ export default function PillarMatrix() {
                           {su.activities[d.id].map((act, ai) => (
                             <li
                               key={ai}
-                              className={`flex items-start gap-1.5 text-[11px] leading-snug transition-colors ${
+                              className={`flex items-start gap-1.5 text-[13px] leading-snug transition-colors ${
                                 cellHl ? "text-gray-700" : "text-brand-muted"
                               }`}
                             >
@@ -301,7 +301,7 @@ export default function PillarMatrix() {
         </tbody>
       </table>
 
-      <p className="text-[11px] text-brand-muted mt-3 text-center">
+      <p className="text-[13px] text-brand-muted mt-3 text-center">
         Hover over a pillar, sub-unit, or thematic domain to highlight intersections.
       </p>
     </div>

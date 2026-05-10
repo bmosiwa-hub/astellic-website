@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Research & Analytics | Evidence Generation | Astellic",
   description:
-    "Astellic's Research & Analytics sub-unit — applied policy research, systems analysis, programme evaluations, and evidence synthesis calibrated for decision-makers across all thematic domains.",
+    "Astellic's Research & Analytics sub-unit — applied policy research, sector systems analysis, political economy analysis, and evidence synthesis calibrated for decision-makers across all thematic domains.",
 };
 
 const services = [
@@ -19,10 +19,6 @@ const services = [
   {
     label: "Sector Systems & Policy Analysis",
     desc: "In-depth analysis of how systems perform, where they fail, and what constrains them — applied across health systems, public sector governance, social services, and climate and agricultural systems.",
-  },
-  {
-    label: "Programme Evaluations",
-    desc: "Rigorous evaluation of programmes across all thematic areas — assessing design quality, implementation fidelity, and outcome achievement to generate evidence that improves both current and future programming.",
   },
   {
     label: "Landscape Assessments & Institutional Diagnostics",
