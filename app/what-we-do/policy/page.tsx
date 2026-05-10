@@ -1,0 +1,170 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Policy Development & Advisory | Astellic",
+  description:
+    "Astellic's Policy Development & Advisory pillar — translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
+};
+
+const subUnits = [
+  {
+    num: "2.1",
+    title: "Policy & Strategy Development",
+    tagline: "Translating evidence into actionable policy at the highest levels of government and donor engagement.",
+    desc: "This sub-unit works at the intersection of technical expertise and political feasibility — supporting ministries in drafting policy, advising donors on programme design, and shaping the strategic intent behind major reform initiatives. We do not produce strategies that are technically correct but institutionally impossible. Every framework, guideline, and reform roadmap we produce is designed to be survived in practice.",
+    services: [
+      "National policy framework design and sector strategy development",
+      "Ministerial guidelines, regulatory frameworks, and institutional policy documents",
+      "Senior-level strategic advisory to government ministries and development partners",
+      "Reform programme design — from situation analysis through implementation sequencing",
+      "Donor programme design support and technical input to concept notes and proposals",
+    ],
+    href: "/what-we-do/policy/strategy-development",
+  },
+  {
+    num: "2.2",
+    title: "Systems Strengthening & Advisory",
+    tagline: "Embedded institutional development that builds genuine capability, not dependency.",
+    desc: "This sub-unit works within governments and public institutions to build the enduring capacity, systems, and governance structures through which sustained performance becomes possible. We operate at the intersection of technical advisory and institutional transformation — distinguishing Astellic from firms that deliver recommendations without building the absorptive capacity to act on them. The difference between advice and change is institutional capability. We build both.",
+    services: [
+      "Public financial management system design and strengthening",
+      "Health information system design and governance structure strengthening",
+      "Accountability framework development and institutional diagnostics",
+      "Structured capacity strengthening — technical assistance, coaching, and embedded advisory",
+      "Governance and anti-corruption system design, legislative effectiveness, and intergovernmental fiscal relations",
+    ],
+    href: "/what-we-do/policy/systems-strengthening",
+  },
+  {
+    num: "2.3",
+    title: "Knowledge Translation & Strategic Communications",
+    tagline: "Closing the gap between what is known and what is decided — through communications that catalyse action.",
+    desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives, visual communications, and engagement strategies that shift understanding at the decision-maker level. We also generate Astellic's flagship thought leadership products — positioning the firm as a trusted intellectual voice in African development.",
+    services: [
+      "Knowledge translation — converting research findings into accessible briefs for non-technical audiences",
+      "Strategic communications for reform programmes and policy launches",
+      "Stakeholder engagement design and media strategy for institutional change initiatives",
+      "Production of Policy Intelligence Briefs, Implementation Reviews, and sector commentary",
+      "Narrative development and communications strategy for high-stakes reform environments",
+    ],
+    href: "/what-we-do/policy/knowledge-translation",
+  },
+];
+
+const offerings = [
+  "National policy framework and sector strategy development",
+  "Senior advisory to government ministries and development partners",
+  "Public financial management advisory and reform design",
+  "Health systems policy and financing reform",
+  "Legislative strengthening and governance advisory",
+  "Capacity strengthening and embedded technical assistance",
+  "Knowledge translation and policy brief production",
+  "Strategic communications for reform and institutional change",
+];
+
+export default function PolicyPillarPage() {
+  return (
+    <>
+      {/* Hero */}
+      <section className="relative bg-brand-teal text-white py-24 px-6 overflow-hidden">
+        <Image
+          src="/images/hero-approach.jpg"
+          alt="Policy development and advisory"
+          fill
+          className="object-cover opacity-15"
+          priority
+        />
+        <div className="relative max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-5">
+            <Link href="/what-we-do" className="text-teal-100 hover:text-white text-sm transition-colors">
+              What We Do
+            </Link>
+            <span className="text-teal-300">/</span>
+            <span className="text-white/70 text-sm font-semibold">Pillar 02</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
+            Policy Development<br />& Advisory
+          </h1>
+          <p className="text-teal-100 text-lg font-medium mb-4">
+            Translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.
+          </p>
+          <p className="text-teal-50 text-lg max-w-2xl leading-relaxed opacity-90">
+            This is where Astellic&apos;s analytical depth meets strategic influence. We convert
+            research findings into actionable guidance that accounts for the political economy
+            and systemic constraints that determine whether policy intent becomes policy reality.
+          </p>
+        </div>
+      </section>
+
+      {/* Sub-units */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto space-y-14">
+          {subUnits.map((s) => (
+            <div key={s.num} className="border-l-4 border-brand-teal pl-8">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-bold text-white bg-brand-teal px-2 py-0.5 rounded">{s.num}</span>
+                <h2 className="text-xl font-bold text-brand-teal">{s.title}</h2>
+              </div>
+              <p className="text-brand-muted italic text-sm mb-4">{s.tagline}</p>
+              <p className="text-gray-700 leading-relaxed mb-6">{s.desc}</p>
+              <div className="bg-brand-light rounded-xl p-5 space-y-2 mb-5">
+                <p className="text-xs font-bold text-brand-teal uppercase tracking-wide mb-3">Service Offerings</p>
+                {s.services.map((svc, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-1.5 shrink-0" />
+                    {svc}
+                  </div>
+                ))}
+              </div>
+              <Link
+                href={s.href}
+                className="inline-flex items-center gap-2 text-brand-teal font-semibold text-sm hover:gap-3 transition-all"
+              >
+                Learn more about {s.title}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Full offerings */}
+      <section className="bg-brand-light py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
+          <div className="grid md:grid-cols-2 gap-3">
+            {offerings.map((o, i) => (
+              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-gray-700">
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-teal mt-1.5 shrink-0" />
+                {o}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Related pillars */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence — and for implementation.</h2>
+          <p className="text-brand-muted mb-8">
+            Our policy work is grounded in rigorous evidence from Pillar 01 and designed to be
+            implementable through Pillar 03 — ensuring the full results chain holds together.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/what-we-do/evidence" className="border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy hover:text-white transition-colors">
+              ← Pillar 01: Evidence Generation & Verification
+            </Link>
+            <Link href="/what-we-do/implementation" className="border border-brand-green text-brand-green px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green hover:text-white transition-colors">
+              Pillar 03: Programme Design & Implementation →
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

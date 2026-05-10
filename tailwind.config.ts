@@ -12,6 +12,7 @@ const config: Config = {
           navy: "#1B2A4A",
           teal: "#0D7A6E",
           gold: "#C9A84C",
+          green: "#3B7D23",
           light: "#F4F6F9",
           muted: "#6B7A99",
         },
