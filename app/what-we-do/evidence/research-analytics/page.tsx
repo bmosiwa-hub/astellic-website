@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Research & Analytics | Evidence Generation | Astellic",
   description:
-    "Astellic's Research & Analytics sub-unit — primary research, political economy analysis, health financing studies, and applied analytics calibrated for decision-makers.",
+    "Astellic's Research & Analytics sub-unit — applied policy research, systems analysis, programme evaluations, and evidence synthesis calibrated for decision-makers across all thematic domains.",
 };
 
 const services = [
@@ -17,8 +17,12 @@ const services = [
     desc: "Structured PEA to map power dynamics, incentive structures, and institutional constraints — giving policy and reform teams the contextual intelligence to design interventions that survive in practice.",
   },
   {
-    label: "Health Financing Studies",
-    desc: "Health expenditure tracking, fiscal space analysis, resource mapping, and health financing simulations — supporting governments and donors making high-stakes decisions about health system investment.",
+    label: "Sector Systems & Policy Analysis",
+    desc: "In-depth analysis of how systems perform, where they fail, and what constrains them — applied across health systems, public sector governance, social services, and climate and agricultural systems.",
+  },
+  {
+    label: "Programme Evaluations",
+    desc: "Rigorous evaluation of programmes across all thematic areas — assessing design quality, implementation fidelity, and outcome achievement to generate evidence that improves both current and future programming.",
   },
   {
     label: "Landscape Assessments & Institutional Diagnostics",
@@ -60,8 +64,8 @@ export default function ResearchAnalyticsPage() {
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
             Our Research & Analytics sub-unit is Astellic&apos;s primary engine of evidence production.
             It conducts primary and secondary research across the firm&apos;s thematic domains,
-            specialising in applied policy research, landscape assessments, political economy analysis,
-            health financing studies, institutional diagnostics, and rapid evidence synthesis.
+            specialising in applied policy research, sector systems analysis, political economy analysis,
+            programme evaluations, institutional diagnostics, and rapid evidence synthesis.
             What distinguishes us is the production of research positioned at the precise point
             where evidence meets the decision-maker — calibrated for action, not academic convention.
           </p>

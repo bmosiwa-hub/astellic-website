@@ -50,22 +50,22 @@ type DomainId = (typeof DOMAINS)[number]["id"];
 
 const MATRIX: Record<PillarId, Record<DomainId, string>> = {
   evidence: {
-    health:         "Health financing studies, health information system audits, nutrition research & MERL design",
-    governance:     "Political economy analysis, institutional diagnostics, public finance data reviews",
-    education:      "Education sector research, social protection evaluations, learning outcome assessments",
-    climate:        "Climate policy analysis, agricultural system assessments, resilience & adaptation data",
+    health:      "Public health research, health systems & policy analysis, programme evaluations",
+    governance:  "Governance & institutional research, public sector analysis, programme evaluations",
+    education:   "Social sector research, human development analysis, programme evaluations",
+    climate:     "Climate & agricultural research, environmental systems analysis, programme evaluations",
   },
   policy: {
-    health:         "Health financing reform strategy, PHC policy frameworks, subnational health planning",
-    governance:     "Public financial management advisory, legislative strengthening, decentralisation reform",
-    education:      "Education sector planning, teacher management policy, social protection system design",
-    climate:        "Climate policy frameworks, adaptation strategy, climate finance advisory",
+    health:      "Health systems & policy advisory, strategy development, systems strengthening",
+    governance:  "Public sector policy & reform advisory, strategy development, governance strengthening",
+    education:   "Social sector policy advisory, strategy development, systems strengthening",
+    climate:     "Climate & sustainability policy advisory, strategy development, systems strengthening",
   },
   implementation: {
-    health:         "Health programme delivery, nutrition initiative implementation, embedded health TA",
-    governance:     "Governance reform delivery, ministerial embedded advisory, PFM implementation support",
-    education:      "Education programme management, social protection delivery, capacity strengthening",
-    climate:        "Climate programme management, resilience initiative delivery, agricultural systems TA",
+    health:      "Health programme design & delivery, technical assistance, institutional development",
+    governance:  "Governance programme delivery, embedded advisory, institutional reform support",
+    education:   "Social sector programme delivery, technical assistance, capacity development",
+    climate:     "Climate & sustainability programme delivery, technical assistance, systems support",
   },
 };
 

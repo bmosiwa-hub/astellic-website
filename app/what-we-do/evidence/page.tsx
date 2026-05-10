@@ -13,13 +13,13 @@ const subUnits = [
     num: "1.1",
     title: "Research & Analytics",
     tagline: "Policy-relevant intelligence at the point where evidence meets the decision-maker.",
-    desc: "Our Research & Analytics sub-unit conducts primary and secondary research across Astellic's thematic domains, combining quantitative rigour with qualitative depth and political economy awareness. We specialise in applied policy research, landscape assessments, political economy analysis, health financing studies, institutional diagnostics, and rapid evidence synthesis — producing research that is not only analytically sound but operationally actionable.",
+    desc: "Our Research & Analytics sub-unit conducts primary and secondary research across Astellic's thematic domains, combining quantitative rigour with qualitative depth and political economy awareness. We specialise in applied policy research, sector systems analysis, political economy analysis, programme evaluations, institutional diagnostics, and rapid evidence synthesis — producing research that is not only analytically sound but operationally actionable.",
     services: [
       "Primary data collection and analysis across health, governance, education, and climate domains",
       "Political economy analysis (PEA) for reform strategy and programme design",
-      "Health financing studies and fiscal space analysis",
-      "Landscape assessments and institutional diagnostic reviews",
-      "Rapid evidence synthesis and policy environment scans",
+      "Sector systems & policy analysis across all thematic areas",
+      "Programme evaluations across health, governance, education, and climate domains",
+      "Landscape assessments, institutional diagnostics, and rapid evidence synthesis",
     ],
     href: "/what-we-do/evidence/research-analytics",
   },
@@ -55,13 +55,13 @@ const subUnits = [
 
 const offerings = [
   "Applied policy research and landscape assessments",
-  "Political economy analysis for reform programmes",
-  "Health systems and health financing research",
-  "Programme evaluation and impact assessment",
+  "Political economy analysis for reform and programme design",
+  "Sector systems & policy analysis across all thematic areas",
+  "Programme evaluations — across health, governance, education, and climate",
+  "Impact assessment and formative programme reviews",
   "Real-time monitoring, evaluation, research, and learning (MERL) systems",
   "Data quality assurance and research integrity compliance",
-  "Institutional diagnostic reviews and needs assessments",
-  "Rapid evidence synthesis for donor and government clients",
+  "Institutional diagnostic reviews and rapid evidence synthesis",
 ];
 
 export default function EvidencePillarPage() {
