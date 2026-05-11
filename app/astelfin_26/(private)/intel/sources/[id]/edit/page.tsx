@@ -13,9 +13,9 @@ async function updateSource(formData: FormData) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/intel/sources");
 
-  const id = formData.get("id") as string;
-  const tagsRaw = formData.get("tags") as string;
-  const tags = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
+  const id       = formData.get("id") as string;
+  const tagsRaw  = formData.get("tags") as string;
+  const tags     = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
   const interval = parseInt(formData.get("crawlIntervalMins") as string, 10);
 
   await prisma.crawlerSource.update({
@@ -34,18 +34,35 @@ async function updateSource(formData: FormData) {
   redirect("/astelfin_26/intel/sources");
 }
 
+async function deleteSource(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/intel/sources");
+  const id = formData.get("id") as string;
+  await prisma.crawlerSource.delete({ where: { id } });
+  redirect("/astelfin_26/intel/sources");
+}
+
 export default async function EditSourcePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ confirm?: string }>;
 }) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/intel/sources");
 
-  const { id } = await params;
+  const { id }      = await params;
+  const { confirm } = await searchParams;
 
-  const source = await prisma.crawlerSource.findUnique({ where: { id } });
+  const source = await prisma.crawlerSource.findUnique({
+    where: { id },
+    include: { _count: { select: { discoveries: true } } },
+  });
   if (!source) redirect("/astelfin_26/intel/sources");
+
+  const confirmDelete = confirm === "delete";
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -57,8 +74,12 @@ export default async function EditSourcePage({
         <span className="text-brand-navy font-medium">Edit Source</span>
       </div>
 
-      <h1 className="text-2xl font-bold text-brand-navy">Edit Source</h1>
+      <div className="flex items-start justify-between">
+        <h1 className="text-2xl font-bold text-brand-navy">Edit Source</h1>
+        <span className="text-xs text-gray-400 mt-2">{source._count.discoveries} discoveries</span>
+      </div>
 
+      {/* Edit form */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-6">
         <form action={updateSource} className="space-y-4">
           <input type="hidden" name="id" value={source.id} />
@@ -131,6 +152,36 @@ export default async function EditSourcePage({
             </Link>
           </div>
         </form>
+      </div>
+
+      {/* Delete zone */}
+      <div className="bg-white rounded-2xl border border-red-100 shadow-sm px-6 py-5">
+        <h2 className="text-sm font-bold text-red-600 mb-1">Delete Source</h2>
+        <p className="text-xs text-gray-500 mb-4">
+          Removes this source and all its crawl run logs. The {source._count.discoveries} discovered
+          opportunit{source._count.discoveries !== 1 ? "ies" : "y"} will remain in the feed.
+        </p>
+
+        {confirmDelete ? (
+          <div className="flex items-center gap-3">
+            <form action={deleteSource}>
+              <input type="hidden" name="id" value={source.id} />
+              <button type="submit"
+                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+                Yes, delete source
+              </button>
+            </form>
+            <Link href={`/astelfin_26/intel/sources/${source.id}/edit`}
+              className="text-sm text-gray-500 hover:underline">
+              Cancel
+            </Link>
+          </div>
+        ) : (
+          <Link href={`/astelfin_26/intel/sources/${source.id}/edit?confirm=delete`}
+            className="text-sm font-semibold text-red-500 hover:text-red-700 hover:underline transition-colors">
+            Delete this source →
+          </Link>
+        )}
       </div>
     </div>
   );
