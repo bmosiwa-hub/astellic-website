@@ -172,6 +172,7 @@ export default async function NewSourcePage() {
                 <option value="RSS">RSS / Atom Feed</option>
                 <option value="HTML">HTML (Cheerio)</option>
                 <option value="PLAYWRIGHT">HTML + JS (Playwright)</option>
+                <option value="WPJOBS">WP Job Manager (REST API)</option>
               </select>
             </div>
             <div>

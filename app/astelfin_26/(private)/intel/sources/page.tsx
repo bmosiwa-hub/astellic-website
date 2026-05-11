@@ -17,6 +17,7 @@ const SOURCE_TYPE_COLORS: Record<string, string> = {
   RSS:        "bg-blue-100 text-blue-700",
   HTML:       "bg-amber-100 text-amber-700",
   PLAYWRIGHT: "bg-purple-100 text-purple-700",
+  WPJOBS:     "bg-green-100 text-green-700",
 };
 
 // ── Server Actions ────────────────────────────────────────────────────────────

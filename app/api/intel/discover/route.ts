@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashUrl, hashContent, checkDuplicate } from "@/lib/intel/dedup";
 import { extractOpportunity, analyseOpportunity } from "@/lib/intel/ai-pipeline";
+import { passesSourceFilters } from "@/lib/intel/filters";
 
 // Allow up to 60s — AI pipeline takes 15-30s for two Claude calls
 export const maxDuration = 60;
@@ -50,13 +51,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "sourceId, rawTitle and rawUrl are required" }, { status: 400 });
   }
 
-  // Verify source exists
+  // Verify source exists (fetch country + tags for pre-filter)
   const source = await prisma.crawlerSource.findUnique({
     where: { id: body.sourceId },
-    select: { id: true, name: true, tags: true },
+    select: { id: true, name: true, tags: true, country: true },
   });
   if (!source) {
     return NextResponse.json({ error: "Source not found" }, { status: 404 });
+  }
+
+  // ── Pre-AI qualification filter ───────────────────────────────────────────
+  // Reject items that don't mention the source country or match any hint tag.
+  const filter = passesSourceFilters(
+    { country: source.country, tags: source.tags },
+    { rawTitle: body.rawTitle, rawDescription: body.rawDescription, rawContent: body.rawContent }
+  );
+  if (!filter.passes) {
+    return NextResponse.json({ status: "filtered", reason: filter.failReason });
   }
 
   const urlHash = hashUrl(body.rawUrl);
@@ -104,15 +115,6 @@ export async function POST(req: NextRequest) {
     console.error(`[intel] Extraction failed for ${discovered.id}:`, err);
     // Return accepted so crawler doesn't retry — record sits as NEW for manual re-analysis
     return NextResponse.json({ status: "accepted", id: discovered.id, stage: "extraction_failed" });
-  }
-
-  // If not Malawi-relevant, mark ignored and skip analysis
-  if (!extracted.isMalawiRelevant) {
-    await prisma.discoveredOpportunity.update({
-      where: { id: discovered.id },
-      data: { status: "IGNORED" },
-    });
-    return NextResponse.json({ status: "accepted", id: discovered.id, malawi: false });
   }
 
   // Parse deadline
