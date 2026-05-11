@@ -87,26 +87,15 @@ async function fetchRss(url: string): Promise<RawItem[]> {
 }
 
 // ── WordPress Job Manager REST API fetcher ────────────────────────────────────
-// Fetches from /wp-json/wp/v2/job-listings and filters by job type using
-// the class_list field (e.g. "job-type-consultant", "job-type-short-term").
-// The source tags drive which job types are included — any tag that matches
-// a WP Job Manager type slug (consultant, contract, short-term, etc.) is used
-// as a type filter. If no type tags are found, all listings are returned.
+// Fetches all active job listings via the WP REST API.
+// No job-type filtering here — the pre-filter tag check in crawlSource handles
+// relevance by matching keywords in the title/description (e.g. "consultant",
+// "evaluation", "research"). Set the source tags to the content keywords you
+// care about, NOT the WP job type slugs.
 
-const WP_JOB_TYPE_SLUGS = new Set([
-  "consultant","contract","freelance","full-time",
-  "internship","part-time","short-term","temporary","training","volunteer",
-]);
-
-async function fetchWpJobManager(url: string, tags: string[]): Promise<RawItem[]> {
+async function fetchWpJobManager(url: string): Promise<RawItem[]> {
   const base = new URL(url);
-
-  // Build type filters from source tags
-  const typeFilters = tags
-    .flatMap((t) => t.toLowerCase().split(/[\s,]+/))
-    .filter((w) => WP_JOB_TYPE_SLUGS.has(w));
-
-  const apiUrl = `${base.origin}/wp-json/wp/v2/job-listings?per_page=100&orderby=date&order=desc&_fields=id,title,link,date,excerpt,class_list`;
+  const apiUrl = `${base.origin}/wp-json/wp/v2/job-listings?per_page=100&orderby=date&order=desc&_fields=id,title,link,date,excerpt`;
 
   const res = await fetch(apiUrl, {
     headers: { "User-Agent": "AstellicIntelBot/1.0", Accept: "application/json" },
@@ -120,16 +109,6 @@ async function fetchWpJobManager(url: string, tags: string[]): Promise<RawItem[]
   const items: RawItem[] = [];
 
   for (const job of jobs) {
-    // Filter by job type if type filters are specified
-    if (typeFilters.length > 0) {
-      const classList: string[] = Object.values(job.class_list ?? {});
-      const jobTypeSlugs = classList
-        .filter((c) => c.startsWith("job-type-"))
-        .map((c) => c.replace("job-type-", ""));
-      const matches = typeFilters.some((f) => jobTypeSlugs.includes(f));
-      if (!matches) continue;
-    }
-
     const title: string = (job.title?.rendered ?? "")
       .replace(/&#\d+;/g, "")
       .replace(/&amp;/g, "&")
@@ -212,7 +191,7 @@ export async function crawlSource(sourceId: string): Promise<CrawlResult> {
     } else if (source.sourceType === "HTML") {
       items = await fetchHtml(source.url);
     } else if (source.sourceType === "WPJOBS") {
-      items = await fetchWpJobManager(source.url, source.tags);
+      items = await fetchWpJobManager(source.url);
     } else {
       // PLAYWRIGHT — can't run on Vercel, skip with message
       errorMsg = "PLAYWRIGHT sources require the Railway crawler service. Use Refresh All via Railway.";
@@ -228,15 +207,14 @@ export async function crawlSource(sourceId: string): Promise<CrawlResult> {
   for (const item of items) {
     try {
       // ── Pre-AI qualification filter ────────────────────────────────────────
-      // WPJOBS: job-type filtering already done in fetchWpJobManager, and the
-      // entire site is country-specific — skip both country and tag checks.
-      if (source.sourceType !== "WPJOBS") {
-        const filter = passesSourceFilters(
-          { country: source.country, tags: source.tags },
-          { rawTitle: item.title, rawDescription: item.description, rawContent: item.content }
-        );
-        if (!filter.passes) { continue; }
-      }
+      // WPJOBS: site is country-specific by definition — skip country check,
+      // but still apply tag keyword matching to filter relevant roles.
+      const filterCountry = source.sourceType === "WPJOBS" ? "" : source.country;
+      const filter = passesSourceFilters(
+        { country: filterCountry, tags: source.tags },
+        { rawTitle: item.title, rawDescription: item.description, rawContent: item.content }
+      );
+      if (!filter.passes) { continue; }
 
       const urlHash     = hashUrl(item.link);
       const contentHash = item.content ? hashContent(item.content) : undefined;
