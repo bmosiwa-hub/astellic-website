@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { passesSourceFilters } from "@/lib/intel/filters";
 
 export const metadata = {
   title: "Edit Source | Astelfin IMS",
@@ -13,23 +14,61 @@ async function updateSource(formData: FormData) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/intel/sources");
 
-  const id       = formData.get("id") as string;
-  const tagsRaw  = formData.get("tags") as string;
-  const tags     = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
-  const interval = parseInt(formData.get("crawlIntervalMins") as string, 10);
+  const id         = formData.get("id") as string;
+  const tagsRaw    = formData.get("tags") as string;
+  const tags       = tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
+  const interval   = parseInt(formData.get("crawlIntervalMins") as string, 10);
+  const newCountry = (formData.get("country") as string) || "Malawi";
+  const newType    = formData.get("sourceType") as string;
+
+  // Fetch old source to detect tag/country changes
+  const old = await prisma.crawlerSource.findUnique({
+    where: { id },
+    select: { tags: true, country: true },
+  });
 
   await prisma.crawlerSource.update({
     where: { id },
     data: {
       name:             formData.get("name") as string,
       url:              formData.get("url") as string,
-      sourceType:       formData.get("sourceType") as any,
+      sourceType:       newType as any,
       description:      (formData.get("description") as string) || null,
-      country:          (formData.get("country") as string) || "Malawi",
+      country:          newCountry,
       tags,
       crawlIntervalMins: isNaN(interval) ? 360 : interval,
     },
   });
+
+  // ── Tag/country changed → purge non-qualifying discoveries ────────────────
+  // Skip purge if tags and country are unchanged.
+  const tagsChanged    = JSON.stringify(old?.tags ?? []) !== JSON.stringify(tags);
+  const countryChanged = (old?.country ?? "") !== newCountry;
+
+  if (tagsChanged || countryChanged) {
+    // Fetch all non-ACCEPTED opportunities for this source
+    const opps = await prisma.discoveredOpportunity.findMany({
+      where: {
+        sourceId: id,
+        NOT: { linkedOpportunityId: { not: null } }, // keep anything tied to a BD opportunity
+      },
+      select: { id: true, rawTitle: true, rawDescription: true, rawContent: true },
+    });
+
+    // WPJOBS sources skip country check (site is inherently country-specific)
+    const filterCountry = newType === "WPJOBS" ? "" : newCountry;
+
+    const toDelete = opps
+      .filter((op) => !passesSourceFilters(
+        { country: filterCountry, tags },
+        { rawTitle: op.rawTitle, rawDescription: op.rawDescription ?? undefined, rawContent: op.rawContent ?? undefined }
+      ).passes)
+      .map((op) => op.id);
+
+    if (toDelete.length > 0) {
+      await prisma.discoveredOpportunity.deleteMany({ where: { id: { in: toDelete } } });
+    }
+  }
 
   redirect("/astelfin_26/intel/sources");
 }

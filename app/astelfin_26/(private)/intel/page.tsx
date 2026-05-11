@@ -109,18 +109,8 @@ async function ignoreOpportunity(formData: FormData) {
   if (!session?.user) redirect("/astelfin_26/login");
 
   const id = formData.get("id") as string;
-  const note = formData.get("note") as string | null;
-
-  await prisma.discoveredOpportunity.update({
-    where: { id },
-    data: { status: "IGNORED" },
-  });
-
-  await prisma.bidDecision.upsert({
-    where: { discoveredOpId: id },
-    create: { discoveredOpId: id, decision: "IGNORED", decidedBy: session.user.id!, note: note ?? null },
-    update: { decision: "IGNORED", decidedBy: session.user.id!, note: note ?? null, decidedAt: new Date() },
-  });
+  // Hard delete — cascade removes OpportunityAnalysis and BidDecision automatically
+  await prisma.discoveredOpportunity.delete({ where: { id } });
 
   redirect("/astelfin_26/intel");
 }
