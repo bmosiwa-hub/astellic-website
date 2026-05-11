@@ -228,13 +228,15 @@ export async function crawlSource(sourceId: string): Promise<CrawlResult> {
   for (const item of items) {
     try {
       // ── Pre-AI qualification filter ────────────────────────────────────────
-      // WPJOBS: type filtering already done in fetchWpJobManager; only check country.
-      const filterTags = source.sourceType === "WPJOBS" ? [] : source.tags;
-      const filter = passesSourceFilters(
-        { country: source.country, tags: filterTags },
-        { rawTitle: item.title, rawDescription: item.description, rawContent: item.content }
-      );
-      if (!filter.passes) { continue; }
+      // WPJOBS: job-type filtering already done in fetchWpJobManager, and the
+      // entire site is country-specific — skip both country and tag checks.
+      if (source.sourceType !== "WPJOBS") {
+        const filter = passesSourceFilters(
+          { country: source.country, tags: source.tags },
+          { rawTitle: item.title, rawDescription: item.description, rawContent: item.content }
+        );
+        if (!filter.passes) { continue; }
+      }
 
       const urlHash     = hashUrl(item.link);
       const contentHash = item.content ? hashContent(item.content) : undefined;
