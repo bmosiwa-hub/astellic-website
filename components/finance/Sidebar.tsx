@@ -133,6 +133,11 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
     </svg>
   ),
+  intel: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -199,12 +204,14 @@ export default function Sidebar({
   const myPaths         = ["/astelfin_26/my"];
 
   const bizdevPaths = ["/astelfin_26/bizdev"];
+  const intelPaths  = ["/astelfin_26/intel"];
 
   const [open, setOpen] = useState<Record<string, boolean>>({
     finance:    pathIn(pathname, financePaths),
     operations: pathIn(pathname, operationsPaths),
     projects:   pathIn(pathname, projectsPaths),
     bizdev:     pathIn(pathname, bizdevPaths),
+    intel:      pathIn(pathname, intelPaths),
     mypage:     pathIn(pathname, myPaths),
   });
 
@@ -215,6 +222,7 @@ export default function Sidebar({
       operations: prev.operations || pathIn(pathname, operationsPaths),
       projects:   prev.projects   || pathIn(pathname, projectsPaths),
       bizdev:     prev.bizdev     || pathIn(pathname, ["/astelfin_26/bizdev"]),
+      intel:      prev.intel      || pathIn(pathname, intelPaths),
       mypage:     prev.mypage     || pathIn(pathname, myPaths),
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -364,6 +372,20 @@ export default function Sidebar({
               <div className="space-y-0.5 mb-1">
                 {navLink("/astelfin_26/bizdev",           "Opportunities",       Icons.bizdev)}
                 {navLink("/astelfin_26/bizdev/submitted", "Submitted",           Icons.submissions)}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── Opportunity Intelligence (CEO + bizdev) ──────── */}
+        {showBizDev && (
+          <>
+            <div className="pt-1" />
+            {sectionHeader("intel", "Intelligence Engine", Icons.intel)}
+            {open.intel && (
+              <div className="space-y-0.5 mb-1">
+                {navLink("/astelfin_26/intel",         "Discovery Feed",  Icons.intel)}
+                {isCEO && navLink("/astelfin_26/intel/sources", "Sources", Icons.settings)}
               </div>
             )}
           </>

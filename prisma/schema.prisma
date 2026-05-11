@@ -87,6 +87,7 @@ model User {
   procurementsRequested Procurement[]      @relation("ProcurementRequester")
   procurementsReviewed  Procurement[]      @relation("ProcurementReviewer")
   opportunities       Opportunity[]       @relation("OpportunityCreator")
+  bidDecisions        BidDecision[]       @relation("BidDecisions")
 }
 
 model Project {
@@ -655,6 +656,156 @@ model Opportunity {
   creator               User      @relation("OpportunityCreator", fields: [createdBy], references: [id])
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+}
+
+// ── Opportunity Intelligence Engine ──────────────────────────────────────────
+
+enum IntelSourceType {
+  RSS
+  HTML
+  PLAYWRIGHT
+}
+
+enum IntelCrawlStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum IntelOpportunityType {
+  CONSULTANCY
+  GRANT
+  STARTUP_FUNDING
+}
+
+enum IntelPillarTag {
+  EVIDENCE_GENERATION
+  POLICY_ADVISORY
+  PROGRAMME_IMPLEMENTATION
+}
+
+enum IntelThematicTag {
+  HEALTH_NUTRITION
+  GOVERNANCE_PUBLIC_SECTOR
+  HUMAN_DEVELOPMENT
+  CLIMATE_AGRICULTURE
+}
+
+enum IntelStatus {
+  NEW
+  REVIEWED
+  ACCEPTED
+  IGNORED
+  DUPLICATE
+}
+
+enum IntelFit {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model CrawlerSource {
+  id              String                  @id @default(cuid())
+  name            String
+  url             String
+  sourceType      IntelSourceType
+  active          Boolean                 @default(true)
+  description     String?
+  country         String                  @default("Malawi")
+  tags            String[]                // AI hints e.g. ["evaluation", "consultancy"]
+  crawlIntervalMins Int                   @default(360)
+  lastCrawledAt   DateTime?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  crawlRuns       CrawlRun[]
+  discoveries     DiscoveredOpportunity[]
+}
+
+model CrawlRun {
+  id           String           @id @default(cuid())
+  sourceId     String
+  source       CrawlerSource    @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  status       IntelCrawlStatus @default(PENDING)
+  itemsFound   Int              @default(0)
+  itemsNew     Int              @default(0)
+  errorMsg     String?
+  startedAt    DateTime         @default(now())
+  completedAt  DateTime?
+}
+
+model DiscoveredOpportunity {
+  id              String               @id @default(cuid())
+  sourceId        String
+  source          CrawlerSource        @relation(fields: [sourceId], references: [id])
+
+  // Raw data from crawler
+  rawTitle        String
+  rawDescription  String?
+  rawUrl          String
+  rawPublishedAt  DateTime?
+  rawDeadline     String?
+  rawFunder       String?
+  rawContent      String?
+
+  // Deduplication fingerprints
+  urlHash         String               @unique // SHA-256 of normalised URL
+  contentHash     String?              // SHA-256 of trimmed raw content
+
+  // Processing status
+  status          IntelStatus          @default(NEW)
+  duplicateOf     String?              // ID of original if DUPLICATE
+
+  // Structured (AI-extracted)
+  title           String?
+  description     String?
+  deadline        DateTime?
+  funder          String?
+  country         String?
+  valueEstimate   String?
+  opportunityType IntelOpportunityType?
+  pillarTags      IntelPillarTag[]
+  thematicTags    IntelThematicTag[]
+
+  // Relations
+  analysis        OpportunityAnalysis?
+  decision        BidDecision?
+  linkedOpportunityId String?          // BD Opportunity created on accept
+
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+}
+
+model OpportunityAnalysis {
+  id                   String                @id @default(cuid())
+  discoveredOpId       String                @unique
+  discoveredOp         DiscoveredOpportunity @relation(fields: [discoveredOpId], references: [id], onDelete: Cascade)
+
+  strategicFit         IntelFit
+  competitivenessScore Int                   // 1–10
+  priorityScore        Int                   // 1–10 composite
+  recommendation       String                // PURSUE | MONITOR | PASS
+  rationale            String?
+  strengths            String[]
+  risks                String[]
+  estimatedValue       String?
+  timeToDeadlineDays   Int?
+
+  modelVersion         String               @default("claude-opus-4-5")
+  analysedAt           DateTime             @default(now())
+}
+
+model BidDecision {
+  id             String                @id @default(cuid())
+  discoveredOpId String                @unique
+  discoveredOp   DiscoveredOpportunity @relation(fields: [discoveredOpId], references: [id], onDelete: Cascade)
+
+  decision       String                // ACCEPTED | IGNORED
+  decidedBy      String
+  decider        User                  @relation("BidDecisions", fields: [decidedBy], references: [id])
+  note           String?
+  decidedAt      DateTime              @default(now())
 }
 
 model Milestone {

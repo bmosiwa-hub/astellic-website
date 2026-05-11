@@ -145,6 +145,11 @@ export default async function BizDevPage({
           Opportunity marked as submitted and moved to Submitted Opportunities.
         </div>
       )}
+      {success === "intel_accepted" && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-700 font-medium">
+          ✓ Opportunity accepted from Intelligence Feed and added to the pipeline.
+        </div>
+      )}
       {urgentCount > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
           ⚠ <strong>{urgentCount}</strong> opportunit{urgentCount > 1 ? "ies have" : "y has"} a deadline within 7 days.
