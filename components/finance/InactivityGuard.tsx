@@ -105,14 +105,19 @@ export default function InactivityGuard() {
   // ── mount ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    // On mount: check if we've been inactive since the last page load
-    const elapsed = msSinceActivity();
-    if (elapsed >= TIMEOUT_MS) {
-      logout();
-      return;
+    // On mount: check if we've been inactive since the last page load.
+    // Only enforce if a timestamp already exists — a missing key means
+    // fresh login (no prior activity recorded yet), so we don't log out.
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const elapsed = Date.now() - parseInt(stored, 10);
+      if (elapsed >= TIMEOUT_MS) {
+        logout();
+        return;
+      }
     }
 
-    // Stamp now so fresh loads reset the clock
+    // Stamp now so any subsequent checks have a valid baseline
     stampActivity();
     arm();
 
