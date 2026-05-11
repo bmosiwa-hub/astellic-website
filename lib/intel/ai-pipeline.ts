@@ -3,45 +3,39 @@
  * Stage 1: Extract structured data from raw scraped content.
  * Stage 2: Analyse strategic fit and produce recommendation.
  *
- * Uses Anthropic API via fetch (no SDK dependency needed).
+ * Uses OpenAI API via fetch (no SDK dependency needed).
  */
 
 import { buildExtractionPrompt, buildAnalysisPrompt } from "./prompts";
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY ?? "";
-const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-opus-4-5";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
+const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+const MODEL = "gpt-4o";
 
-interface AnthropicMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
-async function callClaude(system: string, user: string): Promise<string> {
-  const messages: AnthropicMessage[] = [{ role: "user", content: user }];
-
-  const response = await fetch(ANTHROPIC_API_URL, {
+async function callOpenAI(system: string, user: string): Promise<string> {
+  const response = await fetch(OPENAI_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
+      "Authorization": `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 1024,
-      system,
-      messages,
+      messages: [
+        { role: "system", content: system },
+        { role: "user",   content: user },
+      ],
     }),
   });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${error}`);
+    throw new Error(`OpenAI API error ${response.status}: ${error}`);
   }
 
   const data = await response.json();
-  return data.content?.[0]?.text ?? "";
+  return data.choices?.[0]?.message?.content ?? "";
 }
 
 function parseJsonResponse<T>(text: string): T {
@@ -77,7 +71,7 @@ export async function extractOpportunity(rawData: {
   sourceTags: string[];
 }): Promise<ExtractedOpportunity> {
   const { system, user } = buildExtractionPrompt(rawData);
-  const text = await callClaude(system, user);
+  const text = await callOpenAI(system, user);
   const parsed = parseJsonResponse<ExtractedOpportunity>(text);
 
   return {
@@ -120,7 +114,7 @@ export async function analyseOpportunity(structured: {
   url: string;
 }): Promise<OpportunityAnalysisResult> {
   const { system, user } = buildAnalysisPrompt(structured);
-  const text = await callClaude(system, user);
+  const text = await callOpenAI(system, user);
   const parsed = parseJsonResponse<OpportunityAnalysisResult>(text);
 
   return {
