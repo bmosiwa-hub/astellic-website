@@ -153,6 +153,10 @@ export default async function SourcesPage({
                     <td className="px-5 py-3 text-gray-600">{s._count.discoveries}</td>
                     <td className="px-5 py-3 text-right">
                       <div className="inline-flex items-center gap-3">
+                        <Link href={`/astelfin_26/intel/sources/${s.id}/edit`}
+                          className="text-xs font-semibold text-brand-navy hover:underline">
+                          Edit
+                        </Link>
                         <form action={toggleSource}>
                           <input type="hidden" name="id" value={s.id} />
                           <input type="hidden" name="active" value={String(s.active)} />

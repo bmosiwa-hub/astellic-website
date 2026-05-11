@@ -39,7 +39,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 8 * 60 * 60, // 8 hours — token expires server-side regardless of inactivity
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
