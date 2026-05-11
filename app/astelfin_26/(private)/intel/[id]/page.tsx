@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "@/lib/finance-utils";
 import { getEffectivePermissions } from "@/lib/permissions";
+import AnalysisTrigger from "@/components/intel/AnalysisTrigger";
 
 export const metadata = {
   title: "Opportunity Detail | Astelfin IMS",
@@ -285,19 +286,10 @@ export default async function IntelDetailPage({
               <p className="text-[11px] text-gray-400">
                 Analysed by {analysis.modelVersion} · {formatDate(analysis.analysedAt)}
               </p>
+              <AnalysisTrigger opportunityId={opp.id} autoRun={false} />
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5">
-              <h2 className="text-sm font-bold text-brand-navy uppercase tracking-wide mb-3">AI Analysis</h2>
-              <p className="text-sm text-gray-500">AI analysis is still processing. Check back in a few moments.</p>
-              <form action="/api/intel/analyse" method="POST" className="mt-3">
-                <input type="hidden" name="id" value={opp.id} />
-                <button type="submit"
-                  className="text-sm font-semibold text-brand-gold hover:underline">
-                  Re-trigger analysis →
-                </button>
-              </form>
-            </div>
+            <AnalysisTrigger opportunityId={opp.id} autoRun={true} />
           )}
 
           {/* Tags */}
