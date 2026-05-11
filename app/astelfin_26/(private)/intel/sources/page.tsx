@@ -34,9 +34,14 @@ async function deleteSource(formData: FormData) {
   redirect("/astelfin_26/intel/sources");
 }
 
-export default async function SourcesPage() {
+export default async function SourcesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ confirm?: string }>;
+}) {
   const session = await auth();
   if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/intel");
+  const { confirm } = await searchParams;
 
   const sources = await prisma.crawlerSource.findMany({
     orderBy: { createdAt: "asc" },
@@ -156,13 +161,22 @@ export default async function SourcesPage() {
                             {s.active ? "Pause" : "Enable"}
                           </button>
                         </form>
-                        <form action={deleteSource}
-                          onSubmit={(e) => { if (!confirm(`Delete source "${s.name}"?`)) e.preventDefault(); }}>
-                          <input type="hidden" name="id" value={s.id} />
-                          <button type="submit" className="text-xs font-semibold text-gray-300 hover:text-red-500 hover:underline">
+                        {confirm === s.id ? (
+                          <form action={deleteSource} className="inline-flex items-center gap-2">
+                            <input type="hidden" name="id" value={s.id} />
+                            <button type="submit" className="text-xs font-semibold text-red-600 hover:underline">
+                              Confirm delete
+                            </button>
+                            <Link href="/astelfin_26/intel/sources" className="text-xs text-gray-400 hover:underline">
+                              Cancel
+                            </Link>
+                          </form>
+                        ) : (
+                          <Link href={`/astelfin_26/intel/sources?confirm=${s.id}`}
+                            className="text-xs font-semibold text-gray-300 hover:text-red-500 hover:underline">
                             Delete
-                          </button>
-                        </form>
+                          </Link>
+                        )}
                       </div>
                     </td>
                   </tr>
