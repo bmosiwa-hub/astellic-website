@@ -95,10 +95,9 @@ export default function Home() {
             An Integrated Delivery Architecture
           </h2>
           <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-10">
-            Astellic operates across three functional pillars that work in deliberate sequence and
-            mutual reinforcement, producing evidence, converting it into policy, and delivering
-            programmes that work. Together, they constitute a complete end-to-end capability
-            within a single accountable institution.
+            Astellic exists to close the gap between evidence, policy, and delivery through an
+            integrated model that generates actionable insights, translates them into policy and
+            strategy, and delivers programmes that work.
           </p>
 
           {/* Pillar rationale narrative */}
