@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Complete Programme Architecture",
-    desc: "Development of full programme designs — theory of change, results chain, operational model, implementation sequencing, and risk framework — calibrated to client context and donor requirements.",
+    desc: "Development of full programme designs, including theory of change, results chain, operational model, implementation sequencing, and risk framework, calibrated to client context and donor requirements.",
   },
   {
     label: "Astellic Implementation Readiness Assessment",
-    desc: "A proprietary diagnostic tool that identifies design weaknesses, institutional constraints, and systemic barriers before implementation begins — giving clients a measurable advantage on Day 1.",
+    desc: "A proprietary diagnostic tool that identifies design weaknesses, institutional constraints, and systemic barriers before implementation begins, giving clients a measurable advantage on Day 1.",
   },
   {
     label: "Innovation & Prototyping",
-    desc: "Rapid design, testing, and iteration of new delivery models, tools, and approaches — including AI-augmented research services and unconventional implementation models adapted to the African institutional context.",
+    desc: "Rapid design, testing, and iteration of new delivery models, tools, and approaches, including AI-augmented research services and unconventional implementation models adapted to the African institutional context.",
   },
   {
     label: "Financing Architecture",
-    desc: "Design of financing structures for donor-funded programmes, government initiatives, and blended finance mechanisms — including budget justification, cost modelling, and sub-grant design.",
+    desc: "Design of financing structures for donor-funded programmes, government initiatives, and blended finance mechanisms, including budget justification, cost modelling, and sub-grant design.",
   },
   {
     label: "Results Framework & Theory of Change Development",
-    desc: "Rigorous, facilitated development of theories of change, results chains, and indicator frameworks — producing the analytical architecture on which accountable programme performance is built.",
+    desc: "Rigorous, facilitated development of theories of change, results chains, and indicator frameworks, producing the analytical architecture on which accountable programme performance is built.",
   },
 ];
 
@@ -49,8 +49,8 @@ export default function ProgrammeDesignPage() {
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
             Strong programme design is the single most powerful predictor of implementation success.
-            We build the analytical architecture — theory of change, results frameworks, operational
-            models — that gives every programme a structural advantage before the first activity begins.
+            We build the analytical architecture, including theory of change, results frameworks, and operational
+            models, that gives every programme a structural advantage before the first activity begins.
           </p>
         </div>
       </section>
@@ -59,7 +59,7 @@ export default function ProgrammeDesignPage() {
         <div className="max-w-4xl mx-auto">
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
             The Programme Design & Innovation sub-unit applies an innovation lens to every
-            design assignment — testing new delivery models, piloting unconventional approaches,
+            design assignment, testing new delivery models, piloting unconventional approaches,
             and building proprietary tools including the Astellic Implementation Readiness Assessment.
             We recognise that in African development contexts, the gap between design intent and
             implementation reality is often a failure of design, not of execution.

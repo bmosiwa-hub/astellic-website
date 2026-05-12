@@ -96,17 +96,17 @@ export default function Home() {
           </h2>
           <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-10">
             Astellic operates across three functional pillars that work in deliberate sequence and
-            mutual reinforcement — producing evidence, converting it into policy, and delivering
+            mutual reinforcement, producing evidence, converting it into policy, and delivering
             programmes that work. Together, they constitute a complete end-to-end capability
             within a single accountable institution.
           </p>
 
           {/* Pillar rationale narrative */}
-          <div className="max-w-3xl mx-auto mb-14 space-y-4 text-brand-muted text-base leading-relaxed border-l-4 border-brand-gold/40 pl-6">
+          <div className="max-w-3xl mx-auto mb-14 space-y-4 text-brand-muted text-lg leading-relaxed border-l-4 border-brand-gold/40 pl-6">
             <p>
               We saw that institutions needed credible, context-grounded, and decision-ready intelligence,
               so we built our Evidence Generation &amp; Verification pillar. But evidence without strategic
-              translation rarely becomes action, so we expanded into Policy Development &amp; Advisory —
+              translation rarely becomes action, so we expanded into Policy Development &amp; Advisory,
               helping governments, donors, and institutions convert insight into policies and strategies
               that are technically sound, politically feasible, and institutionally implementable.
             </p>
@@ -119,7 +119,7 @@ export default function Home() {
               We believe that rigorous evidence strengthens policy, strong policy enables effective
               implementation, and effective implementation produces sustainable systems impact. By
               integrating these capabilities within a single institutional architecture, Astellic moves
-              clients beyond fragmented consulting approaches — from analysis to execution, from policy
+              clients beyond fragmented consulting approaches: from analysis to execution, from policy
               intent to operational reality, and from short-term outputs to scalable, lasting results.
             </p>
           </div>

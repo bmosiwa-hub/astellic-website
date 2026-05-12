@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Data Quality Assurance",
-    desc: "Internal and client-facing protocols for verifying data accuracy, completeness, and reliability — applied to Astellic's own research outputs and to data systems used in programmes we evaluate.",
+    desc: "Internal and client-facing protocols for verifying data accuracy, completeness, and reliability, applied to Astellic's own research outputs and to data systems used in programmes we evaluate.",
   },
   {
     label: "Research Ethics Compliance",
-    desc: "End-to-end management of ethical review processes, informed consent frameworks, and data protection compliance — aligned with international standards including the Helsinki Declaration and Malawi Research Ethics Committee requirements.",
+    desc: "End-to-end management of ethical review processes, informed consent frameworks, and data protection compliance, aligned with international standards including the Helsinki Declaration and Malawi Research Ethics Committee requirements.",
   },
   {
     label: "Internal Peer Review",
-    desc: "A structured peer review process applied to all Astellic research and evaluation outputs — ensuring methodological defensibility and client confidence before any deliverable reaches an external audience.",
+    desc: "A structured peer review process applied to all Astellic research and evaluation outputs, ensuring methodological defensibility and client confidence before any deliverable reaches an external audience.",
   },
   {
     label: "Client-Facing Data Verification",
-    desc: "Independent verification of data and evidence that clients intend to present to donors or governments — identifying weaknesses and strengthening the evidentiary basis before high-stakes submissions.",
+    desc: "Independent verification of data and evidence that clients intend to present to donors or governments, identifying weaknesses and strengthening the evidentiary basis before high-stakes submissions.",
   },
   {
     label: "Research Integrity Capacity Building",
-    desc: "Training and advisory to research teams and implementing organisations on ethical research practice, data quality standards, and integrity protocols — building institutional capability for sustained compliance.",
+    desc: "Training and advisory to research teams and implementing organisations on ethical research practice, data quality standards, and integrity protocols, building institutional capability for sustained compliance.",
   },
 ];
 
@@ -45,7 +45,7 @@ export default function DataQualityPage() {
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 1.3</span>
           <h1 className="text-4xl font-bold mt-2 mb-4">Data Quality &<br />Research Integrity</h1>
           <p className="text-brand-gold text-lg font-medium mb-4">
-            A strategic differentiator — ensuring every evidence output meets the highest standards of methodological rigour and ethical compliance.
+            A strategic differentiator: ensuring every evidence output meets the highest standards of methodological rigour and ethical compliance.
           </p>
           <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
             In a sector where weak evidence undermines both policy design and donor confidence,
@@ -60,7 +60,7 @@ export default function DataQualityPage() {
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
             This sub-unit is a deliberate differentiator in the African development consulting market.
             Most firms treat data quality and ethics as compliance afterthoughts.
-            At Astellic, they are built into every stage of the research cycle — because we know
+            At Astellic, they are built into every stage of the research cycle, because we know
             that the authority of evidence depends entirely on the integrity of the process
             through which it was produced. We apply this standard to our own work and, when
             commissioned, to the evidence our clients intend to use in high-stakes policy and donor environments.

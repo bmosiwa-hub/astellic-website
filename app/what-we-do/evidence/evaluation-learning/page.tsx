@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Independent Programme Evaluation",
-    desc: "Mid-term and end-of-programme evaluations, impact assessments, and formative reviews — designed to be honest, learning-oriented, and decision-informing, not compliance exercises.",
+    desc: "Mid-term and end-of-programme evaluations, impact assessments, and formative reviews, designed to be honest, learning-oriented, and decision-informing, not compliance exercises.",
   },
   {
     label: "Real-Time Learning System Design",
-    desc: "Development and implementation of adaptive learning systems that enable programmes to course-correct based on what the evidence shows on the ground — not what the original log frame assumed.",
+    desc: "Development and implementation of adaptive learning systems that enable programmes to course-correct based on what the evidence shows on the ground, not what the original log frame assumed.",
   },
   {
     label: "Theory of Change & Results Framework Development",
-    desc: "Rigorous theory of change facilitation, results chain articulation, and indicator selection — building the analytical foundation on which accountable programme performance depends.",
+    desc: "Rigorous theory of change facilitation, results chain articulation, and indicator selection, building the analytical foundation on which accountable programme performance depends.",
   },
   {
     label: "MERL System Strengthening",
-    desc: "Strengthening the monitoring, evaluation, research, and learning systems within implementing organisations and government programmes — building institutional MERL capability, not MERL dependency.",
+    desc: "Strengthening the monitoring, evaluation, research, and learning systems within implementing organisations and government programmes, building institutional MERL capability, not MERL dependency.",
   },
   {
     label: "Adaptive Management Support",
-    desc: "Ongoing MERL advisory embedded within active programmes — providing real-time analytical support that integrates learning data into operational decision-making throughout the programme cycle.",
+    desc: "Ongoing MERL advisory embedded within active programmes, providing real-time analytical support that integrates learning data into operational decision-making throughout the programme cycle.",
   },
 ];
 
@@ -45,10 +45,10 @@ export default function EvaluationLearningPage() {
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 1.2</span>
           <h1 className="text-4xl font-bold mt-2 mb-4">Evaluation & Learning</h1>
           <p className="text-brand-gold text-lg font-medium mb-4">
-            Not just measuring outputs — engineering the institutional conditions for continuous programme improvement.
+            Not just measuring outputs: engineering the institutional conditions for continuous programme improvement.
           </p>
           <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
-            We position Astellic as a premium MERL partner — one that does not simply measure
+            We position Astellic as a premium MERL partner, one that does not simply measure
             outputs, but builds the systems through which programmes can continuously improve in
             response to real-world evidence.
           </p>
@@ -61,7 +61,7 @@ export default function EvaluationLearningPage() {
             As donors intensify demands for evidence and value-for-money, the Evaluation & Learning
             sub-unit is one of Astellic&apos;s fastest-growing and most strategically significant offerings.
             We go beyond compliance-driven monitoring to design and deliver evaluation and learning
-            systems that genuinely improve how programmes perform — because we believe that measurement
+            systems that genuinely improve how programmes perform, because we believe that measurement
             without learning is an expensive exercise in accountability theatre.
           </p>
           <div className="space-y-6">

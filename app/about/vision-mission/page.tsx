@@ -24,7 +24,7 @@ export default function VisionMissionPage() {
             Vision &amp; Mission
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            The purpose that drives everything Astellic does — and the gap we
+            The purpose that drives everything Astellic does, and the gap we
             were established to address.
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function VisionMissionPage() {
             <div>
               <h3 className="text-lg font-semibold mb-2">A failure to convert it into results</h3>
               <p className="text-brand-muted text-lg leading-relaxed">
-                This is not a technical failure — it is a systems failure.
+                This is not a technical failure; it is a systems failure.
                 Astellic was created to fill that gap through honest analysis,
                 technically sound advice, and delivery aligned with clients&apos;
                 genuine interests.

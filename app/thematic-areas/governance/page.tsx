@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const focusAreas = [
   {
     title: "Institutional Strengthening",
-    desc: "Building the capacity of public institutions to design, coordinate, and deliver policy effectively — including organisational development, systems design, and change management.",
+    desc: "Building the capacity of public institutions to design, coordinate, and deliver policy effectively, including organisational development, systems design, and change management.",
   },
   {
     title: "Legislative & Regulatory Effectiveness",
@@ -62,8 +62,8 @@ export default function GovernancePage() {
           Effective governance is foundational to development outcomes. Astellic
           works with governments, the private sector, legislatures, and oversight bodies to strengthen
           the institutions and systems through which policy is made and delivered.
-          Our work addresses both the technical dimensions of governance — systems,
-          processes, and tools — and the institutional dimensions: incentives,
+          Our work addresses both the technical dimensions of governance (systems,
+          processes, and tools) and the institutional dimensions: incentives,
           capacity, and political economy.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
@@ -95,7 +95,7 @@ export default function GovernancePage() {
           <h2 className="text-3xl font-bold text-brand-navy mb-4">Work with us on Governance &amp; Reform</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
             Astellic supports governments, the private sector, and development partners with technically
-            sound, politically informed governance reform — from diagnostic through
+            sound, politically informed governance reform, from diagnostic through
             to implementation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

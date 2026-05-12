@@ -25,7 +25,7 @@ export default function ContactPage() {
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             We work with governments, donors, the private sector, and institutions
             across Africa. If you have a challenge at the intersection of evidence,
-            policy, and delivery — reach out.
+            policy, and delivery. Reach out.
           </p>
         </div>
       </section>

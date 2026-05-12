@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Embedded Technical Assistance",
-    desc: "Placement of Astellic technical advisors within government ministries, programme management units, and implementing organisations — providing real-time analytical support, capacity building, and adaptive management guidance over sustained periods.",
+    desc: "Placement of Astellic technical advisors within government ministries, programme management units, and implementing organisations, providing real-time analytical support, capacity building, and adaptive management guidance over sustained periods.",
   },
   {
     label: "Institutional Development",
-    desc: "Structured organisational development support — governance design, process mapping, performance management frameworks, and systems strengthening — building institutional capability, not dependence.",
+    desc: "Structured organisational development support, including governance design, process mapping, performance management frameworks, and systems strengthening, building institutional capability, not dependence.",
   },
   {
     label: "Policy Analysis Masterclass",
-    desc: "Astellic's proprietary training programme for senior government and development sector professionals — building analytical capability for evidence-to-policy translation in African institutional contexts.",
+    desc: "Astellic's proprietary training programme for senior government and development sector professionals, building analytical capability for evidence-to-policy translation in African institutional contexts.",
   },
   {
     label: "Health Financing Essentials",
@@ -26,7 +26,7 @@ const services = [
   },
   {
     label: "MERL for Development Programmes & Evidence-to-Policy Practicum",
-    desc: "Practical, application-focused training on monitoring, evaluation, research, and learning — and on the practical craft of translating evidence into policy action in real institutional environments.",
+    desc: "Practical, application-focused training on monitoring, evaluation, research, and learning, and on the craft of translating evidence into policy action in real institutional environments.",
   },
 ];
 
@@ -45,11 +45,11 @@ export default function TechnicalAssistancePage() {
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 3.2</span>
           <h1 className="text-4xl font-bold mt-2 mb-4">Technical Assistance &<br />Institutional Development</h1>
           <p className="text-green-100 text-lg font-medium mb-4">
-            Sustained embedded advisory that builds institutional capability — not dependence.
+            Sustained embedded advisory that builds institutional capability, not dependence.
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
             We distinguish Astellic from short-term consultancies by offering structured,
-            long-duration embedded advisory — deploying senior technical advisors within
+            long-duration embedded advisory, deploying senior technical advisors within
             client institutions to build knowledge and the institutional routines that
             sustain performance after the engagement ends.
           </p>
@@ -62,7 +62,7 @@ export default function TechnicalAssistancePage() {
             Short-term technical assistance that leaves when the contract ends is the
             development sector&apos;s most common form of capacity failure.
             This sub-unit is designed around a fundamentally different premise:
-            that genuine institutional development requires sustained, embedded presence —
+            that genuine institutional development requires sustained, embedded presence:
             advisors who understand the institution&apos;s culture, constraints, and politics
             deeply enough to build capability that stays. Every TA engagement we design is
             structured to make itself unnecessary.

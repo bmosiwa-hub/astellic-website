@@ -15,7 +15,7 @@ const focusAreas = [
   },
   {
     title: "Agricultural Systems & Value Chains",
-    desc: "Strengthening agricultural systems through improved extension services, value chain development, market access, and smallholder productivity — with a focus on food security and rural livelihoods.",
+    desc: "Strengthening agricultural systems through improved extension services, value chain development, market access, and smallholder productivity, with a focus on food security and rural livelihoods.",
   },
   {
     title: "Natural Resource Management",
@@ -23,7 +23,7 @@ const focusAreas = [
   },
   {
     title: "Climate Finance & Investment",
-    desc: "Supporting access to and effective use of climate finance — including green bonds, climate funds, and blended finance mechanisms — to mobilise investment in resilient infrastructure and sustainable agriculture.",
+    desc: "Supporting access to and effective use of climate finance, including green bonds, climate funds, and blended finance mechanisms, to mobilise investment in resilient infrastructure and sustainable agriculture.",
   },
   {
     title: "Disaster Risk Reduction",
@@ -59,8 +59,8 @@ export default function ClimatePage() {
       <section className="py-20 px-6 max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-brand-navy mb-6">Overview</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-5">
-          Africa faces acute and accelerating climate risks — from erratic rainfall
-          and prolonged droughts to flooding and land degradation — that directly
+          Africa faces acute and accelerating climate risks, from erratic rainfall
+          and prolonged droughts to flooding and land degradation, that directly
           threaten agricultural productivity, food security, and livelihoods.
           Astellic works at the intersection of climate, agriculture, and
           sustainability to help governments, the private sector, and institutions build systems that
@@ -69,7 +69,7 @@ export default function ClimatePage() {
         <p className="text-brand-muted text-lg leading-relaxed">
           Our approach integrates policy, technical, and implementation expertise
           to ensure that climate and agricultural strategies translate into
-          practical outcomes on the ground — for communities, smallholders, and
+          practical outcomes on the ground, for communities, smallholders, and
           ecosystems alike.
         </p>
       </section>

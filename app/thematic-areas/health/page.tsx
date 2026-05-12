@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const focusAreas = [
   {
     title: "Health Systems Strengthening",
-    desc: "Supporting governments and institutions to build resilient, well-governed health systems that deliver quality care at scale — with a focus on financing, workforce, supply chains, and governance.",
+    desc: "Supporting governments and institutions to build resilient, well-governed health systems that deliver quality care at scale, with a focus on financing, workforce, supply chains, and governance.",
   },
   {
     title: "Primary Health Care",
@@ -31,7 +31,7 @@ const focusAreas = [
   },
   {
     title: "Digital Health",
-    desc: "Supporting the design and implementation of digital health solutions — including electronic health records, telemedicine, and digital supply chain tools — that strengthen service delivery and improve health outcomes.",
+    desc: "Supporting the design and implementation of digital health solutions, including electronic health records, telemedicine, and digital supply chain tools, that strengthen service delivery and improve health outcomes.",
   },
 ];
 
@@ -68,7 +68,7 @@ export default function HealthPage() {
           and nutrition outcomes.
           Our approach recognises that sustainable improvements require
           action across governance, financing, service delivery, and community
-          engagement — and that these elements must be addressed in an integrated,
+          engagement, and that these elements must be addressed in an integrated,
           coherent way.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">

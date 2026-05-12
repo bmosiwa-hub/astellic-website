@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "End-to-End Programme Management",
-    desc: "Complete programme management — financial management, sub-contractor coordination, stakeholder engagement, and donor reporting — positioning Astellic as the primary accountable entity for programme performance.",
+    desc: "Complete programme management, including financial management, sub-contractor coordination, stakeholder engagement, and donor reporting, positioning Astellic as the primary accountable entity for programme performance.",
   },
   {
     label: "Adaptive Management",
-    desc: "Real-time integration of monitoring data and evaluation findings into programme decision-making — enabling iterative course-correction based on what the evidence is showing on the ground, not what the original log frame assumed.",
+    desc: "Real-time integration of monitoring data and evaluation findings into programme decision-making, enabling iterative course-correction based on what the evidence is showing on the ground, not what the original log frame assumed.",
   },
   {
     label: "Consortium Leadership",
-    desc: "Leadership and coordination of multi-organisational consortia on medium-to-large contracts — positioning Astellic as the African anchor and primary accountable entity in large-scale programme delivery.",
+    desc: "Leadership and coordination of multi-organisational consortia on medium-to-large contracts, positioning Astellic as the African anchor and primary accountable entity in large-scale programme delivery.",
   },
   {
     label: "Technical Implementing Partner Services",
-    desc: "Serving as the technical implementing partner on donor-funded and government programmes — providing the analytical rigour, adaptive management systems, and senior technical leadership that translate strategic intent into measurable outcomes.",
+    desc: "Serving as the technical implementing partner on donor-funded and government programmes, providing the analytical rigour, adaptive management systems, and senior technical leadership that translate strategic intent into measurable outcomes.",
   },
   {
     label: "Learning Integration Systems",
-    desc: "Design and operation of real-time learning integration systems that ensure insights from programme monitoring continuously inform delivery decisions — closing the loop between evidence generation and implementation action.",
+    desc: "Design and operation of real-time learning integration systems that ensure insights from programme monitoring continuously inform delivery decisions, closing the loop between evidence generation and implementation action.",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function AdaptiveManagementPage() {
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
             This is where Astellic acts as programme implementer, consortium lead, or
-            technical implementing partner — applying adaptive management throughout
+            technical implementing partner, applying adaptive management throughout
             the delivery cycle so that learning continuously shapes the decisions that determine outcomes.
           </p>
         </div>
@@ -58,13 +58,13 @@ export default function AdaptiveManagementPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
-            Programme Implementation & Adaptive Management is Astellic&apos;s direct delivery function —
+            Programme Implementation & Adaptive Management is Astellic&apos;s direct delivery function,
             the commercial engine of Pillar 03 and the proving ground for our institutional credibility
             as a full-spectrum delivery partner. We apply adaptive management principles throughout
             the implementation cycle, ensuring that learning from our Evaluation & Learning function
             continuously shapes delivery decisions. In an African development context, where
             implementation environments change faster than plans can anticipate, adaptive management
-            is not a methodology — it is a survival requirement.
+            is not a methodology; it is a survival requirement.
           </p>
           <div className="space-y-6">
             {services.map((s, i) => (

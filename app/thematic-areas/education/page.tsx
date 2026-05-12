@@ -11,15 +11,15 @@ export const metadata: Metadata = {
 const focusAreas = [
   {
     title: "Education Systems Strengthening",
-    desc: "Supporting the design and implementation of education reforms that improve access, quality, and equity — spanning early childhood development, basic education, and secondary and tertiary systems.",
+    desc: "Supporting the design and implementation of education reforms that improve access, quality, and equity, spanning early childhood development, basic education, and secondary and tertiary systems.",
   },
   {
     title: "Skills Development & TVET",
-    desc: "Strengthening technical and vocational education and training (TVET) systems to improve relevance, quality, and labour market linkages — with a focus on youth employment and productivity.",
+    desc: "Strengthening technical and vocational education and training (TVET) systems to improve relevance, quality, and labour market linkages, with a focus on youth employment and productivity.",
   },
   {
     title: "Social Protection Systems",
-    desc: "Advising on the design, targeting, financing, and delivery of social protection programmes — including cash transfers, public works, and social insurance — to reduce poverty and vulnerability.",
+    desc: "Advising on the design, targeting, financing, and delivery of social protection programmes, including cash transfers, public works, and social insurance, to reduce poverty and vulnerability.",
   },
   {
     title: "Human Rights & Gender",

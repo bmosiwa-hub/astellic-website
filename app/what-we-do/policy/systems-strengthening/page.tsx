@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Public Financial Management Systems",
-    desc: "Design and strengthening of PFM systems — budget processes, expenditure control, financial reporting, and audit mechanisms — building the fiscal infrastructure that makes accountable governance possible.",
+    desc: "Design and strengthening of PFM systems, including budget processes, expenditure control, financial reporting, and audit mechanisms, building the fiscal infrastructure that makes accountable governance possible.",
   },
   {
     label: "Health Information System Strengthening",
@@ -18,15 +18,15 @@ const services = [
   },
   {
     label: "Governance & Accountability Frameworks",
-    desc: "Design of accountability frameworks, intergovernmental coordination mechanisms, and governance structures — grounded in political economy analysis and calibrated for the institutional realities of each context.",
+    desc: "Design of accountability frameworks, intergovernmental coordination mechanisms, and governance structures, grounded in political economy analysis and calibrated for the institutional realities of each context.",
   },
   {
     label: "Capacity Strengthening",
-    desc: "Structured technical assistance, coaching, and embedded advisory — building genuine institutional capability in partner governments and organisations, not dependence on external advisors.",
+    desc: "Structured technical assistance, coaching, and embedded advisory, building genuine institutional capability in partner governments and organisations, not dependence on external advisors.",
   },
   {
     label: "Anti-Corruption System Design",
-    desc: "Advisory on anti-corruption institutional design, legislative effectiveness, and transparency systems — approached as a political economy and governance challenge, not a technical compliance exercise.",
+    desc: "Advisory on anti-corruption institutional design, legislative effectiveness, and transparency systems, approached as a political economy and governance challenge, not a technical compliance exercise.",
   },
 ];
 
@@ -45,11 +45,11 @@ export default function SystemsStrengtheningPage() {
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 2.2</span>
           <h1 className="text-4xl font-bold mt-2 mb-4">Systems Strengthening<br />& Advisory</h1>
           <p className="text-teal-100 text-lg font-medium mb-4">
-            Embedded institutional development that builds genuine capability — not dependence.
+            Embedded institutional development that builds genuine capability, not dependence.
           </p>
           <p className="text-teal-50 text-lg max-w-2xl leading-relaxed opacity-90">
             We work within governments and public institutions to build the enduring systems and
-            governance structures through which sustained performance becomes possible —
+            governance structures through which sustained performance becomes possible,
             distinguishing Astellic from firms that deliver recommendations without building
             the absorptive capacity to act on them.
           </p>
@@ -61,7 +61,7 @@ export default function SystemsStrengtheningPage() {
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
             The difference between advice and change is institutional capability. This sub-unit
             operates at the intersection of technical advisory and institutional transformation.
-            We do not simply tell institutions what to do — we work within them, building
+            We do not simply tell institutions what to do; we work within them, building
             the systems, processes, and human capability through which they can perform
             and sustain that performance independently. Every engagement is designed to leave
             the institution stronger, not more dependent on external expertise.

@@ -32,7 +32,7 @@ const pillars = [
       },
       {
         label: "Data Quality & Research Integrity",
-        desc: "Data quality assurance, research ethics compliance, and peer review — ensuring every output meets the highest methodological standards.",
+        desc: "Data quality assurance, research ethics compliance, and peer review, ensuring every output meets the highest methodological standards.",
         href: "/what-we-do/evidence/data-quality",
       },
     ],
@@ -41,7 +41,7 @@ const pillars = [
     num: "02",
     title: "Policy Development & Advisory",
     tagline: "Translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
-    desc: "This pillar is where Astellic's analytical depth meets strategic influence. It converts research findings into actionable policy frameworks, reform strategies, and institutional advisory — delivered not as generic recommendations, but as contextually informed guidance that accounts for the political economy and systemic constraints that determine whether policy intent becomes policy reality.",
+    desc: "This pillar is where Astellic's analytical depth meets strategic influence. It converts research findings into actionable policy frameworks, reform strategies, and institutional advisory, delivered not as generic recommendations but as contextually informed guidance that accounts for the political economy and systemic constraints that determine whether policy intent becomes policy reality.",
     href: "/what-we-do/policy",
     bgClass: "bg-brand-teal",
     borderClass: "border-brand-teal",
@@ -49,12 +49,12 @@ const pillars = [
     subUnits: [
       {
         label: "Policy & Strategy Development",
-        desc: "National policies, sector strategies, ministerial guidelines, and reform roadmaps — grounded in evidence, aligned with political realities, structured for implementation.",
+        desc: "National policies, sector strategies, ministerial guidelines, and reform roadmaps, grounded in evidence, aligned with political realities, and structured for implementation.",
         href: "/what-we-do/policy/strategy-development",
       },
       {
         label: "Systems Strengthening & Advisory",
-        desc: "Embedded institutional development — building enduring capacity, systems, and governance structures within governments and public institutions.",
+        desc: "Embedded institutional development, building enduring capacity, systems, and governance structures within governments and public institutions.",
         href: "/what-we-do/policy/systems-strengthening",
       },
       {
@@ -67,8 +67,8 @@ const pillars = [
   {
     num: "03",
     title: "Programme Design & Implementation",
-    tagline: "Designing and delivering programmes that work — not on paper, but in the institutional realities of African public systems.",
-    desc: "This pillar is where Astellic's analysis becomes action. It encompasses the design of implementation-ready interventions and the hands-on delivery of programmes — with adaptive management systems to course-correct in real time. We do not hand over a report and leave. We stay to ensure the strategy works.",
+    tagline: "Designing and delivering programmes that work: not on paper, but in the institutional realities of African public systems.",
+    desc: "This pillar is where Astellic's analysis becomes action. It encompasses the design of implementation-ready interventions and the hands-on delivery of programmes, with adaptive management systems to course-correct in real time. We do not hand over a report and leave. We stay to ensure the strategy works.",
     href: "/what-we-do/implementation",
     bgClass: "bg-brand-green",
     borderClass: "border-brand-green",
@@ -76,17 +76,17 @@ const pillars = [
     subUnits: [
       {
         label: "Programme Design & Innovation",
-        desc: "Theories of change, results frameworks, and operational models — simultaneously technically sound and operationally realistic, with an innovation lens.",
+        desc: "Theories of change, results frameworks, and operational models, simultaneously technically sound and operationally realistic, with an innovation lens.",
         href: "/what-we-do/implementation/programme-design",
       },
       {
         label: "Technical Assistance & Institutional Development",
-        desc: "Sustained, embedded advisory — deploying senior technical advisors within client institutions to build knowledge and institutional routines that outlast the engagement.",
+        desc: "Sustained, embedded advisory, deploying senior technical advisors within client institutions to build knowledge and institutional routines that outlast the engagement.",
         href: "/what-we-do/implementation/technical-assistance",
       },
       {
         label: "Programme Implementation & Adaptive Management",
-        desc: "End-to-end programme management and direct delivery — applying adaptive management to ensure real-time learning continuously shapes implementation decisions.",
+        desc: "End-to-end programme management and direct delivery, applying adaptive management to ensure real-time learning continuously shapes implementation decisions.",
         href: "/what-we-do/implementation/adaptive-management",
       },
     ],
@@ -96,22 +96,22 @@ const pillars = [
 const domains = [
   {
     title: "Health & Nutrition Systems",
-    desc: "From primary health care financing and service delivery to subnational health planning and nutrition programme design — grounded in political economy and fiscal realism.",
+    desc: "From primary health care financing and service delivery to subnational health planning and nutrition programme design, grounded in political economy and fiscal realism.",
     href: "/thematic-areas/health",
   },
   {
     title: "Governance & Public Sector Reform",
-    desc: "Public financial management, fiscal decentralisation, legislative strengthening, anti-corruption systems, and intergovernmental relations — approached as a political economy challenge.",
+    desc: "Public financial management, fiscal decentralisation, legislative strengthening, anti-corruption systems, and intergovernmental relations, approached as a political economy challenge.",
     href: "/thematic-areas/governance",
   },
   {
     title: "Human Development & Social Systems",
-    desc: "Education sector planning, teacher management systems, social protection design and monitoring — closing the gap between policy intent and service delivery outcomes.",
+    desc: "Education sector planning, teacher management systems, social protection design and monitoring, closing the gap between policy intent and service delivery outcomes.",
     href: "/thematic-areas/education",
   },
   {
     title: "Climate, Agriculture & Sustainability",
-    desc: "Climate policy analysis, adaptation programme design, agricultural systems strengthening, and resilience monitoring — grounded in the understanding that climate action is a governance challenge.",
+    desc: "Climate policy analysis, adaptation programme design, agricultural systems strengthening, and resilience monitoring, grounded in the understanding that climate action is a governance challenge.",
     href: "/thematic-areas/climate",
   },
 ];

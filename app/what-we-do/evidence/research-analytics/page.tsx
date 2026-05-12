@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Primary Data Collection & Analysis",
-    desc: "Quantitative surveys, qualitative fieldwork, and mixed-methods studies across health, governance, education, and climate domains — producing datasets that are analytically robust and operationally actionable.",
+    desc: "Quantitative surveys, qualitative fieldwork, and mixed-methods studies across health, governance, education, and climate domains, producing datasets that are analytically robust and operationally actionable.",
   },
   {
     label: "Political Economy Analysis",
-    desc: "Structured PEA to map power dynamics, incentive structures, and institutional constraints — giving policy and reform teams the contextual intelligence to design interventions that survive in practice.",
+    desc: "Structured PEA to map power dynamics, incentive structures, and institutional constraints, giving policy and reform teams the contextual intelligence to design interventions that survive in practice.",
   },
   {
     label: "Sector Systems & Policy Analysis",
-    desc: "In-depth analysis of how systems perform, where they fail, and what constrains them — applied across health systems, public sector governance, social services, and climate and agricultural systems.",
+    desc: "In-depth analysis of how systems perform, where they fail, and what constrains them, applied across health systems, public sector governance, social services, and climate and agricultural systems.",
   },
   {
     label: "Landscape Assessments & Institutional Diagnostics",
-    desc: "Rapid and comprehensive reviews of sector landscapes, institutional capacity, and system performance — providing the foundational intelligence for programme design and reform planning.",
+    desc: "Rapid and comprehensive reviews of sector landscapes, institutional capacity, and system performance, providing the foundational intelligence for programme design and reform planning.",
   },
   {
     label: "Rapid Evidence Synthesis",
-    desc: "Short-turnaround literature reviews, policy environment analyses, and evidence scans — commissioned by donors, governments, and INGOs within tight timelines without sacrificing analytical rigour.",
+    desc: "Short-turnaround literature reviews, policy environment analyses, and evidence scans, commissioned by donors, governments, and INGOs within tight timelines without sacrificing analytical rigour.",
   },
 ];
 
@@ -48,7 +48,7 @@ export default function ResearchAnalyticsPage() {
             Policy-relevant intelligence at the point where evidence meets the decision-maker.
           </p>
           <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
-            We produce research that is not only analytically sound but operationally actionable —
+            We produce research that is not only analytically sound but operationally actionable,
             combining quantitative rigour with qualitative depth and political economy awareness
             across all of Astellic&apos;s thematic domains.
           </p>
@@ -63,7 +63,7 @@ export default function ResearchAnalyticsPage() {
             specialising in applied policy research, sector systems analysis, political economy analysis,
             programme evaluations, institutional diagnostics, and rapid evidence synthesis.
             What distinguishes us is the production of research positioned at the precise point
-            where evidence meets the decision-maker — calibrated for action, not academic convention.
+            where evidence meets the decision-maker, calibrated for action, not academic convention.
           </p>
           <div className="space-y-6">
             {services.map((s, i) => (

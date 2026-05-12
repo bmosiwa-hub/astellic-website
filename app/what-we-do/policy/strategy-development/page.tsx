@@ -10,19 +10,19 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "National Policy Framework Development",
-    desc: "Design of national policies, sector strategies, and ministerial guidelines — grounded in evidence, aligned with political realities, and structured for implementation rather than decoration.",
+    desc: "Design of national policies, sector strategies, and ministerial guidelines, grounded in evidence, aligned with political realities, and structured for implementation rather than decoration.",
   },
   {
     label: "Senior-Level Strategic Advisory",
-    desc: "Advisory to government ministries, development partners, and institutional clients on reform strategy, organisational design, and policy architecture — at the level where decisions are made.",
+    desc: "Advisory to government ministries, development partners, and institutional clients on reform strategy, organisational design, and policy architecture, at the level where decisions are made.",
   },
   {
     label: "Reform Programme Design",
-    desc: "End-to-end design of governance, health, education, and fiscal reform programmes — from situation analysis through reform logic, sequencing, and the political economy considerations that determine survivability.",
+    desc: "End-to-end design of governance, health, education, and fiscal reform programmes, from situation analysis through reform logic, sequencing, and the political economy considerations that determine survivability.",
   },
   {
     label: "Donor Programme Design Support",
-    desc: "Technical input to concept notes, proposals, and programme documents for donor-funded initiatives — ensuring that design decisions are evidence-based, implementable, and aligned with national policy frameworks.",
+    desc: "Technical input to concept notes, proposals, and programme documents for donor-funded initiatives, ensuring that design decisions are evidence-based, implementable, and aligned with national policy frameworks.",
   },
   {
     label: "Regulatory Framework Development",
@@ -49,7 +49,7 @@ export default function StrategyDevelopmentPage() {
           </p>
           <p className="text-teal-50 text-lg max-w-2xl leading-relaxed opacity-90">
             We design policies that are politically feasible, technically credible, and built
-            to be implemented — not filed. This is Astellic&apos;s most senior advisory function.
+            to be implemented, not filed. This is Astellic&apos;s most senior advisory function.
           </p>
         </div>
       </section>
@@ -60,7 +60,7 @@ export default function StrategyDevelopmentPage() {
             The Policy & Strategy Development sub-unit combines technical policy expertise with deep
             institutional knowledge of how African public systems actually work. We understand that
             a technically correct policy that ignores political economy, institutional capacity, or
-            implementation sequencing is not a policy — it is a document. Every framework, guideline,
+            implementation sequencing is not a policy; it is a document. Every framework, guideline,
             and reform roadmap we produce is designed to survive in practice.
           </p>
           <div className="space-y-6">

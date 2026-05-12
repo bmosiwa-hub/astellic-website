@@ -26,7 +26,7 @@ const stages = [
   {
     num: "04",
     title: "Implement & Adapt",
-    desc: "Hands-on delivery combined with adaptive management — maintaining responsiveness to evolving contexts and institutional dynamics.",
+    desc: "Hands-on delivery combined with adaptive management, maintaining responsiveness to evolving contexts and institutional dynamics.",
   },
   {
     num: "05",

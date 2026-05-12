@@ -49,8 +49,8 @@ export default function AboutPage() {
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
           We bring together capabilities that are typically fragmented across
-          organisations — evidence generation, policy design, programme
-          development, implementation, and learning — into an integrated,
+          organisations, including evidence generation, policy design, programme
+          development, implementation, and learning, into an integrated,
           coherent delivery system. Our approach is grounded in context,
           institutional reality, and technical rigour, ensuring that solutions
           are not only well-designed, but effectively implemented and sustained.

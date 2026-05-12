@@ -10,23 +10,23 @@ export const metadata: Metadata = {
 const services = [
   {
     label: "Knowledge Translation",
-    desc: "Converting complex research findings, policy analysis, and evaluation insights into accessible, decision-relevant briefs, infographics, and summaries — designed for ministers, legislators, donors, and senior officials who need clarity, not complexity.",
+    desc: "Converting complex research findings, policy analysis, and evaluation insights into accessible, decision-relevant briefs, infographics, and summaries, designed for ministers, legislators, donors, and senior officials who need clarity, not complexity.",
   },
   {
     label: "Strategic Communications for Reform",
-    desc: "Development of communication strategies for reform programmes, policy launches, and institutional change initiatives — including stakeholder engagement design, media strategy, and narrative development.",
+    desc: "Development of communication strategies for reform programmes, policy launches, and institutional change initiatives, including stakeholder engagement design, media strategy, and narrative development.",
   },
   {
     label: "Policy Intelligence Briefs",
-    desc: "Production of Astellic&apos;s flagship Policy Intelligence Brief series — concise, analytically grounded documents positioning our evidence and advisory work as a trusted intellectual resource for decision-makers.",
+    desc: "Production of Astellic&apos;s flagship Policy Intelligence Brief series: concise, analytically grounded documents positioning our evidence and advisory work as a trusted intellectual resource for decision-makers.",
   },
   {
     label: "Thought Leadership & Publishing",
-    desc: "The Astellic Implementation Review, case study series, and sector-specific commentary — positioning the firm as a trusted intellectual voice in African development while building long-term inbound credibility.",
+    desc: "The Astellic Implementation Review, case study series, and sector-specific commentary, positioning the firm as a trusted intellectual voice in African development while building long-term inbound credibility.",
   },
   {
     label: "Stakeholder Engagement Design",
-    desc: "Structured approaches to stakeholder mapping, engagement sequencing, and consultation design — ensuring reform and policy processes are technically led and politically intelligent.",
+    desc: "Structured approaches to stakeholder mapping, engagement sequencing, and consultation design, ensuring reform and policy processes are technically led and politically intelligent.",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function KnowledgeTranslationPage() {
           </p>
           <p className="text-teal-50 text-lg max-w-2xl leading-relaxed opacity-90">
             In the development sector, the gap between what is known and what is decided is often
-            a communications failure, not an evidence failure. We close that gap — converting
+            a communications failure, not an evidence failure. We close that gap, converting
             technical outputs into narratives that shift understanding and catalyse action at the
             level of the decision-maker.
           </p>

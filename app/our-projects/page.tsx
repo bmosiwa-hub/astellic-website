@@ -37,7 +37,7 @@ const categories = [
     title: "Implementation",
     href: "/our-projects/implementation",
     description:
-      "Programme design, management, and direct delivery — translating policy intent into results on the ground across health, governance, education, and climate.",
+      "Programme design, management, and direct delivery, translating policy intent into results on the ground across health, governance, education, and climate.",
     accent: "bg-brand-teal",
     icon: (
       <svg className="w-8 h-8 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
