@@ -95,9 +95,11 @@ export default function Home() {
             An Integrated Delivery Architecture
           </h2>
           <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-10">
-            Astellic exists to close the gap between evidence, policy, and delivery through an
-            integrated model that generates actionable insights, translates them into policy and
-            strategy, and delivers programmes that work.
+            Astellic exists to close the gap between what evidence is showing, what policy intends,
+            and what systems actually deliver. This is not a research problem; it is a systems
+            problem that we address through an integrated model that generates actionable insights,
+            translates them into policy and strategy, and supports the delivery of programmes
+            that work.
           </p>
 
           {/* Pillar rationale narrative */}
