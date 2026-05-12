@@ -273,19 +273,19 @@ export default function ThematicTabs() {
               How this theme intersects our pillars:
             </p>
 
-            <div className="flex flex-row flex-wrap gap-2 mb-4">
+            <div className="flex flex-row gap-2 mb-4">
               {PILLARS.map((p, idx) => (
                 <button
                   key={p.num}
                   onClick={() => togglePillar(idx)}
-                  className={`text-left px-4 py-2.5 rounded-lg border text-[15px] font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`flex-1 text-left px-3 py-2.5 rounded-lg border text-[15px] font-semibold transition-all duration-200 flex items-start gap-1.5 min-h-[3rem] ${
                     openPillar === idx
                       ? `${p.bg} border-transparent text-white`
                       : `border-gray-200 text-brand-muted hover:border-gray-400 hover:text-brand-navy bg-white`
                   }`}
                 >
-                  <span className="shrink-0">{openPillar === idx ? "▾" : "▸"}</span>
-                  <span>{p.label}</span>
+                  <span className="shrink-0 mt-0.5">{openPillar === idx ? "▾" : "▸"}</span>
+                  <span className="leading-snug">{p.label}</span>
                 </button>
               ))}
             </div>

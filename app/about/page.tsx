@@ -31,7 +31,7 @@ export default function AboutPage() {
 
       {/* Overview */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-brand-navy mb-4">Who We Are</h2>
+        <h2 className="text-3xl font-bold text-brand-gold mb-4">Who We Are</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-6">
           Astellic is a research, advisory, and implementation firm operating at
           the intersection of evidence, policy, and delivery. We work across
