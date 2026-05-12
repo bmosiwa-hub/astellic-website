@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import PillarMatrix from "@/components/PillarMatrix";
+import ThematicTabs from "@/components/ThematicTabs";
 
 const pillars = [
   {
@@ -47,13 +47,6 @@ const pillars = [
   },
 ];
 
-const areas = [
-  { title: "Health & Nutrition Systems", href: "/thematic-areas/health" },
-  { title: "Governance & Public Sector Reform", href: "/thematic-areas/governance" },
-  { title: "Human Development & Social Systems", href: "/thematic-areas/education" },
-  { title: "Climate, Agriculture & Sustainability", href: "/thematic-areas/climate" },
-];
-
 export default function Home() {
   return (
     <>
@@ -93,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* What We Do — Three Pillars */}
-      <section className="py-20 px-6 bg-brand-light">
+      <section className="pt-20 pb-16 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-4">
             <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">What We Do</span>
@@ -101,12 +94,35 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-bold text-center text-brand-navy mb-4">
             An Integrated Delivery Architecture
           </h2>
-          <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-14">
+          <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-10">
             Astellic operates across three functional pillars that work in deliberate sequence and
             mutual reinforcement — producing evidence, converting it into policy, and delivering
             programmes that work. Together, they constitute a complete end-to-end capability
             within a single accountable institution.
           </p>
+
+          {/* Pillar rationale narrative */}
+          <div className="max-w-3xl mx-auto mb-14 space-y-4 text-brand-muted text-sm leading-relaxed border-l-4 border-brand-gold/40 pl-6">
+            <p>
+              We saw that institutions needed credible, context-grounded, and decision-ready intelligence,
+              so we built our Evidence Generation &amp; Verification pillar. But evidence without strategic
+              translation rarely becomes action, so we expanded into Policy Development &amp; Advisory —
+              helping governments, donors, and institutions convert insight into policies and strategies
+              that are technically sound, politically feasible, and institutionally implementable.
+            </p>
+            <p>
+              Yet even the strongest policies fail when delivery systems cannot operationalize them.
+              That is why we built our Programme Design &amp; Implementation pillar: to ensure that
+              strategic intent is translated into measurable and sustainable outcomes in practice.
+            </p>
+            <p>
+              We believe that rigorous evidence strengthens policy, strong policy enables effective
+              implementation, and effective implementation produces sustainable systems impact. By
+              integrating these capabilities within a single institutional architecture, Astellic moves
+              clients beyond fragmented consulting approaches — from analysis to execution, from policy
+              intent to operational reality, and from short-term outputs to scalable, lasting results.
+            </p>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {pillars.map((p) => (
@@ -162,37 +178,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Thematic Domains + Matrix */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+      {/* Thematic Domains — Tabbed */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
             <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">Where We Work</span>
           </div>
           <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
-            Four Thematic Domains. Three Pillars. One Integrated System.
+            Four Thematic Domains. Explore Each One.
           </h2>
-          <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-14">
-            Astellic&apos;s thematic domains are not separate practice areas — they cut
-            horizontally across all three pillars, ensuring our functional expertise is always
-            deployed with deep sector-specific knowledge. Hover the matrix to see how they intersect.
+          <p className="text-center text-brand-muted text-lg max-w-xl mx-auto mb-10">
+            Astellic&apos;s thematic domains cut across all three pillars — select a domain below
+            to explore our approach and see exactly how it intersects with each pillar.
           </p>
 
-          {/* Domain chips */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {areas.map((a) => (
-              <Link
-                key={a.href}
-                href={a.href}
-                className="border border-gray-200 bg-white hover:border-brand-gold hover:text-brand-gold rounded-full px-5 py-2 text-sm font-medium text-brand-navy transition-colors"
-              >
-                {a.title}
-              </Link>
-            ))}
-          </div>
+          <ThematicTabs />
 
-          {/* Interactive matrix */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <PillarMatrix />
+          <div className="text-center mt-10">
+            <Link
+              href="/thematic-areas"
+              className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-base hover:bg-brand-navy hover:text-white transition-colors"
+            >
+              View All Thematic Areas →
+            </Link>
           </div>
         </div>
       </section>
