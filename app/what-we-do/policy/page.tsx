@@ -104,15 +104,15 @@ export default function PolicyPillarPage() {
           {subUnits.map((s) => (
             <div key={s.num} className="border-l-4 border-brand-teal pl-8">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-white bg-brand-teal px-2 py-0.5 rounded">{s.num}</span>
+                <span className="text-sm font-bold text-white bg-brand-teal px-2 py-0.5 rounded">{s.num}</span>
                 <h2 className="text-xl font-bold text-brand-teal">{s.title}</h2>
               </div>
-              <p className="text-brand-muted italic text-sm mb-4">{s.tagline}</p>
-              <p className="text-gray-700 leading-relaxed mb-6">{s.desc}</p>
+              <p className="text-brand-muted italic text-base mb-4">{s.tagline}</p>
+              <p className="text-brand-muted leading-relaxed mb-6">{s.desc}</p>
               <div className="bg-brand-light rounded-xl p-5 space-y-2 mb-5">
-                <p className="text-xs font-bold text-brand-teal uppercase tracking-wide mb-3">Service Offerings</p>
+                <p className="text-sm font-bold text-brand-teal uppercase tracking-wide mb-3">Service Offerings</p>
                 {s.services.map((svc, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                  <div key={i} className="flex items-start gap-2 text-sm text-brand-muted">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-1.5 shrink-0" />
                     {svc}
                   </div>
@@ -135,10 +135,10 @@ export default function PolicyPillarPage() {
       {/* Full offerings */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-gray-700">
+              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-teal mt-1.5 shrink-0" />
                 {o}
               </div>

@@ -67,7 +67,7 @@ export default function WorkWithUsPage() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-gold rounded" />
-            <h2 className="text-2xl font-bold">Open Positions</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Open Positions</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
             Full-time and part-time roles across research, advisory, and
@@ -83,7 +83,7 @@ export default function WorkWithUsPage() {
                   className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                 >
                   <div>
-                    <h3 className="font-bold text-lg">{job.title}</h3>
+                    <h3 className="font-bold text-lg text-brand-navy">{job.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
                       {job.type} · {job.location}
                     </p>
@@ -109,7 +109,7 @@ export default function WorkWithUsPage() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-gold rounded" />
-            <h2 className="text-2xl font-bold">Consultancies</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Consultancies</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
             Short- and long-term consultancy assignments across our thematic
@@ -125,7 +125,7 @@ export default function WorkWithUsPage() {
                   className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                 >
                   <div>
-                    <h3 className="font-bold text-lg">{c.title}</h3>
+                    <h3 className="font-bold text-lg text-brand-navy">{c.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
                       {c.area} · {c.duration}
                     </p>
@@ -167,7 +167,7 @@ export default function WorkWithUsPage() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-gold rounded" />
-            <h2 className="text-2xl font-bold">Internships</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Internships</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
             Opportunities for students and recent graduates to gain hands-on
@@ -183,7 +183,7 @@ export default function WorkWithUsPage() {
                   className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                 >
                   <div>
-                    <h3 className="font-bold text-lg">{i.title}</h3>
+                    <h3 className="font-bold text-lg text-brand-navy">{i.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
                       {i.department} · {i.duration}
                     </p>
@@ -209,7 +209,7 @@ export default function WorkWithUsPage() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-navy rounded" />
-            <h2 className="text-2xl font-bold">Tenders & Bids</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Tenders & Bids</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
             Procurement opportunities and requests for proposals from Astellic
@@ -225,7 +225,7 @@ export default function WorkWithUsPage() {
                   className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                 >
                   <div>
-                    <h3 className="font-bold text-lg">{t.title}</h3>
+                    <h3 className="font-bold text-lg text-brand-navy">{t.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
                       Ref: {t.reference}
                     </p>

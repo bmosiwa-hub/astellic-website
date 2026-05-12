@@ -89,7 +89,7 @@ export default function Home() {
       <section className="pt-20 pb-16 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-4">
-            <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">What We Do</span>
+            <span className="text-sm font-bold tracking-widest text-brand-gold uppercase">What We Do</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-center text-brand-navy mb-4">
             An Integrated Delivery Architecture
@@ -102,7 +102,7 @@ export default function Home() {
           </p>
 
           {/* Pillar rationale narrative */}
-          <div className="max-w-3xl mx-auto mb-14 space-y-4 text-brand-muted text-sm leading-relaxed border-l-4 border-brand-gold/40 pl-6">
+          <div className="max-w-3xl mx-auto mb-14 space-y-4 text-brand-muted text-base leading-relaxed border-l-4 border-brand-gold/40 pl-6">
             <p>
               We saw that institutions needed credible, context-grounded, and decision-ready intelligence,
               so we built our Evidence Generation &amp; Verification pillar. But evidence without strategic
@@ -131,20 +131,20 @@ export default function Home() {
                 className={`bg-white rounded-2xl shadow-sm border-t-4 ${p.color} p-7 flex flex-col gap-5`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs font-bold text-white ${p.numBg} px-2 py-1 rounded`}>
+                  <span className={`text-sm font-bold text-white ${p.numBg} px-2 py-1 rounded`}>
                     {p.num}
                   </span>
-                  <h3 className="font-bold text-brand-navy text-base leading-snug">{p.title}</h3>
+                  <h3 className="font-bold text-brand-navy text-xl leading-snug">{p.title}</h3>
                 </div>
-                <p className="text-sm font-semibold text-brand-muted italic">{p.tagline}</p>
-                <p className="text-brand-muted text-sm leading-relaxed flex-1">{p.desc}</p>
+                <p className="text-base font-semibold text-brand-muted italic">{p.tagline}</p>
+                <p className="text-brand-muted text-base leading-relaxed flex-1">{p.desc}</p>
 
                 <div className="border-t border-gray-100 pt-4 space-y-2">
                   {p.subUnits.map((s) => (
                     <Link
                       key={s.href}
                       href={s.href}
-                      className="flex items-center gap-2 text-xs text-brand-muted hover:text-brand-navy transition-colors group"
+                      className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand-navy transition-colors group"
                     >
                       <svg className="w-3 h-3 shrink-0 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -182,7 +182,7 @@ export default function Home() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
-            <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">Where We Work</span>
+            <span className="text-sm font-bold tracking-widest text-brand-gold uppercase">Where We Work</span>
           </div>
           <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
             Four Thematic Domains. Explore Each One.

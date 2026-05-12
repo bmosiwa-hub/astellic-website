@@ -68,7 +68,7 @@ export default function ApproachPage() {
       {/* Stages */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-12 text-center">
+          <h2 className="text-3xl font-bold text-brand-navy mb-12 text-center">
             Our 6-Stage Delivery Model
           </h2>
           <div className="relative">
@@ -81,7 +81,7 @@ export default function ApproachPage() {
                     {s.num}
                   </div>
                   <div className="mt-4 md:mt-0 bg-brand-light rounded-xl p-6 flex-1">
-                    <h3 className="font-bold text-lg mb-2">{s.title}</h3>
+                    <h3 className="font-bold text-lg text-brand-navy mb-2">{s.title}</h3>
                     <p className="text-brand-muted text-base leading-relaxed">
                       {s.desc}
                     </p>

@@ -67,7 +67,7 @@ export default function WhyAstellicPage() {
       {/* Positioning */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Our Positioning</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-6">Our Positioning</h2>
           <p className="text-brand-muted leading-relaxed mb-6">
             We are not:
           </p>
@@ -99,7 +99,7 @@ export default function WhyAstellicPage() {
       {/* Four pillars */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-brand-navy text-center mb-12">
             What Makes Astellic Different
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -108,7 +108,7 @@ export default function WhyAstellicPage() {
                 <p className="text-brand-teal text-base font-bold uppercase tracking-widest mb-2">
                   {p.label}
                 </p>
-                <h3 className="text-lg font-bold mb-3">{p.title}</h3>
+                <h3 className="text-lg font-bold text-brand-navy mb-3">{p.title}</h3>
                 <p className="text-brand-muted text-base leading-relaxed">{p.desc}</p>
               </div>
             ))}
@@ -119,7 +119,7 @@ export default function WhyAstellicPage() {
       {/* At a glance */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-10 text-center">
+          <h2 className="text-3xl font-bold mb-10 text-center">
             Astellic at a Glance
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">

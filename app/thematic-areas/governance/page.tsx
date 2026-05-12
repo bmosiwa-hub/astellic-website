@@ -57,7 +57,7 @@ export default function GovernancePage() {
 
       {/* Overview */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">Overview</h2>
+        <h2 className="text-3xl font-bold text-brand-navy mb-6">Overview</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-5">
           Effective governance is foundational to development outcomes. Astellic
           works with governments, the private sector, legislatures, and oversight bodies to strengthen
@@ -76,7 +76,7 @@ export default function GovernancePage() {
       {/* Focus Areas */}
       <section className="bg-brand-light py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-10">Our Focus Areas</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-10">Our Focus Areas</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {focusAreas.map((area) => (
               <div key={area.title} className="bg-white rounded-xl p-7 border border-gray-100 shadow-sm">
@@ -92,7 +92,7 @@ export default function GovernancePage() {
       {/* CTA */}
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Work with us on Governance &amp; Reform</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-4">Work with us on Governance &amp; Reform</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
             Astellic supports governments, the private sector, and development partners with technically
             sound, politically informed governance reform — from diagnostic through

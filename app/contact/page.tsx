@@ -34,7 +34,7 @@ export default function ContactPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16">
           {/* Contact info */}
           <div>
-            <h2 className="text-2xl font-bold mb-6">Reach Us</h2>
+            <h2 className="text-3xl font-bold text-brand-navy mb-6">Reach Us</h2>
 
             <div className="space-y-6">
               <div>
@@ -78,7 +78,7 @@ export default function ContactPage() {
 
           {/* Simple contact form */}
           <div>
-            <h2 className="text-2xl font-bold mb-6">Send a Message</h2>
+            <h2 className="text-3xl font-bold text-brand-navy mb-6">Send a Message</h2>
             <form
               action="mailto:partnerships@astellic.com"
               method="POST"

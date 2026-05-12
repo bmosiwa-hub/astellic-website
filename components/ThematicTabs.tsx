@@ -222,10 +222,10 @@ export default function ThematicTabs() {
                 : "border-gray-200 bg-white text-brand-muted hover:border-brand-gold/50 hover:text-brand-navy"
             }`}
           >
-            <span className={`block text-[10px] font-bold tracking-widest uppercase mb-1 ${
+            <span className={`block text-sm font-bold tracking-widest uppercase mb-1 ${
               activeTheme === t.id ? "text-brand-gold" : "text-gray-400"
             }`}>
-              {activeTheme === t.id ? "● Active" : "○ Explore"}
+              {activeTheme === t.id ? "Active" : "Explore"}
             </span>
             {t.title}
           </button>
@@ -254,7 +254,7 @@ export default function ThematicTabs() {
         <div className="px-6 py-6 space-y-5">
 
           {/* Intro */}
-          <p className="text-brand-muted text-sm leading-relaxed">{theme.intro}</p>
+          <p className="text-brand-muted text-base leading-relaxed">{theme.intro}</p>
 
           {/* Read more */}
           <Link
@@ -269,7 +269,7 @@ export default function ThematicTabs() {
 
           {/* Pillar intersection */}
           <div className="border-t border-gray-100 pt-5">
-            <p className="text-xs font-semibold text-brand-navy mb-3 uppercase tracking-wide">
+            <p className="text-sm font-bold text-brand-navy mb-3 uppercase tracking-widest">
               How this theme intersects our pillars:
             </p>
 
@@ -278,7 +278,7 @@ export default function ThematicTabs() {
                 <button
                   key={p.num}
                   onClick={() => togglePillar(idx)}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
                     openPillar === idx
                       ? `${p.bg} border-transparent text-white`
                       : `border-gray-200 text-brand-muted hover:border-gray-400 hover:text-brand-navy bg-white`
@@ -297,13 +297,13 @@ export default function ThematicTabs() {
                   <div key={si} className="px-5 py-4">
                     <Link
                       href={su.href}
-                      className={`text-sm font-bold hover:underline transition-colors ${PILLARS[openPillar].color.split(" ")[1]}`}
+                      className={`text-base font-bold hover:underline transition-colors ${PILLARS[openPillar].color.split(" ")[1]}`}
                     >
                       {su.label}
                     </Link>
                     <ul className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1">
                       {su.activities[activeTheme].map((act, ai) => (
-                        <li key={ai} className="flex items-start gap-2 text-xs text-brand-muted">
+                        <li key={ai} className="flex items-start gap-2 text-sm text-brand-muted">
                           <span className={`mt-[5px] w-1.5 h-1.5 rounded-full shrink-0 ${PILLARS[openPillar].dot}`} />
                           {act}
                         </li>
@@ -314,7 +314,7 @@ export default function ThematicTabs() {
                 <div className="px-5 py-3 bg-white">
                   <Link
                     href={PILLARS[openPillar].href}
-                    className="text-xs font-semibold text-brand-gold hover:underline"
+                    className="text-sm font-semibold text-brand-gold hover:underline"
                   >
                     Explore {PILLARS[openPillar].label} →
                   </Link>

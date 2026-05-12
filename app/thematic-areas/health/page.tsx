@@ -61,7 +61,7 @@ export default function HealthPage() {
 
       {/* Overview */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">Overview</h2>
+        <h2 className="text-3xl font-bold text-brand-navy mb-6">Overview</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-5">
           Astellic works with governments, donors, the private sector, and
           implementing partners to strengthen the systems that underpin health
@@ -82,7 +82,7 @@ export default function HealthPage() {
       {/* Focus Areas */}
       <section className="bg-brand-light py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-10">Our Focus Areas</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-10">Our Focus Areas</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {focusAreas.map((area) => (
               <div key={area.title} className="bg-white rounded-xl p-7 border border-gray-100 shadow-sm">
@@ -98,7 +98,7 @@ export default function HealthPage() {
       {/* CTA */}
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Work with us on Health &amp; Nutrition</h2>
+          <h2 className="text-3xl font-bold text-brand-navy mb-4">Work with us on Health &amp; Nutrition</h2>
           <p className="text-brand-muted text-lg mb-8 leading-relaxed">
             Whether you are a government ministry, donor agency, or implementing
             partner, Astellic can support your health and nutrition objectives

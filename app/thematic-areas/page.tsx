@@ -96,7 +96,7 @@ export default function ThematicAreasPage() {
               </div>
               <div className="p-8 flex-1 flex flex-col justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold mb-3">{a.title}</h2>
+                  <h2 className="text-3xl font-bold text-brand-navy mb-3">{a.title}</h2>
                   <p className="text-brand-muted text-lg leading-relaxed">{a.desc}</p>
                 </div>
                 <div>
@@ -119,7 +119,7 @@ export default function ThematicAreasPage() {
       {/* Callout */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">
+          <h2 className="text-3xl font-bold text-brand-navy mb-4">
             A model built for complexity
           </h2>
           <p className="text-brand-muted text-lg leading-relaxed">

@@ -129,7 +129,7 @@ export default function WhatWeDoPage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <span className="text-xs font-bold tracking-widest text-brand-gold uppercase mb-4 block">What We Do</span>
+          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block">What We Do</span>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Three Pillars. Four Domains.<br />One Integrated System.
           </h1>
@@ -153,10 +153,10 @@ export default function WhatWeDoPage() {
               {/* Pillar label block */}
               <div className="md:w-56 shrink-0">
                 <div className={`inline-flex items-center gap-2 mb-4`}>
-                  <span className={`text-xs font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
-                  <span className="text-xs font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
+                  <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
+                  <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
                 </div>
-                <h2 className={`text-xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
+                <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
                 <Link
                   href={p.href}
                   className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
@@ -171,7 +171,7 @@ export default function WhatWeDoPage() {
               {/* Content */}
               <div className={`flex-1 border-l-4 ${p.borderClass} pl-8`}>
                 <p className="text-brand-muted italic text-base mb-3">{p.tagline}</p>
-                <p className="text-gray-700 leading-relaxed mb-8">{p.desc}</p>
+                <p className="text-brand-muted leading-relaxed mb-8">{p.desc}</p>
                 <div className="grid md:grid-cols-3 gap-4">
                   {p.subUnits.map((s) => (
                     <Link
@@ -179,8 +179,8 @@ export default function WhatWeDoPage() {
                       href={s.href}
                       className="group bg-brand-light rounded-xl p-5 hover:shadow-sm transition-shadow"
                     >
-                      <h3 className={`font-bold text-sm mb-2 ${p.textClass} group-hover:underline`}>{s.label}</h3>
-                      <p className="text-xs text-brand-muted leading-relaxed">{s.desc}</p>
+                      <h3 className={`font-bold text-base mb-2 ${p.textClass} group-hover:underline`}>{s.label}</h3>
+                      <p className="text-sm text-brand-muted leading-relaxed">{s.desc}</p>
                     </Link>
                   ))}
                 </div>
@@ -193,7 +193,7 @@ export default function WhatWeDoPage() {
       {/* Delivery Flywheel */}
       <section className="bg-brand-navy text-white py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="text-xs font-bold tracking-widest text-brand-gold uppercase mb-4 block">The Delivery Flywheel</span>
+          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block">The Delivery Flywheel</span>
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
             Three pillars. One continuous system.
           </h2>
@@ -212,10 +212,10 @@ export default function WhatWeDoPage() {
               <div key={step.num} className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="w-20 h-20 rounded-full bg-white/10 border border-white/20 flex flex-col items-center justify-center mx-auto mb-2">
-                    <span className="text-brand-gold text-xs font-bold">{step.num}</span>
+                    <span className="text-brand-gold text-sm font-bold">{step.num}</span>
                     <span className="text-white font-bold text-sm">{step.label}</span>
                   </div>
-                  <p className="text-gray-400 text-xs max-w-[100px] mx-auto">{step.sub}</p>
+                  <p className="text-gray-300 text-sm max-w-[100px] mx-auto">{step.sub}</p>
                 </div>
                 {i < 2 && (
                   <svg className="w-6 h-6 text-brand-gold shrink-0 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -229,7 +229,7 @@ export default function WhatWeDoPage() {
               <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
-              <span className="text-xs text-brand-gold font-bold tracking-wide">↺ loop</span>
+              <span className="text-sm text-brand-gold font-bold tracking-wide">↺ loop</span>
             </div>
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function WhatWeDoPage() {
       {/* Thematic Domains */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
-          <span className="text-xs font-bold tracking-widest text-brand-gold uppercase mb-4 block text-center">Thematic Domains</span>
+          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block text-center">Thematic Domains</span>
           <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
             The Lens Through Which the Pillars Operate
           </h2>
@@ -256,7 +256,7 @@ export default function WhatWeDoPage() {
               >
                 <div className="w-8 h-1 bg-brand-gold rounded mb-4" />
                 <h3 className="font-bold text-brand-navy mb-2 group-hover:text-brand-gold transition-colors">{d.title}</h3>
-                <p className="text-xs text-brand-muted leading-relaxed">{d.desc}</p>
+                <p className="text-sm text-brand-muted leading-relaxed">{d.desc}</p>
               </Link>
             ))}
           </div>
@@ -275,7 +275,7 @@ export default function WhatWeDoPage() {
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-brand-navy mb-4">
+          <h2 className="text-3xl font-bold text-brand-navy mb-4">
             Ready to work with us?
           </h2>
           <p className="text-brand-muted text-lg mb-8">
