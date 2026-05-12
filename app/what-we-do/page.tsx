@@ -129,7 +129,7 @@ export default function WhatWeDoPage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block">What We Do</span>
+          <span className="text-3xl font-bold text-brand-gold mb-4 block">What We Do</span>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Three Pillars. Four Domains.<br />One Integrated System.
           </h1>
@@ -193,7 +193,7 @@ export default function WhatWeDoPage() {
       {/* Delivery Flywheel */}
       <section className="bg-brand-navy text-white py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block">The Delivery Flywheel</span>
+          <span className="text-3xl font-bold text-brand-gold mb-4 block">The Delivery Flywheel</span>
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
             Three pillars. One continuous system.
           </h2>
@@ -238,7 +238,7 @@ export default function WhatWeDoPage() {
       {/* Thematic Domains */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
-          <span className="text-sm font-bold tracking-widest text-brand-gold uppercase mb-4 block text-center">Thematic Domains</span>
+          <span className="text-3xl font-bold text-brand-gold mb-4 block text-center">Thematic Domains</span>
           <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
             The Lens Through Which the Pillars Operate
           </h2>

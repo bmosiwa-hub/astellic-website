@@ -44,7 +44,7 @@ export default function ClimatePage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-base font-semibold uppercase tracking-widest mb-3">Thematic Area 03</p>
+          <p className="text-brand-gold text-3xl font-bold mb-4">Thematic Area 03</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Climate, Agriculture &amp; Sustainability
           </h1>

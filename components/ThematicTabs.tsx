@@ -216,7 +216,7 @@ export default function ThematicTabs() {
           <button
             key={t.id}
             onClick={() => switchTheme(t.id)}
-            className={`text-left px-5 py-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 ${
+            className={`text-left px-5 py-4 rounded-xl border-2 font-semibold text-base transition-all duration-200 ${
               activeTheme === t.id
                 ? "border-brand-gold bg-brand-gold/5 text-brand-navy"
                 : "border-gray-200 bg-white text-brand-muted hover:border-brand-gold/50 hover:text-brand-navy"
@@ -246,7 +246,7 @@ export default function ThematicTabs() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/70 to-transparent" />
           <div className="absolute bottom-0 left-0 px-6 py-4">
-            <h3 className="text-white text-xl font-bold leading-tight">{theme.title}</h3>
+            <h3 className="text-white text-2xl font-bold leading-tight">{theme.title}</h3>
           </div>
         </div>
 
@@ -273,12 +273,12 @@ export default function ThematicTabs() {
               How this theme intersects our pillars:
             </p>
 
-            <div className="flex flex-col gap-2 mb-4">
+            <div className="flex flex-row flex-wrap gap-2 mb-4">
               {PILLARS.map((p, idx) => (
                 <button
                   key={p.num}
                   onClick={() => togglePillar(idx)}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`text-left px-4 py-2.5 rounded-lg border text-[15px] font-semibold transition-all duration-200 flex items-center gap-2 ${
                     openPillar === idx
                       ? `${p.bg} border-transparent text-white`
                       : `border-gray-200 text-brand-muted hover:border-gray-400 hover:text-brand-navy bg-white`

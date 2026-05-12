@@ -48,7 +48,7 @@ export default function HealthPage() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-base font-semibold uppercase tracking-widest mb-3">Thematic Area 01</p>
+          <p className="text-brand-gold text-3xl font-bold mb-4">Thematic Area 01</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Health &amp; Nutrition Systems
           </h1>
