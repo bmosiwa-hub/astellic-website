@@ -33,27 +33,34 @@ export default function AboutPage() {
       <section className="py-20 px-6 max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-brand-gold mb-4">Who We Are</h2>
         <p className="text-brand-muted text-lg leading-relaxed mb-6">
-          Astellic is a research, advisory, and implementation firm operating at
-          the intersection of evidence, policy, and delivery. We work across
-          Health &amp; Nutrition Systems; Governance &amp; Public Sector Reform;
-          Human Development &amp; Social Systems; and Climate, Agriculture &amp;
-          Sustainability, partnering with governments, donors, the private sector,
-          and institutions across Africa to generate evidence, shape policy, and deliver
-          programmes that achieve measurable and sustained results.
+          Astellic is an African research and advisory firm helping governments, donors,
+          development partners, and the private sector learn continuously, trust their data,
+          and make strategy work in practice.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed mb-6">
-          Across the development sector, strong policies and well-funded
-          strategies often fail to deliver impact, not because of weak intent,
-          but because of a breakdown between analysis, decision-making, and
-          execution. Astellic was established to address this gap.
+          We operate at the intersection of evidence, policy, and delivery, supporting
+          institutions to understand what their evidence is actually showing, strengthen
+          the integrity of their data systems, and build the institutional conditions
+          required for effective implementation.
+        </p>
+        <p className="text-brand-muted text-lg leading-relaxed mb-6">
+          Across the development sector, strong policies and well-funded programmes often
+          fail to achieve sustained impact, not because of weak intent, but because of
+          breakdowns between analysis, decision-making, and execution. Astellic was
+          established to help close that gap.
+        </p>
+        <p className="text-brand-muted text-lg leading-relaxed mb-6">
+          Our work combines analytical rigour, contextual intelligence, and operational
+          realism. We bring together capabilities that are often fragmented across
+          organisations, including adaptive MERL, data quality and verification,
+          implementation diagnostics, policy support, and learning systems, into a
+          coherent, decision-focused approach grounded in how systems actually work.
         </p>
         <p className="text-brand-muted text-lg leading-relaxed">
-          We bring together capabilities that are typically fragmented across
-          organisations, including evidence generation, policy design, programme
-          development, implementation, and learning, into an integrated,
-          coherent delivery system. Our approach is grounded in context,
-          institutional reality, and technical rigour, ensuring that solutions
-          are not only well-designed, but effectively implemented and sustained.
+          Astellic&apos;s current work is focused primarily in Health &amp; Nutrition Systems
+          and Governance &amp; Public Sector Reform, with selective engagements in Human
+          Development, Social Systems, and Climate &amp; Sustainability through specialist
+          partnerships and associate expertise.
         </p>
       </section>
     </>
