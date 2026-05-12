@@ -156,11 +156,11 @@ export default function PolicyPillarPage() {
             implementable through Pillar 03 — ensuring the full results chain holds together.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/what-we-do/evidence" className="border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy hover:text-white transition-colors">
-              ← Pillar 01: Evidence Generation & Verification
+            <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
+              Pillar 01: Evidence Generation &amp; Verification
             </Link>
-            <Link href="/what-we-do/implementation" className="border border-brand-green text-brand-green px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green hover:text-white transition-colors">
-              Pillar 03: Programme Design & Implementation →
+            <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
+              Pillar 03: Programme Design &amp; Implementation
             </Link>
           </div>
         </div>

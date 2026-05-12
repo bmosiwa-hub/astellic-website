@@ -91,8 +91,8 @@ export default function TechnicalAssistancePage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
               Get in Touch
             </Link>
-            <Link href="/what-we-do/implementation" className="border border-brand-green text-brand-green px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green hover:text-white transition-colors">
-              ← Back to Pillar 03
+            <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
+              Back to Pillar 03
             </Link>
           </div>
         </div>

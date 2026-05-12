@@ -92,8 +92,8 @@ export default function AdaptiveManagementPage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
               Start a Conversation
             </Link>
-            <Link href="/what-we-do/implementation" className="border border-white/30 hover:border-white text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
-              ← Back to Pillar 03
+            <Link href="/what-we-do/implementation" className="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
+              Back to Pillar 03
             </Link>
           </div>
         </div>

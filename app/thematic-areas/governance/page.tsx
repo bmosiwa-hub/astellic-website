@@ -102,7 +102,7 @@ export default function GovernancePage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors">
               Get in Touch
             </Link>
-            <Link href="/thematic-areas" className="border border-brand-navy text-brand-navy hover:bg-brand-light px-8 py-3 rounded font-medium text-lg transition-colors">
+            <Link href="/thematic-areas" className="bg-brand-navy text-white hover:bg-brand-navy/90 px-8 py-3 rounded font-medium text-lg transition-colors">
               All Thematic Areas
             </Link>
           </div>

@@ -156,11 +156,11 @@ export default function EvidencePillarPage() {
             creating an integrated system where no insight is wasted.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/what-we-do/policy" className="border border-brand-teal text-brand-teal px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal hover:text-white transition-colors">
-              Pillar 02: Policy Development & Advisory →
+            <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
+              Pillar 02: Policy Development &amp; Advisory
             </Link>
-            <Link href="/what-we-do/implementation" className="border border-brand-green text-brand-green px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green hover:text-white transition-colors">
-              Pillar 03: Programme Design & Implementation →
+            <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
+              Pillar 03: Programme Design &amp; Implementation
             </Link>
           </div>
         </div>

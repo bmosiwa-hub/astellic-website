@@ -278,13 +278,12 @@ export default function ThematicTabs() {
                 <button
                   key={p.num}
                   onClick={() => togglePillar(idx)}
-                  className={`flex-1 text-left px-3 py-2.5 rounded-lg border text-[15px] font-semibold transition-all duration-200 flex items-start gap-1.5 min-h-[3rem] ${
+                  className={`flex-1 text-center justify-center px-3 py-2.5 rounded-lg border text-[15px] font-semibold transition-all duration-200 block min-h-[3rem] ${
                     openPillar === idx
-                      ? `${p.bg} border-transparent text-white`
-                      : `border-gray-200 text-brand-muted hover:border-gray-400 hover:text-brand-navy bg-white`
+                      ? `bg-brand-gold border-brand-gold text-white`
+                      : `border-brand-gold text-brand-gold bg-white hover:bg-brand-gold/5`
                   }`}
                 >
-                  <span className="shrink-0 mt-0.5">{openPillar === idx ? "▾" : "▸"}</span>
                   <span className="leading-snug">{p.label}</span>
                 </button>
               ))}
@@ -316,7 +315,7 @@ export default function ThematicTabs() {
                     href={PILLARS[openPillar].href}
                     className="text-sm font-semibold text-brand-gold hover:underline"
                   >
-                    Explore {PILLARS[openPillar].label} →
+                    Explore {PILLARS[openPillar].label}
                   </Link>
                 </div>
               </div>

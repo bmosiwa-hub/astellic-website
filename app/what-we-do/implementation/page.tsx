@@ -158,11 +158,11 @@ export default function ImplementationPillarPage() {
             rigorous analysis and strategic intent.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/what-we-do/evidence" className="border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy hover:text-white transition-colors">
-              ← Pillar 01: Evidence Generation & Verification
+            <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
+              Pillar 01: Evidence Generation &amp; Verification
             </Link>
-            <Link href="/what-we-do/policy" className="border border-brand-teal text-brand-teal px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal hover:text-white transition-colors">
-              ← Pillar 02: Policy Development & Advisory
+            <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
+              Pillar 02: Policy Development &amp; Advisory
             </Link>
           </div>
         </div>

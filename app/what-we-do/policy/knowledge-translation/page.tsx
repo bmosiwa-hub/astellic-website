@@ -90,8 +90,8 @@ export default function KnowledgeTranslationPage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
               Get in Touch
             </Link>
-            <Link href="/what-we-do/policy" className="border border-brand-teal text-brand-teal px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal hover:text-white transition-colors">
-              ← Back to Pillar 02
+            <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
+              Back to Pillar 02
             </Link>
           </div>
         </div>

@@ -88,8 +88,8 @@ export default function EvaluationLearningPage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
               Get in Touch
             </Link>
-            <Link href="/what-we-do/evidence" className="border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy hover:text-white transition-colors">
-              ← Back to Pillar 01
+            <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
+              Back to Pillar 01
             </Link>
           </div>
         </div>

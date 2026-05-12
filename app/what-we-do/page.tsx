@@ -286,7 +286,7 @@ export default function WhatWeDoPage() {
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-base transition-colors">
               Start a Conversation
             </Link>
-            <Link href="/our-projects" className="border border-brand-navy text-brand-navy px-8 py-3 rounded font-medium text-base hover:bg-brand-navy hover:text-white transition-colors">
+            <Link href="/our-projects" className="bg-brand-navy text-white px-8 py-3 rounded font-medium text-base hover:bg-brand-navy/90 transition-colors">
               See Our Projects
             </Link>
           </div>

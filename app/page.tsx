@@ -170,9 +170,9 @@ export default function Home() {
           <div className="text-center mt-10">
             <Link
               href="/what-we-do"
-              className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-base hover:bg-brand-navy hover:text-white transition-colors"
+              className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-base hover:bg-brand-navy/90 transition-colors"
             >
-              View Full Delivery Architecture →
+              View Full Delivery Architecture
             </Link>
           </div>
         </div>
@@ -197,9 +197,9 @@ export default function Home() {
           <div className="text-center mt-10">
             <Link
               href="/thematic-areas"
-              className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy px-6 py-2.5 rounded font-medium text-base hover:bg-brand-navy hover:text-white transition-colors"
+              className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-base hover:bg-brand-navy/90 transition-colors"
             >
-              View All Thematic Areas →
+              View All Thematic Areas
             </Link>
           </div>
         </div>
