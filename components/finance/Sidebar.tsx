@@ -217,14 +217,14 @@ export default function Sidebar({
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
-                          "/astelfin_26/employees", "/astelfin_26/payroll", "/astelfin_26/consultants",
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
                           "/astelfin_26/assets", "/astelfin_26/financial-health"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
                            "/astelfin_26/procurement"];
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
-  const hrPaths         = ["/astelfin_26/performance", "/astelfin_26/timesheets"];
+  const hrPaths         = ["/astelfin_26/employees", "/astelfin_26/consultants", "/astelfin_26/payroll",
+                           "/astelfin_26/performance", "/astelfin_26/timesheets"];
   const myPaths         = ["/astelfin_26/my"];
 
   const bizdevPaths = ["/astelfin_26/bizdev"];
@@ -352,18 +352,15 @@ export default function Sidebar({
             {sectionHeader("finance", "Finance", financeIcon)}
             {open.finance && (
               <div className="space-y-0.5 mb-1">
-                {navLink("/astelfin_26/dashboard",   "Dashboard",    Icons.dashboard)}
-                {navLink("/astelfin_26/income",      "Income",       Icons.income)}
-                {navLink("/astelfin_26/expenses",    "Expenses",     Icons.expenses)}
-                {navLink("/astelfin_26/employees",   "Employees",    Icons.employees)}
-                {navLink("/astelfin_26/payroll",     "Payroll",      Icons.payroll)}
-                {navLink("/astelfin_26/consultants", "Consultants",  Icons.consultants)}
-                {navLink("/astelfin_26/debt",        "Debt",         Icons.debt)}
-                {navLink("/astelfin_26/assets",      "Assets",       Icons.assets)}
+                {navLink("/astelfin_26/dashboard",        "Dashboard",       Icons.dashboard)}
+                {navLink("/astelfin_26/income",           "Income",          Icons.income)}
+                {navLink("/astelfin_26/expenses",         "Expenses",        Icons.expenses)}
+                {navLink("/astelfin_26/debt",             "Debt",            Icons.debt)}
+                {navLink("/astelfin_26/assets",           "Assets",          Icons.assets)}
                 {navLink("/astelfin_26/reports",          "Reports",         Icons.reports)}
-                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",   Icons.tax)}
+                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",    Icons.tax)}
                 {(isCEO || isFM) && navLink("/astelfin_26/financial-health", "Financial Health", Icons.health)}
-                {navLink("/astelfin_26/exchange-rates", "Exchange Rates", Icons.exchangeRates)}
+                {navLink("/astelfin_26/exchange-rates",   "Exchange Rates",  Icons.exchangeRates)}
               </div>
             )}
           </>
@@ -400,6 +397,9 @@ export default function Sidebar({
             {sectionHeader("hr", "HR & People", Icons.employees)}
             {open.hr && (
               <div className="space-y-0.5 mb-1">
+                {navLink("/astelfin_26/employees",   "Employees",        Icons.employees)}
+                {navLink("/astelfin_26/consultants", "Consultants",      Icons.consultants)}
+                {navLink("/astelfin_26/payroll",     "Payroll",          Icons.payroll)}
                 {navLink("/astelfin_26/performance", "Team Performance", Icons.performance)}
                 {navLink("/astelfin_26/timesheets",  "Team Timesheets",  Icons.timesheet)}
               </div>

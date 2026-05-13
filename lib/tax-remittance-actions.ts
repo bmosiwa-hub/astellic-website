@@ -50,13 +50,23 @@ export async function createTaxRemittance(formData: FormData) {
   // Parse selected record IDs
   const payrollIds           = formData.getAll("payrollId")           as string[];
   const consultantPaymentIds = formData.getAll("consultantPaymentId") as string[];
+  const pensionIds           = formData.getAll("pensionId")           as string[];
+  const manualAmountRaw      = formData.get("manualAmount")           as string | null;
+  const manualAmount         = manualAmountRaw ? parseFloat(manualAmountRaw) : 0;
 
-  if (payrollIds.length === 0 && consultantPaymentIds.length === 0) {
+  // CIT uses manual amount; others require at least one record
+  const isCIT     = taxType === "CIT";
+  const isPension = taxType === "PENSION";
+
+  if (!isCIT && payrollIds.length === 0 && consultantPaymentIds.length === 0 && pensionIds.length === 0) {
     redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=no_records`);
+  }
+  if (isCIT && (!manualAmount || manualAmount <= 0)) {
+    redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=no_amount`);
   }
 
   // Calculate total
-  let amount = 0;
+  let amount = isCIT ? manualAmount : 0;
   if (payrollIds.length > 0) {
     const records = await prisma.payroll.findMany({
       where: { id: { in: payrollIds } },
@@ -70,6 +80,13 @@ export async function createTaxRemittance(formData: FormData) {
       select: { withholdingTax: true },
     });
     amount += records.reduce((s, r) => s + r.withholdingTax, 0);
+  }
+  if (pensionIds.length > 0) {
+    const records = await prisma.payroll.findMany({
+      where: { id: { in: pensionIds } },
+      select: { pension: true },
+    });
+    amount = records.reduce((s, r) => s + r.pension, 0);
   }
 
   // Upload proof (required)
@@ -99,6 +116,7 @@ export async function createTaxRemittance(formData: FormData) {
       submittedById:        session.user.id!,
       payrollIds,
       consultantPaymentIds,
+      pensionIds,
     },
   });
 
@@ -113,6 +131,12 @@ export async function createTaxRemittance(formData: FormData) {
     await prisma.consultantPayment.updateMany({
       where: { id: { in: consultantPaymentIds } },
       data:  { whtStatus: "PENDING_CEO" },
+    });
+  }
+  if (pensionIds.length > 0) {
+    await prisma.payroll.updateMany({
+      where: { id: { in: pensionIds } },
+      data:  { pensionStatus: "PENDING_CEO" },
     });
   }
 
@@ -202,6 +226,12 @@ export async function approveTaxRemittance(formData: FormData) {
       data:  { whtStatus: finalStatus },
     });
   }
+  if (remittance!.pensionIds.length > 0) {
+    await prisma.payroll.updateMany({
+      where: { id: { in: remittance!.pensionIds } },
+      data:  { pensionStatus: finalStatus },
+    });
+  }
 
   await auditLog({
     userId:   session.user.id!,
@@ -273,6 +303,12 @@ export async function rejectTaxRemittance(formData: FormData) {
     await prisma.consultantPayment.updateMany({
       where: { id: { in: remittance.consultantPaymentIds } },
       data:  { whtStatus: "OUTSTANDING" },
+    });
+  }
+  if (remittance.pensionIds.length > 0) {
+    await prisma.payroll.updateMany({
+      where: { id: { in: remittance.pensionIds } },
+      data:  { pensionStatus: "OUTSTANDING" },
     });
   }
 

@@ -170,6 +170,8 @@ model Consultant {
   totalProfessionalFees Float?              // professional fees component (WHT applies to this)
   otherFees             Float?              // other fees not subject to WHT (e.g. reimbursables)
   withholdingTaxRate    Float               @default(20) // WHT % on professional fees
+  supervisorId          String?             // internal contact / supervisor
+  supervisor            Employee?           @relation("ConsultantSupervisor", fields: [supervisorId], references: [id], onDelete: SetNull)
   notes                 String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
@@ -229,6 +231,7 @@ model Employee {
   payrolls           Payroll[]
   performanceCycles  PerformanceCycle[]
   timesheets         Timesheet[]
+  supervisedConsultants Consultant[] @relation("ConsultantSupervisor")
 }
 
 model Payroll {
@@ -252,6 +255,7 @@ model Payroll {
   status          PaymentStatus @default(PENDING)
   notes           String?
   payeStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
+  pensionStatus   String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   overspendingRefunds OverspendingRefund[]
@@ -881,7 +885,7 @@ model Milestone {
 
 model TaxRemittance {
   id                   String    @id @default(cuid())
-  taxType              String    // PAYE | WHT
+  taxType              String    // PAYE | WHT | PENSION | CIT
   period               String    // descriptive label, e.g. "Jan 2026" or "Q1 2026"
   amount               Float
   currency             String    @default("MWK")
@@ -898,6 +902,7 @@ model TaxRemittance {
   reviewedAt           DateTime?
   payrollIds           String[]  @default([])
   consultantPaymentIds String[]  @default([])
+  pensionIds           String[]  @default([])  // payroll IDs for PENSION remittances
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 }

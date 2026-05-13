@@ -20,6 +20,8 @@ async function createConsultant(formData: FormData) {
   const otherFeesRaw      = formData.get("otherFees")             as string;
   const whtRateRaw        = formData.get("withholdingTaxRate")    as string;
 
+  const supervisorIdRaw = formData.get("supervisorId") as string;
+
   const data = {
     name:                 formData.get("name") as string,
     email:                (formData.get("email") as string)          || null,
@@ -34,6 +36,7 @@ async function createConsultant(formData: FormData) {
     totalProfessionalFees: profFeesRaw  ? parseFloat(profFeesRaw)   : null,
     otherFees:            otherFeesRaw  ? parseFloat(otherFeesRaw)   : null,
     withholdingTaxRate:   whtRateRaw    ? parseFloat(whtRateRaw)     : 20,
+    supervisorId:         supervisorIdRaw || null,
   };
 
   const record = await prisma.consultant.create({ data });
@@ -76,6 +79,12 @@ export default async function NewConsultantPage() {
   // Cast to the exported interface (null → null is already compatible)
   const consultancyProjects: ConsultancyProject[] = raw as ConsultancyProject[];
 
+  const supervisors = await prisma.employee.findMany({
+    where:   { active: true },
+    orderBy: { name: "asc" },
+    select:  { id: true, name: true, position: true },
+  });
+
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
@@ -85,7 +94,11 @@ export default async function NewConsultantPage() {
           Fee breakdown is calculated automatically.
         </p>
       </div>
-      <ConsultantForm action={createConsultant} consultancyProjects={consultancyProjects} />
+      <ConsultantForm
+        action={createConsultant}
+        consultancyProjects={consultancyProjects}
+        supervisors={supervisors}
+      />
     </div>
   );
 }

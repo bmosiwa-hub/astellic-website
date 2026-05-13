@@ -125,10 +125,10 @@ export default async function TaxDashboardPage({
   const yearStart   = new Date(year, 0, 1);
   const yearEnd     = new Date(year, 11, 31, 23, 59, 59);
 
-  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT] = await Promise.all([
+  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT, outstandingPension] = await Promise.all([
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd } },
-      select: { paye: true, createdAt: true },
+      select: { paye: true, pension: true, createdAt: true },
     }),
     prisma.consultantPayment.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd } },
@@ -155,34 +155,45 @@ export default async function TaxDashboardPage({
       orderBy: { createdAt: "desc" },
       take:    20,
     }),
-    // Outstanding PAYE count
+    // Outstanding PAYE
     prisma.payroll.aggregate({
       _sum:   { paye: true },
       where:  { payeStatus: "OUTSTANDING", paye: { gt: 0 } },
     }),
-    // Outstanding WHT count
+    // Outstanding WHT
     prisma.consultantPayment.aggregate({
       _sum:   { withholdingTax: true },
       where:  { whtStatus: "OUTSTANDING", withholdingTax: { gt: 0 } },
     }),
+    // Outstanding Pension
+    prisma.payroll.aggregate({
+      _sum:   { pension: true },
+      where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 } },
+    }),
   ]);
 
   // Group by calendar month
-  const payeByMonth = Array.from({ length: 12 }, () => 0);
-  const whtByMonth  = Array.from({ length: 12 }, () => 0);
+  const payeByMonth    = Array.from({ length: 12 }, () => 0);
+  const pensionByMonth = Array.from({ length: 12 }, () => 0);
+  const whtByMonth     = Array.from({ length: 12 }, () => 0);
 
-  for (const p of payrollRecords) payeByMonth[p.createdAt.getMonth()] += p.paye;
-  for (const w of whtRecords)     whtByMonth[w.createdAt.getMonth()]  += w.withholdingTax;
+  for (const p of payrollRecords) {
+    payeByMonth[p.createdAt.getMonth()]    += p.paye;
+    pensionByMonth[p.createdAt.getMonth()] += p.pension;
+  }
+  for (const w of whtRecords) whtByMonth[w.createdAt.getMonth()] += w.withholdingTax;
 
-  const totalPAYE        = payeByMonth.reduce((a, b) => a + b, 0);
-  const totalWHT         = whtByMonth.reduce((a, b)  => a + b, 0);
-  const netBalance       = (ytdIncome._sum.amount ?? 0) - (ytdExpenses._sum.amount ?? 0);
-  const corpTaxEst       = netBalance > 0 ? netBalance * CORP_TAX_RATE : 0;
-  const totalTax         = totalPAYE + totalWHT + corpTaxEst;
-  const currentMonth     = now.getMonth() + 1; // 1-indexed
-  const outstandingPAYEAmt = outstandingPAYE._sum.paye ?? 0;
-  const outstandingWHTAmt  = outstandingWHT._sum.withholdingTax ?? 0;
-  const totalOutstanding   = outstandingPAYEAmt + outstandingWHTAmt;
+  const totalPAYE           = payeByMonth.reduce((a, b) => a + b, 0);
+  const totalPension        = pensionByMonth.reduce((a, b) => a + b, 0);
+  const totalWHT            = whtByMonth.reduce((a, b)  => a + b, 0);
+  const netBalance          = (ytdIncome._sum.amount ?? 0) - (ytdExpenses._sum.amount ?? 0);
+  const corpTaxEst          = netBalance > 0 ? netBalance * CORP_TAX_RATE : 0;
+  const totalTax            = totalPAYE + totalPension + totalWHT + corpTaxEst;
+  const currentMonth        = now.getMonth() + 1; // 1-indexed
+  const outstandingPAYEAmt    = outstandingPAYE._sum.paye ?? 0;
+  const outstandingWHTAmt     = outstandingWHT._sum.withholdingTax ?? 0;
+  const outstandingPensionAmt = outstandingPension._sum.pension ?? 0;
+  const totalOutstanding      = outstandingPAYEAmt + outstandingWHTAmt + outstandingPensionAmt;
 
   return (
     <div className="max-w-5xl space-y-7">
@@ -240,8 +251,9 @@ export default async function TaxDashboardPage({
       )}
 
       {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <TaxCard label="Total PAYE" value={totalPAYE} color="orange" />
+        <TaxCard label="Pension Contributions" value={totalPension} color="orange" />
         <TaxCard label="Withholding Tax (WHT)" value={totalWHT} color="orange" />
         <TaxCard label="Est. Corporate Tax (30%)" value={corpTaxEst} color="orange"
           subtitle={`on net ${formatCurrency(netBalance)}`} />
@@ -261,9 +273,11 @@ export default async function TaxDashboardPage({
                   {formatCurrency(totalOutstanding)} in Outstanding Unremitted Taxes
                 </p>
                 <p className="text-xs text-orange-700 mt-0.5">
-                  {outstandingPAYEAmt > 0 && `PAYE: ${formatCurrency(outstandingPAYEAmt)}`}
-                  {outstandingPAYEAmt > 0 && outstandingWHTAmt > 0 && " · "}
-                  {outstandingWHTAmt > 0 && `WHT: ${formatCurrency(outstandingWHTAmt)}`}
+                  {[
+                    outstandingPAYEAmt    > 0 && `PAYE: ${formatCurrency(outstandingPAYEAmt)}`,
+                    outstandingPensionAmt > 0 && `Pension: ${formatCurrency(outstandingPensionAmt)}`,
+                    outstandingWHTAmt     > 0 && `WHT: ${formatCurrency(outstandingWHTAmt)}`,
+                  ].filter(Boolean).join(" · ")}
                 </p>
               </div>
             </div>
@@ -325,7 +339,7 @@ export default async function TaxDashboardPage({
           <div>
             <h2 className="font-bold text-brand-navy text-sm">Monthly Breakdown — {year}</h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              PAYE from payroll runs · WHT from consultant payments
+              PAYE &amp; Pension from payroll runs · WHT from consultant payments
             </p>
           </div>
           <form action={emailAnnualReport}>
@@ -341,6 +355,7 @@ export default async function TaxDashboardPage({
             <tr>
               <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Month</th>
               <th className="text-right px-5 py-2.5 font-semibold text-gray-600">PAYE</th>
+              <th className="text-right px-5 py-2.5 font-semibold text-gray-600">Pension</th>
               <th className="text-right px-5 py-2.5 font-semibold text-gray-600">WHT</th>
               <th className="text-right px-5 py-2.5 font-semibold text-gray-600">Monthly Total</th>
               <th className="px-5 py-2.5 w-24"></th>
@@ -349,11 +364,12 @@ export default async function TaxDashboardPage({
           <tbody className="divide-y divide-gray-50">
             {MONTHS.map((monthLabel, i) => {
               const monthNum = i + 1;
-              const paye  = payeByMonth[i];
-              const wht   = whtByMonth[i];
-              const total = paye + wht;
+              const paye    = payeByMonth[i];
+              const pension = pensionByMonth[i];
+              const wht     = whtByMonth[i];
+              const total   = paye + pension + wht;
               const isFuture = year === currentYear && monthNum > currentMonth;
-              const hasData  = paye > 0 || wht > 0;
+              const hasData  = paye > 0 || pension > 0 || wht > 0;
               return (
                 <tr key={monthLabel}
                   className={`hover:bg-gray-50/50 ${isFuture ? "opacity-40" : ""}`}>
@@ -362,6 +378,9 @@ export default async function TaxDashboardPage({
                   </td>
                   <td className="px-5 py-3 text-right tabular-nums text-orange-600">
                     {paye > 0 ? formatCurrency(paye) : <span className="text-gray-300">—</span>}
+                  </td>
+                  <td className="px-5 py-3 text-right tabular-nums text-orange-600">
+                    {pension > 0 ? formatCurrency(pension) : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-5 py-3 text-right tabular-nums text-orange-600">
                     {wht > 0 ? formatCurrency(wht) : <span className="text-gray-300">—</span>}
@@ -392,10 +411,13 @@ export default async function TaxDashboardPage({
                 {formatCurrency(totalPAYE)}
               </td>
               <td className="px-5 py-3 text-right font-bold tabular-nums text-orange-600">
+                {formatCurrency(totalPension)}
+              </td>
+              <td className="px-5 py-3 text-right font-bold tabular-nums text-orange-600">
                 {formatCurrency(totalWHT)}
               </td>
               <td className="px-5 py-3 text-right font-bold tabular-nums text-brand-navy">
-                {formatCurrency(totalPAYE + totalWHT)}
+                {formatCurrency(totalPAYE + totalPension + totalWHT)}
               </td>
               <td />
             </tr>

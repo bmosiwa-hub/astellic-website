@@ -36,6 +36,8 @@ async function createEmployee(formData: FormData) {
   // Multi-department: getAll returns array of values for repeated name="departments"
   const departments = formData.getAll("departments").map(String).filter(Boolean);
 
+  const supervisorIdRaw = formData.get("supervisorId") as string;
+
   const data = {
     employeeNumber,
     name:              formData.get("name") as string,
@@ -53,6 +55,7 @@ async function createEmployee(formData: FormData) {
     startDate,
     endDate,
     notes:             (formData.get("notes") as string)   || null,
+    supervisorId:      supervisorIdRaw || null,
   };
 
   const record = await prisma.employee.create({ data });
@@ -72,6 +75,12 @@ export default async function NewEmployeePage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
+  const supervisors = await prisma.employee.findMany({
+    where:   { active: true },
+    orderBy: { name: "asc" },
+    select:  { id: true, name: true, position: true },
+  });
+
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
@@ -81,7 +90,7 @@ export default async function NewEmployeePage() {
           Taxes and deductions are calculated on the MWK equivalent; net is converted back to the quoted currency.
         </p>
       </div>
-      <EmployeeForm action={createEmployee} />
+      <EmployeeForm action={createEmployee} supervisors={supervisors} />
     </div>
   );
 }

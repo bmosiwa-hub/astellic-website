@@ -53,9 +53,16 @@ function fmtMWK(n: number) {
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+interface Supervisor {
+  id: string;
+  name: string;
+  position?: string | null;
+}
+
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: (formData: FormData) => Promise<any>;
+  supervisors?: Supervisor[];
   defaultValues?: {
     name?: string;
     email?: string;
@@ -72,12 +79,13 @@ interface Props {
     pensionRate?: number;
     startDate?: string;
     notes?: string;
+    supervisorId?: string;
   };
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function EmployeeForm({ action, defaultValues }: Props) {
+export default function EmployeeForm({ action, defaultValues, supervisors = [] }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const [gross,                setGross]                = useState(defaultValues?.grossSalary ?? 0);
@@ -212,6 +220,26 @@ export default function EmployeeForm({ action, defaultValues }: Props) {
             </select>
           </div>
         </div>
+        {supervisors.length > 0 && (
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Direct Supervisor</label>
+            <select
+              name="supervisorId"
+              defaultValue={defaultValues?.supervisorId ?? ""}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40 bg-white"
+            >
+              <option value="">— No supervisor —</option>
+              {supervisors.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}{s.position ? ` (${s.position})` : ""}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-400 mt-1">
+              The supervisor receives performance objective approval requests and timesheet reviews.
+            </p>
+          </div>
+        )}
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Notes</label>
           <textarea name="notes" rows={2} defaultValue={defaultValues?.notes ?? ""}

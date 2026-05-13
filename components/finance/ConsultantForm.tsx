@@ -28,10 +28,17 @@ export interface ConsultancyProject {
   milestones: ProjectMilestone[];
 }
 
+interface Supervisor {
+  id: string;
+  name: string;
+  position?: string | null;
+}
+
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: (formData: FormData) => Promise<any>;
   consultancyProjects: ConsultancyProject[];
+  supervisors?: Supervisor[];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -42,7 +49,7 @@ function fmt(n: number) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function ConsultantForm({ action, consultancyProjects }: Props) {
+export default function ConsultantForm({ action, consultancyProjects, supervisors = [] }: Props) {
   const [isPending, startTransition] = useTransition();
   const [projectId,         setProjectId]         = useState("");
   const [selectedName,      setSelectedName]      = useState("");
@@ -321,6 +328,22 @@ export default function ConsultantForm({ action, consultancyProjects }: Props) {
             <label className={lbl}>MRA Tax PIN</label>
             <input name="taxPin" className={inp} placeholder="e.g. 1234567890" />
           </div>
+          {supervisors.length > 0 && (
+            <div className="col-span-2">
+              <label className={lbl}>Direct Supervisor</label>
+              <select name="supervisorId" defaultValue="" className={inp + " bg-white"}>
+                <option value="">— No supervisor —</option>
+                {supervisors.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}{s.position ? ` (${s.position})` : ""}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-400 mt-1">
+                The supervisor receives performance objective approval requests and timesheet reviews.
+              </p>
+            </div>
+          )}
           <div className="col-span-2">
             <label className={lbl}>Notes</label>
             <textarea name="notes" rows={2} className={inp + " resize-none"} />
