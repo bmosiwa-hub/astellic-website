@@ -147,6 +147,7 @@ async function updateEmploymentTerms(formData: FormData) {
   const email          = (formData.get("email") as string) || null;
   const position       = (formData.get("position") as string) || undefined;
   const level          = (formData.get("level") as string) || null;
+  const supervisorId   = (formData.get("supervisorId") as string) || null;
 
   await prisma.employee.update({
     where: { id: employeeId },
@@ -159,6 +160,7 @@ async function updateEmploymentTerms(formData: FormData) {
       ...(position ? { position } : {}),
       level,
       email,
+      supervisorId,
     },
   });
 
@@ -361,11 +363,12 @@ export default async function EmployeeDetailPage({
   const { error, success, confirm } = await searchParams;
   const isCEO = role === "CEO";
 
-  const [employee, allUsers, unlinkedUsers] = await Promise.all([
+  const [employee, allUsers, unlinkedUsers, allActiveEmployees] = await Promise.all([
     prisma.employee.findUnique({
       where: { id },
       include: {
-        payrolls: { orderBy: { period: "desc" }, take: 6 },
+        payrolls:   { orderBy: { period: "desc" }, take: 6 },
+        supervisor: { select: { id: true, name: true } },
       },
     }),
     prisma.user.findMany({
@@ -377,6 +380,13 @@ export default async function EmployeeDetailPage({
           where:   { employeeId: null, active: true },
           orderBy: { name: "asc" },
           select:  { id: true, name: true, email: true, role: true },
+        })
+      : Promise.resolve([]),
+    isCEO
+      ? prisma.employee.findMany({
+          where:   { active: true, id: { not: id } },
+          orderBy: { name: "asc" },
+          select:  { id: true, name: true, position: true },
         })
       : Promise.resolve([]),
   ]);
@@ -491,6 +501,7 @@ export default async function EmployeeDetailPage({
           {employee.level && <Field label="Level" value={employee.level} />}
           <Field label="Employment Type"  value={CONTRACT_LABELS[employee.contractType] ?? employee.contractType} />
           <Field label="Department(s)"    value={employee.departments.length > 0 ? employee.departments.join(", ") : "—"} />
+          <Field label="Supervisor"       value={employee.supervisor?.name ?? "—"} />
           <Field label="Start Date"       value={formatDate(employee.startDate)} />
           {employee.endDate && <Field label="Contract Ends" value={formatDate(employee.endDate)} />}
           {employee.taxPin && <Field label="TPIN"    value={employee.taxPin} />}
@@ -686,6 +697,20 @@ export default async function EmployeeDetailPage({
                 <input name="endDate" type="date"
                   defaultValue={employee.endDate ? employee.endDate.toISOString().slice(0, 10) : ""}
                   className={inp} />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-600 mb-1">Direct Supervisor</label>
+                <select name="supervisorId" defaultValue={employee.supervisorId ?? ""} className={`${inp} bg-white`}>
+                  <option value="">— No supervisor —</option>
+                  {allActiveEmployees.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.name}{e.position ? ` (${e.position})` : ""}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-400 mt-1">
+                  The supervisor receives performance objective approval requests and timesheet reviews.
+                </p>
               </div>
               <div className="col-span-2">
                 <DeptCheckboxes current={employee.departments} />

@@ -138,6 +138,16 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
     </svg>
   ),
+  performance: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  ),
+  timesheet: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
   bizdev: (
     <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -197,10 +207,13 @@ export default function Sidebar({
   const isFM    = userRole === "FINANCE_MANAGER";
 
   // Show sections based on role OR granted permissions
+  const isPM = userRole === "PROJECT_MANAGER";
+
   const showFinance    = isCEO || isFM || !!(permissions?.tabs.finance);
   const showOperations = isCEO || isFM || !!(permissions?.tabs.operations);
-  const showProjects   = isCEO || userRole === "PROJECT_MANAGER" || !!(permissions?.tabs.projects);
+  const showProjects   = isCEO || isPM || !!(permissions?.tabs.projects);
   const showBizDev     = !!(permissions?.tabs.bizdev);
+  const showHR         = isCEO || isFM || isPM;
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
@@ -211,6 +224,7 @@ export default function Sidebar({
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
                            "/astelfin_26/procurement"];
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
+  const hrPaths         = ["/astelfin_26/performance", "/astelfin_26/timesheets"];
   const myPaths         = ["/astelfin_26/my"];
 
   const bizdevPaths = ["/astelfin_26/bizdev"];
@@ -220,6 +234,7 @@ export default function Sidebar({
     finance:    pathIn(pathname, financePaths),
     operations: pathIn(pathname, operationsPaths),
     projects:   pathIn(pathname, projectsPaths),
+    hr:         pathIn(pathname, hrPaths),
     bizdev:     pathIn(pathname, bizdevPaths),
     intel:      pathIn(pathname, intelPaths),
     mypage:     pathIn(pathname, myPaths),
@@ -231,6 +246,7 @@ export default function Sidebar({
       finance:    prev.finance    || pathIn(pathname, financePaths),
       operations: prev.operations || pathIn(pathname, operationsPaths),
       projects:   prev.projects   || pathIn(pathname, projectsPaths),
+      hr:         prev.hr         || pathIn(pathname, hrPaths),
       bizdev:     prev.bizdev     || pathIn(pathname, ["/astelfin_26/bizdev"]),
       intel:      prev.intel      || pathIn(pathname, intelPaths),
       mypage:     prev.mypage     || pathIn(pathname, myPaths),
@@ -321,9 +337,11 @@ export default function Sidebar({
         {sectionHeader("mypage", "My Page", Icons.myPage)}
         {open.mypage && (
           <div className="space-y-0.5 mb-1">
-            {navLink("/astelfin_26/my", "Overview", Icons.myPage)}
-            {navLink("/astelfin_26/my/submissions", "My Requests", Icons.submissions)}
-            {navLink("/astelfin_26/my/liquidations", "My Liquidations", Icons.liquidations)}
+            {navLink("/astelfin_26/my",                "Overview",          Icons.myPage)}
+            {navLink("/astelfin_26/my/submissions",    "My Requests",       Icons.submissions)}
+            {navLink("/astelfin_26/my/liquidations",   "My Liquidations",   Icons.liquidations)}
+            {navLink("/astelfin_26/my/performance",    "My Performance",    Icons.performance)}
+            {navLink("/astelfin_26/my/timesheets",     "My Timesheets",     Icons.timesheet)}
           </div>
         )}
 
@@ -370,6 +388,20 @@ export default function Sidebar({
                 {navLink("/astelfin_26/approvals",    "Approvals",            Icons.approvals,    isCEO ? pendingApprovals : undefined)}
                 {navLink("/astelfin_26/procurement",  "Procurement",          Icons.procurement)}
                 {isCEO && navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── HR & People (CEO + FM + PM) ─────────────────── */}
+        {showHR && (
+          <>
+            <div className="pt-1" />
+            {sectionHeader("hr", "HR & People", Icons.employees)}
+            {open.hr && (
+              <div className="space-y-0.5 mb-1">
+                {navLink("/astelfin_26/performance", "Team Performance", Icons.performance)}
+                {navLink("/astelfin_26/timesheets",  "Team Timesheets",  Icons.timesheet)}
               </div>
             )}
           </>
