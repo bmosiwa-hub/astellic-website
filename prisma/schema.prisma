@@ -87,7 +87,9 @@ model User {
   procurementsRequested Procurement[]      @relation("ProcurementRequester")
   procurementsReviewed  Procurement[]      @relation("ProcurementReviewer")
   opportunities       Opportunity[]       @relation("OpportunityCreator")
-  bidDecisions        BidDecision[]       @relation("BidDecisions")
+  bidDecisions         BidDecision[]       @relation("BidDecisions")
+  submittedRemittances TaxRemittance[]     @relation("RemittanceSubmitter")
+  reviewedRemittances  TaxRemittance[]     @relation("RemittanceReviewer")
 }
 
 model Project {
@@ -188,6 +190,7 @@ model ConsultantPayment {
   paidDate       DateTime?
   status         PaymentStatus @default(PENDING)
   notes          String?
+  whtStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }
@@ -241,6 +244,7 @@ model Payroll {
   paidDate        DateTime?
   status          PaymentStatus @default(PENDING)
   notes           String?
+  payeStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   overspendingRefunds OverspendingRefund[]
@@ -863,4 +867,30 @@ model Milestone {
   completer       User?           @relation("MilestoneCompleter", fields: [completedBy], references: [id])
   approver        User?           @relation("MilestoneApprover", fields: [approvedBy], references: [id])
   receivable      AccountReceivable?
+}
+
+
+// ── Tax Remittances ───────────────────────────────────────────────────────────
+
+model TaxRemittance {
+  id                   String    @id @default(cuid())
+  taxType              String    // PAYE | WHT
+  period               String    // descriptive label, e.g. "Jan 2026" or "Q1 2026"
+  amount               Float
+  currency             String    @default("MWK")
+  remittanceType       String    @default("PAID") // PAID | WAIVED
+  proofUrl             String?
+  proofFilename        String?
+  status               String    @default("PENDING_CEO") // PENDING_CEO | CEO_APPROVED | CEO_REJECTED
+  fmNote               String?
+  ceoNote              String?
+  submittedById        String
+  submittedBy          User      @relation("RemittanceSubmitter", fields: [submittedById], references: [id])
+  reviewedById         String?
+  reviewedBy           User?     @relation("RemittanceReviewer", fields: [reviewedById], references: [id])
+  reviewedAt           DateTime?
+  payrollIds           String[]  @default([])
+  consultantPaymentIds String[]  @default([])
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }

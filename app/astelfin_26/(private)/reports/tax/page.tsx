@@ -125,7 +125,7 @@ export default async function TaxDashboardPage({
   const yearStart   = new Date(year, 0, 1);
   const yearEnd     = new Date(year, 11, 31, 23, 59, 59);
 
-  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses] = await Promise.all([
+  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT] = await Promise.all([
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd } },
       select: { paye: true, createdAt: true },
@@ -142,6 +142,29 @@ export default async function TaxDashboardPage({
       _sum:  { amount: true },
       where: { paidDate: { gte: yearStart, lte: yearEnd } },
     }),
+    // Pending CEO approvals
+    prisma.taxRemittance.findMany({
+      where:   { status: "PENDING_CEO" },
+      include: { submittedBy: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    // Recent remittances (all statuses)
+    prisma.taxRemittance.findMany({
+      where:   { createdAt: { gte: yearStart, lte: yearEnd } },
+      include: { submittedBy: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+      take:    20,
+    }),
+    // Outstanding PAYE count
+    prisma.payroll.aggregate({
+      _sum:   { paye: true },
+      where:  { payeStatus: "OUTSTANDING", paye: { gt: 0 } },
+    }),
+    // Outstanding WHT count
+    prisma.consultantPayment.aggregate({
+      _sum:   { withholdingTax: true },
+      where:  { whtStatus: "OUTSTANDING", withholdingTax: { gt: 0 } },
+    }),
   ]);
 
   // Group by calendar month
@@ -151,12 +174,15 @@ export default async function TaxDashboardPage({
   for (const p of payrollRecords) payeByMonth[p.createdAt.getMonth()] += p.paye;
   for (const w of whtRecords)     whtByMonth[w.createdAt.getMonth()]  += w.withholdingTax;
 
-  const totalPAYE   = payeByMonth.reduce((a, b) => a + b, 0);
-  const totalWHT    = whtByMonth.reduce((a, b)  => a + b, 0);
-  const netBalance  = (ytdIncome._sum.amount ?? 0) - (ytdExpenses._sum.amount ?? 0);
-  const corpTaxEst  = netBalance > 0 ? netBalance * CORP_TAX_RATE : 0;
-  const totalTax    = totalPAYE + totalWHT + corpTaxEst;
-  const currentMonth = now.getMonth() + 1; // 1-indexed
+  const totalPAYE        = payeByMonth.reduce((a, b) => a + b, 0);
+  const totalWHT         = whtByMonth.reduce((a, b)  => a + b, 0);
+  const netBalance       = (ytdIncome._sum.amount ?? 0) - (ytdExpenses._sum.amount ?? 0);
+  const corpTaxEst       = netBalance > 0 ? netBalance * CORP_TAX_RATE : 0;
+  const totalTax         = totalPAYE + totalWHT + corpTaxEst;
+  const currentMonth     = now.getMonth() + 1; // 1-indexed
+  const outstandingPAYEAmt = outstandingPAYE._sum.paye ?? 0;
+  const outstandingWHTAmt  = outstandingWHT._sum.withholdingTax ?? 0;
+  const totalOutstanding   = outstandingPAYEAmt + outstandingWHTAmt;
 
   return (
     <div className="max-w-5xl space-y-7">
@@ -182,6 +208,10 @@ export default async function TaxDashboardPage({
               Go
             </button>
           </form>
+          <Link href="/astelfin_26/reports/tax/record"
+            className="text-sm bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+            + Record Remittance
+          </Link>
           <Link href="/astelfin_26/financial-health"
             className="text-sm text-gray-500 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 font-medium">
             Financial Health
@@ -193,6 +223,11 @@ export default async function TaxDashboardPage({
         </div>
       </div>
 
+      {success === "remittance_submitted" && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 rounded-xl px-4 py-3 text-sm">
+          ✓ Remittance submitted for CEO approval. You will be notified once reviewed.
+        </div>
+      )}
       {success === "monthly_sent" && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
           ✓ Monthly tax report emailed to all CEO and Operations Manager accounts.
@@ -212,6 +247,77 @@ export default async function TaxDashboardPage({
           subtitle={`on net ${formatCurrency(netBalance)}`} />
         <TaxCard label="Total Tax Obligations" value={totalTax} color="navy" />
       </div>
+
+      {/* Outstanding tax alert */}
+      {totalOutstanding > 0 && (
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <p className="text-sm font-bold text-orange-800">
+                  {formatCurrency(totalOutstanding)} in Outstanding Unremitted Taxes
+                </p>
+                <p className="text-xs text-orange-700 mt-0.5">
+                  {outstandingPAYEAmt > 0 && `PAYE: ${formatCurrency(outstandingPAYEAmt)}`}
+                  {outstandingPAYEAmt > 0 && outstandingWHTAmt > 0 && " · "}
+                  {outstandingWHTAmt > 0 && `WHT: ${formatCurrency(outstandingWHTAmt)}`}
+                </p>
+              </div>
+            </div>
+            <Link href="/astelfin_26/reports/tax/record"
+              className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap">
+              Record Remittance →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Pending CEO approvals */}
+      {pendingRemittances.length > 0 && (
+        <div className={`rounded-2xl border p-5 ${role === "CEO" ? "bg-amber-50 border-amber-300" : "bg-blue-50 border-blue-200"}`}>
+          <div className="flex items-start gap-3">
+            <svg className={`w-5 h-5 mt-0.5 shrink-0 ${role === "CEO" ? "text-amber-500" : "text-blue-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <p className={`text-sm font-bold mb-1 ${role === "CEO" ? "text-amber-800" : "text-blue-800"}`}>
+                {role === "CEO"
+                  ? `${pendingRemittances.length} Tax Remittance${pendingRemittances.length !== 1 ? "s" : ""} Awaiting Your Approval`
+                  : `${pendingRemittances.length} Remittance${pendingRemittances.length !== 1 ? "s" : ""} Pending CEO Approval`}
+              </p>
+              <div className="space-y-2 mt-2">
+                {pendingRemittances.map((r) => (
+                  <div key={r.id}
+                    className="flex items-center justify-between bg-white border border-amber-100 rounded-xl px-4 py-2.5 text-sm">
+                    <div>
+                      <span className="font-semibold text-brand-navy">{r.taxType}</span>
+                      <span className="ml-2 text-gray-500 text-xs">{r.period}</span>
+                      <span className="ml-2 text-xs text-gray-400">
+                        · by {r.submittedBy.name}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="font-bold text-orange-700">{formatCurrency(r.amount)}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                        r.remittanceType === "WAIVED" ? "bg-purple-100 text-purple-700" : "bg-green-100 text-green-700"
+                      }`}>
+                        {r.remittanceType === "WAIVED" ? "Waiver" : "Paid"}
+                      </span>
+                      <Link href={`/astelfin_26/reports/tax/remittances/${r.id}`}
+                        className={`text-xs font-semibold hover:underline ${role === "CEO" ? "text-amber-700" : "text-brand-gold"}`}>
+                        {role === "CEO" ? "Review →" : "View →"}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Monthly breakdown */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -296,6 +402,72 @@ export default async function TaxDashboardPage({
           </tfoot>
         </table>
       </div>
+
+      {/* Remittance history */}
+      {recentRemittances.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-brand-navy text-sm">Tax Remittances — {year}</h2>
+              <p className="text-xs text-gray-400 mt-0.5">History of submitted remittances for this year</p>
+            </div>
+            <Link href="/astelfin_26/reports/tax/record"
+              className="text-xs text-brand-gold font-semibold hover:underline">
+              + New Remittance
+            </Link>
+          </div>
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Tax Type</th>
+                <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Period</th>
+                <th className="text-right px-5 py-2.5 font-semibold text-gray-600">Amount</th>
+                <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Type</th>
+                <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Status</th>
+                <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Submitted by</th>
+                <th className="px-5 py-2.5"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {recentRemittances.map((r) => (
+                <tr key={r.id} className="hover:bg-gray-50/50">
+                  <td className="px-5 py-2.5 font-semibold text-brand-navy">{r.taxType}</td>
+                  <td className="px-5 py-2.5 text-gray-600">{r.period}</td>
+                  <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
+                    {formatCurrency(r.amount)}
+                  </td>
+                  <td className="px-5 py-2.5">
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      r.remittanceType === "WAIVED"
+                        ? "bg-purple-100 text-purple-700"
+                        : "bg-green-100 text-green-700"
+                    }`}>
+                      {r.remittanceType === "WAIVED" ? "MRA Remission" : "Paid"}
+                    </span>
+                  </td>
+                  <td className="px-5 py-2.5">
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      r.status === "CEO_APPROVED" ? "bg-green-100 text-green-700" :
+                      r.status === "CEO_REJECTED" ? "bg-red-100 text-red-700" :
+                      "bg-blue-100 text-blue-700"
+                    }`}>
+                      {r.status === "CEO_APPROVED" ? "Approved" :
+                       r.status === "CEO_REJECTED" ? "Rejected" : "Pending"}
+                    </span>
+                  </td>
+                  <td className="px-5 py-2.5 text-gray-500 text-xs">{r.submittedBy.name}</td>
+                  <td className="px-5 py-2.5">
+                    <Link href={`/astelfin_26/reports/tax/remittances/${r.id}`}
+                      className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
+                      View →
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Corporate income tax estimate */}
       <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 space-y-4">
