@@ -38,25 +38,34 @@ export function calculatePAYE(monthlyGross: number): number {
 }
 
 /**
- * Calculate net pay after PAYE and optional pension deductions.
- * NSSF is not applied — deductions are PAYE + pension only.
+ * Calculate net pay after PAYE, pension, and optional NSSF deductions.
  *
  * When the employee's salary is quoted in a foreign currency, pass `middleRate`
  * (MWK per 1 unit of that currency, e.g. 1734 for USD).  The function:
  *   1. Converts grossSalary → MWK equivalent
- *   2. Calculates PAYE and pension on the MWK figure
+ *   2. Calculates PAYE, pension, and NSSF on the MWK figure
  *   3. Converts deductions and net back to the original currency
  *
  * If `middleRate` is omitted or 1, the salary is assumed to be in MWK.
  *
- * @param grossSalary  Gross monthly salary in the employee's quoted currency
- * @param pensionRate  Employee pension contribution as a percentage (default 5 %)
- * @param middleRate   MWK per 1 unit of the salary currency (default 1 = MWK)
+ * @param grossSalary       Gross monthly salary in the employee's quoted currency
+ * @param pensionRate       Employee pension contribution as a percentage (default 5 %)
+ * @param middleRate        MWK per 1 unit of the salary currency (default 1 = MWK)
+ * @param options.payeExempt         Skip PAYE (default false)
+ * @param options.nssfApplicable     Apply NSSF contributions (default false)
+ * @param options.nssfEmployeeRate   NSSF employee % (default 3)
+ * @param options.nssfEmployerRate   NSSF employer % (default 3)
  */
 export function calculateNetPay(
   grossSalary: number,
   pensionRate = 5,
-  middleRate = 1
+  middleRate = 1,
+  options: {
+    payeExempt?: boolean;
+    nssfApplicable?: boolean;
+    nssfEmployeeRate?: number;
+    nssfEmployerRate?: number;
+  } = {}
 ): {
   // Amounts in the employee's quoted currency
   paye: number;
@@ -73,24 +82,31 @@ export function calculateNetPay(
   netPayMWK: number;
 } {
   const rate = middleRate > 0 ? middleRate : 1;
+  const {
+    payeExempt       = false,
+    nssfApplicable   = false,
+    nssfEmployeeRate = 3,
+    nssfEmployerRate = 3,
+  } = options;
 
   // Step 1: convert to MWK
   const grossMWK = Math.round(grossSalary * rate * 100) / 100;
 
-  // Step 2: compute deductions on MWK equivalent (no NSSF)
-  const payeMWK         = calculatePAYE(grossMWK);
-  const nssfEmployeeMWK = 0;
-  const nssfEmployerMWK = 0;
+  // Step 2: compute deductions on MWK equivalent
+  const payeMWK         = payeExempt ? 0 : calculatePAYE(grossMWK);
+  const nssfEmployeeMWK = nssfApplicable ? Math.round(grossMWK * (nssfEmployeeRate / 100) * 100) / 100 : 0;
+  const nssfEmployerMWK = nssfApplicable ? Math.round(grossMWK * (nssfEmployerRate / 100) * 100) / 100 : 0;
   const pensionMWK      = Math.round(grossMWK * (pensionRate / 100) * 100) / 100;
-  const netPayMWK       = grossMWK - payeMWK - pensionMWK;
+  // Net = gross minus employee-side deductions only (employer NSSF is a cost to employer, not deducted from employee)
+  const netPayMWK       = grossMWK - payeMWK - nssfEmployeeMWK - pensionMWK;
 
   // Step 3: convert back to original currency
   const r = (mwk: number) => Math.round((mwk / rate) * 100) / 100;
 
   return {
     paye:           r(payeMWK),
-    nssfEmployee:   0,
-    nssfEmployer:   0,
+    nssfEmployee:   r(nssfEmployeeMWK),
+    nssfEmployer:   r(nssfEmployerMWK),
     pension:        r(pensionMWK),
     netPay:         r(netPayMWK),
     grossMWK,

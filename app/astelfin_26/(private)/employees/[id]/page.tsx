@@ -283,6 +283,35 @@ async function rehireEmployee(formData: FormData) {
   redirect(`/astelfin_26/employees/${employeeId}?success=rehired`);
 }
 
+async function updateTaxesBenefits(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const employeeId       = formData.get("employeeId") as string;
+  const payeExempt       = formData.get("payeExempt") === "true";
+  const pensionRateRaw   = formData.get("pensionRate") as string;
+  const pensionRate      = pensionRateRaw ? parseFloat(pensionRateRaw) : 5;
+  const nssfApplicable   = formData.get("nssfApplicable") === "true";
+  const nssfEmployeeRate = parseFloat((formData.get("nssfEmployeeRate") as string) || "3");
+  const nssfEmployerRate = parseFloat((formData.get("nssfEmployerRate") as string) || "3");
+
+  await prisma.employee.update({
+    where: { id: employeeId },
+    data:  { payeExempt, pensionRate, nssfApplicable, nssfEmployeeRate, nssfEmployerRate },
+  });
+
+  await auditLog({
+    userId:   session.user.id,
+    action:   "UPDATE",
+    entity:   "Employee",
+    entityId: employeeId,
+    detail:   `Taxes & benefits updated: PAYE ${payeExempt ? "exempt" : "applies"}, pension ${pensionRate}%, NSSF ${nssfApplicable ? `yes (EE ${nssfEmployeeRate}% / ER ${nssfEmployerRate}%)` : "no"}`,
+  });
+
+  redirect(`/astelfin_26/employees/${employeeId}?success=taxes_updated`);
+}
+
 async function deleteEmployee(formData: FormData) {
   "use server";
   const session = await auth();
@@ -358,7 +387,12 @@ export default async function EmployeeDetailPage({
 
   // Salary calc
   const rate = employee.currency === "MWK" ? 1 : (employee.salaryExchangeRate ?? 1);
-  const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate);
+  const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
+    payeExempt:       employee.payeExempt,
+    nssfApplicable:   employee.nssfApplicable,
+    nssfEmployeeRate: employee.nssfEmployeeRate,
+    nssfEmployerRate: employee.nssfEmployerRate,
+  });
 
   const inp = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40";
 
@@ -424,6 +458,11 @@ export default async function EmployeeDetailPage({
           Contract details updated successfully.
         </div>
       )}
+      {success === "taxes_updated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Tax and benefit settings updated successfully.
+        </div>
+      )}
       {success === "terminated" && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
           Contract terminated. Employee marked as former.
@@ -469,11 +508,21 @@ export default async function EmployeeDetailPage({
             {employee.currency !== "MWK" && (
               <SRow label={`Gross MWK  ×  ${(employee.salaryExchangeRate ?? 1).toFixed(4)}`} value={formatCurrency(calc.grossMWK, "MWK")} muted />
             )}
-            <SRow label="PAYE" value={`− ${formatCurrency(calc.payeMWK, "MWK")}`} deduction />
+            {employee.payeExempt ? (
+              <SRow label="PAYE" value="Exempt" exempt />
+            ) : (
+              <SRow label="PAYE" value={`− ${formatCurrency(calc.payeMWK, "MWK")}`} deduction />
+            )}
             <SRow label={`Pension (${employee.pensionRate}%)`} value={`− ${formatCurrency(calc.pensionMWK, "MWK")}`} deduction />
+            {employee.nssfApplicable && (
+              <SRow label={`NSSF Employee (${employee.nssfEmployeeRate}%)`} value={`− ${formatCurrency(calc.nssfEmployeeMWK, "MWK")}`} deduction />
+            )}
             <SRow label="Net (MWK)" value={formatCurrency(calc.netPayMWK, "MWK")} bold />
             {employee.currency !== "MWK" && (
               <SRow label={`Net (${employee.currency})`} value={formatCurrency(calc.netPay, employee.currency)} bold />
+            )}
+            {employee.nssfApplicable && (
+              <SRow label={`NSSF Employer (${employee.nssfEmployerRate}%) — employer cost`} value={formatCurrency(calc.nssfEmployerMWK, "MWK")} muted />
             )}
           </div>
         </div>
@@ -649,6 +698,91 @@ export default async function EmployeeDetailPage({
             <button type="submit"
               className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
               Save Changes
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* ── Taxes & Benefits (CEO only) ─────────────────────────── */}
+      {isCEO && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+          <div>
+            <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Taxes &amp; Benefits</h2>
+            <p className="text-xs text-gray-500 mt-1">CEO-only. Controls which statutory deductions apply to this employee. Changes are audit-logged.</p>
+          </div>
+          <form action={updateTaxesBenefits} className="space-y-5">
+            <input type="hidden" name="employeeId" value={employee.id} />
+
+            {/* PAYE */}
+            <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+              <p className="text-xs font-bold text-gray-700 uppercase tracking-wide">PAYE (Pay As You Earn)</p>
+              <div className="flex gap-3">
+                <label className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${!employee.payeExempt ? "border-brand-navy bg-brand-navy/5 text-brand-navy font-semibold" : "border-gray-200 text-gray-500"}`}>
+                  <input type="radio" name="payeExempt" value="false" defaultChecked={!employee.payeExempt} className="accent-brand-navy" />
+                  Applies
+                </label>
+                <label className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${employee.payeExempt ? "border-amber-500 bg-amber-50 text-amber-700 font-semibold" : "border-gray-200 text-gray-500"}`}>
+                  <input type="radio" name="payeExempt" value="true" defaultChecked={employee.payeExempt} className="accent-amber-500" />
+                  Exempt
+                </label>
+              </div>
+              <p className="text-xs text-gray-400">Standard Malawi PAYE bands apply when not exempt. Set exempt for volunteers, interns, or PAYE-exempt staff.</p>
+            </div>
+
+            {/* Pension */}
+            <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+              <p className="text-xs font-bold text-gray-700 uppercase tracking-wide">Pension</p>
+              <div className="flex items-center gap-3">
+                <label className="block text-xs font-medium text-gray-600 shrink-0">Employee contribution rate (%)</label>
+                <input
+                  name="pensionRate"
+                  type="number" min="0" max="100" step="0.5"
+                  defaultValue={employee.pensionRate}
+                  className={`${inp} max-w-[120px]`}
+                />
+              </div>
+              <p className="text-xs text-gray-400">Set to 0 to disable pension deduction. Default is 5%.</p>
+            </div>
+
+            {/* NSSF */}
+            <div className="border border-gray-200 rounded-xl p-4 space-y-3">
+              <p className="text-xs font-bold text-gray-700 uppercase tracking-wide">NSSF (National Social Security Fund)</p>
+              <div className="flex gap-3">
+                <label className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${!employee.nssfApplicable ? "border-gray-200 text-gray-500" : "border-brand-teal bg-brand-teal/5 text-brand-teal font-semibold"}`}>
+                  <input type="radio" name="nssfApplicable" value="true" defaultChecked={employee.nssfApplicable} className="accent-brand-teal" />
+                  Applicable
+                </label>
+                <label className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${!employee.nssfApplicable ? "border-gray-200 bg-gray-50 text-gray-600 font-medium" : "border-gray-200 text-gray-500"}`}>
+                  <input type="radio" name="nssfApplicable" value="false" defaultChecked={!employee.nssfApplicable} className="accent-gray-400" />
+                  Not applicable
+                </label>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-1">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Employee contribution (%)</label>
+                  <input
+                    name="nssfEmployeeRate"
+                    type="number" min="0" max="100" step="0.5"
+                    defaultValue={employee.nssfEmployeeRate}
+                    className={inp}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Employer contribution (%)</label>
+                  <input
+                    name="nssfEmployerRate"
+                    type="number" min="0" max="100" step="0.5"
+                    defaultValue={employee.nssfEmployerRate}
+                    className={inp}
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-gray-400">Malawi default: 3% employee, 3% employer. Employer NSSF is shown as an employer cost and not deducted from net pay.</p>
+            </div>
+
+            <button type="submit"
+              className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+              Save Tax &amp; Benefit Settings
             </button>
           </form>
         </div>
@@ -928,14 +1062,14 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 function SRow({
-  label, value, bold, muted, deduction,
+  label, value, bold, muted, deduction, exempt,
 }: {
-  label: string; value: string; bold?: boolean; muted?: boolean; deduction?: boolean;
+  label: string; value: string; bold?: boolean; muted?: boolean; deduction?: boolean; exempt?: boolean;
 }) {
   return (
-    <div className={`flex items-center justify-between px-5 py-2.5 ${muted ? "bg-blue-50/40" : ""}`}>
-      <span className={`${muted ? "text-xs text-blue-700" : "text-sm text-gray-600"}`}>{label}</span>
-      <span className={`text-sm tabular-nums ${bold ? "font-bold text-brand-navy" : ""} ${deduction ? "text-red-600" : ""} ${muted ? "text-xs text-blue-800" : ""}`}>
+    <div className={`flex items-center justify-between px-5 py-2.5 ${muted ? "bg-blue-50/40" : ""} ${exempt ? "bg-amber-50/40" : ""}`}>
+      <span className={`${muted ? "text-xs text-blue-700" : exempt ? "text-sm text-amber-700" : "text-sm text-gray-600"}`}>{label}</span>
+      <span className={`text-sm tabular-nums ${bold ? "font-bold text-brand-navy" : ""} ${deduction ? "text-red-600" : ""} ${muted ? "text-xs text-blue-800" : ""} ${exempt ? "text-xs font-medium text-amber-600 italic" : ""}`}>
         {value}
       </span>
     </div>

@@ -204,6 +204,10 @@ model Employee {
   taxPin             String?
   nssf               String?
   pensionRate        Float     @default(5)   // employee pension % of gross
+  payeExempt         Boolean   @default(false) // true = PAYE not deducted (e.g. volunteers, exempt staff)
+  nssfApplicable     Boolean   @default(false) // true = NSSF contributions apply
+  nssfEmployeeRate   Float     @default(3)   // NSSF employee contribution %
+  nssfEmployerRate   Float     @default(3)   // NSSF employer contribution %
   salaryExchangeRate Float?                  // MWK per 1 unit of currency (null when MWK)
   startDate          DateTime
   endDate            DateTime?
