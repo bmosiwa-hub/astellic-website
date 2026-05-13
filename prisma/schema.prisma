@@ -152,21 +152,24 @@ model Expense {
 }
 
 model Consultant {
-  id             String              @id @default(cuid())
-  name           String
-  email          String?
-  phone          String?
-  specialisation String?
-  dailyRate      Float?
-  currency       String              @default("MWK")
-  taxPin         String?
-  active         Boolean             @default(true)
-  projectId      String?             // links to a consultancy Project
-  budgetedFee    Float?              // total budgeted fee for this consultant in the project
-  notes          String?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  payments       ConsultantPayment[]
+  id                    String              @id @default(cuid())
+  name                  String
+  email                 String?
+  phone                 String?
+  specialisation        String?
+  dailyRate             Float?
+  currency              String              @default("MWK")
+  taxPin                String?
+  active                Boolean             @default(true)
+  projectId             String?             // links to a consultancy Project
+  budgetedFee           Float?              // total budgeted fee for this consultant in the project
+  totalProfessionalFees Float?              // professional fees component (WHT applies to this)
+  otherFees             Float?              // other fees not subject to WHT (e.g. reimbursables)
+  withholdingTaxRate    Float               @default(20) // WHT % on professional fees
+  notes                 String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  payments              ConsultantPayment[]
 }
 
 model ConsultantPayment {
@@ -225,9 +228,14 @@ model Payroll {
   period          String
   grossSalary     Float
   paye            Float         @default(0)
+  pension         Float         @default(0)   // employee pension in employee's currency
+  pensionEmployer Float         @default(0)   // employer pension contribution in MWK
   nssfEmployee    Float         @default(0)
   nssfEmployer    Float         @default(0)
+  otherAdditions  Float         @default(0)   // per-period additions (refunds, bonuses, etc.)
+  additionNote    String?
   otherDeductions Float         @default(0)
+  deductionNote   String?
   netPay          Float
   currency        String        @default("MWK")
   paidDate        DateTime?
@@ -235,6 +243,7 @@ model Payroll {
   notes           String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+  overspendingRefunds OverspendingRefund[]
 }
 
 model Debt {
@@ -357,6 +366,7 @@ model Submission {
   currency     String           @default("MWK")
   totalAmount  Float            @default(0)
   notes        String?
+  liquidationDeadline DateTime?  // 14 days after last activity day (set when marked PAID)
 
   lineItems    SubmissionItem[]
   reviews      SubmissionReview[]
@@ -426,9 +436,27 @@ model Liquidation {
   reviewedAt        DateTime?
 
   documents         LiquidationDocument[]
+  overspendingRefunds OverspendingRefund[]
 
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+}
+
+// Tracks overspent amounts awaiting CEO approval for payroll reimbursement
+model OverspendingRefund {
+  id             String      @id @default(cuid())
+  liquidationId  String
+  liquidation    Liquidation @relation(fields: [liquidationId], references: [id])
+  employeeName   String
+  employeeId     String?     // null if submitter is not linked to an employee
+  amount         Float       // absolute overspent amount in the liquidation currency
+  currency       String      @default("MWK")
+  status         String      @default("PENDING_CEO") // PENDING_CEO | CEO_APPROVED | PAYROLL_ADDED
+  ceoNote        String?
+  payrollId      String?     // set when added to a payroll run
+  payroll        Payroll?    @relation(fields: [payrollId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
 model LiquidationDocument {

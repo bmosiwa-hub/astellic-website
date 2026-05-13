@@ -119,6 +119,15 @@ export function calculateNetPay(
 }
 
 /**
+ * Calculate employer pension contribution (Malawi: 10% of gross MWK).
+ * Returns 0 when pensionRate === 0 (pension not applicable for the employee).
+ */
+export function calculateEmployerPension(grossMWK: number, employeePensionRate: number): number {
+  if (employeePensionRate <= 0) return 0;
+  return Math.round(grossMWK * 0.10 * 100) / 100; // employer always contributes 10%
+}
+
+/**
  * Calculate consultant withholding tax.
  * Default rate: 20% for resident consultants
  */

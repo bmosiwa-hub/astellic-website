@@ -19,22 +19,30 @@ export default async function PayrollPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const [payrolls, unliquidatedSubs] = await Promise.all([
+  const now = new Date();
+
+  const [payrolls, unliquidatedSubs, pendingRefunds] = await Promise.all([
     prisma.payroll.findMany({
       orderBy: [{ period: "desc" }, { createdAt: "desc" }],
       include: { employee: { select: { name: true, position: true } } },
     }),
-    // Paid submissions that have no FM-approved liquidation and belong to an employee
+    // Paid REQUEST submissions where liquidation is overdue (past 14-day deadline)
     prisma.submission.findMany({
       where: {
-        status: "PAID",
-        liquidations: { none: { status: "FM_APPROVED" } },
-        submitter: { employeeId: { not: null } },
+        status:              "PAID",
+        type:                "REQUEST",
+        liquidationDeadline: { lt: now },
+        liquidations:        { none: { status: "FM_APPROVED" } },
+        submitter:           { employeeId: { not: null } },
       },
       include: {
         submitter: { select: { name: true, employeeId: true } },
       },
-      orderBy: { updatedAt: "desc" },
+      orderBy: { liquidationDeadline: "asc" },
+    }),
+    // CEO-approved overspending refunds not yet on payroll
+    prisma.overspendingRefund.findMany({
+      where: { status: "CEO_APPROVED" },
     }),
   ]);
 
@@ -46,18 +54,24 @@ export default async function PayrollPage() {
     .filter((p) => p.status === "PAID")
     .reduce((s: number, p) => s + p.paye, 0);
 
-  // Group unliquidated subs by employee name for the banner
+  // Group overdue liquidations by employee
   const unliqByEmployee = unliquidatedSubs.reduce<
-    Record<string, { name: string; count: number; totalAmount: number }>
+    Record<string, { name: string; count: number; totalAmount: number; oldestDeadline: Date | null }>
   >((acc, sub) => {
     const name = sub.submitter.name ?? "Unknown";
-    if (!acc[name]) acc[name] = { name, count: 0, totalAmount: 0 };
+    if (!acc[name]) acc[name] = { name, count: 0, totalAmount: 0, oldestDeadline: null };
     acc[name].count += 1;
     acc[name].totalAmount += sub.totalAmount;
+    if (sub.liquidationDeadline) {
+      if (!acc[name].oldestDeadline || sub.liquidationDeadline < acc[name].oldestDeadline!) {
+        acc[name].oldestDeadline = sub.liquidationDeadline;
+      }
+    }
     return acc;
   }, {});
 
   const flaggedEmployees = Object.values(unliqByEmployee);
+  const pendingRefundCount = pendingRefunds.length;
 
   return (
     <div className="space-y-6">
@@ -80,7 +94,7 @@ export default async function PayrollPage() {
         </Link>
       </div>
 
-      {/* Unliquidated funds warning banner */}
+      {/* Overdue liquidations banner */}
       {flaggedEmployees.length > 0 && (
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
           <div className="flex items-start gap-3">
@@ -89,11 +103,11 @@ export default async function PayrollPage() {
             </svg>
             <div className="flex-1">
               <p className="text-sm font-bold text-orange-800 mb-1">
-                Outstanding Unliquidated Balances
+                Overdue Liquidations — 14-Day Deadline Passed
               </p>
               <p className="text-xs text-orange-700 mb-3">
-                The following employees have received funds that have not yet been liquidated.
-                Please decide on deductions or allow more time before processing payroll.
+                The following employees have unliquidated funds where the 14-day liquidation period has expired.
+                Deduct from salary in the next payroll run or grant more time.
               </p>
               <div className="space-y-2">
                 {flaggedEmployees.map((emp) => (
@@ -101,23 +115,42 @@ export default async function PayrollPage() {
                     <div>
                       <span className="font-semibold text-brand-navy">{emp.name}</span>
                       <span className="ml-2 text-orange-600 text-xs">
-                        {emp.count} unliquidated submission{emp.count !== 1 ? "s" : ""}
+                        {emp.count} overdue submission{emp.count !== 1 ? "s" : ""}
                       </span>
+                      {emp.oldestDeadline && (
+                        <span className="ml-2 text-red-500 text-xs font-semibold">
+                          · overdue since {formatDate(emp.oldestDeadline)}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="font-bold text-orange-700">
-                        {formatCurrency(emp.totalAmount)}
-                      </span>
-                      <Link
-                        href="/astelfin_26/liquidations"
-                        className="text-xs text-brand-gold font-semibold hover:underline"
-                      >
+                      <span className="font-bold text-orange-700">{formatCurrency(emp.totalAmount)}</span>
+                      <Link href="/astelfin_26/liquidations" className="text-xs text-brand-gold font-semibold hover:underline">
                         View →
                       </Link>
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Approved overspending refunds banner */}
+      {pendingRefundCount > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-blue-800 mb-1">
+                {pendingRefundCount} CEO-Approved Overspending Refund{pendingRefundCount !== 1 ? "s" : ""} to Add
+              </p>
+              <p className="text-xs text-blue-700">
+                The CEO has approved overspending reimbursements for employees. Add these to the relevant employee payrolls in the next run.
+              </p>
             </div>
           </div>
         </div>
@@ -136,6 +169,7 @@ export default async function PayrollPage() {
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">PAYE</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Pay</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Status</th>
+                <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -153,6 +187,12 @@ export default async function PayrollPage() {
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-gray-600"}`}>
                       {p.status}
                     </span>
+                  </td>
+                  <td className="px-5 py-3">
+                    <Link href={`/astelfin_26/payroll/${p.id}/payslip`}
+                      className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
+                      Payslip →
+                    </Link>
                   </td>
                 </tr>
               ))}

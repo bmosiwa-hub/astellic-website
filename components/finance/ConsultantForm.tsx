@@ -44,8 +44,10 @@ function fmt(n: number) {
 
 export default function ConsultantForm({ action, consultancyProjects }: Props) {
   const [isPending, startTransition] = useTransition();
-  const [projectId,    setProjectId]    = useState("");
-  const [selectedName, setSelectedName] = useState("");
+  const [projectId,         setProjectId]         = useState("");
+  const [selectedName,      setSelectedName]      = useState("");
+  const [profFeesRaw,       setProfFeesRaw]       = useState("");
+  const [otherFeesRaw,      setOtherFeesRaw]      = useState("");
 
   const project = consultancyProjects.find((p) => p.id === projectId);
 
@@ -71,6 +73,11 @@ export default function ConsultantForm({ action, consultancyProjects }: Props) {
   const orgIncome      = budgetedFee * 0.25;
   const milestones     = project?.milestones ?? [];
   const cur            = project?.currency ?? "MWK";
+
+  const profFees = parseFloat(profFeesRaw) || 0;
+  const otherFees = parseFloat(otherFeesRaw) || 0;
+  const whtAmount = profFees * 0.20;
+  const totalFees = profFees + otherFees;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -208,6 +215,81 @@ export default function ConsultantForm({ action, consultancyProjects }: Props) {
           </div>
         </div>
       )}
+
+      {/* ── Professional Fee & Tax Details ───────────────────── */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+        <div>
+          <h2 className="font-semibold text-brand-navy text-sm uppercase tracking-wide">
+            Professional Fee &amp; Tax Details
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Used to calculate withholding tax (WHT at 20% of professional fees).
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={lbl}>Total Professional Fees ({cur})</label>
+            <input
+              name="totalProfessionalFees"
+              type="number"
+              min="0"
+              step="0.01"
+              value={profFeesRaw}
+              onChange={(e) => setProfFeesRaw(e.target.value)}
+              className={inp}
+              placeholder="0.00"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Subject to 20% withholding tax
+            </p>
+          </div>
+          <div>
+            <label className={lbl}>Other Fees ({cur})</label>
+            <input
+              name="otherFees"
+              type="number"
+              min="0"
+              step="0.01"
+              value={otherFeesRaw}
+              onChange={(e) => setOtherFeesRaw(e.target.value)}
+              className={inp}
+              placeholder="0.00"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Reimbursables etc. — not subject to WHT
+            </p>
+          </div>
+        </div>
+
+        {/* WHT calculation display */}
+        {profFees > 0 && (
+          <div className="rounded-xl border border-orange-100 bg-orange-50/60 overflow-hidden">
+            <div className="grid grid-cols-3 divide-x divide-orange-100 text-sm">
+              <div className="px-4 py-3 text-center">
+                <p className="text-xs text-gray-500 mb-0.5">Professional Fees</p>
+                <p className="font-bold text-brand-navy">{cur} {fmt(profFees)}</p>
+              </div>
+              <div className="px-4 py-3 text-center">
+                <p className="text-xs text-gray-500 mb-0.5">WHT (20%)</p>
+                <p className="font-bold text-orange-600">− {cur} {fmt(whtAmount)}</p>
+              </div>
+              <div className="px-4 py-3 text-center">
+                <p className="text-xs text-gray-500 mb-0.5">Total Fees (incl. other)</p>
+                <p className="font-bold text-brand-navy">{cur} {fmt(totalFees)}</p>
+              </div>
+            </div>
+            <div className="px-4 py-2 bg-orange-100/50 border-t border-orange-100">
+              <p className="text-xs text-orange-700">
+                Net to consultant after WHT:{" "}
+                <strong>{cur} {fmt(profFees - whtAmount + otherFees)}</strong>
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Hidden field for withholdingTaxRate */}
+        <input type="hidden" name="withholdingTaxRate" value="20" />
+      </div>
 
       {/* ── Personal Details ──────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">

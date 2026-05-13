@@ -3,9 +3,12 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { sendMail } from "@/lib/mail";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
 /** Staff / Consultant submits a liquidation */
 export async function createLiquidation(formData: FormData): Promise<void> {
@@ -92,7 +95,7 @@ export async function reviewLiquidation(
 
   const note = (formData.get("note") as string) || null;
 
-  await prisma.liquidation.update({
+  const liq = await prisma.liquidation.update({
     where: { id: liquidationId },
     data: {
       status: action,
@@ -100,7 +103,56 @@ export async function reviewLiquidation(
       reviewedByName: session.user.name,
       reviewedAt: new Date(),
     },
+    include: {
+      submitter: { select: { name: true, employeeId: true } },
+    },
   });
+
+  // If FM approved and employee overspent, create an OverspendingRefund for CEO to review
+  if (action === "FM_APPROVED" && liq.refundRequired < 0) {
+    const overspentAmount = Math.abs(liq.refundRequired);
+    await prisma.overspendingRefund.create({
+      data: {
+        liquidationId,
+        employeeName: liq.submitter.name ?? "Unknown",
+        employeeId:   liq.submitter.employeeId ?? null,
+        amount:       overspentAmount,
+        currency:     liq.currency,
+        status:       "PENDING_CEO",
+      },
+    });
+
+    // Notify CEO
+    try {
+      const ceos = await prisma.user.findMany({
+        where: { role: "CEO", active: true },
+        select: { email: true },
+      });
+      if (ceos.length > 0) {
+        const body = `
+          <h2>Overspending Refund Approval Required</h2>
+          <p><strong>${liq.submitter.name}</strong> spent more than they received on a funded activity and the liquidation has been approved by the Operations Manager.</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
+            <tr><td style="padding:8px 0;color:#6b7280">Employee</td><td style="padding:8px 0;font-weight:bold">${liq.submitter.name}</td></tr>
+            <tr><td style="padding:8px 0;color:#6b7280">Activity</td><td style="padding:8px 0">${liq.activity}</td></tr>
+            <tr><td style="padding:8px 0;color:#6b7280">Amount Owed to Employee</td><td style="padding:8px 0;font-weight:bold;color:#dc2626">${liq.currency} ${overspentAmount.toLocaleString("en-MW", { minimumFractionDigits: 2 })}</td></tr>
+          </table>
+          <p>Please review and approve or reject this refund in the Finance system.</p>
+          <a class="btn" href="${BASE_URL}/astelfin_26/liquidations/${liquidationId}">Review Liquidation</a>
+        `;
+        await sendMail({
+          to: ceos.map((u) => u.email),
+          subject: `Overspending refund awaiting approval — ${liq.submitter.name}`,
+          html: `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f3f4f6;margin:0;padding:0">
+            <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
+              <div style="background:#0a1628;padding:24px 32px"><p style="color:#fff;font-size:18px;font-weight:bold;margin:0">Astellic</p><p style="color:#c9a227;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0">Finance</p></div>
+              <div style="padding:32px;color:#374151;font-size:14px;line-height:1.6">${body}</div>
+              <div style="background:#f9fafb;padding:16px 32px;font-size:12px;color:#9ca3af;border-top:1px solid #e5e7eb">This is an automated notification from the Astellic Finance system.</div>
+            </div></body></html>`,
+        });
+      }
+    } catch { /* email failure must never block the action */ }
+  }
 
   await auditLog({
     userId: session.user.id!,

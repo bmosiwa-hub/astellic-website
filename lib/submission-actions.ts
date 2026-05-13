@@ -258,9 +258,37 @@ export async function markSubmissionPaid(submissionId: string, formData: FormDat
 
   const paymentNote = (formData.get("paymentNote") as string) || null;
 
+  // Fetch submission with line items to calculate liquidation deadline
+  const sub = await prisma.submission.findUnique({
+    where: { id: submissionId },
+    include: { lineItems: { select: { activityDate: true } } },
+  });
+
+  // Determine liquidation deadline for REQUEST-type submissions only
+  // Deadline = max(all activityDates) + 14 days
+  let liquidationDeadline: Date | null = null;
+  if (sub?.type === "REQUEST") {
+    const dates: Date[] = [];
+    if (sub.activityDate) dates.push(sub.activityDate);
+    sub.lineItems.forEach((li) => { if (li.activityDate) dates.push(li.activityDate); });
+    if (dates.length > 0) {
+      const lastDay = new Date(Math.max(...dates.map((d) => d.getTime())));
+      liquidationDeadline = new Date(lastDay);
+      liquidationDeadline.setDate(liquidationDeadline.getDate() + 14);
+    } else {
+      // Fallback: 14 days from today if no activity dates
+      liquidationDeadline = new Date();
+      liquidationDeadline.setDate(liquidationDeadline.getDate() + 14);
+    }
+  }
+
   await prisma.submission.update({
     where: { id: submissionId },
-    data: { status: "PAID", notes: paymentNote ? `Payment note: ${paymentNote}` : undefined },
+    data: {
+      status: "PAID",
+      notes: paymentNote ? `Payment note: ${paymentNote}` : undefined,
+      ...(liquidationDeadline ? { liquidationDeadline } : {}),
+    },
   });
 
   await auditLog({

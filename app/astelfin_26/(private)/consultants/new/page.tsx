@@ -15,19 +15,25 @@ async function createConsultant(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const budgetedFeeRaw = formData.get("budgetedFee") as string;
+  const budgetedFeeRaw    = formData.get("budgetedFee")           as string;
+  const profFeesRaw       = formData.get("totalProfessionalFees") as string;
+  const otherFeesRaw      = formData.get("otherFees")             as string;
+  const whtRateRaw        = formData.get("withholdingTaxRate")    as string;
 
   const data = {
-    name:           formData.get("name") as string,
-    email:          (formData.get("email") as string)          || null,
-    phone:          (formData.get("phone") as string)          || null,
-    specialisation: (formData.get("specialisation") as string) || null,
-    dailyRate:      null,
-    currency:       (formData.get("currency") as string)       || "MWK",
-    taxPin:         (formData.get("taxPin") as string)         || null,
-    notes:          (formData.get("notes") as string)          || null,
-    projectId:      (formData.get("projectId") as string)      || null,
-    budgetedFee:    budgetedFeeRaw ? parseFloat(budgetedFeeRaw) : null,
+    name:                 formData.get("name") as string,
+    email:                (formData.get("email") as string)          || null,
+    phone:                (formData.get("phone") as string)          || null,
+    specialisation:       (formData.get("specialisation") as string) || null,
+    dailyRate:            null,
+    currency:             (formData.get("currency") as string)       || "MWK",
+    taxPin:               (formData.get("taxPin") as string)         || null,
+    notes:                (formData.get("notes") as string)          || null,
+    projectId:            (formData.get("projectId") as string)      || null,
+    budgetedFee:          budgetedFeeRaw ? parseFloat(budgetedFeeRaw) : null,
+    totalProfessionalFees: profFeesRaw  ? parseFloat(profFeesRaw)   : null,
+    otherFees:            otherFeesRaw  ? parseFloat(otherFeesRaw)   : null,
+    withholdingTaxRate:   whtRateRaw    ? parseFloat(whtRateRaw)     : 20,
   };
 
   const record = await prisma.consultant.create({ data });

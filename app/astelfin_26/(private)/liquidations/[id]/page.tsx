@@ -1,9 +1,60 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { auditLog } from "@/lib/audit";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { reviewLiquidation } from "@/lib/liquidation-actions";
+
+async function approveOverspendingRefund(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const refundId = formData.get("refundId") as string;
+  const ceoNote  = (formData.get("ceoNote") as string) || null;
+  const liqId    = formData.get("liquidationId") as string;
+
+  await prisma.overspendingRefund.update({
+    where: { id: refundId },
+    data:  { status: "CEO_APPROVED", ceoNote },
+  });
+
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "APPROVE",
+    entity:   "OverspendingRefund",
+    entityId: refundId,
+    detail:   ceoNote || "CEO approved overspending refund for payroll addition",
+  });
+
+  redirect(`/astelfin_26/liquidations/${liqId}?success=refund_approved`);
+}
+
+async function rejectOverspendingRefund(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const refundId = formData.get("refundId") as string;
+  const ceoNote  = (formData.get("ceoNote") as string) || null;
+  const liqId    = formData.get("liquidationId") as string;
+
+  await prisma.overspendingRefund.update({
+    where: { id: refundId },
+    data:  { status: "CEO_REJECTED", ceoNote } as never,
+  });
+
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "REJECT",
+    entity:   "OverspendingRefund",
+    entityId: refundId,
+    detail:   ceoNote || "CEO rejected overspending refund",
+  });
+
+  redirect(`/astelfin_26/liquidations/${liqId}?success=refund_rejected`);
+}
 
 export const metadata = {
   title: "Review Liquidation | Astellic Finance",
@@ -19,11 +70,14 @@ const DOC_LABELS: Record<string, string> = {
 
 export default async function ReviewLiquidationPage({
   params,
+  searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params:       Promise<{ id: string }>;
+  searchParams: Promise<{ success?: string }>;
 }) {
-  const { id } = await params;
-  const session = await auth();
+  const { id }      = await params;
+  const { success } = await searchParams;
+  const session     = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
   const role = session.user.role;
@@ -34,7 +88,8 @@ export default async function ReviewLiquidationPage({
     include: {
       submitter: { select: { name: true, email: true } },
       submission: { select: { type: true, totalAmount: true, currency: true, purpose: true, milestone: true } },
-      documents: { orderBy: { uploadedAt: "asc" } },
+      documents:  { orderBy: { uploadedAt: "asc" } },
+      overspendingRefunds: { orderBy: { createdAt: "desc" } },
     },
   });
 
@@ -48,6 +103,11 @@ export default async function ReviewLiquidationPage({
 
   const isOverspent = liq.refundRequired < 0;
   const owesBack    = liq.refundRequired > 0;
+
+  // Find pending overspending refunds for CEO
+  const pendingCEORefund = liq.overspendingRefunds.find((r) => r.status === "PENDING_CEO");
+  const approvedRefund   = liq.overspendingRefunds.find((r) => r.status === "CEO_APPROVED");
+  const addedRefund      = liq.overspendingRefunds.find((r) => r.status === "PAYROLL_ADDED");
 
   const docsByType = liq.documents.reduce<Record<string, typeof liq.documents>>(
     (acc, d) => { (acc[d.docType] ??= []).push(d); return acc; },
@@ -67,6 +127,17 @@ export default async function ReviewLiquidationPage({
           ← Back
         </Link>
       </div>
+
+      {success === "refund_approved" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          ✓ Overspending refund approved. It will appear in the employee&apos;s next payroll run.
+        </div>
+      )}
+      {success === "refund_rejected" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Overspending refund rejected.
+        </div>
+      )}
 
       {/* Summary */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
@@ -168,8 +239,65 @@ export default async function ReviewLiquidationPage({
 
       {!canReview && liq.fmNote && (
         <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5 text-sm text-gray-600">
-          <strong>FM Note:</strong> {liq.fmNote}
+          <strong>Operations Manager Note:</strong> {liq.fmNote}
           {liq.reviewedAt && <span className="ml-2 text-gray-400">· {formatDate(liq.reviewedAt)}</span>}
+        </div>
+      )}
+
+      {/* CEO overspending refund approval */}
+      {role === "CEO" && pendingCEORefund && (
+        <div className="bg-amber-50 rounded-2xl border border-amber-300 p-6 space-y-4">
+          <div>
+            <h2 className="font-bold text-amber-800 text-sm uppercase tracking-wide">
+              Overspending Refund — CEO Approval Required
+            </h2>
+            <p className="text-xs text-amber-700 mt-1">
+              The Operations Manager has approved this liquidation where the employee overspent.
+              The employee is owed <strong>{formatCurrency(pendingCEORefund.amount, pendingCEORefund.currency)}</strong>.
+              Approve to add to their next payroll, or reject.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <form action={approveOverspendingRefund} className="space-y-2">
+              <input type="hidden" name="refundId"      value={pendingCEORefund.id} />
+              <input type="hidden" name="liquidationId" value={id} />
+              <input name="ceoNote" placeholder="Optional approval note…"
+                className="w-full border border-amber-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white" />
+              <button type="submit"
+                className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                ✓ Approve Refund — Add to Payroll
+              </button>
+            </form>
+            <form action={rejectOverspendingRefund} className="space-y-2">
+              <input type="hidden" name="refundId"      value={pendingCEORefund.id} />
+              <input type="hidden" name="liquidationId" value={id} />
+              <input name="ceoNote" placeholder="Reason for rejection…"
+                className="w-full border border-red-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 bg-white" />
+              <button type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                ✗ Reject Refund
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Show approved refund status */}
+      {approvedRefund && !pendingCEORefund && (
+        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-5 text-sm text-blue-800">
+          <p className="font-bold mb-1">Overspending Refund: CEO Approved</p>
+          <p className="text-xs text-blue-600">
+            {formatCurrency(approvedRefund.amount, approvedRefund.currency)} will be added to this employee&apos;s next payroll.
+            {approvedRefund.ceoNote && ` Note: ${approvedRefund.ceoNote}`}
+          </p>
+        </div>
+      )}
+      {addedRefund && (
+        <div className="bg-green-50 rounded-2xl border border-green-200 p-5 text-sm text-green-800">
+          <p className="font-bold mb-1">Overspending Refund: Added to Payroll ✓</p>
+          <p className="text-xs text-green-600">
+            {formatCurrency(addedRefund.amount, addedRefund.currency)} was added to the employee&apos;s payroll.
+          </p>
         </div>
       )}
     </div>

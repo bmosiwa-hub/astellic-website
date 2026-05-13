@@ -128,6 +128,16 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
     </svg>
   ),
+  health: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+    </svg>
+  ),
+  tax: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+    </svg>
+  ),
   bizdev: (
     <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -196,7 +206,7 @@ export default function Sidebar({
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
                           "/astelfin_26/employees", "/astelfin_26/payroll", "/astelfin_26/consultants",
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
-                          "/astelfin_26/assets"];
+                          "/astelfin_26/assets", "/astelfin_26/financial-health"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
                            "/astelfin_26/procurement"];
@@ -332,7 +342,9 @@ export default function Sidebar({
                 {navLink("/astelfin_26/consultants", "Consultants",  Icons.consultants)}
                 {navLink("/astelfin_26/debt",        "Debt",         Icons.debt)}
                 {navLink("/astelfin_26/assets",      "Assets",       Icons.assets)}
-                {navLink("/astelfin_26/reports",     "Reports",      Icons.reports)}
+                {navLink("/astelfin_26/reports",          "Reports",         Icons.reports)}
+                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",   Icons.tax)}
+                {(isCEO || isFM) && navLink("/astelfin_26/financial-health", "Financial Health", Icons.health)}
                 {navLink("/astelfin_26/exchange-rates", "Exchange Rates", Icons.exchangeRates)}
               </div>
             )}

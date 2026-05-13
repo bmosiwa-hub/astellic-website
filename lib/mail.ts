@@ -152,6 +152,55 @@ export async function notifyFMOfCEOAction({
 }
 
 /**
+ * Send a tax summary report (monthly or annual) to CEO and FM.
+ */
+export async function sendTaxReport({
+  to,
+  period,
+  periodType,
+  paye,
+  wht,
+  corporateTaxEstimate,
+  netBalance,
+}: {
+  to: string | string[];
+  period: string;
+  periodType: "monthly" | "annual";
+  paye: number;
+  wht: number;
+  corporateTaxEstimate: number;
+  netBalance: number;
+}): Promise<void> {
+  const fmt = (n: number) =>
+    new Intl.NumberFormat("en-MW", { style: "currency", currency: "MWK", minimumFractionDigits: 2 })
+      .format(n).replace("MWK", "MWK ");
+
+  const totalTax = paye + wht + corporateTaxEstimate;
+  const subject = `${periodType === "monthly" ? "Monthly" : "Annual"} Tax Report — ${period}`;
+
+  const body = `
+    <h2>${periodType === "monthly" ? "Monthly" : "Annual"} Tax Summary</h2>
+    <p>Period: <strong>${period}</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
+      <thead><tr style="background:#f3f4f6">
+        <th style="text-align:left;padding:10px;border-bottom:2px solid #e5e7eb">Tax Type</th>
+        <th style="text-align:right;padding:10px;border-bottom:2px solid #e5e7eb">Amount (MWK)</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:10px;border-bottom:1px solid #f3f4f6">PAYE (Pay As You Earn)</td><td style="text-align:right;padding:10px;border-bottom:1px solid #f3f4f6;font-weight:bold">${fmt(paye)}</td></tr>
+        <tr><td style="padding:10px;border-bottom:1px solid #f3f4f6">Withholding Tax (WHT)</td><td style="text-align:right;padding:10px;border-bottom:1px solid #f3f4f6;font-weight:bold">${fmt(wht)}</td></tr>
+        <tr><td style="padding:10px;border-bottom:1px solid #f3f4f6">Corporate Income Tax (estimated at 30% of net)</td><td style="text-align:right;padding:10px;border-bottom:1px solid #f3f4f6;font-weight:bold">${fmt(corporateTaxEstimate)}</td></tr>
+        <tr style="background:#0a1628;color:#fff"><td style="padding:10px;font-weight:bold">Total Tax Obligations</td><td style="text-align:right;padding:10px;font-weight:bold">${fmt(totalTax)}</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:#6b7280">Net balance before CIT: <strong>${fmt(netBalance)}</strong>. Corporate income tax is an estimate based on a 30% flat rate and may vary based on allowable deductions.</p>
+    <a class="btn" href="${BASE_URL}/astelfin_26/reports/tax">View Tax Dashboard</a>
+  `;
+
+  await sendMail({ to, subject, html: layout(body) });
+}
+
+/**
  * Remind FM(s) that a recurring payable is due in 7 days.
  */
 export async function notifyFMOfUpcomingPayable({
