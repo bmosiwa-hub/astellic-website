@@ -178,6 +178,11 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
     </svg>
   ),
+  grants: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -239,7 +244,7 @@ export default function Sidebar({
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
                           "/astelfin_26/assets", "/astelfin_26/financial-health", "/astelfin_26/budget",
-                          "/astelfin_26/periods"];
+                          "/astelfin_26/periods", "/astelfin_26/grants"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
                            "/astelfin_26/procurement", "/astelfin_26/documents", "/astelfin_26/compliance"];
@@ -382,6 +387,7 @@ export default function Sidebar({
                 {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",    Icons.tax)}
                 {(isCEO || isFM) && navLink("/astelfin_26/financial-health", "Financial Health", Icons.health)}
                 {(isCEO || isFM) && navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
+                {(isCEO || isFM) && navLink("/astelfin_26/grants",           "Donor Grants",     Icons.grants)}
                 {(isCEO || isFM) && navLink("/astelfin_26/periods",          "Periods",          Icons.periods)}
                 {navLink("/astelfin_26/exchange-rates",   "Exchange Rates",  Icons.exchangeRates)}
               </div>

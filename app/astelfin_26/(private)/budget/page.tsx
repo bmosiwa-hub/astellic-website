@@ -59,6 +59,7 @@ async function upsertBudgetLine(formData: FormData) {
   const description = (formData.get("description") as string) || null;
   const category    = (formData.get("category") as string) || "OTHER";
   const projectId   = (formData.get("projectId") as string) || null;
+  const grantId     = (formData.get("grantId") as string) || null;
   const fiscalYear  = parseInt(formData.get("fiscalYear") as string) || new Date().getFullYear();
   const ceilingRaw  = formData.get("ceiling") as string;
   const ceiling     = ceilingRaw ? parseFloat(ceilingRaw) : null;
@@ -67,7 +68,7 @@ async function upsertBudgetLine(formData: FormData) {
   if (id) {
     await prisma.budgetLine.update({
       where: { id },
-      data: { name, description, category, projectId, fiscalYear, ceiling, currency },
+      data: { name, description, category, projectId, grantId, fiscalYear, ceiling, currency },
     });
     await auditLog({
       userId: session.user.id!, action: "UPDATE", entity: "BudgetLine", entityId: id,
@@ -75,7 +76,7 @@ async function upsertBudgetLine(formData: FormData) {
     });
   } else {
     const bl = await prisma.budgetLine.create({
-      data: { name, description, category, projectId, fiscalYear, ceiling, currency },
+      data: { name, description, category, projectId, grantId, fiscalYear, ceiling, currency },
     });
     await auditLog({
       userId: session.user.id!, action: "CREATE", entity: "BudgetLine", entityId: bl.id,
@@ -119,18 +120,20 @@ export default async function BudgetLinesPage({
   const fy          = parseInt(fyStr ?? String(currentYear)) || currentYear;
 
   // Fetch budget lines for the selected year
-  const [budgetLines, projects] = await Promise.all([
+  const [budgetLines, projects, grants] = await Promise.all([
     prisma.budgetLine.findMany({
       where: { fiscalYear: fy },
-      include: { project: { select: { id: true, name: true } } },
+      include: {
+        project: { select: { id: true, name: true } },
+        grant:   { select: { id: true, name: true } },
+      },
       orderBy: [{ active: "desc" }, { category: "asc" }, { name: "asc" }],
     }),
     canEdit
-      ? prisma.project.findMany({
-          where: { status: "ACTIVE" },
-          select: { id: true, name: true },
-          orderBy: { name: "asc" },
-        })
+      ? prisma.project.findMany({ where: { status: "ACTIVE" }, select: { id: true, name: true }, orderBy: { name: "asc" } })
+      : Promise.resolve([]),
+    canEdit
+      ? prisma.donorGrant.findMany({ where: { status: "ACTIVE" }, select: { id: true, name: true }, orderBy: { name: "asc" } })
       : Promise.resolve([]),
   ]);
 
@@ -279,6 +282,19 @@ export default async function BudgetLinesPage({
                 <option value="">— Organisation-wide —</option>
                 {projects.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Donor Grant (optional)
+              </label>
+              <select name="grantId" defaultValue={(editingLine as typeof editingLine & { grantId?: string | null })?.grantId ?? ""}
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold">
+                <option value="">— Not grant-funded —</option>
+                {grants.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name}</option>
                 ))}
               </select>
             </div>

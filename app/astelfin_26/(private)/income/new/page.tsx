@@ -27,6 +27,7 @@ async function createIncome(formData: FormData) {
     source: (formData.get("source") as string) || null,
     invoiceNumber: (formData.get("invoiceNumber") as string) || null,
     projectId: (formData.get("projectId") as string) || null,
+    grantId: (formData.get("grantId") as string) || null,
     notes: (formData.get("notes") as string) || null,
   };
 
@@ -48,11 +49,10 @@ export default async function NewIncomePage({
   searchParams: Promise<{ error?: string; period?: string }>;
 }) {
   const { error, period } = await searchParams;
-  const projects = await prisma.project.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  const [projects, grants] = await Promise.all([
+    prisma.project.findMany({ where: { status: "ACTIVE" }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
+    prisma.donorGrant.findMany({ where: { status: "ACTIVE" }, select: { id: true, name: true, donorName: true }, orderBy: { name: "asc" } }),
+  ]);
 
   return (
     <div className="max-w-2xl">
@@ -154,6 +154,19 @@ export default async function NewIncomePage({
                   <option key={p.id} value={p.id}>
                     {p.name}
                   </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Donor Grant (optional)
+              </label>
+              <select name="grantId"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold">
+                <option value="">— Not linked to a grant —</option>
+                {grants.map((g) => (
+                  <option key={g.id} value={g.id}>{g.name} ({g.donorName})</option>
                 ))}
               </select>
             </div>

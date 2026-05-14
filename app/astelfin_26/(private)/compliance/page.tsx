@@ -62,6 +62,22 @@ export default async function ComplianceDashboardPage() {
     .filter((bl) => bl.pct >= 80)
     .sort((a, b) => b.pct - a.pct);
 
+  // ── 1b. Grant over-utilisation ────────────────────────────────────────────
+  const activeGrants = await prisma.donorGrant.findMany({
+    where:   { status: "ACTIVE" },
+    include: { budgetLines: { select: { name: true } } },
+    orderBy: { name: "asc" },
+  });
+
+  const grantAlerts = activeGrants
+    .map((g) => {
+      const spent = g.budgetLines.reduce((s, bl) => s + (spendMap[bl.name] ?? 0), 0);
+      const pct   = g.totalAmount > 0 ? (spent / g.totalAmount) * 100 : 0;
+      return { ...g, spent, pct };
+    })
+    .filter((g) => g.pct >= 80)
+    .sort((a, b) => b.pct - a.pct);
+
   // ── 2. Overdue liquidations ───────────────────────────────────────────────
   // Submissions that are PAID, past their liquidationDeadline, with no FM_APPROVED liquidation
   const paidSubmissions = await prisma.submission.findMany({
@@ -155,11 +171,13 @@ export default async function ComplianceDashboardPage() {
 
   // ── Tally ─────────────────────────────────────────────────────────────────
   const totalIssues =
-    budgetAlerts.length + overdueLiquidations.length +
+    budgetAlerts.length + grantAlerts.length + overdueLiquidations.length +
     procurementGaps.length + missingDocs.length;
 
   const criticalIssues =
-    budgetAlerts.filter((b) => b.pct >= 100).length + overdueLiquidations.length;
+    budgetAlerts.filter((b) => b.pct >= 100).length +
+    grantAlerts.filter((g) => g.pct >= 100).length +
+    overdueLiquidations.length;
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -212,9 +230,10 @@ export default async function ComplianceDashboardPage() {
               : "Review the sections below and resolve outstanding items before the next donor reporting period."}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 text-center shrink-0">
+        <div className="grid grid-cols-3 gap-3 text-center shrink-0">
           {[
             { n: budgetAlerts.length,       label: "Budget alerts",  color: budgetAlerts.length > 0 ? "text-red-700" : "text-gray-400" },
+            { n: grantAlerts.length,        label: "Grant over-util",color: grantAlerts.length > 0 ? "text-red-700" : "text-gray-400" },
             { n: overdueLiquidations.length, label: "Overdue liq.",   color: overdueLiquidations.length > 0 ? "text-red-700" : "text-gray-400" },
             { n: procurementGaps.length,    label: "Proc. gaps",     color: procurementGaps.length > 0 ? "text-amber-700" : "text-gray-400" },
             { n: missingDocs.length,        label: "Missing docs",   color: missingDocs.length > 0 ? "text-amber-700" : "text-gray-400" },
@@ -283,7 +302,68 @@ export default async function ComplianceDashboardPage() {
         )}
       </section>
 
-      {/* ── Section 2: Overdue Liquidations ──────────────────────────────── */}
+      {/* ── Section 2: Grant Over-Utilisation ────────────────────────────── */}
+      <section className="space-y-3">
+        <h2 className="font-bold text-brand-navy flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full inline-block ${grantAlerts.length > 0 ? "bg-red-500" : "bg-green-400"}`} />
+          Grant Over-Utilisation
+          <span className="text-sm font-normal text-gray-400 ml-1">
+            ({grantAlerts.length} grant{grantAlerts.length !== 1 ? "s" : ""} ≥ 80% of award spent)
+          </span>
+        </h2>
+
+        {grantAlerts.length === 0 ? (
+          <div className="bg-green-50 border border-green-100 rounded-xl px-5 py-4 text-sm text-green-700">
+            ✓ All active grants are within 80% of their awarded amount.
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-600">Grant</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Donor</th>
+                  <th className="text-right px-5 py-3 font-semibold text-gray-600">Award</th>
+                  <th className="text-right px-5 py-3 font-semibold text-gray-600">Spent</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-600 w-36">Utilisation</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {grantAlerts.map((g) => {
+                  const isOver = g.pct >= 100;
+                  const barW   = Math.min(100, g.pct);
+                  const barCol = isOver ? "bg-red-500" : "bg-amber-400";
+                  return (
+                    <tr key={g.id} className={isOver ? "bg-red-50/40" : "bg-amber-50/30"}>
+                      <td className="px-5 py-3">
+                        <Link href={`/astelfin_26/grants/${g.id}`}
+                          className="font-medium text-brand-navy hover:text-brand-gold transition-colors">
+                          {g.name}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3 text-xs text-gray-500 hidden md:table-cell">{g.donorName}</td>
+                      <td className="px-5 py-3 text-right font-mono text-xs">{fmtMoney(g.totalAmount, g.currency)}</td>
+                      <td className={`px-5 py-3 text-right font-mono text-xs font-bold ${isOver ? "text-red-600" : "text-amber-600"}`}>
+                        {fmtMoney(g.spent, g.currency)}
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="w-full bg-gray-100 rounded-full h-2 mb-1">
+                          <div className={`${barCol} h-2 rounded-full`} style={{ width: `${barW}%` }} />
+                        </div>
+                        <span className={`text-xs font-semibold ${isOver ? "text-red-600" : "text-amber-600"}`}>
+                          {g.pct.toFixed(1)}%{isOver ? " OVER" : ""}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* ── Section 3: Overdue Liquidations ──────────────────────────────── */}
       <section className="space-y-3">
         <h2 className="font-bold text-brand-navy flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full inline-block ${overdueLiquidations.length > 0 ? "bg-red-500" : "bg-green-400"}`} />
@@ -342,7 +422,7 @@ export default async function ComplianceDashboardPage() {
         )}
       </section>
 
-      {/* ── Section 3: Procurement Gaps ──────────────────────────────────── */}
+      {/* ── Section 4: Procurement Gaps ──────────────────────────────────── */}
       <section className="space-y-3">
         <h2 className="font-bold text-brand-navy flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full inline-block ${procurementGaps.length > 0 ? "bg-amber-500" : "bg-green-400"}`} />
@@ -404,7 +484,7 @@ export default async function ComplianceDashboardPage() {
         )}
       </section>
 
-      {/* ── Section 4: Unliquidated Advances ─────────────────────────────── */}
+      {/* ── Section 5: Unliquidated Advances ─────────────────────────────── */}
       {unliquidatedAdvances.length > 0 && (
         <section className="space-y-3">
           <h2 className="font-bold text-brand-navy flex items-center gap-2">
@@ -459,7 +539,7 @@ export default async function ComplianceDashboardPage() {
         </section>
       )}
 
-      {/* ── Section 5: Approved Liquidations with No Documents ───────────── */}
+      {/* ── Section 6: Approved Liquidations with No Documents ───────────── */}
       <section className="space-y-3">
         <h2 className="font-bold text-brand-navy flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full inline-block ${missingDocs.length > 0 ? "bg-amber-500" : "bg-green-400"}`} />

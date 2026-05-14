@@ -136,6 +136,8 @@ model Income {
   id             String      @id @default(cuid())
   projectId      String?
   project        Project?    @relation(fields: [projectId], references: [id])
+  grantId        String?
+  grant          DonorGrant? @relation(fields: [grantId], references: [id])
   incomeType     IncomeType  @default(GRANT)
   description    String
   amount         Float
@@ -1223,6 +1225,38 @@ model FinancialPeriod {
   @@index([year, month])
 }
 
+// ── Phase 6: Donor Grant Tracking ─────────────────────────────────────────────
+//
+// DonorGrant links a named funding award to income records and budget lines.
+// Utilisation = sum of spending on linked budget lines vs. totalAmount awarded.
+// Income records are linked directly so received-vs-awarded can also be tracked.
+
+model DonorGrant {
+  id              String    @id @default(cuid())
+  name            String                          // full grant/project title
+  grantNumber     String?                         // donor reference / contract number
+  donorName       String                          // "European Union", "USAID", etc.
+  // BILATERAL | MULTILATERAL | FOUNDATION | CORPORATE | GOVERNMENT | OTHER
+  donorType       String    @default("BILATERAL")
+  totalAmount     Float                           // total award amount
+  currency        String    @default("MWK")
+  startDate       DateTime
+  endDate         DateTime?
+  // QUARTERLY | SEMI-ANNUAL | ANNUAL
+  reportingPeriod String?
+  // ACTIVE | COMPLETED | SUSPENDED | CANCELLED
+  status          String    @default("ACTIVE")
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  income      Income[]      // receipts linked to this grant
+  budgetLines BudgetLine[]  // spending envelopes funded by this grant
+
+  @@index([status])
+  @@index([donorName])
+}
+
 // ── Phase 4: Budget Integrity & Compliance ────────────────────────────────────
 //
 // BudgetLine — a named spending envelope with an optional ceiling.
@@ -1234,23 +1268,26 @@ model FinancialPeriod {
 // Replaces the hardcoded >=100,000 / 3-quotation rule in the procurement page.
 
 model BudgetLine {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   // Matches the `budgetLine` string stored on transactions
-  name        String   @unique
+  name        String      @unique
   description String?
   // PERSONNEL | OPERATIONS | ADMIN | TRAVEL | EQUIPMENT | CONSULTANCY | OTHER
-  category    String   @default("OTHER")
+  category    String      @default("OTHER")
   projectId   String?
-  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  project     Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  grantId     String?
+  grant       DonorGrant? @relation(fields: [grantId], references: [id], onDelete: SetNull)
   fiscalYear  Int
-  ceiling     Float?   // null = no cap
-  currency    String   @default("MWK")
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  ceiling     Float?      // null = no cap
+  currency    String      @default("MWK")
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@index([fiscalYear])
   @@index([projectId])
+  @@index([grantId])
 }
 
 model ProcurementThreshold {
