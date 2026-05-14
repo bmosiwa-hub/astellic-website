@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
+import { assertNotSelfApproval } from "@/lib/self-approval";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
@@ -120,6 +122,18 @@ async function submitForApproval(formData: FormData) {
     detail:   `Procurement submitted for CEO approval: ${proc.title}`,
   });
 
+  await writeApprovalRecord({
+    entityType:     "Procurement",
+    entityId:       procurementId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: "DRAFT",
+    newStatus:      "PENDING_APPROVAL",
+    decision:       "SUBMITTED",
+  });
+
   redirect(`/astelfin_26/procurement?success=submitted`);
 }
 
@@ -157,8 +171,10 @@ async function approveProcurement(formData: FormData) {
   const procurementId = formData.get("procurementId") as string;
   const reviewNote    = (formData.get("reviewNote") as string) || null;
 
-  const proc = await prisma.procurement.findUnique({ where: { id: procurementId }, select: { title: true, status: true } });
+  const proc = await prisma.procurement.findUnique({ where: { id: procurementId }, select: { title: true, status: true, requestedBy: true } });
   if (!proc || proc.status !== "PENDING_APPROVAL") redirect(`/astelfin_26/procurement/${procurementId}`);
+
+  assertNotSelfApproval(session.user.id!, proc.requestedBy, "procurement request");
 
   await prisma.procurement.update({
     where: { id: procurementId },
@@ -178,6 +194,19 @@ async function approveProcurement(formData: FormData) {
     detail:   `Procurement approved: ${proc.title}${reviewNote ? ` — ${reviewNote}` : ""}`,
   });
 
+  await writeApprovalRecord({
+    entityType:     "Procurement",
+    entityId:       procurementId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: "PENDING_APPROVAL",
+    newStatus:      "APPROVED",
+    decision:       "APPROVED",
+    comments:       reviewNote,
+  });
+
   redirect(`/astelfin_26/procurement/${procurementId}?success=approved`);
 }
 
@@ -189,8 +218,10 @@ async function rejectProcurement(formData: FormData) {
   const procurementId = formData.get("procurementId") as string;
   const reviewNote    = (formData.get("reviewNote") as string) || null;
 
-  const proc = await prisma.procurement.findUnique({ where: { id: procurementId }, select: { title: true, status: true } });
+  const proc = await prisma.procurement.findUnique({ where: { id: procurementId }, select: { title: true, status: true, requestedBy: true } });
   if (!proc || proc.status !== "PENDING_APPROVAL") redirect(`/astelfin_26/procurement/${procurementId}`);
+
+  assertNotSelfApproval(session.user.id!, proc.requestedBy, "procurement request");
 
   await prisma.procurement.update({
     where: { id: procurementId },
@@ -208,6 +239,19 @@ async function rejectProcurement(formData: FormData) {
     entity:   "Procurement",
     entityId: procurementId,
     detail:   `Procurement rejected: ${proc.title}${reviewNote ? ` — ${reviewNote}` : ""}`,
+  });
+
+  await writeApprovalRecord({
+    entityType:     "Procurement",
+    entityId:       procurementId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: "PENDING_APPROVAL",
+    newStatus:      "REJECTED",
+    decision:       "REJECTED",
+    comments:       reviewNote,
   });
 
   redirect(`/astelfin_26/procurement/${procurementId}?success=rejected`);

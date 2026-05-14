@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
+import { assertNotSelfApproval } from "@/lib/self-approval";
 import { notifySubmitterOfFMAction, notifyFMOfCEOAction } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -164,6 +166,11 @@ export async function reviewSubmission(
     },
   });
 
+  // Reviewer must not be the same person who submitted
+  if (action === "APPROVED") {
+    assertNotSelfApproval(session.user.id!, sub.submittedBy, "submission");
+  }
+
   // Determine new status
   let newStatus: "PENDING_FM" | "FM_CHANGES_REQUESTED" | "PENDING_CEO" | "CEO_CHANGES_REQUESTED" | "APPROVED" | "REJECTED";
 
@@ -199,6 +206,19 @@ export async function reviewSubmission(
     entity: "Submission",
     entityId: submissionId,
     detail: note || undefined,
+  });
+
+  await writeApprovalRecord({
+    entityType:     "Submission",
+    entityId:       submissionId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: sub.status,
+    newStatus,
+    decision:       action,
+    comments:       note,
   });
 
   // ── Email notifications ──────────────────────────────────────────────────

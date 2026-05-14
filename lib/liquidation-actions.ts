@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
+import { assertNotSelfApproval } from "@/lib/self-approval";
 import { sendMail } from "@/lib/mail";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
@@ -95,6 +97,17 @@ export async function reviewLiquidation(
 
   const note = (formData.get("note") as string) || null;
 
+  // Fetch before update so we have previousStatus + submitter for guards
+  const liqBefore = await prisma.liquidation.findUniqueOrThrow({
+    where: { id: liquidationId },
+    select: { status: true, submittedBy: true },
+  });
+
+  // Reviewer must not be the person who submitted this liquidation
+  if (action === "FM_APPROVED") {
+    assertNotSelfApproval(session.user.id!, liqBefore.submittedBy, "liquidation");
+  }
+
   const liq = await prisma.liquidation.update({
     where: { id: liquidationId },
     data: {
@@ -160,6 +173,19 @@ export async function reviewLiquidation(
     entity: "Liquidation",
     entityId: liquidationId,
     detail: note || undefined,
+  });
+
+  await writeApprovalRecord({
+    entityType:     "Liquidation",
+    entityId:       liquidationId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: liqBefore.status,
+    newStatus:      action,
+    decision:       action === "FM_APPROVED" ? "APPROVED" : action === "FM_REJECTED" ? "REJECTED" : "CHANGES_REQUESTED",
+    comments:       note,
   });
 
   revalidatePath("/astelfin_26/liquidations");

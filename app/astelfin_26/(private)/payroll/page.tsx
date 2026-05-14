@@ -1,8 +1,11 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const metadata = {
   title: "Payroll | Astellic Finance",
@@ -14,6 +17,59 @@ const STATUS_COLORS: Record<string, string> = {
   PAID: "bg-green-100 text-green-700",
   PARTIAL: "bg-blue-100 text-blue-700",
 };
+
+// ── Server action: CEO locks all payroll records for a period ─────────────────
+
+async function lockPayrollPeriod(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const period = formData.get("period") as string;
+  if (!period) return;
+
+  // Check no records are already locked (idempotent guard)
+  const alreadyLocked = await prisma.payroll.findFirst({
+    where: { period, lockedAt: { not: null } },
+    select: { id: true },
+  });
+  if (alreadyLocked) {
+    revalidatePath("/astelfin_26/payroll");
+    return;
+  }
+
+  const now = new Date();
+  await prisma.payroll.updateMany({
+    where:  { period },
+    data:   { lockedAt: now, lockedBy: session.user.id! },
+  });
+
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "LOCK",
+    entity:   "Payroll",
+    entityId: period,
+    detail:   `Payroll period ${period} locked by CEO`,
+  });
+
+  // Write one ApprovalRecord representing the CEO's approval of the entire period
+  const firstRecord = await prisma.payroll.findFirst({ where: { period }, select: { id: true } });
+  if (firstRecord) {
+    await writeApprovalRecord({
+      entityType:     "PayrollPeriod",
+      entityId:       period,
+      decidedById:    session.user.id!,
+      decidedByEmail: session.user.email ?? "",
+      decidedByName:  session.user.name  ?? "",
+      decidedByRole:  session.user.role,
+      previousStatus: "OPEN",
+      newStatus:      "LOCKED",
+      decision:       "APPROVED",
+    });
+  }
+
+  revalidatePath("/astelfin_26/payroll");
+}
 
 export default async function PayrollPage() {
   const session = await auth();
@@ -53,6 +109,15 @@ export default async function PayrollPage() {
   const totalPAYE = payrolls
     .filter((p) => p.status === "PAID")
     .reduce((s: number, p) => s + p.paye, 0);
+
+  // Group payrolls by period (sorted newest first)
+  const byPeriod = payrolls.reduce<Record<string, typeof payrolls>>((acc, p) => {
+    if (!acc[p.period]) acc[p.period] = [];
+    acc[p.period].push(p);
+    return acc;
+  }, {});
+  const periods = Object.keys(byPeriod).sort().reverse();
+  const isCEO = session.user.role === "CEO";
 
   // Group overdue liquidations by employee
   const unliqByEmployee = unliquidatedSubs.reduce<
@@ -156,50 +221,96 @@ export default async function PayrollPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {payrolls.length === 0 ? (
-          <p className="text-center py-12 text-gray-400">No payroll records yet.</p>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Period</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Employee</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Gross</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">PAYE</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Net Pay</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Status</th>
-                <th className="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {payrolls.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3 text-gray-500">{p.period}</td>
-                  <td className="px-5 py-3">
-                    <p className="font-medium text-brand-navy">{p.employee.name}</p>
-                    <p className="text-xs text-gray-400">{p.employee.position}</p>
-                  </td>
-                  <td className="px-5 py-3 text-right text-gray-700">{formatCurrency(p.grossSalary, p.currency)}</td>
-                  <td className="px-5 py-3 text-right text-orange-600">{formatCurrency(p.paye, p.currency)}</td>
-                  <td className="px-5 py-3 text-right font-bold text-brand-navy">{formatCurrency(p.netPay, p.currency)}</td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-gray-600"}`}>
-                      {p.status}
+      {payrolls.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center text-gray-400">
+          No payroll records yet.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {periods.map((period) => {
+            const records   = byPeriod[period];
+            const isLocked  = records.some((r) => r.lockedAt != null);
+            const lockedBy  = records.find((r) => r.lockedAt != null);
+            const periodNet = records.reduce((s, r) => s + r.netPay, 0);
+
+            return (
+              <div key={period} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                {/* Period header */}
+                <div className={`flex items-center justify-between px-5 py-3 border-b ${isLocked ? "bg-green-50 border-green-100" : "bg-gray-50 border-gray-100"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-brand-navy">{period}</span>
+                    {isLocked ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        Locked by CEO{lockedBy?.lockedAt ? ` · ${formatDate(lockedBy.lockedAt)}` : ""}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400 font-medium">Open</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-semibold text-brand-navy">
+                      Net: {formatCurrency(periodNet)}
                     </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <Link href={`/astelfin_26/payroll/${p.id}/payslip`}
-                      className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
-                      Payslip →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+                    {isCEO && !isLocked && (
+                      <form action={lockPayrollPeriod}>
+                        <input type="hidden" name="period" value={period} />
+                        <button
+                          type="submit"
+                          className="text-xs bg-brand-navy hover:bg-brand-navy/90 text-white px-3 py-1.5 rounded-lg font-semibold transition-colors"
+                          title="Lock this period — prevents any further payroll records from being added"
+                        >
+                          Lock Period
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </div>
+
+                {/* Records table for this period */}
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50/50">
+                    <tr>
+                      <th className="text-left px-5 py-2.5 font-semibold text-gray-500 text-xs uppercase tracking-wide">Employee</th>
+                      <th className="text-right px-5 py-2.5 font-semibold text-gray-500 text-xs uppercase tracking-wide">Gross</th>
+                      <th className="text-right px-5 py-2.5 font-semibold text-gray-500 text-xs uppercase tracking-wide">PAYE</th>
+                      <th className="text-right px-5 py-2.5 font-semibold text-gray-500 text-xs uppercase tracking-wide">Net Pay</th>
+                      <th className="text-left px-5 py-2.5 font-semibold text-gray-500 text-xs uppercase tracking-wide">Status</th>
+                      <th className="px-5 py-2.5"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {records.map((p) => (
+                      <tr key={p.id} className="hover:bg-gray-50/60">
+                        <td className="px-5 py-3">
+                          <p className="font-medium text-brand-navy">{p.employee.name}</p>
+                          <p className="text-xs text-gray-400">{p.employee.position}</p>
+                        </td>
+                        <td className="px-5 py-3 text-right text-gray-700">{formatCurrency(p.grossSalary, p.currency)}</td>
+                        <td className="px-5 py-3 text-right text-orange-600">{formatCurrency(p.paye, p.currency)}</td>
+                        <td className="px-5 py-3 text-right font-bold text-brand-navy">{formatCurrency(p.netPay, p.currency)}</td>
+                        <td className="px-5 py-3">
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[p.status] ?? "bg-gray-100 text-gray-600"}`}>
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3">
+                          <Link href={`/astelfin_26/payroll/${p.id}/payslip`}
+                            className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
+                            Payslip →
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

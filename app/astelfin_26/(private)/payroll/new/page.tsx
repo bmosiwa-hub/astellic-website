@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
 import { calculateNetPay, calculateEmployerPension, formatCurrency } from "@/lib/finance-utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -34,6 +35,15 @@ async function runPayrollForEmployee(formData: FormData) {
 
   const employee = await prisma.employee.findUnique({ where: { id: employeeId } });
   if (!employee) return;
+
+  // Reject if this period has already been locked by CEO
+  const lockedRecord = await prisma.payroll.findFirst({
+    where: { period, lockedAt: { not: null } },
+    select: { id: true },
+  });
+  if (lockedRecord) {
+    redirect(`/astelfin_26/payroll/new?period=${encodeURIComponent(period)}&error=period_locked`);
+  }
 
   const rate = employee.currency !== "MWK" ? (employee.salaryExchangeRate ?? 1) : 1;
 
@@ -247,6 +257,17 @@ export default async function NewPayrollPage({
         </form>
       </div>
 
+      {error === "period_locked" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>
+            <strong>Period Locked.</strong> This payroll period has been approved and locked by the CEO.
+            No further records can be added. Contact the CEO if an adjustment is needed.
+          </span>
+        </div>
+      )}
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
           ✓ Payroll processed for <strong>{decodeURIComponent(success)}</strong>.

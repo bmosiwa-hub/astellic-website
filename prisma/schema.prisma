@@ -70,6 +70,11 @@ model User {
   permissions       Json?              // null = use role defaults; see lib/permissions.ts
   employeeId        String?            // links to Employee.id for STAFF users
   consultantId      String?            // links to Consultant.id for CONSULTANT users
+  // ── Login security ──────────────────────────────────────────────────────────
+  failedLoginCount  Int                @default(0)  // reset on successful login
+  lockedUntil       DateTime?          // null = not locked
+  lastLoginAt       DateTime?          // updated on every successful login
+  passwordChangedAt DateTime?          // for password-age enforcement
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   auditLogs           AuditLog[]
@@ -124,35 +129,43 @@ model Project {
 }
 
 model Income {
-  id            String      @id @default(cuid())
-  projectId     String?
-  project       Project?    @relation(fields: [projectId], references: [id])
-  incomeType    IncomeType  @default(GRANT)
-  description   String
-  amount        Float
-  currency      String      @default("MWK")
-  receivedDate  DateTime
-  source        String?
-  invoiceNumber String?
-  notes         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id             String      @id @default(cuid())
+  projectId      String?
+  project        Project?    @relation(fields: [projectId], references: [id])
+  incomeType     IncomeType  @default(GRANT)
+  description    String
+  amount         Float
+  currency       String      @default("MWK")
+  receivedDate   DateTime
+  source         String?
+  invoiceNumber  String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt      DateTime?
+  deletedBy      String?     // userId
+  deletionReason String?
 }
 
 model Expense {
-  id          String   @id @default(cuid())
-  projectId   String?
-  project     Project? @relation(fields: [projectId], references: [id])
-  description String
-  amount      Float
-  currency    String   @default("MWK")
-  category    String
-  paidDate    DateTime
-  vendor      String?
-  receiptRef  String?
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  projectId      String?
+  project        Project? @relation(fields: [projectId], references: [id])
+  description    String
+  amount         Float
+  currency       String   @default("MWK")
+  category       String
+  paidDate       DateTime
+  vendor         String?
+  receiptRef     String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt      DateTime?
+  deletedBy      String?
+  deletionReason String?
 }
 
 model Consultant {
@@ -176,6 +189,10 @@ model Consultant {
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
   payments              ConsultantPayment[]
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt             DateTime?
+  deletedBy             String?
+  deletionReason        String?
 }
 
 model ConsultantPayment {
@@ -197,6 +214,10 @@ model ConsultantPayment {
   whtStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt      DateTime?
+  deletedBy      String?
+  deletionReason String?
 }
 
 model Employee {
@@ -259,33 +280,48 @@ model Payroll {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   overspendingRefunds OverspendingRefund[]
+  // ── Payroll lock (set when CEO approves the run — record becomes read-only) ─
+  lockedAt        DateTime?
+  lockedBy        String?       // CEO userId
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt       DateTime?
+  deletedBy       String?
+  deletionReason  String?
 }
 
 model Debt {
-  id            String          @id @default(cuid())
-  lender        String
-  description   String
-  principal     Float
-  currency      String          @default("MWK")
-  interestRate  Float?
-  disbursedDate DateTime
-  dueDate       DateTime?
-  status        DebtStatus      @default(ACTIVE)
-  notes         String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  repayments    DebtRepayment[]
+  id             String          @id @default(cuid())
+  lender         String
+  description    String
+  principal      Float
+  currency       String          @default("MWK")
+  interestRate   Float?
+  disbursedDate  DateTime
+  dueDate        DateTime?
+  status         DebtStatus      @default(ACTIVE)
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  repayments     DebtRepayment[]
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt      DateTime?
+  deletedBy      String?
+  deletionReason String?
 }
 
 model DebtRepayment {
-  id        String   @id @default(cuid())
-  debtId    String
-  debt      Debt     @relation(fields: [debtId], references: [id])
-  amount    Float
-  currency  String   @default("MWK")
-  paidDate  DateTime
-  notes     String?
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  debtId         String
+  debt           Debt     @relation(fields: [debtId], references: [id])
+  amount         Float
+  currency       String   @default("MWK")
+  paidDate       DateTime
+  notes          String?
+  createdAt      DateTime @default(now())
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt      DateTime?
+  deletedBy      String?
+  deletionReason String?
 }
 
 model TaxConfig {
@@ -305,6 +341,76 @@ model AuditLog {
   entityId  String?
   detail    String?
   createdAt DateTime @default(now())
+}
+
+// ── Enhanced audit trail (Phase 1 — immutable, tamper-evident) ───────────────
+// Every create/update/delete on a financial model writes one row here.
+// This table has NO updatedAt — rows are never modified after insert.
+// The checksum covers all fields so any tampering is detectable.
+model AuditEvent {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  // Who
+  userId        String?                // null for system/pre-auth events
+  userEmail     String   @default("")  // denormalised — survives user deletion
+  userName      String   @default("")  // denormalised
+  userRole      String   @default("")  // role at time of action
+  // Where from
+  ipAddress     String   @default("unknown")
+  userAgent     String   @default("unknown")
+  sessionId     String?
+  // What
+  action        String   // CREATE | UPDATE | DELETE | APPROVE | REJECT | SUBMIT | LOGIN | LOGOUT | EXPORT | LOCK
+  entityType    String   // Prisma model name
+  entityId      String?
+  previousValue Json?    // full record snapshot before change
+  newValue      Json?    // full record snapshot after change
+  changedFields String[] @default([])  // field names that changed
+  detail        String?
+  // Integrity
+  checksum      String   @default("") // SHA-256 of all fields — tamper detection
+}
+
+// ── Immutable approval chain ──────────────────────────────────────────────────
+// Every status transition on an approvable entity writes one row here.
+// This table has NO updatedAt — rows are never modified after insert.
+model ApprovalRecord {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  entityType      String   // "TaxRemittance" | "Submission" | "Liquidation" | "Procurement" | "Payroll" …
+  entityId        String
+  decidedById     String
+  decidedByEmail  String   // denormalised
+  decidedByName   String   // denormalised
+  decidedByRole   String   // denormalised
+  previousStatus  String
+  newStatus       String
+  decision        String   // SUBMITTED | APPROVED | REJECTED | CHANGES_REQUESTED | LOCKED | UNLOCKED
+  comments        String?
+  ipAddress       String   @default("unknown")
+  checksum        String   @default("") // SHA-256 tamper detection
+}
+
+// ── Security event log ────────────────────────────────────────────────────────
+model LoginEvent {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  email         String   // attempted email address
+  userId        String?  // null for failed attempts or unknown users
+  success       Boolean
+  ipAddress     String   @default("unknown")
+  userAgent     String   @default("unknown")
+  failureReason String?  // INVALID_PASSWORD | USER_NOT_FOUND | ACCOUNT_INACTIVE | ACCOUNT_LOCKED
+}
+
+// ── Per-email brute-force lockout tracker ────────────────────────────────────
+model LoginAttempt {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  attempts      Int       @default(0)
+  lastAttemptAt DateTime  @default(now())
+  lockedUntil   DateTime?
+  updatedAt     DateTime  @updatedAt
 }
 
 enum ChangeType {
@@ -389,6 +495,10 @@ model Submission {
 
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt    DateTime?
+  deletedBy    String?
+  deletionReason String?
 }
 
 model SubmissionItem {
@@ -455,6 +565,10 @@ model Liquidation {
 
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt         DateTime?
+  deletedBy         String?
+  deletionReason    String?
 }
 
 // Tracks overspent amounts awaiting CEO approval for payroll reimbursement
@@ -549,6 +663,10 @@ model AccountPayable {
   creator            User              @relation("APCreatedBy", fields: [createdBy], references: [id])
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt          DateTime?
+  deletedBy          String?
+  deletionReason     String?
 }
 
 model AccountReceivable {
@@ -569,6 +687,10 @@ model AccountReceivable {
   creator      User             @relation("ARCreatedBy", fields: [createdBy], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt    DateTime?
+  deletedBy    String?
+  deletionReason String?
 }
 
 // ── Project Members & Milestones ─────────────────────────────────
@@ -620,6 +742,10 @@ model Asset {
   insurance     AssetInsurance?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt     DateTime?
+  deletedBy     String?
+  deletionReason String?
 }
 
 model AssetInsurance {
@@ -666,6 +792,10 @@ model Procurement {
   quotations    ProcurementQuotation[]
   createdAt     DateTime             @default(now())
   updatedAt     DateTime             @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt     DateTime?
+  deletedBy     String?
+  deletionReason String?
 }
 
 model ProcurementQuotation {
@@ -905,6 +1035,10 @@ model TaxRemittance {
   pensionIds           String[]  @default([])  // payroll IDs for PENSION remittances
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
+  // ── Soft delete ─────────────────────────────────────────────────────────────
+  deletedAt            DateTime?
+  deletedBy            String?
+  deletionReason       String?
 }
 
 // ── Performance Management ────────────────────────────────────────────────────

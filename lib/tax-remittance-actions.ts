@@ -3,6 +3,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { writeApprovalRecord } from "@/lib/approval-record";
+import { assertNotSelfApproval } from "@/lib/self-approval";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -148,6 +150,18 @@ export async function createTaxRemittance(formData: FormData) {
     detail:   `${taxType} ${remittanceType} — ${period} — MWK ${amount.toFixed(2)}`,
   });
 
+  await writeApprovalRecord({
+    entityType:     "TaxRemittance",
+    entityId:       remittance.id,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: "DRAFT",
+    newStatus:      "PENDING_CEO",
+    decision:       "SUBMITTED",
+  });
+
   // Notify CEO
   const ceoEmails = await getCEOEmails();
   if (ceoEmails.length > 0) {
@@ -201,6 +215,8 @@ export async function approveTaxRemittance(formData: FormData) {
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
 
+  assertNotSelfApproval(session.user.id!, remittance!.submittedById, "tax remittance");
+
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
     data:  {
@@ -239,6 +255,19 @@ export async function approveTaxRemittance(formData: FormData) {
     entity:   "TaxRemittance",
     entityId: remittanceId,
     detail:   ceoNote || `CEO approved ${remittance!.taxType} remittance`,
+  });
+
+  await writeApprovalRecord({
+    entityType:     "TaxRemittance",
+    entityId:       remittanceId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: remittance!.status,
+    newStatus:      "CEO_APPROVED",
+    decision:       "APPROVED",
+    comments:       ceoNote,
   });
 
   // Notify FM
@@ -282,6 +311,8 @@ export async function rejectTaxRemittance(formData: FormData) {
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
 
+  assertNotSelfApproval(session.user.id!, remittance.submittedById, "tax remittance");
+
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
     data:  {
@@ -318,6 +349,19 @@ export async function rejectTaxRemittance(formData: FormData) {
     entity:   "TaxRemittance",
     entityId: remittanceId,
     detail:   ceoNote || `CEO rejected ${remittance.taxType} remittance`,
+  });
+
+  await writeApprovalRecord({
+    entityType:     "TaxRemittance",
+    entityId:       remittanceId,
+    decidedById:    session.user.id!,
+    decidedByEmail: session.user.email ?? "",
+    decidedByName:  session.user.name  ?? "",
+    decidedByRole:  session.user.role,
+    previousStatus: remittance.status,
+    newStatus:      "CEO_REJECTED",
+    decision:       "REJECTED",
+    comments:       ceoNote,
   });
 
   const fmEmails = await getFMEmails();
