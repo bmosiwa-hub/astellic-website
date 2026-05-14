@@ -76,6 +76,9 @@ model User {
   lastLoginAt        DateTime?          // updated on every successful login
   passwordChangedAt  DateTime?          // updated whenever password changes
   mustChangePassword Boolean            @default(false) // set on new users & admin resets
+  // ── TOTP 2FA ────────────────────────────────────────────────────────────────
+  totpSecret        String?            // base32 TOTP secret; null = 2FA not configured
+  totpEnabled       Boolean            @default(false) // true once user completes setup verification
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   auditLogs           AuditLog[]

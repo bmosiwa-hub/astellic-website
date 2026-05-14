@@ -4,6 +4,7 @@ declare module "next-auth" {
   interface User {
     role?: string;
     mustChangePassword?: boolean;
+    totpEnabled?: boolean;
   }
   interface Session {
     user: {
@@ -13,6 +14,7 @@ declare module "next-auth" {
       image?: string | null;
       role: string;
       mustChangePassword?: boolean;
+      totpEnabled?: boolean;
     };
   }
 }
@@ -22,5 +24,6 @@ declare module "next-auth/jwt" {
     id?: string;
     role?: string;
     mustChangePassword?: boolean;
+    totpEnabled?: boolean;
   }
 }

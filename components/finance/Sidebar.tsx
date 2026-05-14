@@ -490,8 +490,9 @@ export default function Sidebar({
             {sectionHeader("settings", "Settings", Icons.settings)}
             {open.settings && (
               <div className="space-y-0.5 mb-1">
-                {navLink("/astelfin_26/settings",             "General",       Icons.settings)}
-                {navLink("/astelfin_26/settings/audit",       "Audit Log",     Icons.documents)}
+                {navLink("/astelfin_26/settings",              "General",       Icons.settings)}
+                {navLink("/astelfin_26/settings/2fa",          "Two-Factor Auth",Icons.compliance)}
+                {navLink("/astelfin_26/settings/audit",        "Audit Log",     Icons.documents)}
                 {navLink("/astelfin_26/settings/login-history","Login History", Icons.timesheet)}
               </div>
             )}

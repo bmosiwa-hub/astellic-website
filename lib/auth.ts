@@ -144,7 +144,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         // ── 2. Find user ─────────────────────────────────────────────────────
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({
+          where:  { email },
+          select: {
+            id: true, name: true, email: true, passwordHash: true, role: true,
+            active: true, lockedUntil: true, mustChangePassword: true,
+            totpEnabled: true,
+          },
+        });
 
         if (!user) {
           await incrementFailure(email, attemptRec.attempts);
@@ -198,6 +205,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email:              user.email,
           role:               user.role,
           mustChangePassword: user.mustChangePassword,
+          totpEnabled:        user.totpEnabled,
         };
       },
     }),
@@ -212,6 +220,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id                = user.id;
         token.role              = (user as { role: string }).role;
         token.mustChangePassword = (user as { mustChangePassword?: boolean }).mustChangePassword ?? false;
+        token.totpEnabled       = (user as { totpEnabled?: boolean }).totpEnabled ?? false;
       }
       return token;
     },
@@ -220,6 +229,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id                = token.id   as string;
         session.user.role              = token.role as string;
         session.user.mustChangePassword = token.mustChangePassword as boolean | undefined;
+        session.user.totpEnabled        = token.totpEnabled as boolean | undefined;
       }
       return session;
     },
