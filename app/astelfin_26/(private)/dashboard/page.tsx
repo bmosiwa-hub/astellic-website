@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { formatDate } from "@/lib/finance-utils";
+import { buildRateMap, toMWK, fmtMWK, ratesAgeHours } from "@/lib/fx";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -18,77 +19,176 @@ export default async function DashboardPage() {
     redirect("/astelfin_26/my/submissions");
   }
 
-  // Aggregate totals
-  const [totalIncome, totalExpenses, activeProjects, recentAudit, activeDebts] =
+  // ── Load exchange rates ────────────────────────────────────────────────────
+  const exchangeRates = await prisma.exchangeRate.findMany({
+    select: { currency: true, middleRate: true, updatedAt: true },
+  });
+  const rates     = buildRateMap(exchangeRates);
+  const ratesAge  = ratesAgeHours(exchangeRates); // hours since last update
+  const ratesDate = exchangeRates.length > 0
+    ? new Date(Math.max(...exchangeRates.map((r) => r.updatedAt.getTime())))
+    : null;
+
+  // ── Aggregate totals (grouped by currency so we can convert) ──────────────
+  const [incomeGroups, expenseGroups, activeProjects, recentAudit, activeDebts, pendingSubmissions] =
     await Promise.all([
-      prisma.income.aggregate({ _sum: { amount: true } }),
-      prisma.expense.aggregate({ _sum: { amount: true } }),
+      prisma.income.groupBy({
+        by:    ["currency"],
+        where: { deletedAt: null },
+        _sum:  { amount: true },
+      }),
+      prisma.expense.groupBy({
+        by:    ["currency"],
+        where: { deletedAt: null },
+        _sum:  { amount: true },
+      }),
       prisma.project.count({ where: { status: "ACTIVE" } }),
       prisma.auditLog.findMany({
-        take: 8,
+        take:    8,
         orderBy: { createdAt: "desc" },
         include: { user: { select: { name: true } } },
       }),
       prisma.debt.findMany({
-        where: { status: "ACTIVE" },
-        include: { repayments: { select: { amount: true } } },
+        where:   { status: "ACTIVE", deletedAt: null },
+        include: { repayments: { select: { amount: true, currency: true } } },
       }),
+      // Count submissions awaiting action for the current user's role
+      session.user.role === "CEO"
+        ? prisma.submission.count({ where: { status: "PENDING_CEO", deletedAt: null } })
+        : session.user.role === "FINANCE_MANAGER"
+          ? prisma.submission.count({ where: { status: "PENDING_FM",  deletedAt: null } })
+          : Promise.resolve(0),
     ]);
 
-  const income = totalIncome._sum.amount ?? 0;
-  const expenses = totalExpenses._sum.amount ?? 0;
-  const balance = income - expenses;
-  const totalDebtOutstanding = activeDebts.reduce((s: number, d) => {
-    const repaid = d.repayments.reduce((r: number, p) => r + p.amount, 0);
-    return s + Math.max(0, d.principal - repaid);
+  // ── Convert to MWK ─────────────────────────────────────────────────────────
+  const totalIncomeMWK = incomeGroups.reduce(
+    (s, g) => s + toMWK(g._sum.amount ?? 0, g.currency, rates), 0,
+  );
+  const totalExpensesMWK = expenseGroups.reduce(
+    (s, g) => s + toMWK(g._sum.amount ?? 0, g.currency, rates), 0,
+  );
+  const balanceMWK = totalIncomeMWK - totalExpensesMWK;
+
+  // Debt: outstanding = principal − repayments, converted to MWK
+  const totalDebtMWK = activeDebts.reduce((s, d) => {
+    const repaid    = d.repayments.reduce((r, p) => r + toMWK(p.amount, p.currency, rates), 0);
+    const outstandingMWK = Math.max(0, toMWK(d.principal, d.currency, rates) - repaid);
+    return s + outstandingMWK;
   }, 0);
+
+  // ── Currency breakdown for tooltip / detail ────────────────────────────────
+  const incomeByCurrency = incomeGroups
+    .filter((g) => (g._sum.amount ?? 0) > 0)
+    .map((g) => ({ currency: g.currency, amount: g._sum.amount ?? 0 }));
+
+  const expenseByCurrency = expenseGroups
+    .filter((g) => (g._sum.amount ?? 0) > 0)
+    .map((g) => ({ currency: g.currency, amount: g._sum.amount ?? 0 }));
+
+  const multiCurrencyIncome  = incomeByCurrency.length  > 1 || (incomeByCurrency[0]?.currency  !== "MWK" && incomeByCurrency.length > 0);
+  const multiCurrencyExpense = expenseByCurrency.length > 1 || (expenseByCurrency[0]?.currency !== "MWK" && expenseByCurrency.length > 0);
+
+  function fmtNative(amount: number, currency: string) {
+    return new Intl.NumberFormat("en-MW", {
+      style: "currency", currency,
+      minimumFractionDigits: 0, maximumFractionDigits: 0,
+    }).format(amount);
+  }
 
   const stats = [
     {
-      label: "Total Income",
-      value: formatCurrency(income),
-      color: "text-green-600",
-      bg: "bg-green-50",
-      href: "/astelfin_26/income/breakdown",
+      label:    "Total Income",
+      value:    fmtMWK(totalIncomeMWK),
+      sub:      multiCurrencyIncome ? incomeByCurrency.map((g) => fmtNative(g.amount, g.currency)).join(" + ") : null,
+      color:    "text-green-600",
+      bg:       "bg-green-50",
+      href:     "/astelfin_26/income/breakdown",
     },
     {
-      label: "Total Expenses",
-      value: formatCurrency(expenses),
-      color: "text-red-600",
-      bg: "bg-red-50",
-      href: null,
+      label:    "Total Expenses",
+      value:    fmtMWK(totalExpensesMWK),
+      sub:      multiCurrencyExpense ? expenseByCurrency.map((g) => fmtNative(g.amount, g.currency)).join(" + ") : null,
+      color:    "text-red-600",
+      bg:       "bg-red-50",
+      href:     null,
     },
     {
-      label: "Outstanding Debt",
-      value: formatCurrency(totalDebtOutstanding),
-      color: "text-orange-600",
-      bg: "bg-orange-50",
-      href: "/astelfin_26/debt",
+      label:    "Outstanding Debt",
+      value:    fmtMWK(totalDebtMWK),
+      sub:      null,
+      color:    "text-orange-600",
+      bg:       "bg-orange-50",
+      href:     "/astelfin_26/debt",
     },
     {
-      label: "Net Balance",
-      value: formatCurrency(balance),
-      color: balance >= 0 ? "text-brand-navy" : "text-red-600",
-      bg: "bg-brand-light",
-      href: null,
+      label:    "Net Balance",
+      value:    fmtMWK(balanceMWK),
+      sub:      null,
+      color:    balanceMWK >= 0 ? "text-brand-navy" : "text-red-600",
+      bg:       "bg-brand-light",
+      href:     null,
     },
     {
-      label: "Active Projects",
-      value: activeProjects.toString(),
-      color: "text-brand-gold",
-      bg: "bg-yellow-50",
-      href: "/astelfin_26/projects",
+      label:    "Active Projects",
+      value:    activeProjects.toString(),
+      sub:      null,
+      color:    "text-brand-gold",
+      bg:       "bg-yellow-50",
+      href:     "/astelfin_26/projects",
     },
   ];
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-brand-navy">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Welcome back, {session?.user?.name?.split(" ")[0]}.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-navy">Dashboard</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Welcome back, {session?.user?.name?.split(" ")[0]}.
+          </p>
+        </div>
+        {/* Pending action badge */}
+        {pendingSubmissions > 0 && (
+          <Link
+            href="/astelfin_26/submissions"
+            className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold px-3 py-2 rounded-xl hover:bg-amber-100 transition-colors"
+          >
+            <span className="w-5 h-5 bg-amber-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold">
+              {pendingSubmissions}
+            </span>
+            submission{pendingSubmissions !== 1 ? "s" : ""} awaiting your review
+          </Link>
+        )}
       </div>
+
+      {/* Exchange rate disclaimer */}
+      {exchangeRates.length > 0 && (
+        <div className={`flex items-center gap-2 text-xs px-4 py-2 rounded-xl border ${
+          ratesAge != null && ratesAge > 72
+            ? "bg-amber-50 border-amber-200 text-amber-700"
+            : "bg-gray-50 border-gray-100 text-gray-400"
+        }`}>
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {ratesAge != null && ratesAge > 72
+            ? `Exchange rates are ${Math.round(ratesAge / 24)} days old — totals may not reflect current market rates.`
+            : `All totals shown in MWK equivalent using RBM middle rates`}
+          {ratesDate && (
+            <span className="ml-auto opacity-60">
+              Rates updated {formatDate(ratesDate)}
+            </span>
+          )}
+        </div>
+      )}
+      {exchangeRates.length === 0 && (
+        <div className="flex items-center gap-2 text-xs px-4 py-2 rounded-xl border bg-amber-50 border-amber-200 text-amber-700">
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          No exchange rates loaded — multi-currency totals may be inaccurate. The exchange rate cron runs weekdays at 09:00.
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
@@ -102,7 +202,10 @@ export default async function DashboardPage() {
                 {s.label}
               </p>
               <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-              {s.href && (
+              {s.sub && (
+                <p className="text-[10px] text-gray-400 mt-1 leading-tight">{s.sub}</p>
+              )}
+              {s.href && !s.sub && (
                 <p className="text-xs text-gray-400 mt-1">Click to view breakdown</p>
               )}
             </div>
@@ -118,10 +221,10 @@ export default async function DashboardPage() {
       {/* Quick actions */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Record Income", href: "/astelfin_26/income/new" },
+          { label: "Record Income",  href: "/astelfin_26/income/new" },
           { label: "Record Expense", href: "/astelfin_26/expenses/new" },
-          { label: "Add Project", href: "/astelfin_26/projects/new" },
-          { label: "Run Payroll", href: "/astelfin_26/payroll/new" },
+          { label: "Add Project",    href: "/astelfin_26/projects/new" },
+          { label: "Run Payroll",    href: "/astelfin_26/payroll/new" },
         ].map((a) => (
           <Link
             key={a.href}
@@ -137,17 +240,12 @@ export default async function DashboardPage() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-bold text-brand-navy">Recent Activity</h2>
-          <Link
-            href="/astelfin_26/settings/audit"
-            className="text-xs text-brand-gold hover:underline"
-          >
+          <Link href="/astelfin_26/settings/audit" className="text-xs text-brand-gold hover:underline">
             View all
           </Link>
         </div>
         {recentAudit.length === 0 ? (
-          <p className="px-6 py-8 text-center text-gray-400 text-sm">
-            No activity yet.
-          </p>
+          <p className="px-6 py-8 text-center text-gray-400 text-sm">No activity yet.</p>
         ) : (
           <ul className="divide-y divide-gray-50">
             {recentAudit.map((log) => (

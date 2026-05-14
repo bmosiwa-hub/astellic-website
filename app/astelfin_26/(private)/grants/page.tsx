@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -114,18 +115,26 @@ export default async function GrantsPage({
     },
   });
 
-  // Aggregate received income per grant
+  // ── Exchange rates ────────────────────────────────────────────────────────
+  const exchangeRates = await prisma.exchangeRate.findMany({
+    select: { currency: true, middleRate: true, updatedAt: true },
+  });
+  const rateMap = buildRateMap(exchangeRates);
+
+  // Aggregate received income per grant × currency (so we can convert to MWK)
   const incomeGroups = await prisma.income.groupBy({
-    by:    ["grantId"],
+    by:    ["grantId", "currency"],
     where: { grantId: { not: null }, deletedAt: null },
     _sum:  { amount: true },
   });
-  const receivedMap: Record<string, number> = {};
+  const receivedMWKMap: Record<string, number> = {};
   for (const g of incomeGroups) {
-    if (g.grantId) receivedMap[g.grantId] = g._sum.amount ?? 0;
+    if (!g.grantId) continue;
+    const mwk = toMWK(g._sum.amount ?? 0, g.currency, rateMap);
+    receivedMWKMap[g.grantId] = (receivedMWKMap[g.grantId] ?? 0) + mwk;
   }
 
-  // Aggregate spending per grant via linked budget lines
+  // Aggregate spending per grant via linked budget lines × currency
   const linkedBudgetLines = await prisma.budgetLine.findMany({
     where:  { grantId: { not: null }, active: true },
     select: { id: true, name: true, grantId: true },
@@ -139,28 +148,40 @@ export default async function GrantsPage({
   }
 
   const liquidGroups = await prisma.liquidation.groupBy({
-    by:    ["budgetLine"],
+    by:    ["budgetLine", "currency"],
     where: { status: "FM_APPROVED", deletedAt: null },
     _sum:  { fundsAccountedFor: true },
   });
   const payableGroups = await prisma.accountPayable.groupBy({
-    by:    ["budgetLine"],
-    where: { status: "PAID", budgetLine: { not: null } },
+    by:    ["budgetLine", "currency"],
+    where: { status: "PAID", budgetLine: { not: null }, deletedAt: null },
     _sum:  { amount: true },
   });
-  const spendByBL: Record<string, number> = {};
-  for (const g of liquidGroups)  spendByBL[g.budgetLine] = (spendByBL[g.budgetLine] ?? 0) + (g._sum.fundsAccountedFor ?? 0);
-  for (const g of payableGroups) if (g.budgetLine) spendByBL[g.budgetLine] = (spendByBL[g.budgetLine] ?? 0) + (g._sum.amount ?? 0);
 
-  const spentMap: Record<string, number> = {};
-  for (const [grantId, blNames] of Object.entries(blNamesByGrant)) {
-    spentMap[grantId] = blNames.reduce((s, name) => s + (spendByBL[name] ?? 0), 0);
+  // Build spendByBL in MWK
+  const spendByBL: Record<string, number> = {};
+  for (const g of liquidGroups) {
+    const mwk = toMWK(g._sum.fundsAccountedFor ?? 0, g.currency, rateMap);
+    spendByBL[g.budgetLine] = (spendByBL[g.budgetLine] ?? 0) + mwk;
+  }
+  for (const g of payableGroups) {
+    if (!g.budgetLine) continue;
+    const mwk = toMWK(g._sum.amount ?? 0, g.currency, rateMap);
+    spendByBL[g.budgetLine] = (spendByBL[g.budgetLine] ?? 0) + mwk;
   }
 
-  const editingGrant = editId ? grants.find((g) => g.id === editId) : null;
-  const totalAwarded = grants.filter((g) => g.status === "ACTIVE").reduce((s, g) => s + g.totalAmount, 0);
-  const totalReceived = Object.values(receivedMap).reduce((a, b) => a + b, 0);
-  const totalSpent   = Object.values(spentMap).reduce((a, b) => a + b, 0);
+  const spentMWKMap: Record<string, number> = {};
+  for (const [grantId, blNames] of Object.entries(blNamesByGrant)) {
+    spentMWKMap[grantId] = blNames.reduce((s, name) => s + (spendByBL[name] ?? 0), 0);
+  }
+
+  const editingGrant  = editId ? grants.find((g) => g.id === editId) : null;
+  // Portfolio totals — all in MWK equivalent
+  const totalAwardedMWK  = grants
+    .filter((g) => g.status === "ACTIVE")
+    .reduce((s, g) => s + toMWK(g.totalAmount, g.currency, rateMap), 0);
+  const totalReceivedMWK = Object.values(receivedMWKMap).reduce((a, b) => a + b, 0);
+  const totalSpentMWK    = Object.values(spentMWKMap).reduce((a, b) => a + b, 0);
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -190,9 +211,9 @@ export default async function GrantsPage({
       {grants.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: "Active Awards",    value: fmtMoney(totalAwarded),  sub: `${grants.filter(g=>g.status==="ACTIVE").length} active grants` },
-            { label: "Total Received",   value: fmtMoney(totalReceived), sub: "linked income receipts" },
-            { label: "Total Spent",      value: fmtMoney(totalSpent),    sub: "approved liquidations + paid payables" },
+            { label: "Active Awards",  value: fmtMWK(totalAwardedMWK),  sub: `${grants.filter(g=>g.status==="ACTIVE").length} active grants · MWK equivalent` },
+            { label: "Total Received", value: fmtMWK(totalReceivedMWK), sub: "linked income receipts · MWK equivalent" },
+            { label: "Total Spent",    value: fmtMWK(totalSpentMWK),    sub: "approved liquidations + paid payables · MWK equiv." },
           ].map(({ label, value, sub }) => (
             <div key={label} className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4">
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">{label}</p>
@@ -344,18 +365,19 @@ export default async function GrantsPage({
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Grant</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Donor</th>
                 <th className="text-right px-5 py-3 font-semibold text-gray-600">Award</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Received</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden lg:table-cell">Spent</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Received <span className="font-normal text-gray-400 text-[10px]">MWK</span></th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden lg:table-cell">Spent <span className="font-normal text-gray-400 text-[10px]">MWK</span></th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600 w-32">Utilisation</th>
                 <th className="px-5 py-3 text-right font-semibold text-gray-600">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {grants.map((g) => {
-                const received = receivedMap[g.id] ?? 0;
-                const spent    = spentMap[g.id] ?? 0;
-                const pct      = g.totalAmount > 0 ? Math.min(100, (spent / g.totalAmount) * 100) : 0;
-                const isOver   = spent > g.totalAmount;
+                const receivedMWK = receivedMWKMap[g.id] ?? 0;
+                const spentMWK    = spentMWKMap[g.id] ?? 0;
+                const awardedMWK  = toMWK(g.totalAmount, g.currency, rateMap);
+                const pct         = awardedMWK > 0 ? Math.min(100, (spentMWK / awardedMWK) * 100) : 0;
+                const isOver      = spentMWK > awardedMWK;
                 const isNear   = pct >= 80 && !isOver;
                 const barColor = isOver ? "bg-red-500" : isNear ? "bg-amber-400" : "bg-brand-gold";
                 const isEnding = g.endDate && g.status === "ACTIVE" &&
@@ -392,13 +414,13 @@ export default async function GrantsPage({
                       {fmtMoney(g.totalAmount, g.currency)}
                     </td>
                     <td className="px-5 py-3 text-right font-mono text-xs text-green-700 hidden md:table-cell">
-                      {received > 0 ? fmtMoney(received) : <span className="text-gray-300">—</span>}
+                      {receivedMWK > 0 ? fmtMWK(receivedMWK) : <span className="text-gray-300">—</span>}
                     </td>
                     <td className={`px-5 py-3 text-right font-mono text-xs font-semibold hidden lg:table-cell ${isOver ? "text-red-600" : "text-gray-700"}`}>
-                      {spent > 0 ? fmtMoney(spent) : <span className="text-gray-300">—</span>}
+                      {spentMWK > 0 ? fmtMWK(spentMWK) : <span className="text-gray-300">—</span>}
                     </td>
                     <td className="px-5 py-3">
-                      {spent > 0 || g.totalAmount > 0 ? (
+                      {spentMWK > 0 || awardedMWK > 0 ? (
                         <div className="space-y-1">
                           <div className="w-full bg-gray-100 rounded-full h-2">
                             <div className={`${barColor} h-2 rounded-full`} style={{ width: `${Math.min(100, pct)}%` }} />

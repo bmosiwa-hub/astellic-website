@@ -4,6 +4,7 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { toPeriodKey, periodLabel } from "@/lib/period-lock";
 import { notifyPeriodAction } from "@/lib/mail";
+import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createHash } from "crypto";
@@ -222,39 +223,47 @@ export default async function PeriodsPage({
   });
   const periodMap = Object.fromEntries(periodRecords.map((p) => [p.periodKey, p]));
 
-  // Fetch income & expense aggregates per month for this year
+  // ── Exchange rates ────────────────────────────────────────────────────────
+  const exchangeRates = await prisma.exchangeRate.findMany({
+    select: { currency: true, middleRate: true, updatedAt: true },
+  });
+  const rateMap = buildRateMap(exchangeRates);
+
+  // Fetch income & expense aggregates per month × currency for this year
   const yearStart = new Date(year, 0, 1);
   const yearEnd   = new Date(year + 1, 0, 1);
 
   const [incomeGroups, expenseGroups] = await Promise.all([
     prisma.income.groupBy({
-      by:    ["receivedDate"],
-      where: { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
-      _sum:  { amount: true },
+      by:     ["receivedDate", "currency"],
+      where:  { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
+      _sum:   { amount: true },
       _count: { id: true },
     }),
     prisma.expense.groupBy({
-      by:    ["paidDate"],
-      where: { paidDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
-      _sum:  { amount: true },
+      by:     ["paidDate", "currency"],
+      where:  { paidDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
+      _sum:   { amount: true },
       _count: { id: true },
     }),
   ]);
 
-  // Bucket by month
+  // Bucket by month — convert each currency group to MWK
   const incomeByMonth: Record<number, { sum: number; count: number }> = {};
   const expenseByMonth: Record<number, { sum: number; count: number }> = {};
 
   for (const g of incomeGroups) {
-    const m = new Date(g.receivedDate).getMonth() + 1;
+    const m   = new Date(g.receivedDate).getMonth() + 1;
+    const mwk = toMWK(g._sum.amount ?? 0, g.currency, rateMap);
     if (!incomeByMonth[m]) incomeByMonth[m] = { sum: 0, count: 0 };
-    incomeByMonth[m].sum   += g._sum.amount ?? 0;
+    incomeByMonth[m].sum   += mwk;
     incomeByMonth[m].count += g._count.id;
   }
   for (const g of expenseGroups) {
-    const m = new Date(g.paidDate).getMonth() + 1;
+    const m   = new Date(g.paidDate).getMonth() + 1;
+    const mwk = toMWK(g._sum.amount ?? 0, g.currency, rateMap);
     if (!expenseByMonth[m]) expenseByMonth[m] = { sum: 0, count: 0 };
-    expenseByMonth[m].sum   += g._sum.amount ?? 0;
+    expenseByMonth[m].sum   += mwk;
     expenseByMonth[m].count += g._count.id;
   }
 
@@ -309,9 +318,9 @@ export default async function PeriodsPage({
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-5 py-3 font-semibold text-gray-600">Month</th>
-              <th className="text-right px-5 py-3 font-semibold text-gray-600">Income</th>
-              <th className="text-right px-5 py-3 font-semibold text-gray-600">Expenses</th>
-              <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Net</th>
+              <th className="text-right px-5 py-3 font-semibold text-gray-600">Income <span className="font-normal text-gray-400 text-[10px]">MWK equiv.</span></th>
+              <th className="text-right px-5 py-3 font-semibold text-gray-600">Expenses <span className="font-normal text-gray-400 text-[10px]">MWK equiv.</span></th>
+              <th className="text-right px-5 py-3 font-semibold text-gray-600 hidden md:table-cell">Net <span className="font-normal text-gray-400 text-[10px]">MWK equiv.</span></th>
               <th className="text-left px-5 py-3 font-semibold text-gray-600">Status</th>
               <th className="text-left px-5 py-3 font-semibold text-gray-600 hidden lg:table-cell">Locked by / Checksum</th>
               <th className="px-5 py-3 text-right font-semibold text-gray-600">Actions</th>
@@ -332,15 +341,15 @@ export default async function PeriodsPage({
                 <tr key={key} className={`hover:bg-gray-50 ${status === "LOCKED" ? "bg-red-50/20" : status === "CLOSED" ? "bg-amber-50/20" : ""}`}>
                   <td className="px-5 py-3 font-medium text-brand-navy">{monthName} {year}</td>
                   <td className="px-5 py-3 text-right text-xs font-mono text-green-700">
-                    {inc.sum > 0 ? fmtMoney(inc.sum) : <span className="text-gray-300">—</span>}
+                    {inc.sum > 0 ? fmtMWK(inc.sum) : <span className="text-gray-300">—</span>}
                     {inc.count > 0 && <span className="text-gray-400 ml-1">({inc.count})</span>}
                   </td>
                   <td className="px-5 py-3 text-right text-xs font-mono text-red-600">
-                    {exp.sum > 0 ? fmtMoney(exp.sum) : <span className="text-gray-300">—</span>}
+                    {exp.sum > 0 ? fmtMWK(exp.sum) : <span className="text-gray-300">—</span>}
                     {exp.count > 0 && <span className="text-gray-400 ml-1">({exp.count})</span>}
                   </td>
                   <td className={`px-5 py-3 text-right text-xs font-mono font-semibold hidden md:table-cell ${net >= 0 ? "text-green-700" : "text-red-600"}`}>
-                    {(inc.sum > 0 || exp.sum > 0) ? fmtMoney(net) : <span className="text-gray-300">—</span>}
+                    {(inc.sum > 0 || exp.sum > 0) ? fmtMWK(net) : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGE[status]}`}>
