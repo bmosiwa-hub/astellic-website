@@ -113,10 +113,26 @@ export default async function GrantDetailPage({
             {grant.reportingPeriod && ` · ${grant.reportingPeriod} reporting`}
           </p>
         </div>
-        <Link href={`/astelfin_26/grants?edit=${grant.id}`}
-          className="text-sm text-brand-gold font-semibold hover:underline shrink-0">
-          Edit →
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <a href={`/api/finance/grants/${grant.id}/export`}
+            className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg font-semibold transition-colors">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            CSV
+          </a>
+          <Link href={`/astelfin_26/grants/${grant.id}/report`}
+            className="flex items-center gap-1 text-xs bg-brand-navy hover:bg-brand-navy/90 text-white px-3 py-1.5 rounded-lg font-semibold transition-colors">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Report
+          </Link>
+          <Link href={`/astelfin_26/grants?edit=${grant.id}`}
+            className="text-sm text-brand-gold font-semibold hover:underline">
+            Edit →
+          </Link>
+        </div>
       </div>
 
       {/* Countdown / notes */}
