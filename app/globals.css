@@ -10,3 +10,33 @@
     @apply bg-white text-brand-navy antialiased;
   }
 }
+
+/* ── Print styles for reports ──────────────────────────────────────────────── */
+@media print {
+  /* Hide navigation, sidebar, and screen-only chrome */
+  nav, aside, header, footer,
+  [data-print="hidden"],
+  .print\:hidden { display: none !important; }
+
+  /* Remove background colours from cards (saves ink) */
+  .bg-green-50, .bg-red-50, .bg-brand-light, .bg-amber-50,
+  .bg-orange-50, .bg-yellow-50, .bg-blue-50, .bg-purple-50 {
+    background-color: #fff !important;
+  }
+
+  /* Ensure shadows don't print */
+  .shadow-sm, .shadow { box-shadow: none !important; }
+
+  /* Full width */
+  .max-w-screen-xl, .max-w-5xl, .max-w-4xl { max-width: 100% !important; }
+
+  /* Avoid page breaks inside tables and cards */
+  table, .rounded-2xl { break-inside: avoid; }
+
+  /* Reset link colours */
+  a { color: inherit !important; text-decoration: none !important; }
+
+  body { font-size: 11pt; }
+  h1   { font-size: 16pt; }
+  h2   { font-size: 12pt; }
+}
