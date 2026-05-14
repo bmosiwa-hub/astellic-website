@@ -6,6 +6,7 @@ import { assertNotSelfApproval } from "@/lib/self-approval";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import DocumentsPanel from "@/components/finance/DocumentsPanel";
 
 export const metadata = {
   title: "Procurement Detail | Astelfin IMS",
@@ -601,6 +602,13 @@ export default async function ProcurementDetailPage({
           </form>
         </div>
       )}
+
+      {/* Supporting documents */}
+      <DocumentsPanel
+        entityType="Procurement"
+        entityId={id}
+        revalidateTo={`/astelfin_26/procurement/${id}`}
+      />
     </div>
   );
 }

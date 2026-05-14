@@ -4,6 +4,7 @@ import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { reviewSubmission, markSubmissionPaid } from "@/lib/submission-actions";
+import DocumentsPanel from "@/components/finance/DocumentsPanel";
 
 export const metadata = {
   title: "Review Submission | Astellic Finance",
@@ -225,6 +226,13 @@ export default async function ReviewSubmissionPage({
           </form>
         </div>
       )}
+
+      {/* Supporting documents */}
+      <DocumentsPanel
+        entityType="Submission"
+        entityId={id}
+        revalidateTo={`/astelfin_26/invoices/${id}`}
+      />
     </div>
   );
 }

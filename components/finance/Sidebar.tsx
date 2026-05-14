@@ -158,6 +158,11 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
     </svg>
   ),
+  documents: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -221,7 +226,7 @@ export default function Sidebar({
                           "/astelfin_26/assets", "/astelfin_26/financial-health"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
-                           "/astelfin_26/procurement"];
+                           "/astelfin_26/procurement", "/astelfin_26/documents"];
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
   const hrPaths         = ["/astelfin_26/employees", "/astelfin_26/consultants", "/astelfin_26/payroll",
                            "/astelfin_26/performance", "/astelfin_26/timesheets"];
@@ -384,6 +389,7 @@ export default function Sidebar({
                 {navLink("/astelfin_26/receivables",  "Accounts Receivable",  Icons.receivables,  overdueReceivables)}
                 {navLink("/astelfin_26/approvals",    "Approvals",            Icons.approvals,    isCEO ? pendingApprovals : undefined)}
                 {navLink("/astelfin_26/procurement",  "Procurement",          Icons.procurement)}
+                {navLink("/astelfin_26/documents",    "Document Library",     Icons.documents)}
                 {isCEO && navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
               </div>
             )}

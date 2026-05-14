@@ -1139,6 +1139,56 @@ model Timesheet {
   @@unique([employeeId, month, year])
 }
 
+// ── Centralised Document Library ──────────────────────────────────────────────
+//
+// Phase 2 — Document Management.
+// Every uploaded file lives here with full metadata, entity linkage, uploader
+// identity (denormalised for audit permanence), and an optional retention policy.
+//
+// entityType / entityId form a polymorphic link to any entity in the system.
+// Queries: prisma.document.findMany({ where: { entityType: "Procurement", entityId: id } })
+
+model Document {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+
+  // ── File metadata ──────────────────────────────────────────────────────────
+  title           String                          // user-facing name
+  filename        String                          // original file name
+  url             String                          // Vercel Blob URL
+  fileSize        Int?                            // bytes
+  mimeType        String?
+
+  // ── Classification ─────────────────────────────────────────────────────────
+  // RECEIPT | CONTRACT | REPORT | CORRESPONDENCE | POLICY | EVIDENCE | MINUTES | DELIVERABLE | OTHER
+  category        String
+  description     String?
+  tags            String[]  @default([])
+
+  // ── Polymorphic entity link ─────────────────────────────────────────────────
+  // null = standalone / general library document
+  entityType      String?   // "Submission" | "Procurement" | "Project" | "TaxRemittance" | "Liquidation" …
+  entityId        String?
+
+  // ── Uploader identity (denormalised — survives account deletion) ───────────
+  uploadedById    String
+  uploadedByName  String
+  uploadedByEmail String
+  uploadedByRole  String
+
+  // ── Retention ──────────────────────────────────────────────────────────────
+  retentionYears  Int?      // null = indefinite
+
+  // ── Soft delete ────────────────────────────────────────────────────────────
+  deletedAt       DateTime?
+  deletedBy       String?
+
+  @@index([entityType, entityId])
+  @@index([category])
+  @@index([uploadedById])
+  @@index([createdAt])
+}
+
 model TimesheetEntry {
   id          String    @id @default(cuid())
   timesheetId String

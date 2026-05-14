@@ -4,6 +4,7 @@ import { formatCurrency } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { approveTaxRemittance, rejectTaxRemittance } from "@/lib/tax-remittance-actions";
+import DocumentsPanel from "@/components/finance/DocumentsPanel";
 
 export const metadata = {
   title: "Review Tax Remittance | Astelfin IMS",
@@ -246,6 +247,13 @@ export default async function RemittanceReviewPage({
           <strong>Awaiting CEO approval.</strong> You will be notified by email once the CEO has reviewed this remittance.
         </div>
       )}
+
+      {/* Supporting documents */}
+      <DocumentsPanel
+        entityType="TaxRemittance"
+        entityId={remittance.id}
+        revalidateTo={`/astelfin_26/reports/tax/remittances/${remittance.id}`}
+      />
     </div>
   );
 }
