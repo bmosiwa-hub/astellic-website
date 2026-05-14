@@ -241,3 +241,156 @@ export async function notifyFMOfUpcomingPayable({
 
   await sendMail({ to, subject, html: layout(body) });
 }
+
+/**
+ * Notify CEO + FM that a financial period has been closed, locked, or reopened.
+ */
+export async function notifyPeriodAction({
+  to,
+  periodKey,
+  action,
+  actorName,
+  actorRole,
+  checksum,
+}: {
+  to: string | string[];
+  periodKey: string;
+  action: "CLOSED" | "LOCKED" | "REOPENED";
+  actorName: string;
+  actorRole: string;
+  checksum?: string;
+}): Promise<void> {
+  const [year, month] = periodKey.split("-");
+  const monthName = new Date(parseInt(year), parseInt(month) - 1, 1)
+    .toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+
+  const actionLabels: Record<string, string> = {
+    CLOSED:   "closed",
+    LOCKED:   "locked for donor submission",
+    REOPENED: "reopened",
+  };
+  const verb  = actionLabels[action] ?? action.toLowerCase();
+  const isBad = action === "REOPENED";
+  const subject =
+    action === "REOPENED" ? `Period reopened — ${monthName}` :
+    action === "LOCKED"   ? `Period locked — ${monthName}` :
+                            `Period closed — ${monthName}`;
+
+  const body = `
+    <h2>Financial Period ${action === "LOCKED" ? "Locked" : action === "CLOSED" ? "Closed" : "Reopened"}</h2>
+    <p>The <strong>${monthName}</strong> period has been <strong>${verb}</strong> by ${actorName} (${actorRole.replace("_", " ")}).</p>
+    ${checksum ? `<div class="note-box"><strong>Integrity checksum:</strong><br /><code style="font-size:11px;word-break:break-all">${checksum}</code><br /><span style="font-size:11px;color:#6b7280">Store this for audit purposes. It will be recomputed on export to verify data integrity.</span></div>` : ""}
+    ${isBad ? `<div class="note-box" style="border-color:#ef4444;background:#fef2f2"><strong>⚠ Caution:</strong> Reopening a locked period invalidates its checksum. All changes must be re-reviewed before relocking.</div>` : ""}
+    <a class="btn" href="${BASE_URL}/astelfin_26/periods">View Periods</a>
+  `;
+
+  await sendMail({ to, subject, html: layout(body) });
+}
+
+/**
+ * Notify CEO that a procurement request has been submitted for approval.
+ */
+export async function notifyProcurementSubmitted({
+  to,
+  title,
+  estimatedCost,
+  currency,
+  submittedBy,
+  procurementId,
+  quotationCount,
+}: {
+  to: string | string[];
+  title: string;
+  estimatedCost: number;
+  currency: string;
+  submittedBy: string;
+  procurementId: string;
+  quotationCount: number;
+}): Promise<void> {
+  const amountStr = new Intl.NumberFormat("en-MW", {
+    style: "currency", currency, minimumFractionDigits: 0,
+  }).format(estimatedCost).replace("MWK", "MWK ");
+
+  const subject = `Procurement approval required — ${title}`;
+
+  const body = `
+    <h2>Procurement Approval Required</h2>
+    <p>The Finance Manager has submitted a procurement request for your approval.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
+      <tr><td style="padding:8px 0;color:#6b7280;width:40%">Item</td><td style="padding:8px 0;font-weight:bold">${title}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280">Estimated Cost</td><td style="padding:8px 0;font-weight:bold;color:#0a1628">${amountStr}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280">Quotations</td><td style="padding:8px 0">${quotationCount} attached</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280">Submitted by</td><td style="padding:8px 0">${submittedBy}</td></tr>
+    </table>
+    <a class="btn" href="${BASE_URL}/astelfin_26/procurement/${procurementId}">Review &amp; Approve</a>
+  `;
+
+  await sendMail({ to, subject, html: layout(body) });
+}
+
+/**
+ * Daily compliance digest — overdue liquidations + grant over-utilisation.
+ * Only sent when there is at least one issue.
+ */
+export async function sendComplianceDigest({
+  to,
+  overdueItems,
+  grantAlerts,
+}: {
+  to: string | string[];
+  overdueItems: { label: string; daysOverdue: number; amount: number; currency: string }[];
+  grantAlerts: { name: string; donorName: string; pct: number; currency: string; totalAmount: number }[];
+}): Promise<void> {
+  const totalIssues = overdueItems.length + grantAlerts.length;
+  const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const subject = `[Compliance] ${totalIssues} issue${totalIssues !== 1 ? "s" : ""} flagged — ${dateStr}`;
+
+  const fmt = (n: number, cur: string) =>
+    new Intl.NumberFormat("en-MW", { style: "currency", currency: cur, minimumFractionDigits: 0 })
+      .format(n).replace("MWK", "MWK ");
+
+  const overdueRows = overdueItems.map((item) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${item.label}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6;text-align:right">${fmt(item.amount, item.currency)}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#dc2626;font-weight:bold;text-align:right">${item.daysOverdue}d overdue</td>
+    </tr>`).join("");
+
+  const grantRows = grantAlerts.map((g) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${g.name}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#6b7280">${g.donorName}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6;font-weight:bold;color:${g.pct >= 100 ? "#dc2626" : "#d97706"};text-align:right">${g.pct.toFixed(1)}% of ${fmt(g.totalAmount, g.currency)}</td>
+    </tr>`).join("");
+
+  const body = `
+    <h2>Daily Compliance Digest</h2>
+    <p>${dateStr} — <strong>${totalIssues} item${totalIssues !== 1 ? "s" : ""} require${totalIssues === 1 ? "s" : ""} attention.</strong></p>
+
+    ${overdueItems.length > 0 ? `
+    <h3 style="color:#dc2626;font-size:15px;margin-top:24px">Overdue Liquidations (${overdueItems.length})</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#fef2f2">
+        <th style="text-align:left;padding:8px;border-bottom:2px solid #fecaca">Request</th>
+        <th style="text-align:right;padding:8px;border-bottom:2px solid #fecaca">Amount</th>
+        <th style="text-align:right;padding:8px;border-bottom:2px solid #fecaca">Status</th>
+      </tr></thead>
+      <tbody>${overdueRows}</tbody>
+    </table>` : ""}
+
+    ${grantAlerts.length > 0 ? `
+    <h3 style="color:#d97706;font-size:15px;margin-top:24px">Grant Over-Utilisation (${grantAlerts.length})</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#fffbeb">
+        <th style="text-align:left;padding:8px;border-bottom:2px solid #fde68a">Grant</th>
+        <th style="text-align:left;padding:8px;border-bottom:2px solid #fde68a">Donor</th>
+        <th style="text-align:right;padding:8px;border-bottom:2px solid #fde68a">Utilisation</th>
+      </tr></thead>
+      <tbody>${grantRows}</tbody>
+    </table>` : ""}
+
+    <a class="btn" href="${BASE_URL}/astelfin_26/compliance">View Compliance Dashboard</a>
+  `;
+
+  await sendMail({ to, subject, html: layout(body) });
+}

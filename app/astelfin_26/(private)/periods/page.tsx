@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { toPeriodKey, periodLabel } from "@/lib/period-lock";
+import { notifyPeriodAction } from "@/lib/mail";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createHash } from "crypto";
@@ -91,6 +92,24 @@ async function closePeriod(formData: FormData) {
     detail:   `Period ${periodKey} closed by ${session.user.role}`,
   });
 
+  // Email all CEO + FM users (fire-and-forget — don't block on failure)
+  try {
+    const recipients = await prisma.user.findMany({
+      where: { role: { in: ["CEO", "FINANCE_MANAGER"] }, active: true },
+      select: { email: true },
+    });
+    if (recipients.length > 0) {
+      const actor = await prisma.user.findUnique({ where: { id: session.user.id! }, select: { name: true } });
+      await notifyPeriodAction({
+        to: recipients.map((u) => u.email),
+        periodKey,
+        action: "CLOSED",
+        actorName: actor?.name ?? session.user.name ?? "Unknown",
+        actorRole: session.user.role!,
+      });
+    }
+  } catch (e) { console.warn("[mail] period close notification failed", e); }
+
   revalidatePath("/astelfin_26/periods");
 }
 
@@ -136,6 +155,24 @@ async function lockPeriod(formData: FormData) {
     entity:   "FinancialPeriod",  entityId: periodKey,
     detail:   `Period ${periodKey} locked — checksum ${checksum.slice(0,16)}…`,
   });
+
+  // Email all CEO + FM users with checksum for audit records
+  try {
+    const recipients = await prisma.user.findMany({
+      where: { role: { in: ["CEO", "FINANCE_MANAGER"] }, active: true },
+      select: { email: true },
+    });
+    if (recipients.length > 0) {
+      await notifyPeriodAction({
+        to: recipients.map((u) => u.email),
+        periodKey,
+        action: "LOCKED",
+        actorName: locker?.name ?? "Unknown",
+        actorRole: locker?.role ?? "CEO",
+        checksum,
+      });
+    }
+  } catch (e) { console.warn("[mail] period lock notification failed", e); }
 
   revalidatePath("/astelfin_26/periods");
 }

@@ -4,6 +4,7 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { notifyProcurementSubmitted } from "@/lib/mail";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import DocumentsPanel from "@/components/finance/DocumentsPanel";
@@ -141,6 +142,25 @@ async function submitForApproval(formData: FormData) {
     newStatus:      "PENDING_APPROVAL",
     decision:       "SUBMITTED",
   });
+
+  // Notify CEO (fire-and-forget)
+  try {
+    const ceos = await prisma.user.findMany({
+      where: { role: "CEO", active: true },
+      select: { email: true },
+    });
+    if (ceos.length > 0) {
+      await notifyProcurementSubmitted({
+        to:            ceos.map((u) => u.email),
+        title:         proc.title,
+        estimatedCost: proc.estimatedCost,
+        currency:      proc.currency ?? "MWK",
+        submittedBy:   session.user.name ?? session.user.email ?? "Finance Manager",
+        procurementId,
+        quotationCount: proc.quotations.length,
+      });
+    }
+  } catch (e) { console.warn("[mail] procurement submission notification failed", e); }
 
   redirect(`/astelfin_26/procurement?success=submitted`);
 }
