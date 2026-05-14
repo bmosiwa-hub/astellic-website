@@ -392,6 +392,7 @@ export default function Sidebar({
                 {(isCEO || isFM) && navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
                 {(isCEO || isFM) && navLink("/astelfin_26/grants",           "Donor Grants",     Icons.grants)}
                 {(isCEO || isFM) && navLink("/astelfin_26/periods",          "Periods",          Icons.periods)}
+                {(isCEO || isFM) && navLink("/astelfin_26/reconciliation",   "Reconciliation",   Icons.periods)}
                 {navLink("/astelfin_26/exchange-rates",   "Exchange Rates",  Icons.exchangeRates)}
               </div>
             )}

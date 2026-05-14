@@ -1319,6 +1319,60 @@ model TimesheetEntry {
   createdAt   DateTime  @default(now())
 }
 
+// ── Phase 14: Bank Reconciliation ─────────────────────────────────────────────
+//
+// Workflow:
+//   1. FM uploads a CSV bank statement → BankStatement + BankTransaction rows created.
+//   2. Auto-match runs: pairs transactions to Income/Expense/Payroll by date ± 3 days
+//      and amount within 1% tolerance.
+//   3. FM reviews auto-matches, manually matches remaining, or marks as UNMATCHED.
+//   4. When all rows are reviewed, FM marks the statement as RECONCILED.
+
+model BankStatement {
+  id            String             @id @default(cuid())
+  // Bank account details (free-text, not a FK — may be external)
+  accountName   String
+  bankName      String
+  currency      String             @default("MWK")
+  // Statement date range
+  fromDate      DateTime
+  toDate        DateTime
+  // Processing state
+  status        String             @default("PENDING") // PENDING | IN_REVIEW | RECONCILED
+  uploadedById  String
+  reconciledById String?
+  reconciledAt  DateTime?
+  notes         String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  transactions  BankTransaction[]
+}
+
+model BankTransaction {
+  id              String              @id @default(cuid())
+  statementId     String
+  statement       BankStatement       @relation(fields: [statementId], references: [id], onDelete: Cascade)
+  // Raw fields from the CSV
+  transactionDate DateTime
+  description     String
+  debit           Float?              // amount leaving the account (positive)
+  credit          Float?              // amount entering the account (positive)
+  balance         Float?              // running balance after this transaction
+  // Matching state
+  matchStatus     String              @default("UNMATCHED") // UNMATCHED | AUTO_MATCHED | MANUAL_MATCHED | EXCLUDED
+  // Polymorphic link to the matched system record
+  matchEntityType String?             // "Income" | "Expense" | "Payroll" | "AccountPayable"
+  matchEntityId   String?
+  matchNote       String?
+  matchedAt       DateTime?
+  matchedById     String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([statementId, matchStatus])
+  @@index([transactionDate])
+}
+
 // ── Phase 12: Approval Delegation ─────────────────────────────────────────────
 //
 // CEO can temporarily delegate their approval authority to another user.
