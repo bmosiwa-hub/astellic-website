@@ -245,6 +245,7 @@ export default function Sidebar({
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
                           "/astelfin_26/assets", "/astelfin_26/financial-health", "/astelfin_26/budget",
                           "/astelfin_26/periods", "/astelfin_26/grants"];
+  const settingsPaths  = ["/astelfin_26/settings"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
                            "/astelfin_26/procurement", "/astelfin_26/documents", "/astelfin_26/compliance"];
@@ -264,6 +265,7 @@ export default function Sidebar({
     bizdev:     pathIn(pathname, bizdevPaths),
     intel:      pathIn(pathname, intelPaths),
     mypage:     pathIn(pathname, myPaths),
+    settings:   pathIn(pathname, settingsPaths),
   });
 
   // Keep sections in sync when navigating
@@ -276,6 +278,7 @@ export default function Sidebar({
       bizdev:     prev.bizdev     || pathIn(pathname, ["/astelfin_26/bizdev"]),
       intel:      prev.intel      || pathIn(pathname, intelPaths),
       mypage:     prev.mypage     || pathIn(pathname, myPaths),
+      settings:   prev.settings   || pathIn(pathname, settingsPaths),
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
@@ -484,17 +487,14 @@ export default function Sidebar({
         {isCEO && (
           <>
             <div className="pt-2 border-t border-white/10 mt-2" />
-            <Link
-              href="/astelfin_26/settings"
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                pathname.startsWith("/astelfin_26/settings")
-                  ? "bg-brand-gold text-white"
-                  : "text-gray-400 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {Icons.settings}
-              <span>Settings</span>
-            </Link>
+            {sectionHeader("settings", "Settings", Icons.settings)}
+            {open.settings && (
+              <div className="space-y-0.5 mb-1">
+                {navLink("/astelfin_26/settings",             "General",       Icons.settings)}
+                {navLink("/astelfin_26/settings/audit",       "Audit Log",     Icons.documents)}
+                {navLink("/astelfin_26/settings/login-history","Login History", Icons.timesheet)}
+              </div>
+            )}
           </>
         )}
       </nav>
