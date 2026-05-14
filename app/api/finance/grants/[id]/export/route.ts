@@ -71,7 +71,7 @@ export async function GET(
       : Promise.resolve([]),
     blNames.length > 0
       ? prisma.accountPayable.findMany({
-          where:   { budgetLine: { in: blNames }, status: "PAID" },
+          where:   { budgetLine: { in: blNames }, status: "PAID", deletedAt: null },
           orderBy: { paidDate: "asc" },
           select:  { description: true, vendor: true, amount: true, currency: true, budgetLine: true, paidDate: true },
         })

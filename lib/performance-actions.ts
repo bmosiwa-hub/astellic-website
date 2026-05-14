@@ -116,6 +116,8 @@ export async function submitObjectives(formData: FormData) {
     include: { employee: { select: { name: true, supervisorId: true } } },
   });
   if (!cycle) redirect("/astelfin_26/my/performance");
+  if (!["OBJECTIVES_DRAFT", "OBJECTIVES_SUBMITTED"].includes(cycle.status))
+    redirect(`/astelfin_26/my/performance/${cycleId}?error=wrong_state`);
 
   await prisma.performanceCycle.update({
     where: { id: cycleId },
@@ -161,6 +163,10 @@ export async function reviewObjectives(formData: FormData) {
   const cycleId  = formData.get("cycleId")  as string;
   const decision = formData.get("decision") as string; // APPROVE | REJECT
   const note     = (formData.get("note") as string) || null;
+
+  const existing = await prisma.performanceCycle.findUnique({ where: { id: cycleId }, select: { status: true } });
+  if (existing?.status !== "OBJECTIVES_SUBMITTED")
+    redirect(`/astelfin_26/performance/${cycleId}?error=wrong_state`);
 
   const newStatus = decision === "APPROVE" ? "OBJECTIVES_APPROVED" : "OBJECTIVES_DRAFT";
 
@@ -247,7 +253,11 @@ export async function submitSelfReview(formData: FormData) {
     });
   }
 
-  // Advance cycle status
+  // Advance cycle status — only from OBJECTIVES_APPROVED state
+  const preSelf = await prisma.performanceCycle.findUnique({ where: { id: cycleId }, select: { status: true } });
+  if (preSelf?.status !== "OBJECTIVES_APPROVED")
+    redirect(`/astelfin_26/my/performance/${cycleId}?error=wrong_state`);
+
   await prisma.performanceCycle.update({
     where: { id: cycleId },
     data:  { status: "REVIEWING" },
@@ -329,7 +339,11 @@ export async function submitSupervisorReview(formData: FormData) {
     });
   }
 
-  // Advance to CEO_PENDING
+  // Advance to CEO_PENDING — only from REVIEWING
+  const preSup = await prisma.performanceCycle.findUnique({ where: { id: cycleId }, select: { status: true } });
+  if (preSup?.status !== "REVIEWING")
+    redirect(`/astelfin_26/performance/${cycleId}?error=wrong_state`);
+
   await prisma.performanceCycle.update({
     where: { id: cycleId },
     data:  { status: "CEO_PENDING" },
@@ -393,6 +407,11 @@ export async function saveCEODecision(formData: FormData) {
       decidedAt:   new Date(),
     },
   });
+
+  // Advance to COMPLETED — only from CEO_PENDING
+  const preDecision = await prisma.performanceCycle.findUnique({ where: { id: cycleId }, select: { status: true } });
+  if (preDecision?.status !== "CEO_PENDING")
+    redirect(`/astelfin_26/performance/${cycleId}?error=wrong_state`);
 
   await prisma.performanceCycle.update({
     where: { id: cycleId },

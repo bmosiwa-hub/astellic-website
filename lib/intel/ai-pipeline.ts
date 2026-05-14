@@ -10,7 +10,7 @@ import { buildExtractionPrompt, buildAnalysisPrompt } from "./prompts";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-const MODEL = "gpt-4o";
+const MODEL = process.env.OPENAI_MODEL ?? "gpt-4o";
 
 async function callOpenAI(system: string, user: string): Promise<string> {
   const response = await fetch(OPENAI_API_URL, {

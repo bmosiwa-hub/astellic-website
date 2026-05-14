@@ -211,6 +211,13 @@ async function terminateContract(formData: FormData) {
     data:  { active: false, endDate: new Date() },
   });
 
+  // Remove this employee as supervisor from any direct reports so they are not
+  // left with an inactive supervisor and can be reassigned.
+  await prisma.employee.updateMany({
+    where: { supervisorId: employeeId },
+    data:  { supervisorId: null },
+  });
+
   await auditLog({
     userId:   session.user.id,
     action:   "TERMINATE",

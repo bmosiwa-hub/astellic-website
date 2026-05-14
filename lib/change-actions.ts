@@ -6,7 +6,7 @@ import { auditLog } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-type Entity = "Income" | "Expense";
+type Entity = "Income" | "Expense" | "AccountPayable" | "Debt";
 
 /** Build a human-readable summary from a record snapshot for audit logs. */
 function snapshotSummary(snapshot: object): string {
@@ -38,16 +38,24 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
   let snapshot: object;
   if (entity === "Income") {
     snapshot = (await prisma.income.findUniqueOrThrow({ where: { id: entityId } })) as object;
-  } else {
+  } else if (entity === "Expense") {
     snapshot = (await prisma.expense.findUniqueOrThrow({ where: { id: entityId } })) as object;
+  } else if (entity === "AccountPayable") {
+    snapshot = (await prisma.accountPayable.findUniqueOrThrow({ where: { id: entityId } })) as object;
+  } else {
+    snapshot = (await prisma.debt.findUniqueOrThrow({ where: { id: entityId } })) as object;
   }
 
   if (session.user.role === "CEO") {
     // Apply immediately
     if (entity === "Income") {
       await prisma.income.delete({ where: { id: entityId } });
-    } else {
+    } else if (entity === "Expense") {
       await prisma.expense.delete({ where: { id: entityId } });
+    } else if (entity === "AccountPayable") {
+      await prisma.accountPayable.update({ where: { id: entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
+    } else {
+      await prisma.debt.update({ where: { id: entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
     }
     await auditLog({
       userId: session.user.id!,
@@ -81,7 +89,10 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
     });
   }
 
-  revalidatePath(`/astelfin_26/${entity === "Income" ? "income" : "expenses"}`);
+  const entityPath: Record<Entity, string> = {
+    Income: "income", Expense: "expenses", AccountPayable: "payables", Debt: "debt",
+  };
+  revalidatePath(`/astelfin_26/${entityPath[entity]}`);
 }
 
 /**
@@ -106,6 +117,10 @@ export async function approveChange(changeId: string, formData: FormData) {
         await prisma.income.delete({ where: { id: change.entityId } });
       } else if (change.entity === "Expense") {
         await prisma.expense.delete({ where: { id: change.entityId } });
+      } else if (change.entity === "AccountPayable") {
+        await prisma.accountPayable.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
+      } else if (change.entity === "Debt") {
+        await prisma.debt.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
       }
     } else {
       // EDIT — apply proposed values
@@ -165,8 +180,11 @@ export async function approveChange(changeId: string, formData: FormData) {
     detail: `${change.changeType} approved — ${approvedSummary}${reviewNote ? ` · ${reviewNote}` : ""}`,
   });
 
+  const approveEntityPath: Record<string, string> = {
+    Income: "income", Expense: "expenses", AccountPayable: "payables", Debt: "debt",
+  };
   revalidatePath("/astelfin_26/approvals");
-  revalidatePath(`/astelfin_26/${change.entity === "Income" ? "income" : "expenses"}`);
+  revalidatePath(`/astelfin_26/${approveEntityPath[change.entity] ?? change.entity.toLowerCase()}`);
 }
 
 /** CEO rejects a pending change. */

@@ -148,7 +148,7 @@ export default async function BudgetLinesPage({
   // Source 2: paid account payables
   const payableGroups = await prisma.accountPayable.groupBy({
     by: ["budgetLine"],
-    where: { status: "PAID", budgetLine: { not: null } },
+    where: { status: "PAID", budgetLine: { not: null }, deletedAt: null },
     _sum: { amount: true },
   });
 

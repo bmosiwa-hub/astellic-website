@@ -7,6 +7,7 @@
  */
 
 import { createHmac, randomBytes } from "crypto";
+import bcrypt from "bcryptjs";
 
 // ── Base32 (RFC 4648) ─────────────────────────────────────────────────────────
 
@@ -87,4 +88,43 @@ export function verifyTotpToken(secret: string, token: string): boolean {
     if (totpAt(secret, step + drift) === code) return true;
   }
   return false;
+}
+
+// ── Backup codes ──────────────────────────────────────────────────────────────
+
+const BACKUP_CODE_COUNT  = 8;
+const BACKUP_CODE_LENGTH = 10; // characters (alphanumeric, hyphenated as XXXXX-XXXXX)
+const BACKUP_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no ambiguous I/1/0/O
+
+function randomBackupCode(): string {
+  const half = (len: number) =>
+    Array.from({ length: len }, () => BACKUP_CHARS[randomBytes(1)[0] % BACKUP_CHARS.length]).join("");
+  return `${half(5)}-${half(5)}`;
+}
+
+/**
+ * Generate 8 one-time backup codes.
+ * Returns `{ plainCodes, hashedCodes }` — store hashed, show plain ONCE.
+ */
+export async function generateBackupCodes(): Promise<{ plainCodes: string[]; hashedCodes: string[] }> {
+  const plainCodes = Array.from({ length: BACKUP_CODE_COUNT }, randomBackupCode);
+  const hashedCodes = await Promise.all(plainCodes.map((c) => bcrypt.hash(c.replace("-", ""), 10)));
+  return { plainCodes, hashedCodes };
+}
+
+/**
+ * Try to consume a backup code.
+ * Returns the index of the matched code (so the caller can remove it), or -1 if no match.
+ * Comparison ignores the hyphen and is case-insensitive.
+ */
+export async function consumeBackupCode(
+  input: string,
+  hashedCodes: string[],
+): Promise<number> {
+  const normalised = input.replace(/[-\s]/g, "").toUpperCase();
+  for (let i = 0; i < hashedCodes.length; i++) {
+    const match = await bcrypt.compare(normalised, hashedCodes[i]);
+    if (match) return i;
+  }
+  return -1;
 }

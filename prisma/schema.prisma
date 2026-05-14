@@ -79,6 +79,7 @@ model User {
   // ── TOTP 2FA ────────────────────────────────────────────────────────────────
   totpSecret        String?            // base32 TOTP secret; null = 2FA not configured
   totpEnabled       Boolean            @default(false) // true once user completes setup verification
+  totpBackupCodes   String[]           @default([])    // bcrypt-hashed one-time backup codes (8 codes)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   auditLogs           AuditLog[]

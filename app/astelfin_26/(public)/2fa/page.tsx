@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { sign2faCookie, COOKIE_NAME } from "@/lib/totp";
-import { verifyTotpToken } from "@/lib/totp-server";
+import { verifyTotpToken, consumeBackupCode } from "@/lib/totp-server";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
@@ -19,13 +19,14 @@ async function verifyCode(formData: FormData) {
   const code  = (formData.get("code") as string ?? "").replace(/\s/g, "");
   const next  = (formData.get("next") as string) || "/astelfin_26/dashboard";
 
-  if (!/^\d{6}$/.test(code)) {
+  // Accept 6-digit TOTP or XXXXX-XXXXX / XXXXXXXXXX backup code
+  if (!/^\d{6}$/.test(code) && !/^[A-Z2-9]{5}-?[A-Z2-9]{5}$/i.test(code)) {
     redirect(`/astelfin_26/2fa?next=${encodeURIComponent(next)}&error=invalid`);
   }
 
   const user = await prisma.user.findUnique({
     where:  { id: session.user.id },
-    select: { totpSecret: true, totpEnabled: true },
+    select: { totpSecret: true, totpEnabled: true, totpBackupCodes: true },
   });
 
   if (!user?.totpEnabled || !user.totpSecret) {
@@ -33,8 +34,25 @@ async function verifyCode(formData: FormData) {
     redirect(next);
   }
 
-  const valid = verifyTotpToken(user.totpSecret, code);
-  if (!valid) {
+  // Try TOTP first
+  let verified = verifyTotpToken(user.totpSecret, code);
+
+  // If TOTP failed, try backup codes (format XXXXX-XXXXX or plain 10 chars)
+  if (!verified && user.totpBackupCodes.length > 0) {
+    const matchIdx = await consumeBackupCode(code, user.totpBackupCodes);
+    if (matchIdx >= 0) {
+      // Consume the code — remove it from the array
+      const remaining = [...user.totpBackupCodes];
+      remaining.splice(matchIdx, 1);
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data:  { totpBackupCodes: remaining },
+      });
+      verified = true;
+    }
+  }
+
+  if (!verified) {
     redirect(`/astelfin_26/2fa?next=${encodeURIComponent(next)}&error=wrong_code`);
   }
 
@@ -83,7 +101,7 @@ export default async function TwoFactorPage({
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-brand-navy">Two-Factor Authentication</h1>
-          <p className="text-gray-500 text-sm mt-1">Enter the 6-digit code from your authenticator app</p>
+          <p className="text-gray-500 text-sm mt-1">Enter the 6-digit code from your authenticator app, or a backup code</p>
         </div>
 
         {/* Error banner */}
@@ -107,13 +125,15 @@ export default async function TwoFactorPage({
                 type="text"
                 inputMode="numeric"
                 autoComplete="one-time-code"
-                maxLength={6}
+                maxLength={11}
                 required
                 autoFocus
-                placeholder="000000"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-xl font-mono tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                placeholder="000000 or XXXXX-XXXXX"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-lg font-mono tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-brand-gold"
               />
-              <p className="text-xs text-gray-400 mt-1.5 text-center">Refreshes every 30 seconds</p>
+              <p className="text-xs text-gray-400 mt-1.5 text-center">
+                Refreshes every 30 seconds · or enter a backup code (XXXXX-XXXXX)
+              </p>
             </div>
 
             <button

@@ -98,7 +98,7 @@ export async function createAccountPayable(formData: FormData): Promise<void> {
   const amount      = parseFloat(formData.get("amount") as string);
   const currency    = (formData.get("currency") as string) || "MWK";
   const dueDate     = new Date(formData.get("dueDate") as string);
-  const budgetLine  = (formData.get("budgetLine") as string) || null;
+  const budgetLine  = ((formData.get("budgetLine") as string) || "").trim() || null;
   const note        = (formData.get("note") as string) || null;
 
   const ap = await prisma.accountPayable.create({

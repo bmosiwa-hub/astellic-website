@@ -45,7 +45,7 @@ export default async function ComplianceDashboardPage() {
 
   const payableGroups = await prisma.accountPayable.groupBy({
     by:    ["budgetLine"],
-    where: { status: "PAID", budgetLine: { not: null } },
+    where: { status: "PAID", budgetLine: { not: null }, deletedAt: null },
     _sum:  { amount: true },
   });
 

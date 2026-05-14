@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { COOKIE_NAME } from "@/lib/totp";
-import { generateSecret, buildOtpAuthUri, verifyTotpToken } from "@/lib/totp-server";
+import { generateSecret, buildOtpAuthUri, verifyTotpToken, generateBackupCodes } from "@/lib/totp-server";
 import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -51,10 +51,13 @@ async function confirmSetup(formData: FormData) {
   const valid = verifyTotpToken(user.totpSecret, code);
   if (!valid) redirect("/astelfin_26/settings/2fa?step=verify&error=wrong_code");
 
-  // Enable 2FA
+  // Generate one-time backup codes and store them hashed
+  const { plainCodes, hashedCodes } = await generateBackupCodes();
+
+  // Enable 2FA and store hashed backup codes
   await prisma.user.update({
     where: { id: userId },
-    data:  { totpEnabled: true },
+    data:  { totpEnabled: true, totpBackupCodes: hashedCodes },
   });
 
   await auditLog({
@@ -65,10 +68,36 @@ async function confirmSetup(formData: FormData) {
     detail:   "TOTP 2FA enabled",
   });
 
-  // Set the 2FA cookie immediately so the user isn't locked out of their own session
-  // (their current JWT still says totpEnabled: false — it will be true next login)
-  // We pre-set the cookie so settings pages stay accessible
-  redirect("/astelfin_26/settings/2fa?success=enabled");
+  // Pass backup codes via a signed cookie so they can be shown once on the next page load
+  // (too long for a query string; they must never be stored in plain text after this point)
+  const backupParam = Buffer.from(JSON.stringify(plainCodes)).toString("base64url");
+
+  redirect(`/astelfin_26/settings/2fa?success=enabled&backup=${backupParam}`);
+}
+
+async function regenerateBackupCodes(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || !["CEO", "FINANCE_MANAGER"].includes(session.user.role!))
+    redirect("/astelfin_26/dashboard");
+
+  const userId = session.user.id!;
+  const user   = await prisma.user.findUnique({ where: { id: userId }, select: { totpEnabled: true } });
+  if (!user?.totpEnabled) redirect("/astelfin_26/settings/2fa?error=not_enabled");
+
+  const { plainCodes, hashedCodes } = await generateBackupCodes();
+  await prisma.user.update({ where: { id: userId }, data: { totpBackupCodes: hashedCodes } });
+
+  await auditLog({
+    userId,
+    action:   "UPDATE",
+    entity:   "User",
+    entityId: userId,
+    detail:   "TOTP backup codes regenerated",
+  });
+
+  const backupParam = Buffer.from(JSON.stringify(plainCodes)).toString("base64url");
+  redirect(`/astelfin_26/settings/2fa?success=backup_regen&backup=${backupParam}`);
 }
 
 async function disable2fa(formData: FormData) {
@@ -86,7 +115,7 @@ async function disable2fa(formData: FormData) {
 
   await prisma.user.update({
     where: { id: targetId },
-    data:  { totpSecret: null, totpEnabled: false },
+    data:  { totpSecret: null, totpEnabled: false, totpBackupCodes: [] },
   });
 
   await auditLog({
@@ -109,18 +138,25 @@ async function disable2fa(formData: FormData) {
 export default async function TwoFASettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ step?: string; error?: string; success?: string }>;
+  searchParams: Promise<{ step?: string; error?: string; success?: string; backup?: string }>;
 }) {
   const session = await auth();
   if (!session?.user || !["CEO", "FINANCE_MANAGER"].includes(session.user.role!))
     redirect("/astelfin_26/dashboard");
 
   const userId = session.user.id!;
-  const { step, error, success } = await searchParams;
+  const { step, error, success, backup } = await searchParams;
+
+  // Decode backup codes passed once after initial setup
+  let backupCodes: string[] | null = null;
+  if (backup) {
+    try { backupCodes = JSON.parse(Buffer.from(backup, "base64url").toString("utf8")); }
+    catch { /* ignore malformed param */ }
+  }
 
   const user = await prisma.user.findUnique({
     where:  { id: userId },
-    select: { email: true, totpSecret: true, totpEnabled: true },
+    select: { email: true, totpSecret: true, totpEnabled: true, totpBackupCodes: true },
   });
 
   if (!user) redirect("/astelfin_26/dashboard");
@@ -149,8 +185,9 @@ export default async function TwoFASettingsPage({
   };
 
   const SUCCESS_MESSAGES: Record<string, string> = {
-    enabled:  "✓ Two-factor authentication is now active on your account.",
-    disabled: "Two-factor authentication has been disabled.",
+    enabled:      "✓ Two-factor authentication is now active on your account.",
+    disabled:     "Two-factor authentication has been disabled.",
+    backup_regen: "✓ New backup codes generated. Save them — the old codes are now invalid.",
   };
 
   return (
@@ -184,6 +221,33 @@ export default async function TwoFASettingsPage({
           )}
         </div>
       )}
+      {/* ── One-time backup codes display (shown immediately after setup) ──────── */}
+      {backupCodes && backupCodes.length > 0 && (
+        <div className="bg-amber-50 border border-amber-300 rounded-2xl p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <h3 className="font-bold text-amber-800">Save your backup codes — shown only once</h3>
+          </div>
+          <p className="text-sm text-amber-700">
+            If you lose access to your authenticator app, use one of these codes to sign in.
+            Each code can only be used <strong>once</strong>. Store them somewhere safe (e.g. password manager).
+          </p>
+          <div className="grid grid-cols-2 gap-2 bg-white border border-amber-200 rounded-xl p-4">
+            {backupCodes.map((c) => (
+              <code key={c} className="font-mono text-sm text-brand-navy text-center tracking-widest py-1 px-2 bg-gray-50 rounded-lg border border-gray-100">
+                {c}
+              </code>
+            ))}
+          </div>
+          <p className="text-xs text-amber-600">
+            You have <strong>{backupCodes.length} codes</strong>. Each code removes itself from your account when used.
+            You can generate new codes from this page at any time — that will invalidate the old ones.
+          </p>
+        </div>
+      )}
+
       {error && ERROR_MESSAGES[error] && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
           ⚠ {ERROR_MESSAGES[error]}
@@ -213,7 +277,7 @@ export default async function TwoFASettingsPage({
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
                 {user.totpEnabled
-                  ? "Your account requires a TOTP code on every login."
+                  ? `Your account requires a TOTP code on every login. ${user.totpBackupCodes.length} backup code${user.totpBackupCodes.length !== 1 ? "s" : ""} remaining.`
                   : "Your account is protected by password only."}
               </p>
             </div>
@@ -229,17 +293,29 @@ export default async function TwoFASettingsPage({
           )}
 
           {user.totpEnabled && (
-            <form action={disable2fa}>
-              <input type="hidden" name="targetUserId" value={userId} />
-              <button type="submit"
-                className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                onClick={(e) => {
-                  if (!confirm("Disable two-factor authentication? Your account will be protected by password only."))
-                    e.preventDefault();
-                }}>
-                Disable 2FA
-              </button>
-            </form>
+            <div className="flex items-center gap-2 shrink-0">
+              <form action={regenerateBackupCodes}>
+                <button type="submit"
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
+                  onClick={(e) => {
+                    if (!confirm("Generate new backup codes? Your existing backup codes will be invalidated immediately."))
+                      e.preventDefault();
+                  }}>
+                  New backup codes
+                </button>
+              </form>
+              <form action={disable2fa}>
+                <input type="hidden" name="targetUserId" value={userId} />
+                <button type="submit"
+                  className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  onClick={(e) => {
+                    if (!confirm("Disable two-factor authentication? Your account will be protected by password only."))
+                      e.preventDefault();
+                  }}>
+                  Disable 2FA
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </div>

@@ -20,7 +20,7 @@ export async function createLiquidation(formData: FormData): Promise<void> {
   const submissionId   = formData.get("submissionId") as string;
   const liquidationDate = new Date(formData.get("liquidationDate") as string);
   const activity       = formData.get("activity") as string;
-  const budgetLine     = formData.get("budgetLine") as string;
+  const budgetLine     = (formData.get("budgetLine") as string).trim();
   const fundsReceived  = parseFloat(formData.get("fundsReceived") as string);
   const fundsAccountedFor = parseFloat(formData.get("fundsAccountedFor") as string);
   const currency       = (formData.get("currency") as string) || "MWK";

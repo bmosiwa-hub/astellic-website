@@ -61,7 +61,7 @@ export default async function GrantDetailPage({
     blNames.length > 0
       ? prisma.accountPayable.groupBy({
           by:    ["budgetLine"],
-          where: { budgetLine: { in: blNames }, status: "PAID" },
+          where: { budgetLine: { in: blNames }, status: "PAID", deletedAt: null },
           _sum:  { amount: true },
         })
       : Promise.resolve([]),

@@ -73,7 +73,7 @@ export default async function GrantReportPage({
       : Promise.resolve([]),
     blNames.length > 0
       ? prisma.accountPayable.findMany({
-          where:   { budgetLine: { in: blNames }, status: "PAID" },
+          where:   { budgetLine: { in: blNames }, status: "PAID", deletedAt: null },
           orderBy: { paidDate: "asc" },
           select:  { id: true, description: true, vendor: true, amount: true, currency: true, budgetLine: true, paidDate: true },
         })

@@ -49,8 +49,14 @@ async function addAsset(formData: FormData) {
   const notes        = (formData.get("notes") as string) || null;
 
   // Auto-generate asset number: A-XXXX
-  const count = await prisma.asset.count();
-  const assetNumber = `A-${String(count + 1).padStart(4, "0")}`;
+  // Use MAX of existing numbers to avoid gaps/collisions if assets are deleted or created concurrently.
+  const latest = await prisma.asset.findFirst({
+    where:   { assetNumber: { startsWith: "A-" } },
+    orderBy: { assetNumber: "desc" },
+    select:  { assetNumber: true },
+  });
+  const lastNum    = latest?.assetNumber ? parseInt(latest.assetNumber.replace("A-", ""), 10) : 0;
+  const assetNumber = `A-${String((isNaN(lastNum) ? 0 : lastNum) + 1).padStart(4, "0")}`;
 
   const asset = await prisma.asset.create({
     data: {
