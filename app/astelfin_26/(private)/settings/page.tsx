@@ -244,18 +244,59 @@ async function deleteUser(formData: FormData) {
   redirect("/astelfin_26/settings?success=deleted");
 }
 
+async function upsertThreshold(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const id             = (formData.get("thresholdId") as string) || null;
+  const label          = (formData.get("label") as string).trim();
+  const minAmount      = parseFloat(formData.get("minAmount") as string) || 0;
+  const maxAmountRaw   = formData.get("maxAmount") as string;
+  const maxAmount      = maxAmountRaw ? parseFloat(maxAmountRaw) : null;
+  const minQuotations  = parseInt(formData.get("minQuotations") as string) || 1;
+  const requiresTender = formData.get("requiresTender") === "1";
+
+  if (id) {
+    await prisma.procurementThreshold.update({
+      where: { id },
+      data:  { label, minAmount, maxAmount, minQuotations, requiresTender },
+    });
+    await auditLog({ userId: session.user.id!, action: "UPDATE", entity: "ProcurementThreshold", entityId: id, detail: `Updated tier: ${label}` });
+  } else {
+    const t = await prisma.procurementThreshold.create({
+      data: { label, minAmount, maxAmount, minQuotations, requiresTender },
+    });
+    await auditLog({ userId: session.user.id!, action: "CREATE", entity: "ProcurementThreshold", entityId: t.id, detail: `Created tier: ${label}` });
+  }
+
+  revalidatePath("/astelfin_26/settings");
+  redirect("/astelfin_26/settings");
+}
+
+async function deleteThreshold(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const id = formData.get("thresholdId") as string;
+  await prisma.procurementThreshold.delete({ where: { id } });
+  await auditLog({ userId: session.user.id!, action: "DELETE", entity: "ProcurementThreshold", entityId: id, detail: "Deleted procurement tier" });
+  revalidatePath("/astelfin_26/settings");
+}
+
 /* ── Page ────────────────────────────────────────────────────── */
 
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ editUser?: string; deleteUser?: string; error?: string; success?: string }>;
+  searchParams: Promise<{ editUser?: string; deleteUser?: string; editThreshold?: string; error?: string; success?: string }>;
 }) {
-  const { editUser, deleteUser: deleteUserId, error, success } = await searchParams;
+  const { editUser, deleteUser: deleteUserId, editThreshold, error, success } = await searchParams;
   const session = await auth();
   const isCEO = session?.user?.role === "CEO";
 
-  const [users, employees, consultants] = await Promise.all([
+  const [users, employees, consultants, thresholds] = await Promise.all([
     isCEO ? prisma.user.findMany({
       orderBy: { createdAt: "asc" },
       select: {
@@ -267,10 +308,12 @@ export default async function SettingsPage({
     }) : Promise.resolve([]),
     isCEO ? prisma.employee.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
     isCEO ? prisma.consultant.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
+    isCEO ? prisma.procurementThreshold.findMany({ orderBy: { minAmount: "asc" } }) : Promise.resolve([]),
   ]);
 
-  const editingUser  = editUser     ? users.find((u) => u.id === editUser)     : null;
-  const deletingUser = deleteUserId ? users.find((u) => u.id === deleteUserId) : null;
+  const editingUser      = editUser       ? users.find((u) => u.id === editUser)         : null;
+  const deletingUser     = deleteUserId   ? users.find((u) => u.id === deleteUserId)     : null;
+  const editingThreshold = editThreshold  ? thresholds.find((t) => t.id === editThreshold) : null;
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -648,6 +691,121 @@ export default async function SettingsPage({
                 </button>
               </div>
             </form>
+          </div>
+
+          {/* ── Procurement Policy ───────────────────────────────────── */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-brand-navy">Procurement Policy</h2>
+                <p className="text-xs text-gray-400 mt-0.5">Quotation tier thresholds — controls how many supplier quotes are required before a procurement request can be submitted.</p>
+              </div>
+              <Link href="/astelfin_26/compliance"
+                className="text-xs text-brand-gold font-semibold hover:underline">
+                View compliance →
+              </Link>
+            </div>
+
+            {/* Threshold form */}
+            <div className="px-6 py-5 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                {editingThreshold ? `Edit: ${editingThreshold.label}` : "Add Tier"}
+              </h3>
+              <form action={upsertThreshold} className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {editingThreshold && <input type="hidden" name="thresholdId" value={editingThreshold.id} />}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Label</label>
+                  <input name="label" required defaultValue={editingThreshold?.label}
+                    placeholder="e.g. Direct Purchase"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Min Amount (MWK)</label>
+                  <input name="minAmount" type="number" min="0" step="0.01" required
+                    defaultValue={editingThreshold?.minAmount ?? 0}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Max Amount (blank = no limit)</label>
+                  <input name="maxAmount" type="number" min="0" step="0.01"
+                    defaultValue={editingThreshold?.maxAmount ?? ""}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Min Quotations</label>
+                  <input name="minQuotations" type="number" min="1" max="10" required
+                    defaultValue={editingThreshold?.minQuotations ?? 1}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
+                </div>
+                <div className="flex items-end pb-0.5">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
+                    <input type="checkbox" name="requiresTender" value="1"
+                      defaultChecked={editingThreshold?.requiresTender ?? false}
+                      className="w-4 h-4 rounded accent-brand-gold" />
+                    Requires tender / RFP
+                  </label>
+                </div>
+                <div className="flex items-end gap-2">
+                  <button type="submit"
+                    className="bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                    {editingThreshold ? "Save" : "Add Tier"}
+                  </button>
+                  {editingThreshold && (
+                    <Link href="/astelfin_26/settings"
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold">
+                      Cancel
+                    </Link>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Threshold list */}
+            {thresholds.length > 0 && (
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600">Label</th>
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600">Amount Range (MWK)</th>
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600">Min Quotes</th>
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600">Tender</th>
+                    <th className="px-5 py-3 text-right font-semibold text-gray-600">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {thresholds.map((t) => (
+                    <tr key={t.id} className="hover:bg-gray-50">
+                      <td className="px-5 py-3 font-medium text-brand-navy">{t.label}</td>
+                      <td className="px-5 py-3 text-xs font-mono text-gray-600">
+                        {t.minAmount.toLocaleString()} – {t.maxAmount != null ? t.maxAmount.toLocaleString() : "∞"}
+                      </td>
+                      <td className="px-5 py-3 text-xs text-gray-600">{t.minQuotations}</td>
+                      <td className="px-5 py-3">
+                        {t.requiresTender
+                          ? <span className="text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">Yes</span>
+                          : <span className="text-xs text-gray-400">No</span>}
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        <div className="inline-flex items-center gap-3">
+                          <Link href={`/astelfin_26/settings?editThreshold=${t.id}`}
+                            className="text-xs text-brand-gold font-semibold hover:underline">
+                            Edit
+                          </Link>
+                          <form action={deleteThreshold}>
+                            <input type="hidden" name="thresholdId" value={t.id} />
+                            <button type="submit"
+                              className="text-xs text-red-500 font-semibold hover:underline"
+                              onClick={(e) => { if (!confirm("Delete this tier?")) e.preventDefault(); }}>
+                              Delete
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </>
       ) : (

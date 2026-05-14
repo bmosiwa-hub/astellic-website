@@ -163,6 +163,16 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
     </svg>
   ),
+  budget: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  ),
+  compliance: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -223,10 +233,10 @@ export default function Sidebar({
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
-                          "/astelfin_26/assets", "/astelfin_26/financial-health"];
+                          "/astelfin_26/assets", "/astelfin_26/financial-health", "/astelfin_26/budget"];
   const operationsPaths = ["/astelfin_26/invoices", "/astelfin_26/liquidations", "/astelfin_26/payables",
                            "/astelfin_26/receivables", "/astelfin_26/approvals", "/astelfin_26/recurring",
-                           "/astelfin_26/procurement", "/astelfin_26/documents"];
+                           "/astelfin_26/procurement", "/astelfin_26/documents", "/astelfin_26/compliance"];
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
   const hrPaths         = ["/astelfin_26/employees", "/astelfin_26/consultants", "/astelfin_26/payroll",
                            "/astelfin_26/performance", "/astelfin_26/timesheets"];
@@ -365,6 +375,7 @@ export default function Sidebar({
                 {navLink("/astelfin_26/reports",          "Reports",         Icons.reports)}
                 {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",    Icons.tax)}
                 {(isCEO || isFM) && navLink("/astelfin_26/financial-health", "Financial Health", Icons.health)}
+                {(isCEO || isFM) && navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
                 {navLink("/astelfin_26/exchange-rates",   "Exchange Rates",  Icons.exchangeRates)}
               </div>
             )}
@@ -390,6 +401,7 @@ export default function Sidebar({
                 {navLink("/astelfin_26/approvals",    "Approvals",            Icons.approvals,    isCEO ? pendingApprovals : undefined)}
                 {navLink("/astelfin_26/procurement",  "Procurement",          Icons.procurement)}
                 {navLink("/astelfin_26/documents",    "Document Library",     Icons.documents)}
+                {(isCEO || isFM) && navLink("/astelfin_26/compliance", "Compliance",       Icons.compliance)}
                 {isCEO && navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
               </div>
             )}

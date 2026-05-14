@@ -105,8 +105,15 @@ async function submitForApproval(formData: FormData) {
 
   if (!proc || proc.status !== "DRAFT") redirect(`/astelfin_26/procurement/${procurementId}`);
 
-  // Enforce quotation requirement
-  if (proc.estimatedCost >= 100000 && proc.quotations.length < 3) {
+  // Enforce quotation requirement dynamically from ProcurementThreshold table
+  const thresholds = await prisma.procurementThreshold.findMany({ orderBy: { minAmount: "asc" } });
+  let requiredQuotes = 1;
+  for (const t of thresholds) {
+    if (proc.estimatedCost >= t.minAmount && (t.maxAmount == null || proc.estimatedCost <= t.maxAmount)) {
+      requiredQuotes = t.minQuotations;
+    }
+  }
+  if (proc.quotations.length < requiredQuotes) {
     redirect(`/astelfin_26/procurement/${procurementId}?error=quotations`);
   }
 
@@ -312,10 +319,22 @@ export default async function ProcurementDetailPage({
 
   if (!proc) notFound();
 
-  const needsQuotes  = proc.estimatedCost >= 100000;
+  // Dynamic threshold lookup
+  const thresholdRows = await prisma.procurementThreshold.findMany({ orderBy: { minAmount: "asc" } });
+  let reqQuotes = 1;
+  let reqTender = false;
+  let tierLabel = "Direct Purchase";
+  for (const t of thresholdRows) {
+    if (proc.estimatedCost >= t.minAmount && (t.maxAmount == null || proc.estimatedCost <= t.maxAmount)) {
+      reqQuotes = t.minQuotations;
+      reqTender = t.requiresTender;
+      tierLabel = t.label;
+    }
+  }
   const quotesCount  = proc.quotations.length;
-  const hasEnough    = quotesCount >= 3;
-  const canSubmit    = proc.status === "DRAFT" && (!needsQuotes || hasEnough);
+  const needsQuotes  = reqQuotes > 1;
+  const hasEnough    = quotesCount >= reqQuotes;
+  const canSubmit    = proc.status === "DRAFT" && hasEnough;
   const canAddQuote  = isFM && proc.status === "DRAFT";
   const canReview    = isCEO && proc.status === "PENDING_APPROVAL";
 
@@ -364,12 +383,14 @@ export default async function ProcurementDetailPage({
       )}
       {error === "quotations" && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
-          ⚠ This request requires at least 3 supplier quotations before it can be submitted for approval.
+          ⚠ This request ({tierLabel}) requires at least {reqQuotes} supplier quotation{reqQuotes !== 1 ? "s" : ""} before it can be submitted for approval.
         </div>
       )}
       {needsQuotes && isFM && proc.status === "DRAFT" && !hasEnough && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700">
-          📋 Estimated cost ≥ MWK 100,000 — <strong>{3 - quotesCount} more quotation{3 - quotesCount !== 1 ? "s" : ""}</strong> required before you can submit.
+          📋 Tier: <strong>{tierLabel}</strong>
+          {reqTender && <span className="ml-1">(Tender / RFP required)</span>}
+          {" — "}<strong>{reqQuotes - quotesCount} more quotation{reqQuotes - quotesCount !== 1 ? "s" : ""}</strong> needed before submission.
         </div>
       )}
 

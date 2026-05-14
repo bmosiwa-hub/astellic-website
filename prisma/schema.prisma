@@ -127,6 +127,7 @@ model Project {
   receivables        AccountReceivable[]
   members            ProjectMember[]
   milestones         Milestone[]
+  budgetLines        BudgetLine[]
 }
 
 model Income {
@@ -1188,6 +1189,48 @@ model Document {
   @@index([category])
   @@index([uploadedById])
   @@index([createdAt])
+}
+
+// ── Phase 4: Budget Integrity & Compliance ────────────────────────────────────
+//
+// BudgetLine — a named spending envelope with an optional ceiling.
+// The `name` field matches the free-text `budgetLine` field on Submission,
+// Liquidation, AccountPayable, and RecurringExpense records, allowing
+// utilisation to be aggregated without a schema migration on those models.
+//
+// ProcurementThreshold — defines quotation requirements by amount tier.
+// Replaces the hardcoded >=100,000 / 3-quotation rule in the procurement page.
+
+model BudgetLine {
+  id          String   @id @default(cuid())
+  // Matches the `budgetLine` string stored on transactions
+  name        String   @unique
+  description String?
+  // PERSONNEL | OPERATIONS | ADMIN | TRAVEL | EQUIPMENT | CONSULTANCY | OTHER
+  category    String   @default("OTHER")
+  projectId   String?
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  fiscalYear  Int
+  ceiling     Float?   // null = no cap
+  currency    String   @default("MWK")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([fiscalYear])
+  @@index([projectId])
+}
+
+model ProcurementThreshold {
+  id             String   @id @default(cuid())
+  label          String                          // e.g. "Direct Purchase"
+  minAmount      Float    @default(0)
+  maxAmount      Float?                          // null = no upper bound
+  minQuotations  Int      @default(1)
+  requiresTender Boolean  @default(false)
+  currency       String   @default("MWK")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model TimesheetEntry {
