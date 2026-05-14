@@ -71,10 +71,11 @@ model User {
   employeeId        String?            // links to Employee.id for STAFF users
   consultantId      String?            // links to Consultant.id for CONSULTANT users
   // ── Login security ──────────────────────────────────────────────────────────
-  failedLoginCount  Int                @default(0)  // reset on successful login
-  lockedUntil       DateTime?          // null = not locked
-  lastLoginAt       DateTime?          // updated on every successful login
-  passwordChangedAt DateTime?          // for password-age enforcement
+  failedLoginCount   Int                @default(0)  // reset on successful login
+  lockedUntil        DateTime?          // null = not locked
+  lastLoginAt        DateTime?          // updated on every successful login
+  passwordChangedAt  DateTime?          // updated whenever password changes
+  mustChangePassword Boolean            @default(false) // set on new users & admin resets
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   auditLogs           AuditLog[]

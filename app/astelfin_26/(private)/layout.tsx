@@ -18,6 +18,15 @@ export default async function PrivateFinanceLayout({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
+  // If the user must change their password, gate everything except the change-password page
+  if (session.user.mustChangePassword) {
+    const headersList = await headers();
+    const pathname    = headersList.get("x-pathname") ?? "";
+    if (!pathname.startsWith("/astelfin_26/change-password")) {
+      redirect("/astelfin_26/change-password");
+    }
+  }
+
   const role = session.user.role;
 
   // Fetch the user's stored permissions

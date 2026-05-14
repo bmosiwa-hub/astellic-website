@@ -1,7 +1,9 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { getEffectivePermissions, serializePermissions, FUNCTION_LABELS, TAB_FUNCTIONS } from "@/lib/permissions";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import Link from "next/link";
 
@@ -28,6 +30,86 @@ const ROLE_COLORS: Record<string, string> = {
 
 /* ── Server Actions (CEO only) ──────────────────────────────── */
 
+async function forcePwChange(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const userId = formData.get("userId") as string;
+  if (userId === session.user.id) return;
+  await prisma.user.update({ where: { id: userId }, data: { mustChangePassword: true } });
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "FORCE_PW_CHANGE",
+    entity:   "User",
+    entityId: userId,
+    detail:   "CEO flagged account for forced password change on next login",
+  });
+  revalidatePath("/astelfin_26/settings");
+}
+
+async function lockAccount(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const userId      = formData.get("userId") as string;
+  const hoursStr    = formData.get("hours") as string;
+  const hours       = Math.min(720, Math.max(1, parseInt(hoursStr || "24") || 24));
+  if (userId === session.user.id) return;
+  const lockedUntil = new Date(Date.now() + hours * 60 * 60 * 1000);
+  await prisma.user.update({ where: { id: userId }, data: { lockedUntil } });
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "LOCK_ACCOUNT",
+    entity:   "User",
+    entityId: userId,
+    detail:   `Account locked for ${hours}h by CEO`,
+  });
+  revalidatePath("/astelfin_26/settings");
+}
+
+async function unlockAccount(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const userId = formData.get("userId") as string;
+  await prisma.user.update({ where: { id: userId }, data: { lockedUntil: null } });
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "UNLOCK_ACCOUNT",
+    entity:   "User",
+    entityId: userId,
+    detail:   "Account manually unlocked by CEO",
+  });
+  revalidatePath("/astelfin_26/settings");
+}
+
+async function updatePermissions(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const userId = formData.get("userId") as string;
+  const target = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+  if (!target || target.role === "CEO") return;
+
+  const tabKeys   = ["finance", "operations", "projects", "bizdev"] as const;
+  const funcKeys  = Object.keys(FUNCTION_LABELS) as (keyof typeof FUNCTION_LABELS)[];
+
+  const tabs      = Object.fromEntries(tabKeys.map((k) => [k, formData.get(`tab_${k}`) === "1"]));
+  const functions = Object.fromEntries(funcKeys.map((k) => [k, formData.get(`fn_${k}`) === "1"]));
+
+  const perms = serializePermissions({ tabs, functions } as unknown as Parameters<typeof serializePermissions>[0]);
+
+  await prisma.user.update({ where: { id: userId }, data: { permissions: perms } });
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "UPDATE_PERMISSIONS",
+    entity:   "User",
+    entityId: userId,
+    detail:   "Permission overrides updated by CEO",
+  });
+  revalidatePath("/astelfin_26/settings");
+}
+
 async function createUser(formData: FormData) {
   "use server";
   const session = await auth();
@@ -42,7 +124,7 @@ async function createUser(formData: FormData) {
 
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({
-    data: { name, email, passwordHash, role, employeeId, consultantId },
+    data: { name, email, passwordHash, role, employeeId, consultantId, mustChangePassword: true },
   });
 
   await auditLog({
@@ -91,17 +173,20 @@ async function resetPassword(formData: FormData) {
 
   const userId      = formData.get("userId") as string;
   const newPassword = formData.get("newPassword") as string;
-  if (!newPassword || newPassword.length < 8) return;
+  if (!newPassword || newPassword.length < 10) return;
 
   const passwordHash = await bcrypt.hash(newPassword, 12);
-  await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+  await prisma.user.update({
+    where: { id: userId },
+    data:  { passwordHash, mustChangePassword: true, passwordChangedAt: new Date() },
+  });
 
   await auditLog({
-    userId: session.user.id,
-    action: "RESET_PASSWORD",
-    entity: "User",
+    userId:   session.user.id!,
+    action:   "RESET_PASSWORD",
+    entity:   "User",
     entityId: userId,
-    detail: "Password reset by CEO",
+    detail:   "Password reset by CEO — user must change on next login",
   });
 
   redirect("/astelfin_26/settings");
@@ -171,7 +256,15 @@ export default async function SettingsPage({
   const isCEO = session?.user?.role === "CEO";
 
   const [users, employees, consultants] = await Promise.all([
-    isCEO ? prisma.user.findMany({ orderBy: { createdAt: "asc" } }) : Promise.resolve([]),
+    isCEO ? prisma.user.findMany({
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true, name: true, email: true, role: true, active: true,
+        createdAt: true, lastLoginAt: true, lockedUntil: true,
+        mustChangePassword: true, employeeId: true, consultantId: true,
+        permissions: true,
+      },
+    }) : Promise.resolve([]),
     isCEO ? prisma.employee.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
     isCEO ? prisma.consultant.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
   ]);
@@ -191,6 +284,9 @@ export default async function SettingsPage({
             </svg>
             Download Backup
           </a>
+          <Link href="/astelfin_26/settings/login-history" className="text-sm text-gray-500 hover:text-brand-navy font-semibold transition-colors">
+            Login History →
+          </Link>
           <Link href="/astelfin_26/settings/audit" className="text-sm text-brand-gold hover:underline font-semibold">
             View Audit Log →
           </Link>
@@ -270,13 +366,24 @@ export default async function SettingsPage({
                   <th className="text-left px-5 py-3 font-semibold text-gray-600">Email</th>
                   <th className="text-left px-5 py-3 font-semibold text-gray-600">Role</th>
                   <th className="text-left px-5 py-3 font-semibold text-gray-600">Status</th>
+                  <th className="text-left px-5 py-3 font-semibold text-gray-600 hidden xl:table-cell">Last Login</th>
                   <th className="px-5 py-3 text-right font-semibold text-gray-600">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {users.map((u) => (
+                {users.map((u) => {
+                  const isLocked = u.lockedUntil && u.lockedUntil > new Date();
+                  return (
                   <tr key={u.id} className={`hover:bg-gray-50 ${editUser === u.id ? "bg-brand-light" : ""}`}>
-                    <td className="px-5 py-3 font-medium text-brand-navy">{u.name}</td>
+                    <td className="px-5 py-3 font-medium text-brand-navy">
+                      <div className="flex items-center gap-2">
+                        {u.name}
+                        {u.mustChangePassword && (
+                          <span title="Must change password on next login"
+                            className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">PW</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-5 py-3 text-gray-500">{u.email}</td>
                     <td className="px-5 py-3">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${ROLE_COLORS[u.role] ?? "bg-gray-100 text-gray-600"}`}>
@@ -284,12 +391,24 @@ export default async function SettingsPage({
                       </span>
                     </td>
                     <td className="px-5 py-3">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${u.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                        {u.active ? "Active" : "Inactive"}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full w-fit ${u.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                          {u.active ? "Active" : "Inactive"}
+                        </span>
+                        {isLocked && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full w-fit bg-red-100 text-red-700">
+                            Locked
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 text-xs text-gray-400 hidden xl:table-cell whitespace-nowrap">
+                      {u.lastLoginAt
+                        ? u.lastLoginAt.toLocaleString("en-GB", { day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false })
+                        : "Never"}
                     </td>
                     <td className="px-5 py-3 text-right">
-                      <div className="inline-flex items-center gap-3">
+                      <div className="inline-flex items-center gap-3 flex-wrap justify-end">
                         <Link href={`/astelfin_26/settings?editUser=${u.id}`}
                           className="text-xs text-brand-gold font-semibold hover:underline">
                           Edit
@@ -304,6 +423,30 @@ export default async function SettingsPage({
                                 {u.active ? "Deactivate" : "Reactivate"}
                               </button>
                             </form>
+                            {!u.mustChangePassword && (
+                              <form action={forcePwChange}>
+                                <input type="hidden" name="userId" value={u.id} />
+                                <button type="submit" className="text-xs font-semibold hover:underline text-amber-600">
+                                  Force PW
+                                </button>
+                              </form>
+                            )}
+                            {isLocked ? (
+                              <form action={unlockAccount}>
+                                <input type="hidden" name="userId" value={u.id} />
+                                <button type="submit" className="text-xs font-semibold hover:underline text-blue-600">
+                                  Unlock
+                                </button>
+                              </form>
+                            ) : (
+                              <form action={lockAccount} className="inline-flex items-center gap-1">
+                                <input type="hidden" name="userId" value={u.id} />
+                                <input type="hidden" name="hours" value="24" />
+                                <button type="submit" className="text-xs font-semibold hover:underline text-red-500">
+                                  Lock 24h
+                                </button>
+                              </form>
+                            )}
                             <Link href={`/astelfin_26/settings?deleteUser=${u.id}`}
                               className="text-xs font-semibold text-red-500 hover:underline">
                               Delete
@@ -313,7 +456,8 @@ export default async function SettingsPage({
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -375,10 +519,11 @@ export default async function SettingsPage({
 
               {/* Password reset */}
               <div className="mt-6 pt-5 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Reset Password</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">Reset Password</h3>
+                <p className="text-xs text-gray-400 mb-3">User will be required to change their password on next login.</p>
                 <form action={resetPassword} className="flex items-center gap-3">
                   <input type="hidden" name="userId" value={editingUser.id} />
-                  <input name="newPassword" type="password" minLength={8} required placeholder="New password (min 8 chars)"
+                  <input name="newPassword" type="password" minLength={10} required placeholder="New password (min 10 chars)"
                     className="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
                   <button type="submit"
                     className="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold whitespace-nowrap">
@@ -386,6 +531,61 @@ export default async function SettingsPage({
                   </button>
                 </form>
               </div>
+
+              {/* Permission overrides — not shown for CEO (always full access) */}
+              {editingUser.role !== "CEO" && (() => {
+                const effectivePerms = getEffectivePermissions(editingUser.role, editingUser.permissions);
+                return (
+                  <div className="mt-6 pt-5 border-t border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-1">Permission Overrides</h3>
+                    <p className="text-xs text-gray-400 mb-4">
+                      Customise access for this user. Defaults are based on their role.
+                      Toggle tabs first — functions are ignored when the parent tab is off.
+                    </p>
+                    <form action={updatePermissions} className="space-y-5">
+                      <input type="hidden" name="userId" value={editingUser.id} />
+
+                      {(["finance","operations","projects","bizdev"] as const).map((tab) => (
+                        <div key={tab} className="rounded-xl border border-gray-100 p-4 space-y-3">
+                          {/* Tab toggle */}
+                          <label className="flex items-center gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              name={`tab_${tab}`}
+                              value="1"
+                              defaultChecked={effectivePerms.tabs[tab]}
+                              className="w-4 h-4 rounded accent-brand-gold"
+                            />
+                            <span className="font-semibold text-sm text-brand-navy capitalize">
+                              {tab === "bizdev" ? "Business Development" : tab.charAt(0).toUpperCase() + tab.slice(1)} Tab
+                            </span>
+                          </label>
+                          {/* Functions in this tab */}
+                          <div className="pl-7 grid grid-cols-2 gap-2">
+                            {TAB_FUNCTIONS[tab].map((fn) => (
+                              <label key={fn} className="flex items-center gap-2 cursor-pointer text-xs text-gray-600">
+                                <input
+                                  type="checkbox"
+                                  name={`fn_${fn}`}
+                                  value="1"
+                                  defaultChecked={effectivePerms.functions[fn]}
+                                  className="w-3.5 h-3.5 rounded accent-brand-gold"
+                                />
+                                {FUNCTION_LABELS[fn]}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      <button type="submit"
+                        className="bg-brand-navy hover:bg-brand-navy/90 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                        Save Permissions
+                      </button>
+                    </form>
+                  </div>
+                );
+              })()}
             </div>
           )}
 
@@ -411,7 +611,7 @@ export default async function SettingsPage({
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Password <span className="text-red-500">*</span>
                 </label>
-                <input name="password" type="password" required minLength={8}
+                <input name="password" type="password" required minLength={10}
                   className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
               </div>
               <div>
