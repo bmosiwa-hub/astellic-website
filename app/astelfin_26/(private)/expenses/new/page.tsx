@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { checkPeriodOpen } from "@/lib/period-lock";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -19,12 +20,16 @@ async function createExpense(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
+  const paidDate    = new Date(formData.get("paidDate") as string);
+  const periodCheck = await checkPeriodOpen(paidDate);
+  if (!periodCheck.open) redirect(`/astelfin_26/expenses/new?error=period_closed&period=${periodCheck.periodKey}`);
+
   const data = {
     description: formData.get("description") as string,
     amount: parseFloat(formData.get("amount") as string),
     currency: (formData.get("currency") as string) || "MWK",
     category: formData.get("category") as string,
-    paidDate: new Date(formData.get("paidDate") as string),
+    paidDate,
     vendor: (formData.get("vendor") as string) || null,
     receiptRef: (formData.get("receiptRef") as string) || null,
     projectId: (formData.get("projectId") as string) || null,
@@ -43,7 +48,12 @@ async function createExpense(formData: FormData) {
   redirect("/astelfin_26/expenses");
 }
 
-export default async function NewExpensePage() {
+export default async function NewExpensePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; period?: string }>;
+}) {
+  const { error, period } = await searchParams;
   const projects = await prisma.project.findMany({
     where: { status: "ACTIVE" },
     select: { id: true, name: true },
@@ -56,6 +66,13 @@ export default async function NewExpensePage() {
         <h1 className="text-2xl font-bold text-brand-navy">Record Expense</h1>
         <p className="text-gray-500 text-sm mt-1">Add a new expense entry.</p>
       </div>
+
+      {error === "period_closed" && (
+        <div className="mb-5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+          ⚠ The period <strong>{period}</strong> is closed or locked. No new entries may be dated within that month.
+          Contact the Finance Manager or CEO to reopen the period if this was an error.
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
         <form action={createExpense} className="space-y-5">

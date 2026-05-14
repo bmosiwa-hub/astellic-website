@@ -147,7 +147,7 @@ export const TAB_PATHS: Record<keyof TabPermissions, string[]> = {
     "/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
     "/astelfin_26/employees",  "/astelfin_26/payroll", "/astelfin_26/consultants",
     "/astelfin_26/debt", "/astelfin_26/assets", "/astelfin_26/reports",
-    "/astelfin_26/exchange-rates", "/astelfin_26/budget",
+    "/astelfin_26/exchange-rates", "/astelfin_26/budget", "/astelfin_26/periods",
   ],
   operations: [
     "/astelfin_26/invoices", "/astelfin_26/liquidations",

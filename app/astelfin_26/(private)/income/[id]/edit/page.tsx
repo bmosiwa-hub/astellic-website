@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { checkPeriodOpen } from "@/lib/period-lock";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -31,6 +32,13 @@ async function submitEditRequest(incomeId: string, formData: FormData): Promise<
 
   if (session.user.role === "CEO") {
     // Chief Executive Officer: apply immediately
+    // But block if either the original period or the new period is locked
+    const newDate     = new Date(proposed.receivedDate);
+    const periodCheck = await checkPeriodOpen(newDate);
+    if (!periodCheck.open) redirect(`/astelfin_26/income/${incomeId}/edit?error=period_closed&period=${periodCheck.periodKey}`);
+    const origCheck   = await checkPeriodOpen(record.receivedDate);
+    if (!origCheck.open) redirect(`/astelfin_26/income/${incomeId}/edit?error=period_closed&period=${origCheck.periodKey}`);
+
     await prisma.income.update({
       where: { id: incomeId },
       data: {
@@ -38,7 +46,7 @@ async function submitEditRequest(incomeId: string, formData: FormData): Promise<
         description: proposed.description,
         amount: proposed.amount,
         currency: proposed.currency,
-        receivedDate: new Date(proposed.receivedDate),
+        receivedDate: newDate,
         source: proposed.source,
         invoiceNumber: proposed.invoiceNumber,
         projectId: proposed.projectId,

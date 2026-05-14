@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { checkPeriodOpen } from "@/lib/period-lock";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -30,6 +31,12 @@ async function submitEditRequest(expenseId: string, formData: FormData): Promise
   };
 
   if (session.user.role === "CEO") {
+    const newDate     = new Date(proposed.paidDate);
+    const periodCheck = await checkPeriodOpen(newDate);
+    if (!periodCheck.open) redirect(`/astelfin_26/expenses/${expenseId}/edit?error=period_closed&period=${periodCheck.periodKey}`);
+    const origCheck   = await checkPeriodOpen(record.paidDate);
+    if (!origCheck.open) redirect(`/astelfin_26/expenses/${expenseId}/edit?error=period_closed&period=${origCheck.periodKey}`);
+
     await prisma.expense.update({
       where: { id: expenseId },
       data: {
@@ -37,7 +44,7 @@ async function submitEditRequest(expenseId: string, formData: FormData): Promise
         amount: proposed.amount,
         currency: proposed.currency,
         category: proposed.category,
-        paidDate: new Date(proposed.paidDate),
+        paidDate: newDate,
         vendor: proposed.vendor,
         receiptRef: proposed.receiptRef,
         projectId: proposed.projectId,
