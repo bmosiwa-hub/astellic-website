@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
+import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -201,11 +202,12 @@ export async function createTaxRemittance(formData: FormData) {
   redirect(`/astelfin_26/reports/tax?success=remittance_submitted`);
 }
 
-// ── CEO Approves Remittance ───────────────────────────────────────────────────
+// ── CEO (or active delegate) Approves Remittance ─────────────────────────────
 
 export async function approveTaxRemittance(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const remittanceId = formData.get("remittanceId") as string;
   const ceoNote      = (formData.get("ceoNote") as string) || null;
@@ -215,14 +217,14 @@ export async function approveTaxRemittance(formData: FormData) {
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
 
-  assertNotSelfApproval(session.user.id!, remittance!.submittedById, "tax remittance");
+  assertNotSelfApproval(session!.user!.id!, remittance!.submittedById, "tax remittance");
 
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
     data:  {
       status:      "CEO_APPROVED",
       ceoNote,
-      reviewedById: session.user.id!,
+      reviewedById: session!.user!.id!,
       reviewedAt:   new Date(),
     },
   });
@@ -250,20 +252,20 @@ export async function approveTaxRemittance(formData: FormData) {
   }
 
   await auditLog({
-    userId:   session.user.id!,
+    userId:   session!.user!.id!,
     action:   "APPROVE",
     entity:   "TaxRemittance",
     entityId: remittanceId,
-    detail:   ceoNote || `CEO approved ${remittance!.taxType} remittance`,
+    detail:   (ceoNote || `CEO approved ${remittance!.taxType} remittance`) + delegateNote(ceoAuth),
   });
 
   await writeApprovalRecord({
     entityType:     "TaxRemittance",
     entityId:       remittanceId,
-    decidedById:    session.user.id!,
-    decidedByEmail: session.user.email ?? "",
-    decidedByName:  session.user.name  ?? "",
-    decidedByRole:  session.user.role,
+    decidedById:    session!.user!.id!,
+    decidedByEmail: session!.user!.email ?? "",
+    decidedByName:  session!.user!.name  ?? "",
+    decidedByRole:  session!.user!.role,
     previousStatus: remittance!.status,
     newStatus:      "CEO_APPROVED",
     decision:       "APPROVED",
@@ -297,11 +299,12 @@ export async function approveTaxRemittance(formData: FormData) {
   redirect(`/astelfin_26/reports/tax/remittances/${remittanceId}?success=approved`);
 }
 
-// ── CEO Rejects Remittance ────────────────────────────────────────────────────
+// ── CEO (or active delegate) Rejects Remittance ──────────────────────────────
 
 export async function rejectTaxRemittance(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const remittanceId = formData.get("remittanceId") as string;
   const ceoNote      = (formData.get("ceoNote") as string) || null;
@@ -311,14 +314,14 @@ export async function rejectTaxRemittance(formData: FormData) {
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
 
-  assertNotSelfApproval(session.user.id!, remittance.submittedById, "tax remittance");
+  assertNotSelfApproval(session!.user!.id!, remittance.submittedById, "tax remittance");
 
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
     data:  {
       status:       "CEO_REJECTED",
       ceoNote,
-      reviewedById: session.user.id!,
+      reviewedById: session!.user!.id!,
       reviewedAt:   new Date(),
     },
   });
@@ -344,20 +347,20 @@ export async function rejectTaxRemittance(formData: FormData) {
   }
 
   await auditLog({
-    userId:   session.user.id!,
+    userId:   session!.user!.id!,
     action:   "REJECT",
     entity:   "TaxRemittance",
     entityId: remittanceId,
-    detail:   ceoNote || `CEO rejected ${remittance.taxType} remittance`,
+    detail:   (ceoNote || `CEO rejected ${remittance.taxType} remittance`) + delegateNote(ceoAuth),
   });
 
   await writeApprovalRecord({
     entityType:     "TaxRemittance",
     entityId:       remittanceId,
-    decidedById:    session.user.id!,
-    decidedByEmail: session.user.email ?? "",
-    decidedByName:  session.user.name  ?? "",
-    decidedByRole:  session.user.role,
+    decidedById:    session!.user!.id!,
+    decidedByEmail: session!.user!.email ?? "",
+    decidedByName:  session!.user!.name  ?? "",
+    decidedByRole:  session!.user!.role,
     previousStatus: remittance.status,
     newStatus:      "CEO_REJECTED",
     decision:       "REJECTED",

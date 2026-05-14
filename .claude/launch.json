@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "astellic-dev",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d C:\\Projects\\Astellic Website && npm run dev"],
+      "port": 3000
+    }
+  ],
+  "autoVerify": false
+}

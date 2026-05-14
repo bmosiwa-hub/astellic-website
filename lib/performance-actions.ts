@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { sendMail } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -382,7 +383,8 @@ export async function submitSupervisorReview(formData: FormData) {
 
 export async function saveCEODecision(formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const cycleId      = formData.get("cycleId")      as string;
   const overallScore = formData.get("overallScore") as string;
@@ -396,14 +398,14 @@ export async function saveCEODecision(formData: FormData) {
       overallScore: overallScore ? parseFloat(overallScore) : null,
       outcome,
       comments,
-      decidedById: session.user.id!,
+      decidedById: session!.user!.id!,
       decidedAt:   new Date(),
     },
     update: {
       overallScore: overallScore ? parseFloat(overallScore) : null,
       outcome,
       comments,
-      decidedById: session.user.id!,
+      decidedById: session!.user!.id!,
       decidedAt:   new Date(),
     },
   });
@@ -424,11 +426,11 @@ export async function saveCEODecision(formData: FormData) {
   });
 
   await auditLog({
-    userId:   session.user.id!,
+    userId:   session!.user!.id!,
     action:   "UPDATE",
     entity:   "CEODecision",
     entityId: cycleId,
-    detail:   `Outcome: ${outcome ?? "recorded"}`,
+    detail:   `Outcome: ${outcome ?? "recorded"}${delegateNote(ceoAuth)}`,
   });
 
   // Notify employee

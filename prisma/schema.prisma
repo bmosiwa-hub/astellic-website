@@ -104,6 +104,8 @@ model User {
   ceoDecisions         CEODecision[]       @relation("CEODecisionMaker")
   periodsClosedBy      FinancialPeriod[]   @relation("PeriodClosedBy")
   periodsLockedBy      FinancialPeriod[]   @relation("PeriodLockedBy")
+  delegationsGranted   ApprovalDelegation[] @relation("DelegationGrantor")
+  delegationsReceived  ApprovalDelegation[] @relation("DelegationReceiver")
 }
 
 model Project {
@@ -1315,4 +1317,31 @@ model TimesheetEntry {
   project     String?   // project name / budget line (optional)
   hours       Float     // hours spent on this activity
   createdAt   DateTime  @default(now())
+}
+
+// ── Phase 12: Approval Delegation ─────────────────────────────────────────────
+//
+// CEO can temporarily delegate their approval authority to another user.
+// Active when: isActive = true AND today is within [startDate, endDate].
+// The delegate's actions are attributed "on behalf of CEO" in audit logs.
+
+model ApprovalDelegation {
+  id           String    @id @default(cuid())
+  // CEO granting the delegation
+  delegatorId  String
+  delegator    User      @relation("DelegationGrantor", fields: [delegatorId], references: [id])
+  // User receiving the delegation
+  delegateeId  String
+  delegatee    User      @relation("DelegationReceiver", fields: [delegateeId], references: [id])
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean   @default(true)
+  notes        String?
+  revokedAt    DateTime? // set when manually revoked early
+  revokedById  String?   // who revoked it
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([delegateeId, isActive])
+  @@index([delegatorId])
 }

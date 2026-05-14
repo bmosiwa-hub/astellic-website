@@ -327,6 +327,9 @@ export default async function SettingsPage({
             </svg>
             Download Backup
           </a>
+          <Link href="/astelfin_26/settings/delegation" className="text-sm text-gray-500 hover:text-brand-navy font-semibold transition-colors">
+            Delegation →
+          </Link>
           <Link href="/astelfin_26/settings/login-history" className="text-sm text-gray-500 hover:text-brand-navy font-semibold transition-colors">
             Login History →
           </Link>

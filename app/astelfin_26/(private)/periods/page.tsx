@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
+import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { toPeriodKey, periodLabel } from "@/lib/period-lock";
 import { notifyPeriodAction } from "@/lib/mail";
 import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
@@ -117,7 +118,8 @@ async function closePeriod(formData: FormData) {
 async function lockPeriod(formData: FormData) {
   "use server";
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const periodKey = formData.get("periodKey") as string;
   const notes     = (formData.get("notes") as string) || null;
@@ -129,32 +131,32 @@ async function lockPeriod(formData: FormData) {
     where:  { periodKey },
     create: {
       periodKey, year: parseInt(yearStr), month: parseInt(monthStr),
-      status: "LOCKED", closedAt: new Date(), closedById: session.user.id!,
-      lockedAt: new Date(), lockedById: session.user.id!, checksum, notes,
+      status: "LOCKED", closedAt: new Date(), closedById: session!.user!.id!,
+      lockedAt: new Date(), lockedById: session!.user!.id!, checksum, notes,
     },
     update: {
-      status: "LOCKED", lockedAt: new Date(), lockedById: session.user.id!, checksum, notes,
+      status: "LOCKED", lockedAt: new Date(), lockedById: session!.user!.id!, checksum, notes,
     },
   });
 
-  const locker = await prisma.user.findUnique({ where: { id: session.user.id! }, select: { name: true, email: true, role: true } });
+  const locker = await prisma.user.findUnique({ where: { id: session!.user!.id! }, select: { name: true, email: true, role: true } });
   await writeApprovalRecord({
     entityType:     "FinancialPeriod",
     entityId:       periodKey,
-    decidedById:    session.user.id!,
+    decidedById:    session!.user!.id!,
     decidedByEmail: locker?.email ?? "",
     decidedByName:  locker?.name  ?? "",
     decidedByRole:  locker?.role  ?? "CEO",
     decision:       "APPROVED",
     previousStatus: "CLOSED",
     newStatus:      "LOCKED",
-    comments:       `Period locked for donor submission — checksum: ${checksum.slice(0, 16)}…`,
+    comments:       `Period locked for donor submission — checksum: ${checksum.slice(0, 16)}…${delegateNote(ceoAuth)}`,
   });
 
   await auditLog({
-    userId:   session.user.id!, action: "LOCK_PERIOD",
+    userId:   session!.user!.id!, action: "LOCK_PERIOD",
     entity:   "FinancialPeriod",  entityId: periodKey,
-    detail:   `Period ${periodKey} locked — checksum ${checksum.slice(0,16)}…`,
+    detail:   `Period ${periodKey} locked — checksum ${checksum.slice(0,16)}…${delegateNote(ceoAuth)}`,
   });
 
   // Email all CEO + FM users with checksum for audit records
@@ -181,7 +183,8 @@ async function lockPeriod(formData: FormData) {
 async function reopenPeriod(formData: FormData) {
   "use server";
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const periodKey = formData.get("periodKey") as string;
 
@@ -191,9 +194,9 @@ async function reopenPeriod(formData: FormData) {
   });
 
   await auditLog({
-    userId:   session.user.id!, action: "REOPEN_PERIOD",
+    userId:   session!.user!.id!, action: "REOPEN_PERIOD",
     entity:   "FinancialPeriod",  entityId: periodKey,
-    detail:   `Period ${periodKey} reopened by CEO (checksum invalidated)`,
+    detail:   `Period ${periodKey} reopened (checksum invalidated)${delegateNote(ceoAuth)}`,
   });
 
   revalidatePath("/astelfin_26/periods");
@@ -208,7 +211,8 @@ export default async function PeriodsPage({
 }) {
   const session = await auth();
   const role    = session?.user?.role ?? "";
-  const isCEO   = role === "CEO";
+  const ceoAuth = await checkCEOAuth(session);
+  const isCEO   = ceoAuth.authorized;
   const isFM    = role === "FINANCE_MANAGER";
   if (!isCEO && !isFM) redirect("/astelfin_26/dashboard");
 

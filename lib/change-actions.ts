@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
+import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -96,12 +97,13 @@ export async function requestDeleteChange(entity: Entity, entityId: string) {
 }
 
 /**
- * CEO approves a pending change.
+ * CEO (or active delegate) approves a pending change.
  * FormData may contain an optional `reviewNote` field.
  */
 export async function approveChange(changeId: string, formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/login");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/login");
 
   const reviewNote = (formData.get("reviewNote") as string) || null;
   const change = await prisma.pendingChange.findUniqueOrThrow({ where: { id: changeId } });
@@ -118,9 +120,9 @@ export async function approveChange(changeId: string, formData: FormData) {
       } else if (change.entity === "Expense") {
         await prisma.expense.delete({ where: { id: change.entityId } });
       } else if (change.entity === "AccountPayable") {
-        await prisma.accountPayable.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
+        await prisma.accountPayable.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session!.user!.id! } });
       } else if (change.entity === "Debt") {
-        await prisma.debt.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session.user.id! } });
+        await prisma.debt.update({ where: { id: change.entityId }, data: { deletedAt: new Date(), deletedBy: session!.user!.id! } });
       }
     } else {
       // EDIT — apply proposed values
@@ -165,7 +167,7 @@ export async function approveChange(changeId: string, formData: FormData) {
     where: { id: changeId },
     data: {
       status: "APPROVED",
-      approvedBy: session.user.id,
+      approvedBy: session!.user!.id,
       reviewedAt: new Date(),
       reviewNote,
     },
@@ -173,11 +175,11 @@ export async function approveChange(changeId: string, formData: FormData) {
 
   const approvedSummary = snapshotSummary(change.snapshot as object);
   await auditLog({
-    userId: session.user.id!,
+    userId: session!.user!.id!,
     action: "APPROVED",
     entity: change.entity,
     entityId: change.entityId,
-    detail: `${change.changeType} approved — ${approvedSummary}${reviewNote ? ` · ${reviewNote}` : ""}`,
+    detail: `${change.changeType} approved — ${approvedSummary}${reviewNote ? ` · ${reviewNote}` : ""}${delegateNote(ceoAuth)}`,
   });
 
   const approveEntityPath: Record<string, string> = {
@@ -187,10 +189,11 @@ export async function approveChange(changeId: string, formData: FormData) {
   revalidatePath(`/astelfin_26/${approveEntityPath[change.entity] ?? change.entity.toLowerCase()}`);
 }
 
-/** CEO rejects a pending change. */
+/** CEO (or active delegate) rejects a pending change. */
 export async function rejectChange(changeId: string, formData: FormData) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/login");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/login");
 
   const reviewNote = (formData.get("reviewNote") as string) || null;
   const change = await prisma.pendingChange.findUniqueOrThrow({ where: { id: changeId } });
@@ -199,18 +202,18 @@ export async function rejectChange(changeId: string, formData: FormData) {
     where: { id: changeId },
     data: {
       status: "REJECTED",
-      approvedBy: session.user.id,
+      approvedBy: session!.user!.id,
       reviewedAt: new Date(),
       reviewNote,
     },
   });
 
   await auditLog({
-    userId: session.user.id!,
+    userId: session!.user!.id!,
     action: "REJECTED",
     entity: change.entity,
     entityId: change.entityId,
-    detail: `${change.changeType} request rejected${reviewNote ? ` — ${reviewNote}` : ""}`,
+    detail: `${change.changeType} request rejected${reviewNote ? ` — ${reviewNote}` : ""}${delegateNote(ceoAuth)}`,
   });
 
   revalidatePath("/astelfin_26/approvals");

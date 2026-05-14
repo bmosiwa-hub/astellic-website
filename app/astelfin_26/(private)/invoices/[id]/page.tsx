@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { checkCEOAuth } from "@/lib/delegation";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { reviewSubmission, markSubmissionPaid } from "@/lib/submission-actions";
@@ -20,8 +21,9 @@ export default async function ReviewSubmissionPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/my/submissions");
+  const role    = session.user.role;
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized && role !== "FINANCE_MANAGER") redirect("/astelfin_26/my/submissions");
 
   const sub = await prisma.submission.findUnique({
     where: { id },
@@ -38,13 +40,13 @@ export default async function ReviewSubmissionPage({
 
   if (!sub) notFound();
 
-  const isFM = role === "FINANCE_MANAGER";
-  const isCEO = role === "CEO";
+  const isFM  = role === "FINANCE_MANAGER";
+  const isCEO = ceoAuth.authorized;
 
-  // FM can action PENDING_FM; CEO can action PENDING_CEO or APPROVED (mark paid)
-  const canFMAction = isFM && sub.status === "PENDING_FM";
+  // FM can action PENDING_FM; CEO (or delegate) can action PENDING_CEO or APPROVED (mark paid)
+  const canFMAction  = isFM && sub.status === "PENDING_FM";
   const canCEOAction = isCEO && sub.status === "PENDING_CEO";
-  const canMarkPaid = (isFM || isCEO) && sub.status === "APPROVED";
+  const canMarkPaid  = (isFM || isCEO) && sub.status === "APPROVED";
 
   // Server action bindings
   const approveFM   = reviewSubmission.bind(null, id, "APPROVED",          "FM");

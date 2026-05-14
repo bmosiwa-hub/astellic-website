@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
+import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -23,7 +24,8 @@ const STATUS_COLORS: Record<string, string> = {
 async function lockPayrollPeriod(formData: FormData) {
   "use server";
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  const ceoAuth = await checkCEOAuth(session);
+  if (!ceoAuth.authorized) redirect("/astelfin_26/dashboard");
 
   const period = formData.get("period") as string;
   if (!period) return;
@@ -41,15 +43,15 @@ async function lockPayrollPeriod(formData: FormData) {
   const now = new Date();
   await prisma.payroll.updateMany({
     where:  { period },
-    data:   { lockedAt: now, lockedBy: session.user.id! },
+    data:   { lockedAt: now, lockedBy: session!.user!.id! },
   });
 
   await auditLog({
-    userId:   session.user.id!,
+    userId:   session!.user!.id!,
     action:   "LOCK",
     entity:   "Payroll",
     entityId: period,
-    detail:   `Payroll period ${period} locked by CEO`,
+    detail:   `Payroll period ${period} locked by CEO${delegateNote(ceoAuth)}`,
   });
 
   // Write one ApprovalRecord representing the CEO's approval of the entire period
@@ -58,10 +60,10 @@ async function lockPayrollPeriod(formData: FormData) {
     await writeApprovalRecord({
       entityType:     "PayrollPeriod",
       entityId:       period,
-      decidedById:    session.user.id!,
-      decidedByEmail: session.user.email ?? "",
-      decidedByName:  session.user.name  ?? "",
-      decidedByRole:  session.user.role,
+      decidedById:    session!.user!.id!,
+      decidedByEmail: session!.user!.email ?? "",
+      decidedByName:  session!.user!.name  ?? "",
+      decidedByRole:  session!.user!.role,
       previousStatus: "OPEN",
       newStatus:      "LOCKED",
       decision:       "APPROVED",
@@ -117,7 +119,8 @@ export default async function PayrollPage() {
     return acc;
   }, {});
   const periods = Object.keys(byPeriod).sort().reverse();
-  const isCEO = session.user.role === "CEO";
+  const ceoAuth = await checkCEOAuth(session);
+  const isCEO = ceoAuth.authorized;
 
   // Group overdue liquidations by employee
   const unliqByEmployee = unliquidatedSubs.reduce<
