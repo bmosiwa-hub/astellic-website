@@ -3,6 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
+const institutionsItems = [
+  { label: "Donors & Governments",    href: "/institutions-we-support/donors-and-governments",  dot: "bg-brand-gold" },
+  { label: "Corporate Institutions",  href: "/institutions-we-support/corporate-institutions",   dot: "bg-brand-navy" },
+  { label: "Development Partners",    href: "/institutions-we-support/development-partners",     dot: "bg-brand-teal" },
+];
+
 const thematicAreas = [
   { label: "Health & Nutrition Systems", href: "/thematic-areas/health" },
   { label: "Governance & Public Sector Reform", href: "/thematic-areas/governance" },
@@ -79,6 +85,42 @@ function OurWorkDropdown() {
 
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block z-50">
         <div className="bg-white rounded-xl shadow-xl py-2 min-w-[240px] border border-gray-100">
+
+          {/* Institutions We Support — nested flyout */}
+          <div className="relative group/institutions">
+            <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
+              <Link href="/institutions-we-support" className="text-brand-navy text-base font-medium hover:text-brand-gold transition-colors flex-1">
+                Institutions We Support
+              </Link>
+              <svg className="w-4 h-4 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+
+            {/* Institutions flyout */}
+            <div className="absolute left-full top-0 pl-1 hidden group-hover/institutions:block z-50">
+              <div className="bg-white rounded-xl shadow-xl py-2 min-w-[260px] border border-gray-100">
+                <p className="px-5 pt-2 pb-1 text-[10px] font-bold text-brand-muted uppercase tracking-widest">Who We Work With</p>
+                {institutionsItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-brand-light transition-colors group/item"
+                  >
+                    <span className={`w-2 h-2 rounded-full ${item.dot} shrink-0`} />
+                    <p className="text-sm font-medium text-brand-navy group-hover/item:text-brand-gold transition-colors">
+                      {item.label}
+                    </p>
+                  </Link>
+                ))}
+                <div className="border-t border-gray-100 mt-1 pt-1">
+                  <Link href="/institutions-we-support" className="block px-5 py-2.5 text-brand-gold text-sm font-semibold hover:bg-brand-light transition-colors">
+                    View all institutions →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Our Approach — nested flyout with pillars */}
           <div className="relative group/approach">
@@ -158,6 +200,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [whoWeAreOpen, setWhoWeAreOpen] = useState(false);
   const [ourWorkOpen, setOurWorkOpen] = useState(false);
+  const [institutionsOpen, setInstitutionsOpen] = useState(false);
   const [approachOpen, setApproachOpen] = useState(false);
   const [thematicOpen, setThematicOpen] = useState(false);
   const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
@@ -166,6 +209,7 @@ export default function Header() {
     setMobileOpen(false);
     setWhoWeAreOpen(false);
     setOurWorkOpen(false);
+    setInstitutionsOpen(false);
     setApproachOpen(false);
     setThematicOpen(false);
     setWorkWithUsOpen(false);
@@ -234,6 +278,29 @@ export default function Header() {
             </button>
             {ourWorkOpen && (
               <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
+
+                {/* Institutions We Support nested */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Link href="/institutions-we-support" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                      Institutions We Support
+                    </Link>
+                    <button className="text-gray-400 hover:text-white px-2" onClick={() => setInstitutionsOpen(!institutionsOpen)} aria-label="Expand institutions">
+                      <svg className={`w-4 h-4 transition-transform ${institutionsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                  {institutionsOpen && (
+                    <div className="pl-4 flex flex-col gap-1 mt-1 border-l border-white/10">
+                      {institutionsItems.map((item) => (
+                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-sm" onClick={closeMobile}>
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 {/* Our Approach nested */}
                 <div>
