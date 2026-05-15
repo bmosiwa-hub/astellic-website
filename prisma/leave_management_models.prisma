@@ -1,0 +1,41 @@
+// Prisma models for Leave Management.
+// Add these models into your prisma/schema.prisma or import this file's contents into it.
+// Run: npx prisma migrate dev --name add-leave-management
+
+model Employee {
+  id           String        @id @default(cuid())
+  userId       String?       @unique
+  employeeNo   String?       @unique
+  hireDate     DateTime?
+  position     String?
+  managerId    String?
+  leaveRequests LeaveRequest[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model LeaveType {
+  id          String   @id @default(cuid())
+  name        String
+  defaultDays Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model LeaveRequest {
+  id           String    @id @default(cuid())
+  employee     Employee  @relation(fields: [employeeId], references: [id])
+  employeeId   String
+  leaveType    LeaveType @relation(fields: [leaveTypeId], references: [id])
+  leaveTypeId  String
+  startDate    DateTime
+  endDate      DateTime
+  days         Float
+  status       String    @default("pending") // pending, approved, rejected, cancelled
+  requestedAt  DateTime  @default(now())
+  decidedBy    String?   // user id
+  decidedAt    DateTime?
+  notes        String?
+  managerNotes String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
