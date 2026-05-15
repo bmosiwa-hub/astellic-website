@@ -4,6 +4,7 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { calculateNetPay, calculateEmployerPension, formatCurrency } from "@/lib/finance-utils";
 import { getActiveBandSet } from "@/lib/paye";
+import { LAUNCH_PERIOD } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -176,8 +177,9 @@ export default async function NewPayrollPage({
   const role = session.user.role;
   if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
-  // Default period to current YYYY-MM
-  const defaultPeriod = qPeriod || new Date().toISOString().slice(0, 7);
+  // Default period to launch month (June 2026) or later
+  const currentPeriod = new Date().toISOString().slice(0, 7);
+  const defaultPeriod = qPeriod || (currentPeriod >= LAUNCH_PERIOD ? currentPeriod : LAUNCH_PERIOD);
 
   // Fetch active employees
   const employees = await prisma.employee.findMany({
@@ -259,6 +261,7 @@ export default async function NewPayrollPage({
               name="period"
               type="month"
               defaultValue={defaultPeriod}
+              min={LAUNCH_PERIOD}
               className={inp}
             />
           </div>

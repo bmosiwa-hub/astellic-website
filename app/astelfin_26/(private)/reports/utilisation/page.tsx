@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { formatCurrency } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
+import { LAUNCH_YEAR } from "@/lib/constants";
 
 export const metadata = { title: "Utilisation Report | Astelfin IMS", robots: { index: false, follow: false } };
 
@@ -98,7 +99,9 @@ export default async function UtilisationPage({ searchParams }: { searchParams: 
         </div>
         <form method="GET" className="flex items-center gap-2">
           <select name="year" defaultValue={year} className="border rounded-lg px-3 py-2 text-sm">
-            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
+            {Array.from({ length: new Date().getFullYear() - LAUNCH_YEAR + 2 }, (_, i) => LAUNCH_YEAR + i).map(y => (
+            <option key={y} value={y}>{y}</option>
+          ))}
           </select>
           <button className="bg-brand-navy text-white text-sm px-3 py-2 rounded-lg hover:opacity-90">View</button>
         </form>

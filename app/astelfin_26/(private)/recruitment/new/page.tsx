@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = { title: "New Job Posting | Astelfin IMS", robots: { index: false, follow: false } };
 
@@ -70,7 +71,7 @@ export default async function NewPostingPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Application Deadline</label>
-            <input type="date" name="deadline" className="w-full border rounded-lg px-3 py-2 text-sm" />
+            <input type="date" name="deadline" min={LAUNCH_DATE} className="w-full border rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
+import { LAUNCH_DATE } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -304,7 +305,8 @@ export default async function GrantsPage({
                 Start Date <span className="text-red-500">*</span>
               </label>
               <input name="startDate" type="date" required
-                defaultValue={editingGrant ? new Date(editingGrant.startDate).toISOString().split("T")[0] : ""}
+                min={LAUNCH_DATE}
+                defaultValue={editingGrant ? new Date(editingGrant.startDate).toISOString().split("T")[0] : LAUNCH_DATE}
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
             </div>
 
@@ -313,6 +315,7 @@ export default async function GrantsPage({
                 End Date (optional)
               </label>
               <input name="endDate" type="date"
+                min={LAUNCH_DATE}
                 defaultValue={editingGrant?.endDate ? new Date(editingGrant.endDate).toISOString().split("T")[0] : ""}
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
             </div>

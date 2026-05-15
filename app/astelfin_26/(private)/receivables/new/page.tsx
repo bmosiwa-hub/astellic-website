@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createAccountReceivable } from "@/lib/recurring-actions";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = {
   title: "New Receivable | Astellic Finance",
@@ -91,6 +92,8 @@ export default async function NewReceivablePage() {
               </label>
               <input
                 name="expectedDate" type="date" required
+                min={LAUNCH_DATE}
+                defaultValue={LAUNCH_DATE}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
               />
             </div>

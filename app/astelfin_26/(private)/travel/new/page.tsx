@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = { title: "New Travel Request | Astelfin IMS", robots: { index: false, follow: false } };
 
@@ -97,11 +98,11 @@ export default async function NewTravelPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Departure Date *</label>
-            <input type="date" name="departureDate" required className="w-full border rounded-lg px-3 py-2 text-sm" />
+            <input type="date" name="departureDate" required min={LAUNCH_DATE} defaultValue={LAUNCH_DATE} className="w-full border rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Return Date *</label>
-            <input type="date" name="returnDate" required className="w-full border rounded-lg px-3 py-2 text-sm" />
+            <input type="date" name="returnDate" required min={LAUNCH_DATE} className="w-full border rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>

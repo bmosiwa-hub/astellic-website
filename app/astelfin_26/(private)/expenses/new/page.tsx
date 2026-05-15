@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { checkPeriodOpen } from "@/lib/period-lock";
 import { getActiveOrgId, orgTag } from "@/lib/org";
+import { LAUNCH_DATE } from "@/lib/constants";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -146,6 +147,8 @@ export default async function NewExpensePage({
                 name="paidDate"
                 type="date"
                 required
+                min={LAUNCH_DATE}
+                defaultValue={LAUNCH_DATE}
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
               />
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -94,7 +95,7 @@ export default function EmployeeForm({ action, defaultValues, supervisors = [] }
   const [exchangeRate,         setExchangeRate]         = useState(defaultValues?.salaryExchangeRate ?? 0);
   const [selectedDepts, setSelectedDepts] = useState<string[]>(defaultValues?.departments ?? []);
   const [contractType, setContractType] = useState(defaultValues?.contractType ?? "PERMANENT");
-  const [startDate,    setStartDate]    = useState(defaultValues?.startDate ?? "");
+  const [startDate,    setStartDate]    = useState(defaultValues?.startDate ?? LAUNCH_DATE);
 
   const isMWK    = currency === "MWK";
   const rate     = isMWK ? 1 : exchangeRate;
@@ -195,6 +196,7 @@ export default function EmployeeForm({ action, defaultValues, supervisors = [] }
             </label>
             <input name="startDate" type="date" required
               value={startDate}
+              min={LAUNCH_DATE}
               onChange={e => setStartDate(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/40" />
           </div>
