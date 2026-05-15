@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "@/lib/finance-utils";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = {
   title: "Approval Delegation | Astellic Finance",
@@ -238,7 +239,8 @@ export default async function DelegationPage({
                   type="date"
                   name="startDate"
                   required
-                  defaultValue={new Date().toISOString().split("T")[0]}
+                  min={LAUNCH_DATE}
+                  defaultValue={LAUNCH_DATE}
                   className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
                 />
               </div>
@@ -248,6 +250,7 @@ export default async function DelegationPage({
                   type="date"
                   name="endDate"
                   required
+                  min={LAUNCH_DATE}
                   className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
                 />
               </div>

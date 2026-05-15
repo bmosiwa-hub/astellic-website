@@ -8,6 +8,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { LAUNCH_DATE } from "@/lib/constants";
+
 
 const CURRENCIES = ["MWK", "USD", "EUR", "GBP", "ZAR"];
 
@@ -17,8 +19,8 @@ export default function ImportStatementPage() {
   const [accountName, setAccountName] = useState("");
   const [bankName,    setBankName]    = useState("");
   const [currency,    setCurrency]    = useState("MWK");
-  const [fromDate,    setFromDate]    = useState("");
-  const [toDate,      setToDate]      = useState("");
+  const [fromDate,    setFromDate]    = useState(LAUNCH_DATE);
+  const [toDate,      setToDate]      = useState(LAUNCH_DATE);
   const [file,        setFile]        = useState<File | null>(null);
   const [error,       setError]       = useState<string | null>(null);
   const [loading,     setLoading]     = useState(false);
@@ -124,6 +126,7 @@ export default function ImportStatementPage() {
               type="date"
               required
               value={fromDate}
+              min={LAUNCH_DATE}
               onChange={(e) => setFromDate(e.target.value)}
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
             />
@@ -134,6 +137,7 @@ export default function ImportStatementPage() {
               type="date"
               required
               value={toDate}
+              min={LAUNCH_DATE}
               onChange={(e) => setToDate(e.target.value)}
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
             />

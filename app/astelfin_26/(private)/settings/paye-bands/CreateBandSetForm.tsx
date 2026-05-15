@@ -7,6 +7,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 interface Band {
   fromAmount: number | "";
@@ -123,6 +124,7 @@ export function CreateBandSetForm() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
+            min={LAUNCH_DATE}
             className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
           />
         </div>

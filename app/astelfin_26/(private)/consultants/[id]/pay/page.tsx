@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { calculateWithholding, formatCurrency } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = {
   title: "Record Consultant Payment | Astellic Finance",
@@ -176,6 +177,8 @@ export default async function PayConsultantPage({
               <input
                 name="paidDate"
                 type="date"
+                min={LAUNCH_DATE}
+                defaultValue={LAUNCH_DATE}
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold"
               />
             </div>

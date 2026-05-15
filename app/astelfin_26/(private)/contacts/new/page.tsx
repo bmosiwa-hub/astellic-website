@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = { title: "New Contact | Astelfin IMS", robots: { index: false, follow: false } };
 
@@ -93,7 +94,7 @@ export default async function NewContactPage() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Last Contacted</label>
-          <input type="date" name="lastContactedAt" className="w-full border rounded-lg px-3 py-2 text-sm" />
+          <input type="date" name="lastContactedAt" min={LAUNCH_DATE} className="w-full border rounded-lg px-3 py-2 text-sm" />
         </div>
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>

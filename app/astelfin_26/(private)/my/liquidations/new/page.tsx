@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { createLiquidation } from "@/lib/liquidation-actions";
 import Link from "next/link";
+import { LAUNCH_DATE } from "@/lib/constants";
 
 export const metadata = {
   title: "Submit Liquidation | Astellic Finance",
@@ -67,7 +68,8 @@ export default async function NewLiquidationPage({
                 Liquidation Date <span className="text-red-500">*</span>
               </label>
               <input name="liquidationDate" type="date" required
-                defaultValue={new Date().toISOString().split("T")[0]}
+                min={LAUNCH_DATE}
+                defaultValue={LAUNCH_DATE}
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
             </div>
             <div>

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createPerformanceCycle } from "@/lib/performance-actions";
+import { LAUNCH_DATE, LAUNCH_YEAR } from "@/lib/constants";
 
 export const metadata = {
   title: "New Performance Cycle | Astelfin",
@@ -11,10 +12,8 @@ export const metadata = {
 
 const CYCLE_TYPES = [
   { value: "PROBATION",  label: "Probation Review",       desc: "For employees in their probation period" },
-  { value: "Q1",         label: "Q1 — Jan to Mar",        desc: "First quarter review" },
-  { value: "Q2",         label: "Q2 — Apr to Jun",        desc: "Second quarter review" },
-  { value: "Q3",         label: "Q3 — Jul to Sep",        desc: "Third quarter review" },
-  { value: "Q4",         label: "Q4 — Oct to Dec",        desc: "Fourth quarter / annual review" },
+  { value: "H1",         label: "H1 — Jan to Jun",        desc: "First half-year review" },
+  { value: "H2",         label: "H2 — Jul to Dec",        desc: "Second half-year review" },
   { value: "ANNUAL",     label: "Annual Review",           desc: "Full-year performance review" },
 ];
 
@@ -28,7 +27,7 @@ export default async function NewPerformanceCyclePage() {
   });
   if (!user?.employeeId) redirect("/astelfin_26/my/performance");
 
-  const currentYear = new Date().getFullYear();
+  const currentYear = Math.max(new Date().getFullYear(), LAUNCH_YEAR);
 
   return (
     <div className="max-w-xl space-y-6">
@@ -76,11 +75,14 @@ export default async function NewPerformanceCyclePage() {
           <div>
             <label className="block text-sm font-semibold text-brand-navy mb-1">Start Date</label>
             <input type="date" name="startDate" required
+              min={LAUNCH_DATE}
+              defaultValue={LAUNCH_DATE}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
           </div>
           <div>
             <label className="block text-sm font-semibold text-brand-navy mb-1">End Date</label>
             <input type="date" name="endDate" required
+              min={LAUNCH_DATE}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
           </div>
         </div>
