@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import Link from "next/link";
 import DeleteButton from "@/components/finance/DeleteButton";
 
@@ -27,11 +29,16 @@ export default async function IncomePage({
 }) {
   const { project, type, edit_requested, error } = await searchParams;
 
+  const session     = await auth();
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const [income, projects, pendingChanges] = await Promise.all([
     prisma.income.findMany({
       where: {
         ...(project ? { projectId: project } : {}),
         ...(type ? { incomeType: type as "GRANT" | "PRIVATE_SERVICE" | "DONATION" } : {}),
+        ...orgFilter,
       },
       orderBy: { receivedDate: "desc" },
       include: { project: { select: { name: true } } },

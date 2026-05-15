@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -21,6 +22,9 @@ export default async function FinancialHealthPage() {
   const yearStart = new Date(now.getFullYear(), 0, 1);
   const yearEnd   = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const [
     activeEmployees,
     debts,
@@ -32,55 +36,55 @@ export default async function FinancialHealthPage() {
     ytdPayroll,
     ytdWHT,
   ] = await Promise.all([
-    // Active employees for salary obligations
+    // Active employees for salary obligations (org-scoped)
     prisma.employee.findMany({
-      where:  { active: true },
+      where:  { active: true, ...orgFilter },
       select: { grossSalary: true, currency: true, salaryExchangeRate: true, pensionRate: true },
     }),
 
-    // Active debts
+    // Active debts (org-scoped)
     prisma.debt.findMany({
-      where:  { status: "ACTIVE" },
+      where:  { status: "ACTIVE", ...orgFilter },
       select: { principal: true, currency: true },
     }),
 
-    // Monthly recurring expenses
+    // Monthly recurring expenses (global — RecurringExpense has no organisationId)
     prisma.recurringExpense.findMany({
       where:  { active: true, frequency: "MONTHLY" },
       select: { amount: true, currency: true },
     }),
 
-    // YTD income
+    // YTD income (org-scoped)
     prisma.income.aggregate({
       _sum:  { amount: true },
-      where: { receivedDate: { gte: yearStart, lte: yearEnd } },
+      where: { receivedDate: { gte: yearStart, lte: yearEnd }, ...orgFilter },
     }),
 
-    // YTD expenses (non-payroll)
+    // YTD expenses (non-payroll, org-scoped)
     prisma.expense.aggregate({
       _sum:  { amount: true },
-      where: { paidDate: { gte: yearStart, lte: yearEnd } },
+      where: { paidDate: { gte: yearStart, lte: yearEnd }, ...orgFilter },
     }),
 
-    // Outstanding receivables
+    // Outstanding receivables (global — AccountReceivable has no organisationId)
     prisma.accountReceivable.findMany({
       where:  { status: { in: ["EXPECTED", "PARTIAL"] } },
       select: { amount: true, currency: true },
     }),
 
-    // Outstanding payables (not paid)
+    // Outstanding payables (global — AccountPayable has no organisationId)
     prisma.accountPayable.findMany({
       where:  { status: { notIn: ["PAID", "CANCELLED"] } },
       select: { amount: true, currency: true, dueDate: true },
     }),
 
-    // YTD payroll PAYE
+    // YTD payroll (org-scoped)
     prisma.payroll.aggregate({
       _sum:  { paye: true, grossSalary: true, netPay: true, pensionEmployer: true },
-      where: { createdAt: { gte: yearStart, lte: yearEnd } },
+      where: { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
     }),
 
-    // YTD withholding tax
+    // YTD withholding tax (global — ConsultantPayment has no organisationId)
     prisma.consultantPayment.aggregate({
       _sum:  { withholdingTax: true },
       where: { createdAt: { gte: yearStart, lte: yearEnd } },

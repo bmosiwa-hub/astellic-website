@@ -13,6 +13,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { PrintButton } from "@/components/finance/PrintButton";
 import Link from "next/link";
 
@@ -58,6 +59,9 @@ export default async function BudgetReportPage({
   const yearStart = new Date(year, 0, 1);
   const yearEnd   = new Date(year + 1, 0, 1);
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   // ── Exchange rates ──────────────────────────────────────────────────────────
   const exchangeRates = await prisma.exchangeRate.findMany({
     select: { currency: true, middleRate: true, updatedAt: true },
@@ -65,8 +69,20 @@ export default async function BudgetReportPage({
   const rates = buildRateMap(exchangeRates);
 
   // ── Budget lines for this fiscal year ──────────────────────────────────────
+  // BudgetLine has no organisationId — filter via linked project's org.
+  // Lines with no project (org-wide lines) are always included.
+  const budgetLineOrgFilter = activeOrgId
+    ? {
+        OR: [
+          { projectId: null },
+          { project: { organisationId: activeOrgId } },
+          { project: { organisationId: null } },
+        ],
+      }
+    : {};
+
   const budgetLines = await prisma.budgetLine.findMany({
-    where:   { fiscalYear: year, active: true },
+    where:   { fiscalYear: year, active: true, ...budgetLineOrgFilter },
     include: { project: { select: { id: true, name: true } } },
     orderBy: [{ category: "asc" }, { name: "asc" }],
   });

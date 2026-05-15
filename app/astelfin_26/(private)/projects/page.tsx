@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -44,7 +45,11 @@ export default async function ProjectsPage() {
   // accessible to FM (financial view), CEO, PM
   if (role === "STAFF" || role === "CONSULTANT") redirect("/astelfin_26/my/submissions");
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const projects = await prisma.project.findMany({
+    where:   { ...orgFilter },
     orderBy: [{ thematicArea: "asc" }, { startDate: "desc" }],
     include: {
       income:     { select: { amount: true } },

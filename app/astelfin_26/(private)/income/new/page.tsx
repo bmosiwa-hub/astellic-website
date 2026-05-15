@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { checkPeriodOpen } from "@/lib/period-lock";
+import { getActiveOrgId, orgTag } from "@/lib/org";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -18,6 +19,8 @@ async function createIncome(formData: FormData) {
   const periodCheck  = await checkPeriodOpen(receivedDate);
   if (!periodCheck.open) redirect(`/astelfin_26/income/new?error=period_closed&period=${periodCheck.periodKey}`);
 
+  const activeOrgId = await getActiveOrgId(session);
+
   const data = {
     incomeType: (formData.get("incomeType") as "GRANT" | "PRIVATE_SERVICE" | "DONATION") || "GRANT",
     description: formData.get("description") as string,
@@ -29,6 +32,7 @@ async function createIncome(formData: FormData) {
     projectId: (formData.get("projectId") as string) || null,
     grantId: (formData.get("grantId") as string) || null,
     notes: (formData.get("notes") as string) || null,
+    ...orgTag(activeOrgId),
   };
 
   const record = await prisma.income.create({ data });

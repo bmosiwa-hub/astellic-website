@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import Link from "next/link";
 
 export const metadata = {
@@ -15,7 +17,12 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default async function DebtPage() {
+  const session     = await auth();
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const debts = await prisma.debt.findMany({
+    where:   { ...orgFilter },
     orderBy: { disbursedDate: "desc" },
     include: { repayments: { select: { amount: true } } },
   });

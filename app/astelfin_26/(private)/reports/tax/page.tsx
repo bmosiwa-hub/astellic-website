@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { sendTaxReport } from "@/lib/mail";
@@ -38,11 +39,14 @@ async function emailMonthlyReport(formData: FormData) {
   const start = new Date(year, month - 1, 1);
   const end   = new Date(year, month, 0, 23, 59, 59);
 
+  const emailOrgId     = await getActiveOrgId(session);
+  const emailOrgFilter = orgWhere(emailOrgId);
+
   const [payrollData, whtData, incomeData, expenseData] = await Promise.all([
-    prisma.payroll.aggregate({ _sum: { paye: true }, where: { createdAt: { gte: start, lte: end } } }),
+    prisma.payroll.aggregate({ _sum: { paye: true }, where: { createdAt: { gte: start, lte: end }, ...emailOrgFilter } }),
     prisma.consultantPayment.aggregate({ _sum: { withholdingTax: true }, where: { createdAt: { gte: start, lte: end } } }),
-    prisma.income.aggregate({ _sum: { amount: true }, where: { receivedDate: { gte: start, lte: end } } }),
-    prisma.expense.aggregate({ _sum: { amount: true }, where: { paidDate: { gte: start, lte: end } } }),
+    prisma.income.aggregate({ _sum: { amount: true }, where: { receivedDate: { gte: start, lte: end }, ...emailOrgFilter } }),
+    prisma.expense.aggregate({ _sum: { amount: true }, where: { paidDate: { gte: start, lte: end }, ...emailOrgFilter } }),
   ]);
 
   const paye = payrollData._sum.paye ?? 0;
@@ -78,11 +82,14 @@ async function emailAnnualReport(formData: FormData) {
   const start = new Date(year, 0, 1);
   const end   = new Date(year, 11, 31, 23, 59, 59);
 
+  const annualOrgId     = await getActiveOrgId(session);
+  const annualOrgFilter = orgWhere(annualOrgId);
+
   const [payrollData, whtData, incomeData, expenseData] = await Promise.all([
-    prisma.payroll.aggregate({ _sum: { paye: true }, where: { createdAt: { gte: start, lte: end } } }),
+    prisma.payroll.aggregate({ _sum: { paye: true }, where: { createdAt: { gte: start, lte: end }, ...annualOrgFilter } }),
     prisma.consultantPayment.aggregate({ _sum: { withholdingTax: true }, where: { createdAt: { gte: start, lte: end } } }),
-    prisma.income.aggregate({ _sum: { amount: true }, where: { receivedDate: { gte: start, lte: end } } }),
-    prisma.expense.aggregate({ _sum: { amount: true }, where: { paidDate: { gte: start, lte: end } } }),
+    prisma.income.aggregate({ _sum: { amount: true }, where: { receivedDate: { gte: start, lte: end }, ...annualOrgFilter } }),
+    prisma.expense.aggregate({ _sum: { amount: true }, where: { paidDate: { gte: start, lte: end }, ...annualOrgFilter } }),
   ]);
 
   const paye = payrollData._sum.paye ?? 0;
@@ -125,50 +132,57 @@ export default async function TaxDashboardPage({
   const yearStart   = new Date(year, 0, 1);
   const yearEnd     = new Date(year, 11, 31, 23, 59, 59);
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT, outstandingPension] = await Promise.all([
+    // Payroll PAYE/pension (org-scoped)
     prisma.payroll.findMany({
-      where:  { createdAt: { gte: yearStart, lte: yearEnd } },
+      where:  { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
       select: { paye: true, pension: true, createdAt: true },
     }),
+    // WHT from consultant payments (global — ConsultantPayment has no organisationId)
     prisma.consultantPayment.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd } },
       select: { withholdingTax: true, createdAt: true },
     }),
+    // YTD income (org-scoped)
     prisma.income.aggregate({
       _sum:  { amount: true },
-      where: { receivedDate: { gte: yearStart, lte: yearEnd } },
+      where: { receivedDate: { gte: yearStart, lte: yearEnd }, ...orgFilter },
     }),
+    // YTD expenses (org-scoped)
     prisma.expense.aggregate({
       _sum:  { amount: true },
-      where: { paidDate: { gte: yearStart, lte: yearEnd } },
+      where: { paidDate: { gte: yearStart, lte: yearEnd }, ...orgFilter },
     }),
-    // Pending CEO approvals
+    // Pending CEO approvals (global — TaxRemittance has no organisationId)
     prisma.taxRemittance.findMany({
       where:   { status: "PENDING_CEO" },
       include: { submittedBy: { select: { name: true } } },
       orderBy: { createdAt: "desc" },
     }),
-    // Recent remittances (all statuses)
+    // Recent remittances (global)
     prisma.taxRemittance.findMany({
       where:   { createdAt: { gte: yearStart, lte: yearEnd } },
       include: { submittedBy: { select: { name: true } } },
       orderBy: { createdAt: "desc" },
       take:    20,
     }),
-    // Outstanding PAYE
+    // Outstanding PAYE (org-scoped)
     prisma.payroll.aggregate({
       _sum:   { paye: true },
-      where:  { payeStatus: "OUTSTANDING", paye: { gt: 0 } },
+      where:  { payeStatus: "OUTSTANDING", paye: { gt: 0 }, ...orgFilter },
     }),
-    // Outstanding WHT
+    // Outstanding WHT (global)
     prisma.consultantPayment.aggregate({
       _sum:   { withholdingTax: true },
       where:  { whtStatus: "OUTSTANDING", withholdingTax: { gt: 0 } },
     }),
-    // Outstanding Pension
+    // Outstanding Pension (org-scoped)
     prisma.payroll.aggregate({
       _sum:   { pension: true },
-      where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 } },
+      where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 }, ...orgFilter },
     }),
   ]);
 

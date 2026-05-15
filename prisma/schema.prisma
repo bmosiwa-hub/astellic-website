@@ -67,6 +67,9 @@ model User {
   passwordHash      String
   role              Role               @default(FINANCE_MANAGER)
   active            Boolean            @default(true)
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  defaultOrgId      String?            // preferred organisation for this user
+  defaultOrg        Organisation?      @relation("UserDefaultOrg", fields: [defaultOrgId], references: [id], onDelete: SetNull)
   permissions       Json?              // null = use role defaults; see lib/permissions.ts
   employeeId        String?            // links to Employee.id for STAFF users
   consultantId      String?            // links to Consultant.id for CONSULTANT users
@@ -106,10 +109,21 @@ model User {
   periodsLockedBy      FinancialPeriod[]   @relation("PeriodLockedBy")
   delegationsGranted   ApprovalDelegation[] @relation("DelegationGrantor")
   delegationsReceived  ApprovalDelegation[] @relation("DelegationReceiver")
+  // Phase 16 back-relations
+  leaveReviews              LeaveRequest[]          @relation("LeaveReviewer")
+  applicationReviews        JobApplication[]        @relation("ApplicationReviewer")
+  travelReviews             TravelRequest[]         @relation("TravelReviewer")
+  contacts                  Contact[]               @relation("ContactCreator")
+  jobPostings               JobPosting[]            @relation("JobPostingCreator")
+  deliverableSubmissions    DeliverableSubmission[] @relation("DeliverableSubmitter")
+  deliverableReviews        DeliverableSubmission[] @relation("DeliverableReviewer")
 }
 
 model Project {
   id                 String              @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId     String?
+  organisation       Organisation?       @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   name               String
   client             String
   description        String?
@@ -136,10 +150,14 @@ model Project {
   members            ProjectMember[]
   milestones         Milestone[]
   budgetLines        BudgetLine[]
+  travelRequests     TravelRequest[]
 }
 
 model Income {
   id             String      @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   projectId      String?
   project        Project?    @relation(fields: [projectId], references: [id])
   grantId        String?
@@ -162,6 +180,9 @@ model Income {
 
 model Expense {
   id             String   @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   projectId      String?
   project        Project? @relation(fields: [projectId], references: [id])
   description    String
@@ -234,6 +255,9 @@ model ConsultantPayment {
 
 model Employee {
   id                 String    @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId     String?
+  organisation       Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   employeeNumber     String?   @unique       // auto-generated e.g. EMP-001
   name               String
   email              String?
@@ -265,10 +289,23 @@ model Employee {
   performanceCycles  PerformanceCycle[]
   timesheets         Timesheet[]
   supervisedConsultants Consultant[] @relation("ConsultantSupervisor")
+  // Phase 16 back-relations
+  leaveRequests      LeaveRequest[]
+  leaveBalances      LeaveBalance[]
+  qualifications     Qualification[]
+  trainingRecords    TrainingRecord[]
+  travelRequests     TravelRequest[]
 }
 
 model Payroll {
   id              String        @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId  String?
+  organisation    Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  // ── PAYE band versioning ──────────────────────────────────────────────────────
+  payeBandSetId   String?       // which PAYEBandSet was active when this was calculated
+  payeBandSet     PAYEBandSet?  @relation(fields: [payeBandSetId], references: [id], onDelete: SetNull)
+  payeBandSnapshot Json?        // JSON snapshot of bands at time of calculation
   employeeId      String
   employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   period          String
@@ -303,6 +340,9 @@ model Payroll {
 
 model Debt {
   id             String          @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId String?
+  organisation   Organisation?   @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   lender         String
   description    String
   principal      Float
@@ -1020,6 +1060,7 @@ model Milestone {
   completer       User?           @relation("MilestoneCompleter", fields: [completedBy], references: [id])
   approver        User?           @relation("MilestoneApprover", fields: [approvedBy], references: [id])
   receivable      AccountReceivable?
+  deliverableSubmissions DeliverableSubmission[]
 }
 
 
@@ -1063,7 +1104,7 @@ model PerformanceCycle {
   id           String   @id @default(cuid())
   employeeId   String
   employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  cycleType    String   // PROBATION | Q1 | Q2 | Q3 | Q4
+  cycleType    String   // PROBATION | H1 | H2 | ANNUAL
   year         Int
   startDate    DateTime
   endDate      DateTime
@@ -1239,6 +1280,9 @@ model FinancialPeriod {
 
 model DonorGrant {
   id              String    @id @default(cuid())
+  // ── Multi-entity ─────────────────────────────────────────────────────────────
+  organisationId  String?
+  organisation    Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
   name            String                          // full grant/project title
   grantNumber     String?                         // donor reference / contract number
   donorName       String                          // "European Union", "USAID", etc.
@@ -1258,6 +1302,7 @@ model DonorGrant {
 
   income      Income[]      // receipts linked to this grant
   budgetLines BudgetLine[]  // spending envelopes funded by this grant
+  contacts    Contact[]     // relationship contacts for this grant
 
   @@index([status])
   @@index([donorName])
@@ -1398,4 +1443,362 @@ model ApprovalDelegation {
 
   @@index([delegateeId, isActive])
   @@index([delegatorId])
+}
+
+// ── Phase 15: Multi-Entity Organisation Support ───────────────────────────────
+//
+// Allows Astelfin to manage multiple registered legal entities (e.g. a
+// consultancy arm and a charitable trust) under a single installation.
+// All core financial models carry an optional organisationId — null = legacy /
+// untagged record (belongs to all contexts by default).
+// The active entity is stored in the `astelfin_org` cookie and resolved server-
+// side via lib/org.ts.
+
+model Organisation {
+  id                 String    @id @default(cuid())
+  name               String                          // full legal name
+  shortCode          String    @unique               // e.g. "CONSULT" | "TRUST"
+  // CONSULTANCY | CHARITABLE_TRUST | NGO | COMPANY | OTHER
+  type               String    @default("COMPANY")
+  registrationNumber String?
+  taxPin             String?
+  active             Boolean   @default(true)
+  notes              String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Relations back to financial models
+  defaultUsers       User[]         @relation("UserDefaultOrg")
+  projects           Project[]
+  incomes            Income[]
+  expenses           Expense[]
+  employees          Employee[]
+  payrolls           Payroll[]
+  debts              Debt[]
+  donorGrants        DonorGrant[]
+
+  @@index([active])
+}
+
+// ── Phase 15: PAYE Band Versioning ────────────────────────────────────────────
+//
+// Each PAYEBandSet represents a specific set of MRA tax bands valid from a given
+// date (effectiveFrom). The "active" set for a payroll period is the one with the
+// highest effectiveFrom that is <= the period start date.
+//
+// When a payroll run is saved, the active band set ID and a JSON snapshot of the
+// bands are stored on the Payroll record so historical calculations remain stable
+// even after MRA changes rates.
+
+model PAYEBandSet {
+  id            String     @id @default(cuid())
+  label         String                             // e.g. "MRA Bands 2024/25"
+  effectiveFrom DateTime                           // date these bands took effect
+  notes         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  bands         PAYEBand[]
+  payrolls      Payroll[]
+
+  @@index([effectiveFrom])
+}
+
+model PAYEBand {
+  id          String      @id @default(cuid())
+  bandSetId   String
+  bandSet     PAYEBandSet @relation(fields: [bandSetId], references: [id], onDelete: Cascade)
+  order       Int                                  // ascending sort order (1, 2, 3 …)
+  fromAmount  Float                                // lower bound (inclusive)
+  toAmount    Float?                               // upper bound (exclusive); null = no upper bound
+  rate        Float                                // marginal tax rate as a percentage (e.g. 30 = 30%)
+  createdAt   DateTime    @default(now())
+
+  @@index([bandSetId, order])
+}
+
+// ── Phase 16: Employee Leave Management ───────────────────────────────────────
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  STUDY
+  COMPASSIONATE
+  UNPAID
+  OTHER
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model LeavePolicy {
+  id          String    @id @default(cuid())
+  leaveType   LeaveType @unique
+  daysPerYear Float                          // default annual entitlement
+  carryOver   Float     @default(0)          // max days that roll to next year
+  notes       String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model LeaveBalance {
+  id          String    @id @default(cuid())
+  employeeId  String
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  year        Int
+  leaveType   LeaveType
+  entitled    Float                          // days entitled this year (policy + adjustments)
+  used        Float     @default(0)          // days consumed by approved requests
+  adjustment  Float     @default(0)          // manual FM/CEO adjustment (positive or negative)
+  adjustNote  String?
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([employeeId, year, leaveType])
+  @@index([employeeId, year])
+}
+
+model LeaveRequest {
+  id           String      @id @default(cuid())
+  employeeId   String
+  employee     Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType    LeaveType
+  startDate    DateTime
+  endDate      DateTime
+  days         Float                          // working days (calculated)
+  reason       String?
+  status       LeaveStatus @default(PENDING)
+  reviewedById String?
+  reviewedBy   User?       @relation("LeaveReviewer", fields: [reviewedById], references: [id])
+  reviewNote   String?
+  reviewedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([employeeId, status])
+  @@index([startDate, endDate])
+}
+
+// ── Phase 16: Recruitment Workflow ────────────────────────────────────────────
+
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW_SCHEDULED
+  INTERVIEWED
+  SHORTLISTED
+  OFFERED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+model JobPosting {
+  id           String        @id @default(cuid())
+  title        String
+  department   String?
+  description  String
+  requirements String?
+  contractType String        @default("PERMANENT") // mirrors Employee.contractType
+  location     String?
+  // DRAFT | OPEN | CLOSED | FILLED
+  status       String        @default("DRAFT")
+  deadline     DateTime?
+  salary       String?       // descriptive range, not a number
+  createdById  String
+  createdBy    User          @relation("JobPostingCreator", fields: [createdById], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id             String            @id @default(cuid())
+  jobPostingId   String
+  jobPosting     JobPosting        @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  applicantName  String
+  applicantEmail String?
+  applicantPhone String?
+  cvUrl          String?           // uploaded document URL
+  coverLetterUrl String?
+  status         ApplicationStatus @default(APPLIED)
+  interviewDate  DateTime?
+  interviewNotes String?
+  offerDate      DateTime?
+  offerAmount    Float?
+  offerCurrency  String            @default("MWK")
+  notes          String?
+  reviewedById   String?
+  reviewedBy     User?             @relation("ApplicationReviewer", fields: [reviewedById], references: [id])
+  reviewedAt     DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([jobPostingId, status])
+}
+
+// ── Phase 16: Training, Qualifications & CPD ──────────────────────────────────
+
+enum TrainingType {
+  INTERNAL
+  EXTERNAL
+  ONLINE
+  CONFERENCE
+  WORKSHOP
+}
+
+model Qualification {
+  id               String   @id @default(cuid())
+  employeeId       String
+  employee         Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  title            String                        // e.g. "BSc Economics"
+  institution      String
+  // DEGREE | DIPLOMA | CERTIFICATE | PROFESSIONAL | OTHER
+  qualificationType String  @default("DEGREE")
+  awardDate        DateTime?
+  expiryDate       DateTime?                     // null = does not expire
+  documentUrl      String?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model TrainingRecord {
+  id            String       @id @default(cuid())
+  employeeId    String
+  employee      Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  title         String
+  provider      String?
+  trainingType  TrainingType @default(EXTERNAL)
+  startDate     DateTime
+  endDate       DateTime?
+  hoursCompleted Float?
+  cpdPoints     Float?                           // Continuing Professional Development points
+  certificateUrl String?
+  expiryDate    DateTime?                        // when certification expires
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([employeeId])
+}
+
+// ── Phase 16: Travel & Logistics Management ───────────────────────────────────
+
+enum TravelStatus {
+  DRAFT
+  PENDING_FM
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+model TravelRequest {
+  id                 String       @id @default(cuid())
+  employeeId         String
+  employee           Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  projectId          String?
+  project            Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  purpose            String
+  destination        String
+  departureDate      DateTime
+  returnDate         DateTime
+  // Advance
+  advanceRequested   Float        @default(0)
+  advanceCurrency    String       @default("MWK")
+  advancePaid        Float        @default(0)    // actual amount disbursed
+  advancePaidDate    DateTime?
+  // Per diem
+  perDiemRate        Float        @default(0)    // daily rate in perDiemCurrency
+  perDiemCurrency    String       @default("MWK")
+  perDiemDays        Float        @default(0)
+  perDiemTotal       Float        @default(0)    // computed: rate × days
+  // Other costs
+  transportCost      Float        @default(0)
+  accommodationCost  Float        @default(0)
+  otherCosts         Float        @default(0)
+  totalCost          Float        @default(0)    // sum of all costs
+  // Liquidation
+  amountAccountedFor Float        @default(0)
+  refundDue          Float        @default(0)    // positive = employee owes back
+  // Workflow
+  status             TravelStatus @default(DRAFT)
+  reviewedById       String?
+  reviewedBy         User?        @relation("TravelReviewer", fields: [reviewedById], references: [id])
+  reviewNote         String?
+  reviewedAt         DateTime?
+  itinerary          String?      // free-text or markdown itinerary
+  notes              String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([employeeId, status])
+  @@index([projectId])
+}
+
+// ── Phase 16: Relationship / Contact Management ───────────────────────────────
+
+enum ContactType {
+  DONOR_OFFICER
+  PRIME_CONTRACTOR
+  PARTNER_ORG
+  GOVERNMENT_OFFICIAL
+  CONSULTANT_EXTERNAL
+  MEDIA
+  OTHER
+}
+
+model Contact {
+  id               String      @id @default(cuid())
+  name             String
+  organisation     String?
+  jobTitle         String?
+  contactType      ContactType @default(OTHER)
+  email            String?
+  phone            String?
+  linkedInUrl      String?
+  country          String?
+  notes            String?
+  // Optional links to existing system entities
+  donorGrantId     String?
+  donorGrant       DonorGrant? @relation(fields: [donorGrantId], references: [id], onDelete: SetNull)
+  opportunityId    String?     // linked BD opportunity
+  lastContactedAt  DateTime?
+  createdById      String
+  createdBy        User        @relation("ContactCreator", fields: [createdById], references: [id])
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([contactType])
+  @@index([donorGrantId])
+}
+
+// ── Phase 16: Deliverable Version Control ─────────────────────────────────────
+
+model DeliverableSubmission {
+  id            String    @id @default(cuid())
+  milestoneId   String
+  milestone     Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  version       Int       @default(1)          // increments on each resubmission
+  title         String
+  description   String?
+  fileUrl       String?
+  filename      String?
+  // DRAFT | SUBMITTED | UNDER_REVIEW | APPROVED | REJECTED | REVISION_REQUESTED
+  status        String    @default("DRAFT")
+  submittedById String
+  submittedBy   User      @relation("DeliverableSubmitter", fields: [submittedById], references: [id])
+  submittedAt   DateTime?
+  reviewedById  String?
+  reviewedBy    User?     @relation("DeliverableReviewer", fields: [reviewedById], references: [id])
+  reviewNote    String?
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([milestoneId, version])
 }

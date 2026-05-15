@@ -10,6 +10,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { PrintButton, AutoSubmitSelect } from "@/components/finance/PrintButton";
 import Link from "next/link";
 
@@ -40,6 +41,9 @@ export default async function PLReportPage({
   const yearStart = new Date(year, 0, 1);
   const yearEnd   = new Date(year + 1, 0, 1);
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   // ── Exchange rates ──────────────────────────────────────────────────────────
   const exchangeRates = await prisma.exchangeRate.findMany({
     select: { currency: true, middleRate: true, updatedAt: true },
@@ -49,18 +53,18 @@ export default async function PLReportPage({
   // ── Income by month × currency ──────────────────────────────────────────────
   const incomeRows = await prisma.income.groupBy({
     by:    ["currency"],
-    where: { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
+    where: { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null, ...orgFilter },
     _sum:  { amount: true },
   });
   // Also need monthly breakdown — fetch raw for grouping
   const incomeRaw = await prisma.income.findMany({
-    where:  { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
+    where:  { receivedDate: { gte: yearStart, lt: yearEnd }, deletedAt: null, ...orgFilter },
     select: { receivedDate: true, amount: true, currency: true, incomeType: true },
   });
 
   // ── Expenses by month × currency ───────────────────────────────────────────
   const expenseRaw = await prisma.expense.findMany({
-    where:  { paidDate: { gte: yearStart, lt: yearEnd }, deletedAt: null },
+    where:  { paidDate: { gte: yearStart, lt: yearEnd }, deletedAt: null, ...orgFilter },
     select: { paidDate: true, amount: true, currency: true, category: true },
   });
 
@@ -68,9 +72,10 @@ export default async function PLReportPage({
   // Payroll.period is "YYYY-MM", netPay is always in employee's currency
   const payrollRaw = await prisma.payroll.findMany({
     where:  {
-      period:   { startsWith: String(year) + "-" },
+      period:    { startsWith: String(year) + "-" },
       deletedAt: null,
-      status:   { not: "PENDING" }, // only PAID / PARTIAL
+      status:    { not: "PENDING" }, // only PAID / PARTIAL
+      ...orgFilter,
     },
     select: { period: true, netPay: true, currency: true },
   });
@@ -183,6 +188,15 @@ export default async function PLReportPage({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
               Export CSV
+            </a>
+            <a
+              href={`/api/reports/export?type=pl&year=${year}`}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold border border-green-300 text-green-700 hover:bg-green-50 px-3 py-2 rounded-xl transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Excel
             </a>
             <PrintButton className="inline-flex items-center gap-1.5 text-xs font-semibold border border-gray-200 text-gray-600 hover:border-brand-gold hover:text-brand-gold px-3 py-2 rounded-xl transition-colors" />
           </div>

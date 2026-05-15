@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import Link from "next/link";
 import DeleteButton from "@/components/finance/DeleteButton";
 
@@ -20,11 +22,16 @@ export default async function ExpensesPage({
 }) {
   const { project, category, edit_requested, error } = await searchParams;
 
+  const session     = await auth();
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const [expenses, projects, pendingChanges] = await Promise.all([
     prisma.expense.findMany({
       where: {
         ...(project ? { projectId: project } : {}),
         ...(category ? { category } : {}),
+        ...orgFilter,
       },
       orderBy: { paidDate: "desc" },
       include: { project: { select: { name: true } } },

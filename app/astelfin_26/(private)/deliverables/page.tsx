@@ -155,6 +155,11 @@ export default async function DeliverablesPage() {
 
                 {/* Action buttons */}
                 <div className="shrink-0 flex flex-col gap-2 min-w-[140px]">
+                  {/* Version control link */}
+                  <Link href={`/astelfin_26/deliverables/${m.id}`}
+                    className="w-full text-xs text-center border border-gray-300 text-gray-600 hover:bg-gray-50 px-3 py-1.5 rounded-lg">
+                    📎 View Submissions
+                  </Link>
                   {!needsApproval && !canManage && (
                     <form action={completeAction}>
                       <button type="submit"

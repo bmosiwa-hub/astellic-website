@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { buildRateMap, toMWK, fmtMWK } from "@/lib/fx";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -106,9 +107,12 @@ export default async function GrantsPage({
 
   const { edit: editId, status: filterStatus } = await searchParams;
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const whereStatus = filterStatus && filterStatus !== "ALL" ? { status: filterStatus } : {};
   const grants = await prisma.donorGrant.findMany({
-    where:   whereStatus,
+    where:   { ...whereStatus, ...orgFilter },
     orderBy: [{ status: "asc" }, { startDate: "desc" }],
     include: {
       _count: { select: { income: true, budgetLines: true } },
@@ -124,7 +128,7 @@ export default async function GrantsPage({
   // Aggregate received income per grant × currency (so we can convert to MWK)
   const incomeGroups = await prisma.income.groupBy({
     by:    ["grantId", "currency"],
-    where: { grantId: { not: null }, deletedAt: null },
+    where: { grantId: { not: null }, deletedAt: null, ...orgFilter },
     _sum:  { amount: true },
   });
   const receivedMWKMap: Record<string, number> = {};

@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { checkPeriodOpen } from "@/lib/period-lock";
+import { getActiveOrgId, orgTag } from "@/lib/org";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -24,6 +25,8 @@ async function createExpense(formData: FormData) {
   const periodCheck = await checkPeriodOpen(paidDate);
   if (!periodCheck.open) redirect(`/astelfin_26/expenses/new?error=period_closed&period=${periodCheck.periodKey}`);
 
+  const activeOrgId = await getActiveOrgId(session);
+
   const data = {
     description: formData.get("description") as string,
     amount: parseFloat(formData.get("amount") as string),
@@ -34,6 +37,7 @@ async function createExpense(formData: FormData) {
     receiptRef: (formData.get("receiptRef") as string) || null,
     projectId: (formData.get("projectId") as string) || null,
     notes: (formData.get("notes") as string) || null,
+    ...orgTag(activeOrgId),
   };
 
   const record = await prisma.expense.create({ data });

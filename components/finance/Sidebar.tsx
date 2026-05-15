@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import type { EffectivePermissions } from "@/lib/permissions";
+import { OrgSwitcher } from "@/components/finance/OrgSwitcher";
 
 const ROLE_LABELS: Record<string, string> = {
   CEO:             "Chief Executive Officer",
@@ -158,6 +159,37 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
     </svg>
   ),
+  leave: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  recruitment: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+    </svg>
+  ),
+  training: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+  ),
+  travel: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  contacts: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  utilisation: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+    </svg>
+  ),
   documents: (
     <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
@@ -195,6 +227,12 @@ const Icons = {
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+interface OrgItem {
+  id:        string;
+  name:      string;
+  shortCode: string;
+}
+
 interface SidebarProps {
   userName: string;
   userRole: string;
@@ -204,6 +242,8 @@ interface SidebarProps {
   pendingLiquidations?: number;
   overduePayables?: number;
   overdueReceivables?: number;
+  orgs?: OrgItem[];
+  activeOrgId?: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -225,6 +265,8 @@ export default function Sidebar({
   pendingLiquidations = 0,
   overduePayables = 0,
   overdueReceivables = 0,
+  orgs = [],
+  activeOrgId = null,
 }: SidebarProps) {
   const pathname = usePathname();
 
@@ -251,7 +293,9 @@ export default function Sidebar({
                            "/astelfin_26/procurement", "/astelfin_26/documents", "/astelfin_26/compliance"];
   const projectsPaths   = ["/astelfin_26/projects", "/astelfin_26/deliverables"];
   const hrPaths         = ["/astelfin_26/employees", "/astelfin_26/consultants", "/astelfin_26/payroll",
-                           "/astelfin_26/performance", "/astelfin_26/timesheets"];
+                           "/astelfin_26/performance", "/astelfin_26/timesheets",
+                           "/astelfin_26/leave", "/astelfin_26/recruitment", "/astelfin_26/training",
+                           "/astelfin_26/travel", "/astelfin_26/contacts"];
   const myPaths         = ["/astelfin_26/my"];
 
   const bizdevPaths = ["/astelfin_26/bizdev"];
@@ -371,6 +415,9 @@ export default function Sidebar({
             {navLink("/astelfin_26/my/liquidations",   "My Liquidations",   Icons.liquidations)}
             {navLink("/astelfin_26/my/performance",    "My Performance",    Icons.performance)}
             {navLink("/astelfin_26/my/timesheets",     "My Timesheets",     Icons.timesheet)}
+            {navLink("/astelfin_26/my/leave",          "My Leave",          Icons.leave)}
+            {navLink("/astelfin_26/my/training",       "My Training",       Icons.training)}
+            {navLink("/astelfin_26/my/travel",         "My Travel",         Icons.travel)}
           </div>
         )}
 
@@ -387,8 +434,9 @@ export default function Sidebar({
                 {navLink("/astelfin_26/debt",             "Debt",            Icons.debt)}
                 {navLink("/astelfin_26/assets",           "Assets",          Icons.assets)}
                 {navLink("/astelfin_26/reports",          "Reports",         Icons.reports)}
-                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",      "Tax Dashboard",    Icons.tax)}
-                {(isCEO || isFM) && navLink("/astelfin_26/financial-health", "Financial Health", Icons.health)}
+                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",          "Tax Dashboard",    Icons.tax)}
+                {(isCEO || isFM) && navLink("/astelfin_26/reports/utilisation", "Utilisation",    Icons.utilisation)}
+                {(isCEO || isFM) && navLink("/astelfin_26/financial-health",    "Financial Health", Icons.health)}
                 {(isCEO || isFM) && navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
                 {(isCEO || isFM) && navLink("/astelfin_26/grants",           "Donor Grants",     Icons.grants)}
                 {(isCEO || isFM) && navLink("/astelfin_26/periods",          "Periods",          Icons.periods)}
@@ -437,6 +485,11 @@ export default function Sidebar({
                 {navLink("/astelfin_26/payroll",     "Payroll",          Icons.payroll)}
                 {navLink("/astelfin_26/performance", "Team Performance", Icons.performance)}
                 {navLink("/astelfin_26/timesheets",  "Team Timesheets",  Icons.timesheet)}
+                {(isCEO || isFM) && navLink("/astelfin_26/leave",       "Leave Management", Icons.leave)}
+                {(isCEO || isFM) && navLink("/astelfin_26/recruitment", "Recruitment",      Icons.recruitment)}
+                {(isCEO || isFM) && navLink("/astelfin_26/training",    "Training / CPD",   Icons.training)}
+                {navLink("/astelfin_26/travel",      "Travel",           Icons.travel)}
+                {navLink("/astelfin_26/contacts",    "Contacts",         Icons.contacts)}
               </div>
             )}
           </>
@@ -491,10 +544,13 @@ export default function Sidebar({
             {sectionHeader("settings", "Settings", Icons.settings)}
             {open.settings && (
               <div className="space-y-0.5 mb-1">
-                {navLink("/astelfin_26/settings",              "General",       Icons.settings)}
-                {navLink("/astelfin_26/settings/2fa",          "Two-Factor Auth",Icons.compliance)}
-                {navLink("/astelfin_26/settings/audit",        "Audit Log",     Icons.documents)}
-                {navLink("/astelfin_26/settings/login-history","Login History", Icons.timesheet)}
+                {navLink("/astelfin_26/settings",                    "General",         Icons.settings)}
+                {navLink("/astelfin_26/settings/2fa",                "Two-Factor Auth", Icons.compliance)}
+                {navLink("/astelfin_26/settings/audit",              "Audit Log",       Icons.documents)}
+                {navLink("/astelfin_26/settings/login-history",      "Login History",   Icons.timesheet)}
+                {navLink("/astelfin_26/settings/delegation",         "Delegation",      Icons.approvals)}
+                {navLink("/astelfin_26/settings/organisations",      "Organisations",   Icons.projects)}
+                {navLink("/astelfin_26/settings/paye-bands",         "PAYE Bands",      Icons.tax)}
               </div>
             )}
           </>
@@ -502,7 +558,12 @@ export default function Sidebar({
       </nav>
 
       {/* User footer */}
-      <div className="px-4 py-4 border-t border-white/10">
+      <div className="px-4 py-4 border-t border-white/10 space-y-3">
+        {/* Org switcher (only when multiple orgs exist) */}
+        {orgs.length > 0 && (
+          <OrgSwitcher orgs={orgs} activeId={activeOrgId} />
+        )}
+        <div>
         <p className="text-sm font-semibold text-white truncate">{userName}</p>
         <p className="text-xs text-gray-400">{ROLE_LABELS[userRole] ?? userRole}</p>
         <button
@@ -514,6 +575,7 @@ export default function Sidebar({
           </svg>
           Sign out
         </button>
+        </div>
       </div>
     </aside>
   );

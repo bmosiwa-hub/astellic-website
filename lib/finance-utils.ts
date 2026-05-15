@@ -19,12 +19,33 @@ export function formatDate(date: Date | string): string {
 /**
  * Calculate Malawi PAYE (Pay As You Earn) for a given MONTHLY gross salary.
  *
+ * Accepts an optional `bands` array (from lib/paye.ts PAYEBandData[]).
+ * When `bands` is omitted the hardcoded 2024 MRA rates are used — this keeps
+ * all existing call-sites working unchanged.
+ *
  * Monthly bands (MWK) — these ARE monthly figures, not annual:
  *   MWK 0 – 170,000          → 0%
  *   MWK 170,001 – 1,570,000  → 30%
  *   Above MWK 1,570,000      → 35%
  */
-export function calculatePAYE(monthlyGross: number): number {
+export function calculatePAYE(
+  monthlyGross: number,
+  bands?: Array<{ fromAmount: number; toAmount: number | null; rate: number; order: number }>,
+): number {
+  // If versioned bands are supplied, use them
+  if (bands && bands.length > 0) {
+    const sorted = [...bands].sort((a, b) => a.order - b.order);
+    let tax = 0;
+    for (const band of sorted) {
+      if (monthlyGross <= band.fromAmount) break;
+      const bandTop = band.toAmount ?? Infinity;
+      const taxable = Math.min(monthlyGross, bandTop) - band.fromAmount;
+      tax += taxable * (band.rate / 100);
+    }
+    return Math.round(tax * 100) / 100;
+  }
+
+  // Legacy hardcoded fallback
   const B1 = 170_000;    // 0% up to here
   const B2 = 1_570_000;  // 30% up to here, 35% above
 
@@ -65,6 +86,8 @@ export function calculateNetPay(
     nssfApplicable?: boolean;
     nssfEmployeeRate?: number;
     nssfEmployerRate?: number;
+    /** Versioned PAYE bands from lib/paye.ts — omit to use hardcoded fallback */
+    payeBands?: Array<{ fromAmount: number; toAmount: number | null; rate: number; order: number }>;
   } = {}
 ): {
   // Amounts in the employee's quoted currency
@@ -87,13 +110,14 @@ export function calculateNetPay(
     nssfApplicable   = false,
     nssfEmployeeRate = 3,
     nssfEmployerRate = 3,
+    payeBands,
   } = options;
 
   // Step 1: convert to MWK
   const grossMWK = Math.round(grossSalary * rate * 100) / 100;
 
   // Step 2: compute deductions on MWK equivalent
-  const payeMWK         = payeExempt ? 0 : calculatePAYE(grossMWK);
+  const payeMWK         = payeExempt ? 0 : calculatePAYE(grossMWK, payeBands);
   const nssfEmployeeMWK = nssfApplicable ? Math.round(grossMWK * (nssfEmployeeRate / 100) * 100) / 100 : 0;
   const nssfEmployerMWK = nssfApplicable ? Math.round(grossMWK * (nssfEmployerRate / 100) * 100) / 100 : 0;
   const pensionMWK      = Math.round(grossMWK * (pensionRate / 100) * 100) / 100;

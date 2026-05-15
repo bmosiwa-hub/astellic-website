@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { calculateNetPay, calculateEmployerPension, formatCurrency } from "@/lib/finance-utils";
+import { getActiveBandSet } from "@/lib/paye";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -47,11 +48,17 @@ async function runPayrollForEmployee(formData: FormData) {
 
   const rate = employee.currency !== "MWK" ? (employee.salaryExchangeRate ?? 1) : 1;
 
+  // Resolve the active PAYE band set for this period (e.g. "2025-01" → 2025-01-01)
+  const [periodYear, periodMonth] = period.split("-").map(Number);
+  const periodDate  = new Date(periodYear, (periodMonth || 1) - 1, 1);
+  const bandSetInfo = await getActiveBandSet(periodDate);
+
   const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
     payeExempt:       employee.payeExempt,
     nssfApplicable:   employee.nssfApplicable,
     nssfEmployeeRate: employee.nssfEmployeeRate,
     nssfEmployerRate: employee.nssfEmployerRate,
+    payeBands:        bandSetInfo?.bands,
   });
 
   const employerPensionMWK = calculateEmployerPension(calc.grossMWK, employee.pensionRate);
@@ -76,21 +83,26 @@ async function runPayrollForEmployee(formData: FormData) {
     data: {
       employeeId,
       period,
-      grossSalary:    employee.grossSalary,
-      paye:           calc.payeMWK,
-      pension:        calc.pension,         // employee pension in native currency
-      pensionEmployer: employerPensionMWK,  // employer pension in MWK
-      nssfEmployee:   calc.nssfEmployee,
-      nssfEmployer:   calc.nssfEmployer,
-      otherAdditions: totalAdditions,
-      additionNote:   additionNote || (refundIds.length > 0 ? "Includes approved overspending refund" : null),
+      grossSalary:     employee.grossSalary,
+      paye:            calc.payeMWK,
+      pension:         calc.pension,         // employee pension in native currency
+      pensionEmployer: employerPensionMWK,   // employer pension in MWK
+      nssfEmployee:    calc.nssfEmployee,
+      nssfEmployer:    calc.nssfEmployer,
+      otherAdditions:  totalAdditions,
+      additionNote:    additionNote || (refundIds.length > 0 ? "Includes approved overspending refund" : null),
       otherDeductions: totalDeductions,
       deductionNote,
       netPay,
-      currency:       employee.currency,
+      currency:        employee.currency,
       paidDate,
       status,
       notes,
+      // PAYE band versioning (snapshot stored as plain JSON)
+      payeBandSetId:    bandSetInfo?.id ?? null,
+      payeBandSnapshot: bandSetInfo?.snapshot
+        ? (bandSetInfo.snapshot as unknown as import("@prisma/client").Prisma.InputJsonValue)
+        : undefined,
     },
   });
 

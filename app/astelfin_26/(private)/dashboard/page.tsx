@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/finance-utils";
 import { buildRateMap, toMWK, fmtMWK, ratesAgeHours } from "@/lib/fx";
 import { checkCEOAuth } from "@/lib/delegation";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -23,6 +24,10 @@ export default async function DashboardPage() {
   // ── Delegation banner ─────────────────────────────────────────────────────
   const delegationAuth = await checkCEOAuth(session);
 
+  // ── Active organisation scope ─────────────────────────────────────────────
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   // ── Load exchange rates ────────────────────────────────────────────────────
   const exchangeRates = await prisma.exchangeRate.findMany({
     select: { currency: true, middleRate: true, updatedAt: true },
@@ -38,12 +43,12 @@ export default async function DashboardPage() {
     await Promise.all([
       prisma.income.groupBy({
         by:    ["currency"],
-        where: { deletedAt: null },
+        where: { deletedAt: null, ...orgFilter },
         _sum:  { amount: true },
       }),
       prisma.expense.groupBy({
         by:    ["currency"],
-        where: { deletedAt: null },
+        where: { deletedAt: null, ...orgFilter },
         _sum:  { amount: true },
       }),
       prisma.project.count({ where: { status: "ACTIVE" } }),

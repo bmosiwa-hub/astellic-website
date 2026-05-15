@@ -4,6 +4,7 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -79,8 +80,12 @@ export default async function PayrollPage() {
 
   const now = new Date();
 
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
   const [payrolls, unliquidatedSubs, pendingRefunds] = await Promise.all([
     prisma.payroll.findMany({
+      where:   { ...orgFilter },
       orderBy: [{ period: "desc" }, { createdAt: "desc" }],
       include: { employee: { select: { name: true, position: true } } },
     }),
@@ -154,12 +159,23 @@ export default async function PayrollPage() {
             <span className="font-semibold text-orange-600">{formatCurrency(totalPAYE)}</span>
           </p>
         </div>
-        <Link
-          href="/astelfin_26/payroll/new"
-          className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
-        >
-          + Run Payroll
-        </Link>
+        <div className="flex items-center gap-2">
+          <a
+            href={`/api/reports/export?type=payroll&year=${new Date().getFullYear()}`}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-green-300 text-green-700 hover:bg-green-50 px-3 py-2.5 rounded-lg transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Excel
+          </a>
+          <Link
+            href="/astelfin_26/payroll/new"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+          >
+            + Run Payroll
+          </Link>
+        </div>
       </div>
 
       {/* Overdue liquidations banner */}

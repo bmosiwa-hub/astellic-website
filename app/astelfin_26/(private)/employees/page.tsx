@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -59,8 +60,12 @@ export default async function EmployeesPage() {
   const role = session.user.role;
   if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
-  // Fetch ALL employees (active and former)
+  const activeOrgId = await getActiveOrgId(session);
+  const orgFilter   = orgWhere(activeOrgId);
+
+  // Fetch ALL employees (active and former) scoped to active org
   const allEmployees = await prisma.employee.findMany({
+    where:   { ...orgFilter },
     orderBy: [{ active: "desc" }, { employeeNumber: "asc" }, { name: "asc" }],
   });
 
@@ -94,14 +99,25 @@ export default async function EmployeesPage() {
             {formerEmployees.length > 0 && ` · ${formerEmployees.length} former`}
           </p>
         </div>
-        {isCEO && (
-          <Link
-            href="/astelfin_26/employees/new"
-            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/reports/export?type=employees"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold border border-green-300 text-green-700 hover:bg-green-50 px-3 py-2.5 rounded-lg transition-colors"
           >
-            + Add Employee
-          </Link>
-        )}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Excel
+          </a>
+          {isCEO && (
+            <Link
+              href="/astelfin_26/employees/new"
+              className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+            >
+              + Add Employee
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Backfill banner */}
