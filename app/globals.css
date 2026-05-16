@@ -42,6 +42,51 @@
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 
+/* ── Premium hover lift ────────────────────────────────────────────────────── */
+/* Apply .lift to any interactive card for a subtle raise-and-shadow on hover  */
+.lift {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.10);
+}
+
+/* ── Underline grow (for nav links and inline text links) ──────────────────── */
+.underline-grow {
+  position: relative;
+}
+.underline-grow::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.underline-grow:hover::after {
+  width: 100%;
+}
+
+/* ── Gold accent line (decorative, animates in) ────────────────────────────── */
+@keyframes accentLine {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.accent-line {
+  transform-origin: left center;
+  animation: accentLine 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Shimmer on dark cards ─────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
 /* ── Print styles for reports ──────────────────────────────────────────────── */
 @media print {
   /* Hide navigation, sidebar, and screen-only chrome */

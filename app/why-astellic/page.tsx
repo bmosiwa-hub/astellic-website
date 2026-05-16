@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Why Astellic | African Advisory & Implementation Intelligence",
@@ -107,76 +108,86 @@ export default function WhyAstellicPage() {
       {/* ── The Positioning ──────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14 items-start">
-          <div>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Our Positioning</p>
-            <h2 className="text-3xl font-bold text-brand-navy mb-6 leading-snug">
-              Specialist African advisory firm. Three services. Exceptional depth.
-            </h2>
-            <p className="text-brand-muted text-lg leading-relaxed mb-5">
-              Astellic is a specialist African advisory firm that helps development
-              programmes learn continuously, trust their data, and make strategy work in practice.
-              We combine the analytical rigour of a research institution with the operational
-              grounding of an organisation that has spent a decade inside African systems.
-            </p>
-            <p className="text-brand-muted text-lg leading-relaxed">
-              We are not a research firm that stops at analysis. We are not a policy advisor
-              disconnected from delivery. We are not an implementation partner without analytical
-              depth. We are positioned at the intersection — because that is where sustainable
-              results are produced.
-            </p>
-          </div>
-          <div className="space-y-4">
-            {[
-              { label: "Geography", value: "Africa-focused, operating from Malawi" },
-              { label: "Year founded", value: "October 2025 — Lilongwe, Malawi" },
-              { label: "Core services", value: "Adaptive MERL · Data Quality · Policy & Systems Analysis · Implementation Support" },
-              { label: "Clients", value: "Donors, Governments, Development Partners, Corporations" },
-              { label: "Model", value: "Founder-led, specialist, senior-present throughout" },
-              { label: "Compliance", value: "MNBC · Helsinki · FCDO & USAID frameworks" },
-            ].map((f) => (
-              <div key={f.label} className="bg-white rounded-xl border border-gray-100 p-5 flex gap-4 items-start">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 shrink-0" />
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-brand-muted">{f.label}: </span>
-                  <span className="text-sm font-medium text-brand-navy">{f.value}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <SlideLeft>
+            <div>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Our Positioning</p>
+              <h2 className="text-3xl font-bold text-brand-navy mb-6 leading-snug">
+                Specialist African advisory firm. Three services. Exceptional depth.
+              </h2>
+              <p className="text-brand-muted text-lg leading-relaxed mb-5">
+                Astellic is a specialist African advisory firm that helps development
+                programmes learn continuously, trust their data, and make strategy work in practice.
+                We combine the analytical rigour of a research institution with the operational
+                grounding of an organisation that has spent a decade inside African systems.
+              </p>
+              <p className="text-brand-muted text-lg leading-relaxed">
+                We are not a research firm that stops at analysis. We are not a policy advisor
+                disconnected from delivery. We are not an implementation partner without analytical
+                depth. We are positioned at the intersection — because that is where sustainable
+                results are produced.
+              </p>
+            </div>
+          </SlideLeft>
+          <SlideRight>
+            <div className="space-y-4">
+              {[
+                { label: "Geography", value: "Africa-focused, operating from Malawi" },
+                { label: "Year founded", value: "October 2025 — Lilongwe, Malawi" },
+                { label: "Core services", value: "Adaptive MERL · Data Quality · Policy & Systems Analysis · Implementation Support" },
+                { label: "Clients", value: "Donors, Governments, Development Partners, Corporations" },
+                { label: "Model", value: "Founder-led, specialist, senior-present throughout" },
+                { label: "Compliance", value: "MNBC · Helsinki · FCDO & USAID frameworks" },
+              ].map((f, i) => (
+                <Reveal key={f.label} variant="up" delay={i * 70}>
+                  <div className="bg-white rounded-xl border border-gray-100 p-5 flex gap-4 items-start lift">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 shrink-0" />
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-widest text-brand-muted">{f.label}: </span>
+                      <span className="text-sm font-medium text-brand-navy">{f.value}</span>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </SlideRight>
         </div>
       </section>
 
       {/* ── Five Commitments ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
-              Operating Principles
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
-              Five Things That Are True of Every Engagement
-            </h2>
-            <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-              These are not aspirations. They are the operating principles that govern
-              how Astellic works — with every client, on every engagement.
-            </p>
-          </div>
+          <FadeUp>
+            <div className="text-center mb-14">
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
+                Operating Principles
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
+                Five Things That Are True of Every Engagement
+              </h2>
+              <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
+                These are not aspirations. They are the operating principles that govern
+                how Astellic works — with every client, on every engagement.
+              </p>
+            </div>
+          </FadeUp>
           <div className="space-y-5">
             {commitments.map((c, i) => (
-              <div key={c.label} className="border border-gray-100 rounded-2xl p-8 hover:border-brand-gold/30 transition-colors">
-                <div className="grid md:grid-cols-[auto_1fr] gap-6 items-start">
-                  <div className="flex items-center gap-3">
-                    <span className="text-brand-gold/50 font-bold text-sm">0{i + 1}</span>
-                    <h3 className="text-xl font-bold text-brand-navy whitespace-nowrap">{c.label}</h3>
-                  </div>
-                  <div>
-                    <p className="text-brand-muted text-base leading-relaxed mb-4">{c.expanded}</p>
-                    <div className="bg-brand-light rounded-lg px-4 py-3 border-l-4 border-brand-gold/40">
-                      <p className="text-sm text-brand-navy italic">{c.example}</p>
+              <Reveal key={c.label} variant="up" delay={i * 80}>
+                <div className="border border-gray-100 rounded-2xl p-8 hover:border-brand-gold/30 transition-colors lift">
+                  <div className="grid md:grid-cols-[auto_1fr] gap-6 items-start">
+                    <div className="flex items-center gap-3">
+                      <span className="text-brand-gold/50 font-bold text-sm">0{i + 1}</span>
+                      <h3 className="text-xl font-bold text-brand-navy whitespace-nowrap">{c.label}</h3>
+                    </div>
+                    <div>
+                      <p className="text-brand-muted text-base leading-relaxed mb-4">{c.expanded}</p>
+                      <div className="bg-brand-light rounded-lg px-4 py-3 border-l-4 border-brand-gold/40">
+                        <p className="text-sm text-brand-navy italic">{c.example}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -185,103 +196,117 @@ export default function WhyAstellicPage() {
       {/* ── Competitive Differentiation ──────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
-              Comparative Positioning
-            </p>
-            <h2 className="text-3xl font-bold text-brand-navy mb-4">
-              How Astellic Compares
-            </h2>
-            <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-              Every type of institution has a valuable role. This is not about criticism.
-              It is about clarity — so you know exactly what choosing Astellic means.
-            </p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="grid grid-cols-[1fr_1fr_1fr] bg-brand-navy text-white text-xs font-bold uppercase tracking-widest">
-              <div className="px-6 py-4">Compared To</div>
-              <div className="px-6 py-4 border-l border-white/10">Their Limitation</div>
-              <div className="px-6 py-4 border-l border-white/10 text-brand-gold">Astellic's Distinction</div>
+          <FadeUp>
+            <div className="text-center mb-12">
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
+                Comparative Positioning
+              </p>
+              <h2 className="text-3xl font-bold text-brand-navy mb-4">
+                How Astellic Compares
+              </h2>
+              <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
+                Every type of institution has a valuable role. This is not about criticism.
+                It is about clarity — so you know exactly what choosing Astellic means.
+              </p>
             </div>
-            {comparisons.map((row, i) => (
-              <div
-                key={row.competitor}
-                className={`grid grid-cols-[1fr_1fr_1fr] ${i % 2 === 0 ? "bg-white" : "bg-brand-light"} border-t border-gray-100`}
-              >
-                <div className="px-6 py-5">
-                  <p className="font-semibold text-brand-navy text-sm">{row.competitor}</p>
-                </div>
-                <div className="px-6 py-5 border-l border-gray-100">
-                  <p className="text-brand-muted text-sm leading-relaxed">{row.limitation}</p>
-                </div>
-                <div className="px-6 py-5 border-l border-gray-100">
-                  <p className="text-brand-navy text-sm leading-relaxed font-medium">{row.astellic}</p>
-                </div>
+          </FadeUp>
+          <ScaleIn delay={100}>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="grid grid-cols-[1fr_1fr_1fr] bg-brand-navy text-white text-xs font-bold uppercase tracking-widest">
+                <div className="px-6 py-4">Compared To</div>
+                <div className="px-6 py-4 border-l border-white/10">Their Limitation</div>
+                <div className="px-6 py-4 border-l border-white/10 text-brand-gold">Astellic&apos;s Distinction</div>
               </div>
-            ))}
-          </div>
+              {comparisons.map((row, i) => (
+                <div
+                  key={row.competitor}
+                  className={`grid grid-cols-[1fr_1fr_1fr] ${i % 2 === 0 ? "bg-white" : "bg-brand-light"} border-t border-gray-100`}
+                >
+                  <div className="px-6 py-5">
+                    <p className="font-semibold text-brand-navy text-sm">{row.competitor}</p>
+                  </div>
+                  <div className="px-6 py-5 border-l border-gray-100">
+                    <p className="text-brand-muted text-sm leading-relaxed">{row.limitation}</p>
+                  </div>
+                  <div className="px-6 py-5 border-l border-gray-100">
+                    <p className="text-brand-navy text-sm leading-relaxed font-medium">{row.astellic}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScaleIn>
         </div>
       </section>
 
       {/* ── Sectors & Client Categories ──────────────────────────────────── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14">
-          <div>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Sectors</p>
-            <h3 className="text-2xl font-bold text-brand-navy mb-6">Where We Have Worked</h3>
-            <div className="space-y-3">
-              {sectors.map((s) => (
-                <div key={s} className="flex items-center gap-3 text-brand-muted">
-                  <span className="w-2 h-2 rounded-full bg-brand-teal shrink-0" />
-                  <span className="text-sm">{s}</span>
-                </div>
-              ))}
+          <FadeUp>
+            <div>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Sectors</p>
+              <h3 className="text-2xl font-bold text-brand-navy mb-6">Where We Have Worked</h3>
+              <div className="space-y-3">
+                {sectors.map((s) => (
+                  <div key={s} className="flex items-center gap-3 text-brand-muted">
+                    <span className="w-2 h-2 rounded-full bg-brand-teal shrink-0" />
+                    <span className="text-sm">{s}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Clients</p>
-            <h3 className="text-2xl font-bold text-brand-navy mb-6">Who We Have Served</h3>
-            <div className="space-y-3">
-              {clientCategories.map((c) => (
-                <div key={c} className="flex items-center gap-3 text-brand-muted">
-                  <span className="w-2 h-2 rounded-full bg-brand-navy shrink-0" />
-                  <span className="text-sm">{c}</span>
-                </div>
-              ))}
+          </FadeUp>
+          <FadeUp delay={100}>
+            <div>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Clients</p>
+              <h3 className="text-2xl font-bold text-brand-navy mb-6">Who We Have Served</h3>
+              <div className="space-y-3">
+                {clientCategories.map((c) => (
+                  <div key={c} className="flex items-center gap-3 text-brand-muted">
+                    <span className="w-2 h-2 rounded-full bg-brand-navy shrink-0" />
+                    <span className="text-sm">{c}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-brand-muted text-xs italic mt-5">
+                We do not publish client logos without explicit permission.
+                These are categories, not claims.
+              </p>
             </div>
-            <p className="text-brand-muted text-xs italic mt-5">
-              We do not publish client logos without explicit permission.
-              These are categories, not claims.
-            </p>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-5">
-            Let&apos;s Have a Direct Conversation
-          </h2>
-          <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-            Tell us what you are working on. We will tell you honestly whether
-            we are the right firm, what engagement model would suit your situation,
-            and what a working relationship with Astellic actually looks like.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contact"
-              className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-10 py-4 rounded transition-colors"
-            >
-              Discuss an Engagement
-            </Link>
-            <Link
-              href="/what-we-do"
-              className="border border-white/30 hover:border-white text-white font-semibold px-10 py-4 rounded transition-colors"
-            >
-              Our Services
-            </Link>
-          </div>
+          <FadeUp>
+            <h2 className="text-3xl md:text-4xl font-bold mb-5">
+              Let&apos;s Have a Direct Conversation
+            </h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+              Tell us what you are working on. We will tell you honestly whether
+              we are the right firm, what engagement model would suit your situation,
+              and what a working relationship with Astellic actually looks like.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-10 py-4 rounded transition-colors"
+              >
+                Discuss an Engagement
+              </Link>
+              <Link
+                href="/what-we-do"
+                className="border border-white/30 hover:border-white text-white font-semibold px-10 py-4 rounded transition-colors"
+              >
+                Our Services
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
     </>

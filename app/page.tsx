@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import OperatingModelDiagram from "@/components/OperatingModelDiagram";
+import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
 const coreServices = [
   {
@@ -97,6 +98,27 @@ const clientTypes = [
   },
 ];
 
+const insightCards = [
+  {
+    category: "Implementation Brief",
+    title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
+    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase — when implementation readiness is assumed rather than assessed.",
+    color: "bg-brand-navy text-white",
+  },
+  {
+    category: "MERL Insight",
+    title: "When M&E Becomes a Compliance Exercise: The Cost of Learning-Blind Monitoring",
+    desc: "Programmes that design M&E systems around donor reporting frameworks rather than decision-making needs consistently miss the learning they most need.",
+    color: "bg-brand-teal text-white",
+  },
+  {
+    category: "Perspective",
+    title: "Data Quality in African Health Systems: What We Found, and Why It Matters",
+    desc: "After conducting data quality audits across multiple programme cycles, consistent patterns emerge that challenge assumptions about routine data reliability.",
+    color: "bg-brand-gold text-white",
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -123,7 +145,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-4 rounded font-semibold text-base transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-4 rounded font-semibold text-base transition-all duration-200 hover:scale-[1.02]"
             >
               Discuss an Engagement
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -143,25 +165,29 @@ export default function Home() {
       {/* ── Operating Model ──────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
-          <p className="text-brand-muted text-xs font-bold uppercase tracking-[0.2em] mb-3 text-center">
-            Our Operating Model
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-navy text-center mb-4">
-            A Continuous Cycle, Not a Linear Process
-          </h2>
-          <p className="text-brand-muted text-lg text-center max-w-2xl mx-auto mb-10 leading-relaxed">
-            The implementation gap is not a technical problem. It is a systems problem.
-            We address it as one — by integrating evidence, policy, and delivery into a
-            single adaptive architecture.
-          </p>
-          <OperatingModelDiagram />
+          <FadeUp className="text-center mb-10">
+            <p className="text-brand-muted text-xs font-bold uppercase tracking-[0.2em] mb-3">
+              Our Operating Model
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
+              A Continuous Cycle, Not a Linear Process
+            </h2>
+            <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
+              The implementation gap is not a technical problem. It is a systems problem.
+              We address it as one — by integrating evidence, policy, and delivery into a
+              single adaptive architecture.
+            </p>
+          </FadeUp>
+          <Reveal variant="scale" delay={150}>
+            <OperatingModelDiagram />
+          </Reveal>
         </div>
       </section>
 
       {/* ── Core Services ────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-brand-light">
+      <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <FadeUp className="text-center mb-16">
             <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-3">
               What We Do
             </p>
@@ -172,107 +198,101 @@ export default function Home() {
               Astellic is a specialist firm. We do three things with exceptional depth —
               and a fourth for the private sector. We do not try to be everything to everyone.
             </p>
-          </div>
+          </FadeUp>
 
           <div className="space-y-6">
             {coreServices.map((svc, i) => (
-              <div
-                key={svc.num}
-                className={`bg-white rounded-2xl shadow-sm border-l-4 ${svc.color} p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start`}
-              >
-                {/* Left: Title + Problem */}
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded`}>
-                      {svc.num}
-                    </span>
-                    <h3 className="font-bold text-brand-navy text-lg leading-snug">{svc.title}</h3>
+              <Reveal key={svc.num} variant={i % 2 === 0 ? "left" : "right"} delay={i * 80}>
+                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 ${svc.color} p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start lift`}>
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded`}>
+                        {svc.num}
+                      </span>
+                      <h3 className="font-bold text-brand-navy text-lg leading-snug">{svc.title}</h3>
+                    </div>
+                    <p className="text-brand-gold text-sm font-semibold italic mb-3">{svc.tagline}</p>
+                    <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
                   </div>
-                  <p className="text-brand-gold text-sm font-semibold italic mb-3">{svc.tagline}</p>
-                  <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
+                      We Help Institutions
+                    </p>
+                    <ul className="space-y-2">
+                      {svc.bullets.map((b) => (
+                        <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
+                          <span className="text-brand-gold mt-0.5 shrink-0">→</span>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
+                      Example Engagements
+                    </p>
+                    <ul className="space-y-1.5 mb-6">
+                      {svc.engagements.map((e) => (
+                        <li key={e} className="text-sm text-brand-muted leading-snug">· {e}</li>
+                      ))}
+                    </ul>
+                    <Link
+                      href={svc.href}
+                      className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm hover:gap-2.5 transition-all"
+                    >
+                      Explore this service
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
-
-                {/* Middle: What we help */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
-                    We Help Institutions
-                  </p>
-                  <ul className="space-y-2">
-                    {svc.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
-                        <span className="text-brand-gold mt-0.5 shrink-0">→</span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Right: Engagement types + CTA */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
-                    Example Engagements
-                  </p>
-                  <ul className="space-y-1.5 mb-6">
-                    {svc.engagements.map((e) => (
-                      <li key={e} className="text-sm text-brand-muted leading-snug">
-                        · {e}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={svc.href}
-                    className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm hover:gap-2.5 transition-all"
-                  >
-                    Explore this service
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
 
           {/* Corporate track callout */}
-          <div className="mt-6 bg-brand-navy text-white rounded-2xl p-8 grid md:grid-cols-[1fr_auto] gap-6 items-center">
-            <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-2">
-                Corporate Track
-              </p>
-              <h3 className="text-xl font-bold mb-3">Corporate Advisory & Social Investment</h3>
-              <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
-                Most CSR programmes struggle not because of intent, but because evidence,
-                governance, implementation systems, and learning mechanisms are weak.
-                We help corporations design credible social investment strategies, build
-                ESG evidence systems, and measure impact with the rigour donors expect.
-              </p>
+          <Reveal variant="up" delay={100}>
+            <div className="mt-6 bg-brand-navy text-white rounded-2xl p-8 grid md:grid-cols-[1fr_auto] gap-6 items-center lift">
+              <div>
+                <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-2">Corporate Track</p>
+                <h3 className="text-xl font-bold mb-3">Corporate Advisory & Social Investment</h3>
+                <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
+                  Most CSR programmes struggle not because of intent, but because evidence,
+                  governance, implementation systems, and learning mechanisms are weak.
+                  We help corporations design credible social investment strategies, build
+                  ESG evidence systems, and measure impact with the rigour donors expect.
+                </p>
+              </div>
+              <Link
+                href="/institutions-we-support/corporate-institutions"
+                className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors whitespace-nowrap shrink-0"
+              >
+                Corporate Advisory
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
-            <Link
-              href="/institutions-we-support/corporate-institutions"
-              className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors whitespace-nowrap shrink-0"
-            >
-              Corporate Advisory
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
+          </Reveal>
 
-          <div className="text-center mt-10">
-            <Link
-              href="/what-we-do"
-              className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-6 py-3 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm"
-            >
-              View Full Delivery Architecture
-            </Link>
-          </div>
+          <FadeUp delay={100}>
+            <div className="text-center mt-10">
+              <Link
+                href="/what-we-do"
+                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-6 py-3 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm"
+              >
+                View Full Delivery Architecture
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
       {/* ── Five Commitments ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
+          <FadeUp className="text-center mb-14">
             <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-3">
               Our Commitments
             </p>
@@ -282,33 +302,35 @@ export default function Home() {
             <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
               These are not values statements. They are operating principles that govern every engagement.
             </p>
-          </div>
+          </FadeUp>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {commitments.map((c, i) => (
-              <div
-                key={c.label}
-                className={`bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand-gold/40 transition-colors ${i === 4 ? "sm:col-span-2 lg:col-span-1" : ""}`}
-              >
-                <p className="text-brand-gold font-bold text-base mb-2">{c.label}</p>
-                <p className="text-gray-300 text-sm leading-relaxed">{c.desc}</p>
-              </div>
+              <Reveal key={c.label} variant="up" delay={i * 70}>
+                <div className={`bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand-gold/50 hover:bg-white/8 transition-all duration-300 h-full ${i === 4 ? "sm:col-span-2 lg:col-span-1" : ""}`}>
+                  <div className="w-6 h-0.5 bg-brand-gold mb-3 rounded" />
+                  <p className="text-brand-gold font-bold text-base mb-2">{c.label}</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">{c.desc}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
-          <div className="text-center mt-10">
-            <Link
-              href="/why-astellic"
-              className="inline-flex items-center gap-2 border border-white/30 hover:border-white text-white font-semibold px-6 py-3 rounded transition-colors text-sm"
-            >
-              Why Institutions Choose Astellic
-            </Link>
-          </div>
+          <FadeUp delay={200}>
+            <div className="text-center mt-10">
+              <Link
+                href="/why-astellic"
+                className="inline-flex items-center gap-2 border border-white/30 hover:border-white text-white font-semibold px-6 py-3 rounded transition-colors text-sm"
+              >
+                Why Institutions Choose Astellic
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
       {/* ── Who We Work With ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <FadeUp className="text-center mb-14">
             <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-3">
               Who We Work With
             </p>
@@ -319,28 +341,29 @@ export default function Home() {
               Whether you fund, design, or deliver development outcomes — or invest in
               communities through the private sector — Astellic has an entry point for you.
             </p>
-          </div>
+          </FadeUp>
           <div className="grid md:grid-cols-3 gap-6">
-            {clientTypes.map((ct) => (
-              <Link
-                key={ct.label}
-                href={ct.href}
-                className="group bg-brand-light rounded-2xl p-7 hover:shadow-md transition-shadow flex flex-col gap-4"
-              >
-                <div className="flex items-center gap-3">
-                  <span className={`w-3 h-3 rounded-full ${ct.dot} shrink-0`} />
-                  <h3 className="font-bold text-brand-navy text-lg group-hover:text-brand-gold transition-colors">
-                    {ct.label}
-                  </h3>
-                </div>
-                <p className="text-brand-muted text-sm leading-relaxed flex-1">{ct.desc}</p>
-                <span className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm group-hover:gap-2.5 transition-all">
-                  Learn more
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </Link>
+            {clientTypes.map((ct, i) => (
+              <Reveal key={ct.label} variant="up" delay={i * 90}>
+                <Link
+                  href={ct.href}
+                  className="group bg-brand-light rounded-2xl p-7 flex flex-col gap-4 lift"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-3 h-3 rounded-full ${ct.dot} shrink-0 group-hover:scale-125 transition-transform duration-200`} />
+                    <h3 className="font-bold text-brand-navy text-lg group-hover:text-brand-gold transition-colors">
+                      {ct.label}
+                    </h3>
+                  </div>
+                  <p className="text-brand-muted text-sm leading-relaxed flex-1">{ct.desc}</p>
+                  <span className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm group-hover:gap-2.5 transition-all">
+                    Learn more
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -349,9 +372,11 @@ export default function Home() {
       {/* ── Credibility Signals ──────────────────────────────────────────── */}
       <section className="py-16 px-6 bg-brand-navy text-white">
         <div className="max-w-6xl mx-auto">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-10 text-center">
-            Institutional Track Record
-          </p>
+          <FadeUp>
+            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-10 text-center">
+              Institutional Track Record
+            </p>
+          </FadeUp>
           <div className="grid md:grid-cols-4 gap-8">
             {[
               {
@@ -370,8 +395,8 @@ export default function Home() {
                 label: "Geographic Reach",
                 items: ["Malawi (primary)", "Kenya", "Nigeria", "Zambia", "Ethiopia", "South Africa", "Zimbabwe", "9+ countries total"],
               },
-            ].map((col) => (
-              <div key={col.label}>
+            ].map((col, i) => (
+              <Reveal key={col.label} variant="up" delay={i * 80}>
                 <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
                 <ul className="space-y-2">
                   {col.items.map((item) => (
@@ -381,77 +406,64 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
-          <p className="text-center text-gray-600 text-xs mt-10 italic">
-            We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
-          </p>
+          <FadeUp delay={200}>
+            <p className="text-center text-gray-600 text-xs mt-10 italic">
+              We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
+            </p>
+          </FadeUp>
         </div>
       </section>
 
       {/* ── Insights Teaser ──────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
-            <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-3">
-                Astellic Insights
-              </p>
-              <h2 className="text-3xl font-bold text-brand-navy mb-3">
-                The Firm That Understands Why Systems Fail
-              </h2>
-              <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                Implementation briefs, perspectives, and institutional intelligence
-                from the front lines of African development.
-              </p>
-            </div>
-            <Link
-              href="/insights"
-              className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-5 py-2.5 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm whitespace-nowrap"
-            >
-              All Insights
-            </Link>
-          </div>
-
-          {/* Placeholder cards */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                category: "Implementation Brief",
-                title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
-                desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase — when implementation readiness is assumed rather than assessed.",
-                color: "bg-brand-navy text-white",
-              },
-              {
-                category: "MERL Insight",
-                title: "When M&E Becomes a Compliance Exercise: The Cost of Learning-Blind Monitoring",
-                desc: "Programmes that design M&E systems around donor reporting frameworks rather than decision-making needs consistently miss the learning they most need.",
-                color: "bg-brand-teal text-white",
-              },
-              {
-                category: "Perspective",
-                title: "Data Quality in African Health Systems: What We Found, and Why It Matters",
-                desc: "After conducting data quality audits across multiple programme cycles, consistent patterns emerge that challenge assumptions about routine data reliability.",
-                color: "bg-brand-gold text-white",
-              },
-            ].map((card) => (
+          <FadeUp>
+            <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
+              <div>
+                <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-3">
+                  Astellic Insights
+                </p>
+                <h2 className="text-3xl font-bold text-brand-navy mb-3">
+                  The Firm That Understands Why Systems Fail
+                </h2>
+                <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
+                  Implementation briefs, perspectives, and institutional intelligence
+                  from the front lines of African development.
+                </p>
+              </div>
               <Link
-                key={card.title}
                 href="/insights"
-                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-5 py-2.5 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm whitespace-nowrap"
               >
-                <div className={`${card.color} px-5 py-2.5`}>
-                  <span className="text-xs font-bold uppercase tracking-widest opacity-80">{card.category}</span>
-                </div>
-                <div className="p-6 flex flex-col gap-3 flex-1">
-                  <h3 className="font-bold text-brand-navy text-base leading-snug group-hover:text-brand-teal transition-colors">
-                    {card.title}
-                  </h3>
-                  <p className="text-brand-muted text-sm leading-relaxed flex-1">{card.desc}</p>
-                  <span className="text-brand-gold font-semibold text-sm">Read more →</span>
-                </div>
+                All Insights
               </Link>
+            </div>
+          </FadeUp>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {insightCards.map((card, i) => (
+              <Reveal key={card.title} variant="up" delay={i * 90}>
+                <Link
+                  href="/insights"
+                  className="group bg-white rounded-2xl overflow-hidden flex flex-col lift"
+                >
+                  <div className={`${card.color} px-5 py-2.5`}>
+                    <span className="text-xs font-bold uppercase tracking-widest opacity-80">{card.category}</span>
+                  </div>
+                  <div className="p-6 flex flex-col gap-3 flex-1">
+                    <h3 className="font-bold text-brand-navy text-base leading-snug group-hover:text-brand-teal transition-colors">
+                      {card.title}
+                    </h3>
+                    <p className="text-brand-muted text-sm leading-relaxed flex-1">{card.desc}</p>
+                    <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
+                      Read more →
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -460,30 +472,36 @@ export default function Home() {
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6">
-            Start Here
-          </p>
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            Ready to Close the Implementation Gap?
-          </h2>
-          <p className="text-gray-300 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
-            We work with governments, donors, corporations, and development partners.
-            Tell us what you are working on — we will tell you honestly whether we can help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-10 py-4 rounded text-base transition-colors"
-            >
-              Start a Conversation
-            </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center justify-center gap-2 border border-white/30 hover:border-white text-white font-semibold px-10 py-4 rounded text-base transition-colors"
-            >
-              About Astellic
-            </Link>
-          </div>
+          <FadeUp>
+            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6">
+              Start Here
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+              Ready to Close the Implementation Gap?
+            </h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-gray-300 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
+              We work with governments, donors, corporations, and development partners.
+              Tell us what you are working on — we will tell you honestly whether we can help.
+            </p>
+          </FadeUp>
+          <FadeUp delay={180}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-10 py-4 rounded text-base transition-all duration-200 hover:scale-[1.02]"
+              >
+                Start a Conversation
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center justify-center gap-2 border border-white/30 hover:border-white text-white font-semibold px-10 py-4 rounded text-base transition-colors"
+              >
+                About Astellic
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
     </>

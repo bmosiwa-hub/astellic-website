@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PillarMatrix from "@/components/PillarMatrix";
 import DeliveryFlowDiagram from "@/components/DeliveryFlowDiagram";
+import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "What We Do | Astellic",
@@ -152,40 +153,88 @@ export default function WhatWeDoPage() {
               className={`flex flex-col ${i % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} gap-10 items-start`}
             >
               {/* Pillar label block */}
-              <div className="md:w-56 shrink-0">
-                <div className={`inline-flex items-center gap-2 mb-4`}>
-                  <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
-                  <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
-                </div>
-                <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
-                <Link
-                  href={p.href}
-                  className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
-                >
-                  Explore pillar
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
+              {i % 2 === 1 ? (
+                <SlideRight className="md:w-56 shrink-0">
+                  <div>
+                    <div className={`inline-flex items-center gap-2 mb-4`}>
+                      <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
+                      <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
+                    </div>
+                    <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
+                    <Link
+                      href={p.href}
+                      className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
+                    >
+                      Explore pillar
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                </SlideRight>
+              ) : (
+                <SlideLeft className="md:w-56 shrink-0">
+                  <div>
+                    <div className={`inline-flex items-center gap-2 mb-4`}>
+                      <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
+                      <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
+                    </div>
+                    <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
+                    <Link
+                      href={p.href}
+                      className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
+                    >
+                      Explore pillar
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                </SlideLeft>
+              )}
 
               {/* Content */}
-              <div className={`flex-1 border-l-4 ${p.borderClass} pl-8`}>
-                <p className="text-brand-muted italic text-base mb-3">{p.tagline}</p>
-                <p className="text-brand-muted leading-relaxed mb-8">{p.desc}</p>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {p.subUnits.map((s) => (
-                    <Link
-                      key={s.href}
-                      href={s.href}
-                      className="group bg-brand-light rounded-xl p-5 hover:shadow-sm transition-shadow"
-                    >
-                      <h3 className={`font-bold text-base mb-2 ${p.textClass} group-hover:underline`}>{s.label}</h3>
-                      <p className="text-sm text-brand-muted leading-relaxed">{s.desc}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {i % 2 === 1 ? (
+                <SlideLeft className="flex-1">
+                  <div className={`border-l-4 ${p.borderClass} pl-8`}>
+                    <p className="text-brand-muted italic text-base mb-3">{p.tagline}</p>
+                    <p className="text-brand-muted leading-relaxed mb-8">{p.desc}</p>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {p.subUnits.map((s, si) => (
+                        <Reveal key={s.href} variant="up" delay={si * 70}>
+                          <Link
+                            href={s.href}
+                            className="group bg-brand-light rounded-xl p-5 hover:shadow-sm transition-shadow lift block"
+                          >
+                            <h3 className={`font-bold text-base mb-2 ${p.textClass} group-hover:underline`}>{s.label}</h3>
+                            <p className="text-sm text-brand-muted leading-relaxed">{s.desc}</p>
+                          </Link>
+                        </Reveal>
+                      ))}
+                    </div>
+                  </div>
+                </SlideLeft>
+              ) : (
+                <SlideRight className="flex-1">
+                  <div className={`border-l-4 ${p.borderClass} pl-8`}>
+                    <p className="text-brand-muted italic text-base mb-3">{p.tagline}</p>
+                    <p className="text-brand-muted leading-relaxed mb-8">{p.desc}</p>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {p.subUnits.map((s, si) => (
+                        <Reveal key={s.href} variant="up" delay={si * 70}>
+                          <Link
+                            href={s.href}
+                            className="group bg-brand-light rounded-xl p-5 hover:shadow-sm transition-shadow lift block"
+                          >
+                            <h3 className={`font-bold text-base mb-2 ${p.textClass} group-hover:underline`}>{s.label}</h3>
+                            <p className="text-sm text-brand-muted leading-relaxed">{s.desc}</p>
+                          </Link>
+                        </Reveal>
+                      ))}
+                    </div>
+                  </div>
+                </SlideRight>
+              )}
             </div>
           ))}
         </div>
@@ -194,75 +243,90 @@ export default function WhatWeDoPage() {
       {/* Delivery Flywheel */}
       <section className="bg-brand-navy text-white py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <span className="text-3xl font-bold text-brand-gold mb-4 block">The Delivery Flywheel</span>
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">
-            Three pillars. One continuous system.
-          </h2>
-          <p className="text-gray-300 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-            The three pillars function as a self-reinforcing delivery system.
-            Programme implementation generates learning that feeds evidence generation.
-            Evidence informs policy advisory. Policy advisory shapes programme design.
-            Better design drives better implementation — and the cycle deepens.
-          </p>
-          <DeliveryFlowDiagram />
+          <FadeUp>
+            <span className="text-3xl font-bold text-brand-gold mb-4 block">The Delivery Flywheel</span>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Three pillars. One continuous system.
+            </h2>
+            <p className="text-gray-300 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+              The three pillars function as a self-reinforcing delivery system.
+              Programme implementation generates learning that feeds evidence generation.
+              Evidence informs policy advisory. Policy advisory shapes programme design.
+              Better design drives better implementation — and the cycle deepens.
+            </p>
+          </FadeUp>
+          <ScaleIn delay={150}>
+            <DeliveryFlowDiagram />
+          </ScaleIn>
         </div>
       </section>
 
       {/* Thematic Domains */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
-          <span className="text-3xl font-bold text-brand-gold mb-4 block text-center">Thematic Domains</span>
-          <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
-            The Lens Through Which the Pillars Operate
-          </h2>
-          <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-14">
-            Astellic&apos;s four thematic domains cut horizontally across all three pillars —
-            ensuring functional expertise is always deployed with deep sector knowledge
-            and political economy awareness.
-          </p>
+          <FadeUp>
+            <span className="text-3xl font-bold text-brand-gold mb-4 block text-center">Thematic Domains</span>
+            <h2 className="text-3xl font-bold text-center text-brand-navy mb-4">
+              The Lens Through Which the Pillars Operate
+            </h2>
+            <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-14">
+              Astellic&apos;s four thematic domains cut horizontally across all three pillars —
+              ensuring functional expertise is always deployed with deep sector knowledge
+              and political economy awareness.
+            </p>
+          </FadeUp>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
-            {domains.map((d) => (
-              <Link
-                key={d.href}
-                href={d.href}
-                className="group bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md transition-shadow"
-              >
-                <div className="w-8 h-1 bg-brand-gold rounded mb-4" />
-                <h3 className="font-bold text-brand-navy mb-2 group-hover:text-brand-gold transition-colors">{d.title}</h3>
-                <p className="text-sm text-brand-muted leading-relaxed">{d.desc}</p>
-              </Link>
+            {domains.map((d, i) => (
+              <Reveal key={d.href} variant="up" delay={i * 80}>
+                <Link
+                  href={d.href}
+                  className="group bg-white rounded-xl p-6 border border-gray-100 hover:shadow-md transition-shadow lift block"
+                >
+                  <div className="w-8 h-1 bg-brand-gold rounded mb-4" />
+                  <h3 className="font-bold text-brand-navy mb-2 group-hover:text-brand-gold transition-colors">{d.title}</h3>
+                  <p className="text-sm text-brand-muted leading-relaxed">{d.desc}</p>
+                </Link>
+              </Reveal>
             ))}
           </div>
 
           {/* Interactive Matrix */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-bold text-brand-navy mb-1">Pillar × Domain Matrix</h3>
-            <p className="text-sm text-brand-muted mb-6">
-              How Astellic&apos;s three pillars activate within each thematic domain.
-            </p>
-            <PillarMatrix />
-          </div>
+          <ScaleIn>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h3 className="font-bold text-brand-navy mb-1">Pillar × Domain Matrix</h3>
+              <p className="text-sm text-brand-muted mb-6">
+                How Astellic&apos;s three pillars activate within each thematic domain.
+              </p>
+              <PillarMatrix />
+            </div>
+          </ScaleIn>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-brand-navy mb-4">
-            Ready to work with us?
-          </h2>
-          <p className="text-brand-muted text-lg mb-8">
-            Whether you need rigorous evidence, strategic advisory, or implementation support —
-            Astellic brings the integrated capability to work across the full results chain.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-base transition-colors">
-              Discuss an Engagement
-            </Link>
-            <Link href="/our-projects" className="bg-brand-navy text-white px-8 py-3 rounded font-medium text-base hover:bg-brand-navy/90 transition-colors">
-              See Our Projects
-            </Link>
-          </div>
+          <FadeUp>
+            <h2 className="text-3xl font-bold text-brand-navy mb-4">
+              Ready to work with us?
+            </h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-brand-muted text-lg mb-8">
+              Whether you need rigorous evidence, strategic advisory, or implementation support —
+              Astellic brings the integrated capability to work across the full results chain.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-base transition-colors">
+                Discuss an Engagement
+              </Link>
+              <Link href="/our-projects" className="bg-brand-navy text-white px-8 py-3 rounded font-medium text-base hover:bg-brand-navy/90 transition-colors">
+                See Our Projects
+              </Link>
+            </div>
+          </FadeUp>
         </div>
       </section>
     </>

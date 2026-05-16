@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Our Work | Astellic",
@@ -115,76 +116,84 @@ export default function OurProjectsPage() {
       {/* Approach statement */}
       <section className="py-12 px-6 bg-brand-light border-b border-gray-100">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-center">
-          <div>
-            <p className="text-brand-muted text-base leading-relaxed max-w-2xl">
-              Astellic is a young firm with a founder who brings over a decade of senior experience.
-              The engagements below reflect the track record that preceded and informed the firm.
-              We present them as institutional narratives — what the challenge was, what we contributed,
-              and what it produced — not as a catalogue of project names.
-            </p>
-          </div>
-          <div className="text-center shrink-0">
-            <p className="text-brand-gold font-bold text-3xl">30+</p>
-            <p className="text-brand-muted text-xs font-bold uppercase tracking-widest">consulting engagements</p>
-            <p className="text-gray-400 text-xs mt-1">15+ global partners and donors</p>
-          </div>
+          <FadeUp>
+            <div>
+              <p className="text-brand-muted text-base leading-relaxed max-w-2xl">
+                Astellic is a young firm with a founder who brings over a decade of senior experience.
+                The engagements below reflect the track record that preceded and informed the firm.
+                We present them as institutional narratives — what the challenge was, what we contributed,
+                and what it produced — not as a catalogue of project names.
+              </p>
+            </div>
+          </FadeUp>
+          <ScaleIn>
+            <div className="text-center shrink-0">
+              <p className="text-brand-gold font-bold text-3xl">30+</p>
+              <p className="text-brand-muted text-xs font-bold uppercase tracking-widest">consulting engagements</p>
+              <p className="text-gray-400 text-xs mt-1">15+ global partners and donors</p>
+            </div>
+          </ScaleIn>
         </div>
       </section>
 
       {/* Engagement narratives */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto space-y-8">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="w-1 h-8 bg-brand-gold rounded" />
-            <h2 className="text-2xl font-bold text-brand-navy">Selected Engagements</h2>
-          </div>
+          <FadeUp>
+            <div className="flex items-center gap-4 mb-10">
+              <div className="w-1 h-8 bg-brand-gold rounded" />
+              <h2 className="text-2xl font-bold text-brand-navy">Selected Engagements</h2>
+            </div>
+          </FadeUp>
 
           {engagements.map((eng, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              {/* Card header */}
-              <div className="flex items-start justify-between gap-4 px-7 py-5 border-b border-gray-50">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className={`text-xs font-bold text-white ${eng.typeColor} px-3 py-1 rounded-full`}>
-                    {eng.type}
-                  </span>
-                  <span className="text-xs font-semibold text-brand-muted bg-brand-light px-3 py-1 rounded-full">
-                    {eng.sector}
-                  </span>
-                  <span className="text-xs text-gray-400 flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                    </svg>
-                    {eng.geography}
+            <Reveal key={i} variant="up" delay={i * 90}>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden lift">
+                {/* Card header */}
+                <div className="flex items-start justify-between gap-4 px-7 py-5 border-b border-gray-50">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className={`text-xs font-bold text-white ${eng.typeColor} px-3 py-1 rounded-full`}>
+                      {eng.type}
+                    </span>
+                    <span className="text-xs font-semibold text-brand-muted bg-brand-light px-3 py-1 rounded-full">
+                      {eng.sector}
+                    </span>
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                      </svg>
+                      {eng.geography}
+                    </span>
+                  </div>
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${eng.statusColor}`}>
+                    {eng.status}
                   </span>
                 </div>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${eng.statusColor}`}>
-                  {eng.status}
-                </span>
-              </div>
 
-              {/* Card body */}
-              <div className="px-7 py-6">
-                <h3 className="font-bold text-brand-navy text-lg mb-5">{eng.title}</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">The Challenge</p>
-                    <p className="text-brand-muted text-sm leading-relaxed">{eng.challenge}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Astellic&apos;s Contribution</p>
-                    <p className="text-brand-muted text-sm leading-relaxed">{eng.contribution}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Result</p>
-                    <p className="text-brand-muted text-sm leading-relaxed mb-4">{eng.result}</p>
-                    <div className="border-t border-gray-100 pt-3">
-                      <p className="text-xs text-gray-400 italic">{eng.attribution}</p>
+                {/* Card body */}
+                <div className="px-7 py-6">
+                  <h3 className="font-bold text-brand-navy text-lg mb-5">{eng.title}</h3>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">The Challenge</p>
+                      <p className="text-brand-muted text-sm leading-relaxed">{eng.challenge}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Astellic&apos;s Contribution</p>
+                      <p className="text-brand-muted text-sm leading-relaxed">{eng.contribution}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Result</p>
+                      <p className="text-brand-muted text-sm leading-relaxed mb-4">{eng.result}</p>
+                      <div className="border-t border-gray-100 pt-3">
+                        <p className="text-xs text-gray-400 italic">{eng.attribution}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -192,40 +201,44 @@ export default function OurProjectsPage() {
       {/* Upcoming capability callout */}
       <section className="py-16 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_1fr] gap-12">
-          <div>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
-              Astellic As a Firm
-            </p>
-            <h2 className="text-2xl font-bold mb-5 leading-snug">
-              The firm is new. The capabilities are not.
-            </h2>
-            <p className="text-gray-300 text-base leading-relaxed mb-6">
-              Astellic was founded in October 2025. The engagements above predate the firm
-              but are the direct foundation of its analytical and advisory capability. As Astellic
-              grows its institutional portfolio, the following are the services actively available
-              for new engagements.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-3 rounded transition-colors text-sm"
-            >
-              Discuss an Engagement
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Available Now</p>
-            <ul className="space-y-3">
-              {upcomingCapabilities.map((cap) => (
-                <li key={cap} className="flex items-start gap-3 text-gray-300 text-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-1.5 shrink-0" />
-                  {cap}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <SlideLeft>
+            <div>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
+                Astellic As a Firm
+              </p>
+              <h2 className="text-2xl font-bold mb-5 leading-snug">
+                The firm is new. The capabilities are not.
+              </h2>
+              <p className="text-gray-300 text-base leading-relaxed mb-6">
+                Astellic was founded in October 2025. The engagements above predate the firm
+                but are the direct foundation of its analytical and advisory capability. As Astellic
+                grows its institutional portfolio, the following are the services actively available
+                for new engagements.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-3 rounded transition-colors text-sm"
+              >
+                Discuss an Engagement
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </SlideLeft>
+          <SlideRight>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Available Now</p>
+              <ul className="space-y-3">
+                {upcomingCapabilities.map((cap) => (
+                  <li key={cap} className="flex items-start gap-3 text-gray-300 text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-1.5 shrink-0" />
+                    {cap}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </SlideRight>
         </div>
       </section>
     </>

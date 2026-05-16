@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Insights & Thinking | Astellic",
@@ -185,16 +186,18 @@ export default function InsightsPage() {
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {contentTypes.map((ct) => (
-              <div key={ct.title} className={`flex items-start gap-4 p-4 rounded-xl ${ct.accent}`}>
-                <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                  {ct.icon}
+            {contentTypes.map((ct, i) => (
+              <Reveal key={ct.title} variant="up" delay={i * 60}>
+                <div className={`flex items-start gap-4 p-4 rounded-xl ${ct.accent}`}>
+                  <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                    {ct.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-brand-navy text-sm mb-1">{ct.title}</h3>
+                    <p className="text-brand-muted text-xs leading-relaxed">{ct.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-brand-navy text-sm mb-1">{ct.title}</h3>
-                  <p className="text-brand-muted text-xs leading-relaxed">{ct.desc}</p>
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -209,33 +212,35 @@ export default function InsightsPage() {
               Forthcoming
             </span>
           </div>
-          <div className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 grid md:grid-cols-[240px_1fr]">
-            <div className={`${featured.categoryColor} text-white p-10 flex flex-col justify-between`}>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">
-                  {featured.category}
-                </p>
-                <p className="text-white/50 text-xs mt-1">{featured.issueLabel}</p>
+          <ScaleIn delay={100}>
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 grid md:grid-cols-[240px_1fr]">
+              <div className={`${featured.categoryColor} text-white p-10 flex flex-col justify-between`}>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">
+                    {featured.category}
+                  </p>
+                  <p className="text-white/50 text-xs mt-1">{featured.issueLabel}</p>
+                </div>
+                <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center mt-auto">
+                  <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25" />
+                  </svg>
+                </div>
               </div>
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center mt-auto">
-                <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25" />
-                </svg>
+              <div className="p-10">
+                <h2 className="text-2xl font-bold text-brand-navy mb-4 leading-snug">
+                  {featured.title}
+                </h2>
+                <p className="text-brand-muted text-base leading-relaxed mb-6">{featured.excerpt}</p>
+                <div className="flex items-center justify-between border-t border-gray-100 pt-4">
+                  <span className="text-brand-muted text-sm">{featured.readTime}</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-brand-muted border border-dashed border-gray-300 rounded-full px-3 py-1">
+                    Publishes Q3 2026
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="p-10">
-              <h2 className="text-2xl font-bold text-brand-navy mb-4 leading-snug">
-                {featured.title}
-              </h2>
-              <p className="text-brand-muted text-base leading-relaxed mb-6">{featured.excerpt}</p>
-              <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-                <span className="text-brand-muted text-sm">{featured.readTime}</span>
-                <span className="inline-flex items-center gap-1.5 text-xs text-brand-muted border border-dashed border-gray-300 rounded-full px-3 py-1">
-                  Publishes Q3 2026
-                </span>
-              </div>
-            </div>
-          </div>
+          </ScaleIn>
         </div>
       </section>
 
@@ -267,27 +272,26 @@ export default function InsightsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((article) => (
-              <div
-                key={article.title}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col"
-              >
-                <div className={`${article.categoryColor} text-white px-5 py-2.5`}>
-                  <span className="text-xs font-bold uppercase tracking-widest opacity-80">
-                    {article.category}
-                  </span>
-                </div>
-                <div className="p-6 flex flex-col gap-3 flex-1">
-                  <h3 className="font-bold text-brand-navy text-base leading-snug">
-                    {article.title}
-                  </h3>
-                  <p className="text-brand-muted text-sm leading-relaxed flex-1">{article.excerpt}</p>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <span className="text-brand-muted text-xs">{article.readTime}</span>
-                    <span className="text-xs text-gray-400 italic">Forthcoming</span>
+            {articles.map((article, i) => (
+              <Reveal key={article.title} variant="up" delay={i * 80}>
+                <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col lift">
+                  <div className={`${article.categoryColor} text-white px-5 py-2.5`}>
+                    <span className="text-xs font-bold uppercase tracking-widest opacity-80">
+                      {article.category}
+                    </span>
+                  </div>
+                  <div className="p-6 flex flex-col gap-3 flex-1">
+                    <h3 className="font-bold text-brand-navy text-base leading-snug">
+                      {article.title}
+                    </h3>
+                    <p className="text-brand-muted text-sm leading-relaxed flex-1">{article.excerpt}</p>
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                      <span className="text-brand-muted text-xs">{article.readTime}</span>
+                      <span className="text-xs text-gray-400 italic">Forthcoming</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
 
@@ -308,52 +312,56 @@ export default function InsightsPage() {
       <section id="subscribe" className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-3xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
-                Stay Informed
-              </p>
-              <h2 className="text-3xl font-bold mb-5 leading-snug">
-                The Astellic Knowledge Engine
-              </h2>
-              <p className="text-gray-300 text-base leading-relaxed">
-                The full Insights section — with downloadable PDFs, author pages, and category
-                filtering — launches in Q3 2026. The first Implementation Brief will be the
-                inaugural issue.
-              </p>
-              <div className="mt-6 space-y-2">
-                {[
-                  "Quarterly at most — no filler content",
-                  "Implementation briefs in downloadable PDF",
-                  "Policy commentary from active field engagements",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-sm text-gray-300">
-                    <span className="text-brand-gold mt-0.5 shrink-0">·</span>
-                    {item}
-                  </div>
-                ))}
+            <SlideLeft>
+              <div>
+                <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
+                  Stay Informed
+                </p>
+                <h2 className="text-3xl font-bold mb-5 leading-snug">
+                  The Astellic Knowledge Engine
+                </h2>
+                <p className="text-gray-300 text-base leading-relaxed">
+                  The full Insights section — with downloadable PDFs, author pages, and category
+                  filtering — launches in Q3 2026. The first Implementation Brief will be the
+                  inaugural issue.
+                </p>
+                <div className="mt-6 space-y-2">
+                  {[
+                    "Quarterly at most — no filler content",
+                    "Implementation briefs in downloadable PDF",
+                    "Policy commentary from active field engagements",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-2 text-sm text-gray-300">
+                      <span className="text-brand-gold mt-0.5 shrink-0">·</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-              <p className="text-white font-semibold mb-4 text-sm">
-                Notify me when the first brief publishes
-              </p>
-              <div className="flex flex-col gap-3">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full rounded px-4 py-3 text-brand-navy text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold bg-white"
-                />
-                <Link
-                  href="/contact"
-                  className="w-full bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-3 rounded transition-colors text-sm text-center"
-                >
-                  Subscribe via Contact
-                </Link>
+            </SlideLeft>
+            <SlideRight>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <p className="text-white font-semibold mb-4 text-sm">
+                  Notify me when the first brief publishes
+                </p>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    className="w-full rounded px-4 py-3 text-brand-navy text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold bg-white"
+                  />
+                  <Link
+                    href="/contact"
+                    className="w-full bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-3 rounded transition-colors text-sm text-center"
+                  >
+                    Subscribe via Contact
+                  </Link>
+                </div>
+                <p className="text-gray-500 text-xs mt-3">
+                  Or send a note through our contact page — quarterly at most.
+                </p>
               </div>
-              <p className="text-gray-500 text-xs mt-3">
-                Or send a note through our contact page — quarterly at most.
-              </p>
-            </div>
+            </SlideRight>
           </div>
         </div>
       </section>
