@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import OperatingModelDiagram from "@/components/OperatingModelDiagram";
+import AfricaPresenceMap from "@/components/AfricaPresenceMap";
 import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
 const coreServices = [
@@ -128,9 +129,11 @@ export default function Home() {
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
           fill
-          className="object-cover opacity-15"
+          className="object-cover opacity-25"
           priority
         />
+        {/* Directional gradient — image breathes on right, text stays legible left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/85 to-brand-navy/30 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
             Research · Advisory · Implementation
@@ -159,6 +162,28 @@ export default function Home() {
               Explore Our Work
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ── Impact Metrics Band ──────────────────────────────────────────── */}
+      <section className="bg-[#0b1a38] border-b border-white/10 py-10 px-6">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-white/10">
+          {[
+            { value: "9+",  label: "Countries",              sub: "Across Africa"          },
+            { value: "30+", label: "Engagements",            sub: "Research & advisory"    },
+            { value: "10+", label: "Years Experience",       sub: "In African systems"     },
+            { value: "15+", label: "Institutional Partners", sub: "Donors, UN, NGOs"       },
+          ].map((stat, i) => (
+            <Reveal key={stat.label} variant="up" delay={i * 80}>
+              <div className="text-center px-6 py-4 first:pl-0 last:pr-0">
+                <p className="text-brand-gold font-black text-4xl md:text-5xl leading-none mb-1 tabular-nums">
+                  {stat.value}
+                </p>
+                <p className="text-white font-bold text-sm tracking-wide">{stat.label}</p>
+                <p className="text-gray-500 text-xs mt-0.5">{stat.sub}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -327,6 +352,33 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Typographic Declaration ──────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-white overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <FadeUp>
+            <div className="relative">
+              {/* Large decorative quotation mark */}
+              <div
+                aria-hidden="true"
+                className="absolute -top-8 -left-4 text-[10rem] md:text-[14rem] font-black leading-none select-none pointer-events-none"
+                style={{ color: "rgba(212,175,55,0.08)" }}
+              >
+                &ldquo;
+              </div>
+              <p className="relative text-[clamp(1.75rem,4.5vw,3.5rem)] font-bold text-brand-navy leading-[1.15] max-w-4xl">
+                The firms that close the implementation gap are not the ones with the longest service lists.
+                They are the ones who{" "}
+                <span className="text-brand-gold italic">stayed.</span>
+              </p>
+            </div>
+            <div className="mt-8 flex items-center gap-4">
+              <div className="w-10 h-0.5 bg-brand-gold rounded" />
+              <p className="text-brand-muted text-sm">Astellic operating principle</p>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
       {/* ── Who We Work With ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -369,70 +421,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Credibility Signals ──────────────────────────────────────────── */}
-      <section className="py-16 px-6 bg-brand-navy text-white">
+      {/* ── Geographic Presence & Track Record ───────────────────────────── */}
+      <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-10 text-center">
+            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-12 text-center">
               Institutional Track Record
             </p>
           </FadeUp>
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              {
-                label: "Sectors",
-                items: ["Health & Nutrition Systems", "Governance & Public Sector Reform", "Public Financial Management", "Education & Social Services", "Climate & Sustainability"],
-              },
-              {
-                label: "Clients Supported",
-                items: ["Bilateral donors (FCDO, USAID, GIZ)", "Multilateral agencies (WHO, UNICEF, World Bank)", "National line ministries", "International NGOs & implementers", "Corporate foundations"],
-              },
-              {
-                label: "Partners Engaged",
-                items: ["Gavi", "Global Fund", "Africa CDC", "Gates Foundation", "AFIDEP", "VillageReach", "Palladium", "DAI"],
-              },
-              {
-                label: "Geographic Reach",
-                items: ["Malawi (primary)", "Kenya", "Nigeria", "Zambia", "Ethiopia", "South Africa", "Zimbabwe", "9+ countries total"],
-              },
-            ].map((col, i) => (
-              <Reveal key={col.label} variant="up" delay={i * 80}>
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
-                <ul className="space-y-2">
-                  {col.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
-                      <span className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal variant="up" delay={200}>
-            <div className="mt-10 bg-white/5 border border-white/10 rounded-xl px-7 py-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Methodological Strengths</p>
-              <div className="flex flex-wrap gap-2">
+
+          <div className="grid md:grid-cols-[auto_1fr] gap-14 items-start">
+            {/* Africa presence map */}
+            <Reveal variant="left" delay={80}>
+              <AfricaPresenceMap theme="dark" className="w-[240px] lg:w-[280px] shrink-0" />
+            </Reveal>
+
+            {/* Stats columns */}
+            <div className="space-y-10">
+              <div className="grid sm:grid-cols-3 gap-8">
                 {[
-                  "Political Economy Analysis (PEA)",
-                  "Adaptive MERL System Design",
-                  "Data Quality Assurance (DQA)",
-                  "Health Systems Financing Diagnostics",
-                  "Programme Evaluation (formative, summative, impact)",
-                  "Theory of Change Development",
-                  "Institutional Capacity Diagnostics",
-                  "Evidence Synthesis & Policy Translation",
-                  "Implementation Readiness Assessment",
-                ].map((m) => (
-                  <span key={m} className="text-xs text-gray-300 bg-white/8 border border-white/10 px-3 py-1.5 rounded-lg">
-                    {m}
-                  </span>
+                  {
+                    label: "Sectors",
+                    items: ["Health & Nutrition Systems", "Governance & Public Sector Reform", "Public Financial Management", "Education & Social Systems", "Climate & Sustainability"],
+                  },
+                  {
+                    label: "Clients Supported",
+                    items: ["Bilateral donors (FCDO, USAID, GIZ)", "Multilateral agencies (WHO, UNICEF, World Bank)", "National line ministries", "International NGOs & implementers", "Corporate foundations"],
+                  },
+                  {
+                    label: "Partners Engaged",
+                    items: ["Gavi", "Global Fund", "Africa CDC", "Gates Foundation", "AFIDEP", "VillageReach", "Palladium", "DAI"],
+                  },
+                ].map((col, i) => (
+                  <Reveal key={col.label} variant="up" delay={i * 80}>
+                    <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
+                    <ul className="space-y-2">
+                      {col.items.map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
+                          <span className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </Reveal>
                 ))}
               </div>
+
+              {/* Methodological strengths */}
+              <Reveal variant="up" delay={150}>
+                <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-5">
+                  <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Methodological Strengths</p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      "Political Economy Analysis (PEA)",
+                      "Adaptive MERL System Design",
+                      "Data Quality Assurance (DQA)",
+                      "Health Systems Financing Diagnostics",
+                      "Programme Evaluation",
+                      "Theory of Change Development",
+                      "Institutional Capacity Diagnostics",
+                      "Evidence Synthesis & Policy Translation",
+                      "Implementation Readiness Assessment",
+                    ].map((m) => (
+                      <span key={m} className="text-xs text-gray-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg hover:border-brand-gold/30 transition-colors">
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
-          <FadeUp delay={250}>
-            <p className="text-center text-gray-600 text-xs mt-6 italic">
+          </div>
+
+          <FadeUp delay={200}>
+            <p className="text-center text-gray-700 text-xs mt-12 italic">
               We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
             </p>
           </FadeUp>

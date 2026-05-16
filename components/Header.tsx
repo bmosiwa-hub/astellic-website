@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const institutionsItems = [
   { label: "Donors & Governments",    href: "/institutions-we-support/donors-and-governments",  dot: "bg-brand-gold" },
@@ -10,59 +10,51 @@ const institutionsItems = [
 ];
 
 const thematicAreas = [
-  { label: "Health & Nutrition Systems", href: "/thematic-areas/health" },
-  { label: "Governance & Public Sector Reform", href: "/thematic-areas/governance" },
-  { label: "Climate, Agriculture & Sustainability", href: "/thematic-areas/climate" },
-  { label: "Human Development & Social Systems", href: "/thematic-areas/education" },
+  { label: "Health & Nutrition Systems",              href: "/thematic-areas/health"      },
+  { label: "Governance & Public Sector Reform",       href: "/thematic-areas/governance"  },
+  { label: "Climate, Agriculture & Sustainability",   href: "/thematic-areas/climate"     },
+  { label: "Human Development & Social Systems",      href: "/thematic-areas/education"   },
 ];
 
 const ourApproachItems = [
-  {
-    label: "Evidence Generation & Verification",
-    sub: "Pillar 01",
-    href: "/what-we-do/evidence",
-    dot: "bg-brand-navy",
-  },
-  {
-    label: "Policy Development & Advisory",
-    sub: "Pillar 02",
-    href: "/what-we-do/policy",
-    dot: "bg-brand-teal",
-  },
-  {
-    label: "Policy, Systems Analysis & Implementation",
-    sub: "Pillar 03",
-    href: "/what-we-do/implementation",
-    dot: "bg-brand-green",
-  },
+  { label: "Evidence Generation & Verification",               sub: "Pillar 01", href: "/what-we-do/evidence",        dot: "bg-brand-navy"  },
+  { label: "Policy Development & Advisory",                    sub: "Pillar 02", href: "/what-we-do/policy",          dot: "bg-brand-teal"  },
+  { label: "Policy, Systems Analysis & Implementation",         sub: "Pillar 03", href: "/what-we-do/implementation",  dot: "bg-brand-green" },
 ];
 
 const workWithUsItems = [
-  { label: "Check Openings", href: "/work-with-us" },
-  { label: "Propose Partnership", href: "/propose-partnership" },
-  { label: "Join Our Roster", href: "/join-our-roster" },
+  { label: "Check Openings",        href: "/work-with-us"         },
+  { label: "Propose Partnership",   href: "/propose-partnership"  },
+  { label: "Join Our Roster",       href: "/join-our-roster"      },
 ];
 
 const whoWeAreItems = [
-  { label: "About Astellic", href: "/about" },
+  { label: "About Astellic",  href: "/about"               },
   { label: "Vision & Mission", href: "/about/vision-mission" },
-  { label: "Our Team", href: "/about/our-team" },
+  { label: "Our Team",         href: "/about/our-team"       },
 ];
 
 /* ── Simple flat dropdown ── */
 function FlatDropdown({ label, items }: { label: string; items: { label: string; href: string }[] }) {
   return (
     <div className="relative group hidden md:block">
-      <button className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-lg" aria-haspopup="true">
+      <button
+        className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
+        aria-haspopup="true"
+      >
         {label}
-        <svg className="w-4 h-4 mt-0.5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-3.5 h-3.5 mt-0.5 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block z-50">
-        <div className="bg-white rounded-xl shadow-xl py-2 min-w-[220px] border border-gray-100">
+        <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[220px] border border-gray-100">
           {items.map((item) => (
-            <Link key={item.href} href={item.href} className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors"
+            >
               {item.label}
             </Link>
           ))}
@@ -76,41 +68,36 @@ function FlatDropdown({ label, items }: { label: string; items: { label: string;
 function OurWorkDropdown() {
   return (
     <div className="relative group hidden md:block">
-      <button className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-lg" aria-haspopup="true">
+      <button
+        className="flex items-center gap-1 text-gray-300 hover:text-white transition-colors text-sm font-medium"
+        aria-haspopup="true"
+      >
         Our Work
-        <svg className="w-4 h-4 mt-0.5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-3.5 h-3.5 mt-0.5 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block z-50">
-        <div className="bg-white rounded-xl shadow-xl py-2 min-w-[240px] border border-gray-100">
+        <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[240px] border border-gray-100">
 
           {/* Institutions We Support — nested flyout */}
           <div className="relative group/institutions">
             <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
-              <Link href="/institutions-we-support" className="text-brand-navy text-base font-medium hover:text-brand-gold transition-colors flex-1">
+              <Link href="/institutions-we-support" className="text-brand-navy text-sm font-medium hover:text-brand-gold transition-colors flex-1">
                 Institutions We Support
               </Link>
-              <svg className="w-4 h-4 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
-
-            {/* Institutions flyout */}
             <div className="absolute left-full top-0 pl-1 hidden group-hover/institutions:block z-50">
-              <div className="bg-white rounded-xl shadow-xl py-2 min-w-[260px] border border-gray-100">
+              <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[260px] border border-gray-100">
                 <p className="px-5 pt-2 pb-1 text-[10px] font-bold text-brand-muted uppercase tracking-widest">Who We Work With</p>
                 {institutionsItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-brand-light transition-colors group/item"
-                  >
+                  <Link key={item.href} href={item.href} className="flex items-center gap-3 px-5 py-3 hover:bg-brand-light transition-colors group/item">
                     <span className={`w-2 h-2 rounded-full ${item.dot} shrink-0`} />
-                    <p className="text-sm font-medium text-brand-navy group-hover/item:text-brand-gold transition-colors">
-                      {item.label}
-                    </p>
+                    <p className="text-sm font-medium text-brand-navy group-hover/item:text-brand-gold transition-colors">{item.label}</p>
                   </Link>
                 ))}
                 <div className="border-t border-gray-100 mt-1 pt-1">
@@ -125,30 +112,22 @@ function OurWorkDropdown() {
           {/* Our Approach — nested flyout with pillars */}
           <div className="relative group/approach">
             <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
-              <Link href="/what-we-do" className="text-brand-navy text-base font-medium hover:text-brand-gold transition-colors flex-1">
+              <Link href="/what-we-do" className="text-brand-navy text-sm font-medium hover:text-brand-gold transition-colors flex-1">
                 Our Approach
               </Link>
-              <svg className="w-4 h-4 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
-
-            {/* Pillar flyout */}
             <div className="absolute left-full top-0 pl-1 hidden group-hover/approach:block z-50">
-              <div className="bg-white rounded-xl shadow-xl py-2 min-w-[290px] border border-gray-100">
+              <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[290px] border border-gray-100">
                 <p className="px-5 pt-2 pb-1 text-[10px] font-bold text-brand-muted uppercase tracking-widest">Three Pillars</p>
                 {ourApproachItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-start gap-3 px-5 py-3 hover:bg-brand-light transition-colors group/item"
-                  >
+                  <Link key={item.href} href={item.href} className="flex items-start gap-3 px-5 py-3 hover:bg-brand-light transition-colors group/item">
                     <span className={`w-2 h-2 rounded-full ${item.dot} mt-1.5 shrink-0`} />
                     <div>
                       <p className="text-xs font-bold text-brand-muted">{item.sub}</p>
-                      <p className="text-sm font-medium text-brand-navy group-hover/item:text-brand-gold transition-colors leading-snug">
-                        {item.label}
-                      </p>
+                      <p className="text-sm font-medium text-brand-navy group-hover/item:text-brand-gold transition-colors leading-snug">{item.label}</p>
                     </div>
                   </Link>
                 ))}
@@ -164,19 +143,17 @@ function OurWorkDropdown() {
           {/* Thematic Areas — nested flyout */}
           <div className="relative group/thematic">
             <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
-              <Link href="/thematic-areas" className="text-brand-navy text-base font-medium hover:text-brand-gold transition-colors flex-1">
+              <Link href="/thematic-areas" className="text-brand-navy text-sm font-medium hover:text-brand-gold transition-colors flex-1">
                 Thematic Areas
               </Link>
-              <svg className="w-4 h-4 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
-
-            {/* Flyout */}
             <div className="absolute left-full top-0 pl-1 hidden group-hover/thematic:block z-50">
-              <div className="bg-white rounded-xl shadow-xl py-2 min-w-[280px] border border-gray-100">
+              <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[280px] border border-gray-100">
                 {thematicAreas.map((area) => (
-                  <Link key={area.href} href={area.href} className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
+                  <Link key={area.href} href={area.href} className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
                     {area.label}
                   </Link>
                 ))}
@@ -184,10 +161,10 @@ function OurWorkDropdown() {
             </div>
           </div>
 
-          <Link href="/our-projects" className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
+          <Link href="/our-projects" className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
             Our Projects
           </Link>
-          <Link href="/resources" className="block px-5 py-3 text-brand-navy text-base font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
+          <Link href="/resources" className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
             Resources
           </Link>
         </div>
@@ -197,13 +174,20 @@ function OurWorkDropdown() {
 }
 
 export default function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [whoWeAreOpen, setWhoWeAreOpen] = useState(false);
-  const [ourWorkOpen, setOurWorkOpen] = useState(false);
+  const [mobileOpen,     setMobileOpen]     = useState(false);
+  const [whoWeAreOpen,   setWhoWeAreOpen]   = useState(false);
+  const [ourWorkOpen,    setOurWorkOpen]     = useState(false);
   const [institutionsOpen, setInstitutionsOpen] = useState(false);
-  const [approachOpen, setApproachOpen] = useState(false);
-  const [thematicOpen, setThematicOpen] = useState(false);
+  const [approachOpen,   setApproachOpen]   = useState(false);
+  const [thematicOpen,   setThematicOpen]   = useState(false);
   const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
+  const [scrolled,       setScrolled]       = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const closeMobile = () => {
     setMobileOpen(false);
@@ -216,47 +200,113 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-brand-navy text-white relative z-50">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="Astellic" width={180} height={60} className="object-contain h-14 w-auto" priority />
+    <header
+      className={`bg-brand-navy text-white sticky top-0 z-50 transition-all duration-300 ${
+        scrolled ? "shadow-[0_4px_32px_rgba(0,0,0,0.45)]" : ""
+      }`}
+    >
+      {/* ── Top bar: scrolled indicator strip ── */}
+      <div
+        className={`h-0.5 bg-brand-gold transition-all duration-500 ${scrolled ? "opacity-100" : "opacity-0"}`}
+        style={{ width: "100%" }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 h-[70px] flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center shrink-0">
+          <Image
+            src="/logo.png"
+            alt="Astellic"
+            width={160}
+            height={52}
+            className="object-contain h-12 w-auto"
+            priority
+          />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8 text-lg">
+        {/* ── Desktop nav ── */}
+        <nav className="hidden md:flex items-center gap-6">
+          {/* Home — gold, always visible anchor */}
+          <Link
+            href="/"
+            className="text-brand-gold font-semibold text-sm hover:text-brand-gold/80 transition-colors relative group"
+          >
+            Home
+            <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-brand-gold group-hover:w-full transition-all duration-200 rounded" />
+          </Link>
+
           <FlatDropdown label="Who We Are" items={whoWeAreItems} />
-          <Link href="/why-astellic" className="text-gray-300 hover:text-white transition-colors">Why Astellic</Link>
+
+          <Link
+            href="/why-astellic"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            Why Astellic
+          </Link>
+
           <OurWorkDropdown />
+
+          <Link
+            href="/insights"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            Insights
+          </Link>
+
           <FlatDropdown label="Work With Us" items={workWithUsItems} />
-          <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2.5 rounded text-lg transition-colors">
+
+          <Link
+            href="/contact"
+            className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-sm font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-brand-gold/25"
+          >
             Get in Touch
           </Link>
         </nav>
 
         {/* Mobile toggle */}
-        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
-          <span className="block w-6 h-0.5 bg-white mb-1.5" />
-          <span className="block w-6 h-0.5 bg-white mb-1.5" />
-          <span className="block w-6 h-0.5 bg-white" />
+        <button
+          className="md:hidden p-2 flex flex-col gap-1.5"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-200 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-200 ${mobileOpen ? "opacity-0" : ""}`} />
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-200 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
         </button>
       </div>
 
-      {/* Mobile nav */}
+      {/* ── Mobile nav ── */}
       {mobileOpen && (
-        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-4 flex flex-col gap-3 text-lg">
+        <nav className="md:hidden bg-brand-navy border-t border-white/10 px-6 pb-6 pt-2 flex flex-col gap-0.5">
+
+          {/* Home */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-brand-gold font-bold py-3 border-b border-white/10"
+            onClick={closeMobile}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Home
+          </Link>
 
           {/* Who We Are */}
-          <div>
-            <button className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg" onClick={() => setWhoWeAreOpen(!whoWeAreOpen)}>
+          <div className="border-b border-white/10">
+            <button
+              className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
+              onClick={() => setWhoWeAreOpen(!whoWeAreOpen)}
+            >
               Who We Are
-              <svg className={`w-4 h-4 ml-1 transition-transform ${whoWeAreOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className={`w-4 h-4 transition-transform ${whoWeAreOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {whoWeAreOpen && (
-              <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
+              <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
                 {whoWeAreItems.map((item) => (
-                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
                     {item.label}
                   </Link>
                 ))}
@@ -264,60 +314,59 @@ export default function Header() {
             )}
           </div>
 
-          <Link href="/why-astellic" className="text-gray-300 hover:text-white py-1" onClick={closeMobile}>
+          <Link href="/why-astellic" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
             Why Astellic
           </Link>
 
           {/* Our Work */}
-          <div>
-            <button className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg" onClick={() => setOurWorkOpen(!ourWorkOpen)}>
+          <div className="border-b border-white/10">
+            <button
+              className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
+              onClick={() => setOurWorkOpen(!ourWorkOpen)}
+            >
               Our Work
-              <svg className={`w-4 h-4 ml-1 transition-transform ${ourWorkOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className={`w-4 h-4 transition-transform ${ourWorkOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {ourWorkOpen && (
-              <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
-
-                {/* Institutions We Support nested */}
+              <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
+                {/* Institutions */}
                 <div>
                   <div className="flex items-center justify-between">
-                    <Link href="/institutions-we-support" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                    <Link href="/institutions-we-support" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
                       Institutions We Support
                     </Link>
-                    <button className="text-gray-400 hover:text-white px-2" onClick={() => setInstitutionsOpen(!institutionsOpen)} aria-label="Expand institutions">
-                      <svg className={`w-4 h-4 transition-transform ${institutionsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setInstitutionsOpen(!institutionsOpen)}>
+                      <svg className={`w-3.5 h-3.5 transition-transform ${institutionsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                   </div>
                   {institutionsOpen && (
-                    <div className="pl-4 flex flex-col gap-1 mt-1 border-l border-white/10">
+                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
                       {institutionsItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-sm" onClick={closeMobile}>
-                          {item.label}
-                        </Link>
+                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>{item.label}</Link>
                       ))}
                     </div>
                   )}
                 </div>
-
-                {/* Our Approach nested */}
+                {/* Our Approach */}
                 <div>
                   <div className="flex items-center justify-between">
-                    <Link href="/what-we-do" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                    <Link href="/what-we-do" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
                       Our Approach
                     </Link>
-                    <button className="text-gray-400 hover:text-white px-2" onClick={() => setApproachOpen(!approachOpen)} aria-label="Expand approach">
-                      <svg className={`w-4 h-4 transition-transform ${approachOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setApproachOpen(!approachOpen)}>
+                      <svg className={`w-3.5 h-3.5 transition-transform ${approachOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                   </div>
                   {approachOpen && (
-                    <div className="pl-4 flex flex-col gap-1 mt-1 border-l border-white/10">
+                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
                       {ourApproachItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-sm" onClick={closeMobile}>
+                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>
                           <span className="text-[10px] text-gray-600 block">{item.sub}</span>
                           {item.label}
                         </Link>
@@ -325,56 +374,63 @@ export default function Header() {
                     </div>
                   )}
                 </div>
-
-                {/* Thematic Areas nested */}
+                {/* Thematic Areas */}
                 <div>
                   <div className="flex items-center justify-between">
-                    <Link href="/thematic-areas" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
+                    <Link href="/thematic-areas" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
                       Thematic Areas
                     </Link>
-                    <button className="text-gray-400 hover:text-white px-2" onClick={() => setThematicOpen(!thematicOpen)} aria-label="Expand thematic areas">
-                      <svg className={`w-4 h-4 transition-transform ${thematicOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setThematicOpen(!thematicOpen)}>
+                      <svg className={`w-3.5 h-3.5 transition-transform ${thematicOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                   </div>
                   {thematicOpen && (
-                    <div className="pl-4 flex flex-col gap-1 mt-1 border-l border-white/10">
+                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
                       {thematicAreas.map((area) => (
-                        <Link key={area.href} href={area.href} className="text-gray-500 hover:text-white py-1 text-sm" onClick={closeMobile}>
-                          {area.label}
-                        </Link>
+                        <Link key={area.href} href={area.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>{area.label}</Link>
                       ))}
                     </div>
                   )}
                 </div>
-
-                <Link href="/our-projects" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>Our Projects</Link>
-                <Link href="/resources" className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>Resources</Link>
+                <Link href="/our-projects" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>Our Projects</Link>
+                <Link href="/resources" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>Resources</Link>
               </div>
             )}
           </div>
 
+          <Link href="/insights" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
+            Insights
+          </Link>
+
           {/* Work With Us */}
-          <div>
-            <button className="flex items-center gap-1 text-gray-300 hover:text-white py-1 w-full text-left text-lg" onClick={() => setWorkWithUsOpen(!workWithUsOpen)}>
+          <div className="border-b border-white/10">
+            <button
+              className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
+              onClick={() => setWorkWithUsOpen(!workWithUsOpen)}
+            >
               Work With Us
-              <svg className={`w-4 h-4 ml-1 transition-transform ${workWithUsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className={`w-4 h-4 transition-transform ${workWithUsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {workWithUsOpen && (
-              <div className="pl-4 flex flex-col gap-2 mt-1 border-l border-white/20">
+              <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
                 {workWithUsItems.map((item) => (
-                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1 text-base" onClick={closeMobile}>
-                    {item.label}
-                  </Link>
+                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>{item.label}</Link>
                 ))}
               </div>
             )}
           </div>
 
-          <Link href="/contact" className="text-gray-300 hover:text-white py-1" onClick={closeMobile}>Get in Touch</Link>
+          <Link
+            href="/contact"
+            className="mt-3 bg-brand-gold text-white font-semibold py-3 px-5 rounded text-sm text-center"
+            onClick={closeMobile}
+          >
+            Get in Touch
+          </Link>
         </nav>
       )}
     </header>
