@@ -234,27 +234,39 @@ export default function Home() {
           <div className="space-y-6">
             {coreServices.map((svc, i) => (
               <Reveal key={svc.num} variant={i % 2 === 0 ? "left" : "right"} delay={i * 80}>
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lift">
-                  {/* Photo header strip */}
-                  <div className="relative h-48 overflow-hidden">
-                    <Image src={svc.img} alt={svc.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lift">
+                  {/* Photo — tall enough to dominate; light gradient so photo reads clearly */}
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={svc.img}
+                      alt={svc.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {/* Light gradient: photo fully visible top-half, fades to brand colour at base for text legibility */}
                     <div
                       className="absolute inset-0"
-                      style={{ background: `linear-gradient(to top, ${svc.overlayHex}f2 0%, ${svc.overlayHex}99 45%, ${svc.overlayHex}30 100%)` }}
+                      style={{ background: `linear-gradient(to top, ${svc.overlayHex}e6 0%, ${svc.overlayHex}55 42%, transparent 70%)` }}
                     />
                     <div className="absolute inset-0 p-6 flex flex-col justify-between">
                       <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded self-start`}>
                         {svc.num}
                       </span>
                       <div>
-                        <h3 className="text-white font-bold text-xl leading-snug mb-1">{svc.title}</h3>
-                        <p className="text-white/75 text-sm font-medium italic">{svc.tagline}</p>
+                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5">
+                          Area of Specialist Depth
+                        </p>
+                        <h3 className="text-white font-bold text-2xl leading-snug mb-1.5">{svc.title}</h3>
+                        <p className="text-white/80 text-sm font-medium italic">{svc.tagline}</p>
                       </div>
                     </div>
                   </div>
+                  {/* Thin brand-colour accent bar separating photo from content */}
+                  <div className={`h-1 ${svc.numBg}`} />
                   {/* Content grid */}
                   <div className="p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start">
                     <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">The Problem</p>
                       <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
                     </div>
                     <div>

@@ -165,7 +165,7 @@ export default function WhatWeDoPage() {
                     <Image src={p.img} alt={p.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     <div
                       className="absolute inset-0"
-                      style={{ background: `linear-gradient(to top, ${p.overlayHex}f2 0%, ${p.overlayHex}99 45%, ${p.overlayHex}30 100%)` }}
+                      style={{ background: `linear-gradient(to top, ${p.overlayHex}e6 0%, ${p.overlayHex}55 42%, transparent 70%)` }}
                     />
                     <div className="absolute inset-0 p-5 flex flex-col justify-between">
                       <div className="flex items-center gap-2">
@@ -190,7 +190,7 @@ export default function WhatWeDoPage() {
                     <Image src={p.img} alt={p.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     <div
                       className="absolute inset-0"
-                      style={{ background: `linear-gradient(to top, ${p.overlayHex}f2 0%, ${p.overlayHex}99 45%, ${p.overlayHex}30 100%)` }}
+                      style={{ background: `linear-gradient(to top, ${p.overlayHex}e6 0%, ${p.overlayHex}55 42%, transparent 70%)` }}
                     />
                     <div className="absolute inset-0 p-5 flex flex-col justify-between">
                       <div className="flex items-center gap-2">
