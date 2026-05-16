@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Embedded Implementation Support & Adaptive Management | Astellic",
@@ -70,13 +71,15 @@ export default function AdaptiveManagementPage() {
           </p>
           <div className="space-y-6">
             {services.map((s, i) => (
-              <div key={i} className="bg-brand-light rounded-xl p-6">
+              <Reveal key={i} variant="up" delay={i * 80}>
+              <div className="bg-brand-light rounded-xl p-6 lift">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-brand-green mt-2 shrink-0" />
                   <h3 className="font-bold text-brand-green">{s.label}</h3>
                 </div>
                 <p className="text-brand-muted text-sm leading-relaxed pl-4">{s.desc}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>

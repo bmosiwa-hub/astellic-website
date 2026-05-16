@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Development Partners | Institutions We Support | Astellic",
@@ -138,24 +139,27 @@ export default function DevelopmentPartnersPage() {
       {/* Positioning */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl font-bold text-brand-navy mb-5">
-              The Implementation Gap Is Still the Biggest Problem
-            </h2>
-            <p className="text-brand-muted text-lg leading-relaxed mb-5">
-              Decades of development investment have produced an uncomfortable truth: even
-              well-designed programmes frequently underdeliver. The gap between what was planned
-              and what was achieved is rarely about intent — it is almost always about the quality
-              of systems, evidence, and adaptive management capacity available to those doing the work.
-            </p>
-            <p className="text-brand-muted text-lg leading-relaxed">
-              Astellic exists to close that gap for development partners. We bring the analytical
-              rigour of evaluation research together with the practical experience of implementation
-              support — helping partners design programmes that are more likely to work, monitor them
-              with data that actually drives decisions, and build the institutional capacity to
-              sustain results after external support ends.
-            </p>
-          </div>
+          <SlideLeft>
+            <div>
+              <h2 className="text-3xl font-bold text-brand-navy mb-5">
+                The Implementation Gap Is Still the Biggest Problem
+              </h2>
+              <p className="text-brand-muted text-lg leading-relaxed mb-5">
+                Decades of development investment have produced an uncomfortable truth: even
+                well-designed programmes frequently underdeliver. The gap between what was planned
+                and what was achieved is rarely about intent — it is almost always about the quality
+                of systems, evidence, and adaptive management capacity available to those doing the work.
+              </p>
+              <p className="text-brand-muted text-lg leading-relaxed">
+                Astellic exists to close that gap for development partners. We bring the analytical
+                rigour of evaluation research together with the practical experience of implementation
+                support — helping partners design programmes that are more likely to work, monitor them
+                with data that actually drives decisions, and build the institutional capacity to
+                sustain results after external support ends.
+              </p>
+            </div>
+          </SlideLeft>
+          <SlideRight>
           <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
             <p className="text-xs font-bold text-brand-teal uppercase tracking-widest mb-6">The Astellic Difference</p>
             <div className="space-y-5">
@@ -178,12 +182,14 @@ export default function DevelopmentPartnersPage() {
               ))}
             </div>
           </div>
+          </SlideRight>
         </div>
       </section>
 
       {/* Services */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">What We Deliver</h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto">
@@ -191,15 +197,18 @@ export default function DevelopmentPartnersPage() {
               through implementation support, evaluation, and learning.
             </p>
           </div>
+          </FadeUp>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((svc) => (
-              <div key={svc.title} className="bg-white border border-gray-100 rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow">
+            {services.map((svc, i) => (
+              <Reveal key={svc.title} variant="up" delay={i * 80}>
+              <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow lift">
                 <div className="w-11 h-11 bg-brand-light rounded-xl flex items-center justify-center mb-5">
                   {svc.icon}
                 </div>
                 <h3 className="text-base font-bold text-brand-navy mb-3">{svc.title}</h3>
                 <p className="text-brand-muted text-sm leading-relaxed">{svc.description}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -208,6 +217,7 @@ export default function DevelopmentPartnersPage() {
       {/* Who we work with */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">Who We Work With</h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto">
@@ -215,13 +225,16 @@ export default function DevelopmentPartnersPage() {
               working to deliver development outcomes in Africa.
             </p>
           </div>
+          </FadeUp>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {clientTypes.map((ct) => (
-              <div key={ct.label} className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+            {clientTypes.map((ct, i) => (
+              <Reveal key={ct.label} variant="up" delay={i * 70}>
+              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm lift">
                 <div className="w-2 h-6 bg-brand-teal rounded-full mb-4" />
                 <h3 className="font-bold text-brand-navy mb-2">{ct.label}</h3>
                 <p className="text-brand-muted text-sm leading-relaxed">{ct.desc}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -230,15 +243,18 @@ export default function DevelopmentPartnersPage() {
       {/* Value propositions */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">What Sets Our Partnerships Apart</h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto">
               We approach every development partner engagement with the same core commitments.
             </p>
           </div>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-7">
-            {valueProps.map((vp) => (
-              <div key={vp.number} className="flex gap-5">
+            {valueProps.map((vp, i) => (
+              <Reveal key={vp.number} variant="up" delay={i * 80}>
+              <div className="flex gap-5">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center">
                   <span className="text-brand-teal font-bold text-sm">{vp.number}</span>
                 </div>
@@ -247,6 +263,7 @@ export default function DevelopmentPartnersPage() {
                   <p className="text-brand-muted text-sm leading-relaxed">{vp.desc}</p>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -255,12 +272,17 @@ export default function DevelopmentPartnersPage() {
       {/* CTA */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Partner With Us</h2>
-          <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-            Whether you need an evaluation partner, help designing a new programme,
-            support building an M&E system, or embedded technical assistance for a
-            complex implementation — we are here to work alongside you.
-          </p>
+          <FadeUp>
+            <h2 className="text-3xl font-bold mb-4">Partner With Us</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+              Whether you need an evaluation partner, help designing a new programme,
+              support building an M&E system, or embedded technical assistance for a
+              complex implementation — we are here to work alongside you.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
@@ -275,6 +297,7 @@ export default function DevelopmentPartnersPage() {
               Propose a Partnership
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
     </>

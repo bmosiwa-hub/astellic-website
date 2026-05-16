@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Policy, Systems Analysis & Implementation Support | Astellic",
@@ -120,8 +121,9 @@ export default function ImplementationPillarPage() {
       {/* Sub-units */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
-          {subUnits.map((s) => (
-            <div key={s.num} className="border-l-4 border-brand-green pl-8">
+          {subUnits.map((s, si) => (
+            <Reveal key={s.num} variant="up" delay={si * 100}>
+            <div className="border-l-4 border-brand-green pl-8">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-bold text-white bg-brand-green px-2 py-0.5 rounded">{s.num}</span>
                 <h2 className="text-xl font-bold text-brand-green">{s.title}</h2>
@@ -147,6 +149,7 @@ export default function ImplementationPillarPage() {
                 </svg>
               </Link>
             </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -154,16 +157,20 @@ export default function ImplementationPillarPage() {
       {/* Full offerings */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-brand-navy mb-2 text-center">Full Service Range</h2>
-          <p className="text-center text-brand-muted text-sm mb-8 max-w-xl mx-auto">
-            The complete menu of analytical and advisory services within this pillar.
-          </p>
+          <FadeUp>
+            <h2 className="text-2xl font-bold text-brand-navy mb-2 text-center">Full Service Range</h2>
+            <p className="text-center text-brand-muted text-sm mb-8 max-w-xl mx-auto">
+              The complete menu of analytical and advisory services within this pillar.
+            </p>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted">
+              <Reveal key={i} variant="up" delay={i * 50}>
+              <div className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted lift">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-green mt-1.5 shrink-0" />
                 {o}
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -172,11 +179,16 @@ export default function ImplementationPillarPage() {
       {/* CTA */}
       <section className="py-16 px-6 bg-brand-navy text-white">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Explore Implementation Readiness Support</h2>
-          <p className="text-gray-300 text-base leading-relaxed mb-8 max-w-xl mx-auto">
-            Whether you need a policy framework developed, a delivery system diagnosed,
-            or an embedded advisor to support implementation — tell us what you are working on.
-          </p>
+          <FadeUp>
+            <h2 className="text-2xl font-bold mb-4">Explore Implementation Readiness Support</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-gray-300 text-base leading-relaxed mb-8 max-w-xl mx-auto">
+              Whether you need a policy framework developed, a delivery system diagnosed,
+              or an embedded advisor to support implementation — tell us what you are working on.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-8 py-3 rounded transition-colors">
               Discuss Implementation Support
@@ -185,6 +197,7 @@ export default function ImplementationPillarPage() {
               All Services
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
 

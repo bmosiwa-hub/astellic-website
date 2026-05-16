@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Policy Development & Advisory | Astellic",
@@ -101,8 +102,9 @@ export default function PolicyPillarPage() {
       {/* Sub-units */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
-          {subUnits.map((s) => (
-            <div key={s.num} className="border-l-4 border-brand-teal pl-8">
+          {subUnits.map((s, si) => (
+            <Reveal key={s.num} variant="up" delay={si * 100}>
+            <div className="border-l-4 border-brand-teal pl-8">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-bold text-white bg-brand-teal px-2 py-0.5 rounded">{s.num}</span>
                 <h2 className="text-xl font-bold text-brand-teal">{s.title}</h2>
@@ -128,6 +130,7 @@ export default function PolicyPillarPage() {
                 </svg>
               </Link>
             </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -135,13 +138,17 @@ export default function PolicyPillarPage() {
       {/* Full offerings */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
+          <FadeUp>
+            <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted">
+              <Reveal key={i} variant="up" delay={i * 50}>
+              <div className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted lift">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-teal mt-1.5 shrink-0" />
                 {o}
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -150,11 +157,14 @@ export default function PolicyPillarPage() {
       {/* Related pillars */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence — and for implementation.</h2>
-          <p className="text-brand-muted mb-8">
-            Our policy work is grounded in rigorous evidence from Pillar 01 and designed to be
-            implementable through Pillar 03 — ensuring the full results chain holds together.
-          </p>
+          <FadeUp>
+            <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence — and for implementation.</h2>
+            <p className="text-brand-muted mb-8">
+              Our policy work is grounded in rigorous evidence from Pillar 01 and designed to be
+              implementable through Pillar 03 — ensuring the full results chain holds together.
+            </p>
+          </FadeUp>
+          <FadeUp delay={100}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
               Pillar 01: Evidence Generation &amp; Verification
@@ -163,6 +173,7 @@ export default function PolicyPillarPage() {
               Pillar 03: Programme Design &amp; Implementation
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
     </>

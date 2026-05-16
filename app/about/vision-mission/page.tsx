@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Vision & Mission",
@@ -33,6 +34,7 @@ export default function VisionMissionPage() {
       {/* Vision & Mission */}
       <section className="bg-brand-light py-20 px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10">
+          <ScaleIn>
           <div className="bg-white rounded-xl p-8 shadow-sm">
             <div className="w-10 h-1 bg-brand-gold mb-4 rounded" />
             <h2 className="text-xl font-bold mb-3">Vision</h2>
@@ -41,6 +43,8 @@ export default function VisionMissionPage() {
               equitable, sustainable, and measurable outcomes.
             </p>
           </div>
+          </ScaleIn>
+          <ScaleIn delay={120}>
           <div className="bg-white rounded-xl p-8 shadow-sm">
             <div className="w-10 h-1 bg-brand-gold mb-4 rounded" />
             <h2 className="text-xl font-bold mb-3">Mission</h2>
@@ -49,14 +53,18 @@ export default function VisionMissionPage() {
               realities, and delivery systems into practice.
             </p>
           </div>
+          </ScaleIn>
         </div>
       </section>
 
       {/* The Gap We Address */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">The Gap We Address</h2>
+          <FadeUp>
+            <h2 className="text-2xl font-bold mb-6">The Gap We Address</h2>
+          </FadeUp>
           <div className="border-l-4 border-brand-teal pl-6 space-y-8">
+            <Reveal variant="up" delay={0}>
             <div>
               <h3 className="text-lg font-semibold mb-2">Not a scarcity of strategy</h3>
               <p className="text-brand-muted text-lg leading-relaxed">
@@ -65,6 +73,8 @@ export default function VisionMissionPage() {
                 the ability to translate them into results at scale.
               </p>
             </div>
+            </Reveal>
+            <Reveal variant="up" delay={80}>
             <div>
               <h3 className="text-lg font-semibold mb-2">A failure to convert it into results</h3>
               <p className="text-brand-muted text-lg leading-relaxed">
@@ -74,6 +84,8 @@ export default function VisionMissionPage() {
                 genuine interests.
               </p>
             </div>
+            </Reveal>
+            <Reveal variant="up" delay={160}>
             <div>
               <h3 className="text-lg font-semibold mb-2">The Astellic Premise</h3>
               <p className="text-brand-muted text-lg leading-relaxed">
@@ -81,6 +93,7 @@ export default function VisionMissionPage() {
                 systems problem. We address it as one.
               </p>
             </div>
+            </Reveal>
           </div>
         </div>
       </section>

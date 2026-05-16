@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Human Development & Social Systems",
@@ -74,14 +75,18 @@ export default function EducationPage() {
       {/* Focus Areas */}
       <section className="bg-brand-light py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-navy mb-10">Our Focus Areas</h2>
+          <FadeUp>
+            <h2 className="text-3xl font-bold text-brand-navy mb-10">Our Focus Areas</h2>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-6">
-            {focusAreas.map((area) => (
-              <div key={area.title} className="bg-white rounded-xl p-7 border border-gray-100 shadow-sm">
+            {focusAreas.map((area, i) => (
+              <Reveal key={area.title} variant="up" delay={i * 80}>
+              <div className="bg-white rounded-xl p-7 border border-gray-100 shadow-sm lift">
                 <div className="w-1 h-6 bg-brand-navy rounded mb-4" />
                 <h3 className="text-lg font-bold text-brand-navy mb-2">{area.title}</h3>
                 <p className="text-brand-muted text-base leading-relaxed">{area.desc}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -90,12 +95,17 @@ export default function EducationPage() {
       {/* CTA */}
       <section className="py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-brand-navy mb-4">Work with us on Human Development &amp; Social Systems</h2>
-          <p className="text-brand-muted text-lg mb-8 leading-relaxed">
-            Astellic partners with governments, donors, and the private sector to design and deliver
-            education and social protection programmes that achieve lasting
-            improvements in human capital and equity.
-          </p>
+          <FadeUp>
+            <h2 className="text-3xl font-bold text-brand-navy mb-4">Work with us on Human Development &amp; Social Systems</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-brand-muted text-lg mb-8 leading-relaxed">
+              Astellic partners with governments, donors, and the private sector to design and deliver
+              education and social protection programmes that achieve lasting
+              improvements in human capital and equity.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-3 rounded font-medium text-lg transition-colors">
               Get in Touch
@@ -104,6 +114,7 @@ export default function EducationPage() {
               All Thematic Areas
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
     </>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { FadeUp, SlideLeft, SlideRight } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -33,6 +34,7 @@ export default function ContactPage() {
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16">
           {/* Contact info */}
+          <SlideLeft>
           <div>
             <h2 className="text-3xl font-bold text-brand-navy mb-6">Reach Us</h2>
 
@@ -75,8 +77,10 @@ export default function ContactPage() {
               </ul>
             </div>
           </div>
+          </SlideLeft>
 
           {/* Simple contact form */}
+          <SlideRight>
           <div>
             <h2 className="text-3xl font-bold text-brand-navy mb-6">Send a Message</h2>
             <form
@@ -148,6 +152,7 @@ export default function ContactPage() {
               </button>
             </form>
           </div>
+          </SlideRight>
         </div>
       </section>
     </>

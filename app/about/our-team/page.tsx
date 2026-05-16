@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import TeamGrid from "@/components/TeamGrid";
+import { Reveal, FadeUp, FadeIn, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Our Team | Astellic",
@@ -157,12 +158,15 @@ export default function OurTeamPage() {
 
         {/* ── Founder Feature ───────────────────────────────────────────── */}
         <section>
+          <FadeUp>
           <div className="flex items-center gap-4 mb-8">
             <div className="w-1 h-8 bg-brand-gold rounded" />
             <h2 className="text-2xl font-bold text-brand-navy">Executive Leadership</h2>
           </div>
+          </FadeUp>
 
           {/* Featured founder card */}
+          <ScaleIn delay={100}>
           <div className="bg-brand-light rounded-2xl border border-gray-100 p-8 grid md:grid-cols-[auto_1fr] gap-10 items-start mb-8">
             {/* Photo */}
             <div className="flex flex-col items-center gap-4">
@@ -269,8 +273,10 @@ export default function OurTeamPage() {
               </div>
             </div>
           </div>
+          </ScaleIn>
 
           {/* ── Career History ─────────────────────────────────────────── */}
+          <FadeUp delay={100}>
           <div className="bg-white rounded-2xl border border-gray-100 p-8">
             <h3 className="text-lg font-bold text-brand-navy mb-6">Career History</h3>
             <div className="space-y-0">
@@ -288,17 +294,21 @@ export default function OurTeamPage() {
               ))}
             </div>
           </div>
+          </FadeUp>
         </section>
 
         {/* ── Publications ──────────────────────────────────────────────── */}
         <section>
+          <FadeUp>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-teal rounded" />
             <h2 className="text-2xl font-bold text-brand-navy">Selected Publications</h2>
           </div>
+          </FadeUp>
           <div className="space-y-4">
             {publications.map((pub, i) => (
-              <div key={i} className="bg-brand-light rounded-xl border border-gray-100 p-5 grid md:grid-cols-[60px_1fr] gap-4 items-start">
+              <Reveal key={i} variant="up" delay={i * 80}>
+              <div className="bg-brand-light rounded-xl border border-gray-100 p-5 grid md:grid-cols-[60px_1fr] gap-4 items-start">
                 <div className="text-center">
                   <span className="text-brand-gold font-bold text-sm">{pub.year}</span>
                   <p className="text-xs text-gray-400 mt-0.5">{pub.type}</p>
@@ -308,6 +318,7 @@ export default function OurTeamPage() {
                   <p className="text-xs text-brand-muted italic">{pub.journal}</p>
                 </div>
               </div>
+              </Reveal>
             ))}
             <p className="text-xs text-gray-400 pl-1">
               Also presented at: Global Symposium for Health Systems Research (Japan, 2024),

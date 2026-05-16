@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Donors & Governments | Institutions We Support | Astellic",
@@ -137,6 +138,7 @@ export default function DonorsAndGovernmentsPage() {
       {/* Positioning statement */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <SlideLeft>
           <div>
             <h2 className="text-3xl font-bold text-brand-navy mb-5">
               The Challenge We Solve Together
@@ -155,6 +157,8 @@ export default function DonorsAndGovernmentsPage() {
               but as a sustained partnership oriented toward institutional change.
             </p>
           </div>
+          </SlideLeft>
+          <SlideRight>
           <div className="grid grid-cols-2 gap-4">
             {[
               { stat: "Evidence-Led", sub: "Every recommendation grounded in data" },
@@ -168,12 +172,14 @@ export default function DonorsAndGovernmentsPage() {
               </div>
             ))}
           </div>
+          </SlideRight>
         </div>
       </section>
 
       {/* Services */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">What We Deliver</h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto">
@@ -181,15 +187,18 @@ export default function DonorsAndGovernmentsPage() {
               through to policy and implementation support.
             </p>
           </div>
+          </FadeUp>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((svc) => (
-              <div key={svc.title} className="bg-white border border-gray-100 rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow">
+            {services.map((svc, i) => (
+              <Reveal key={svc.title} variant="up" delay={i * 80}>
+              <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow lift">
                 <div className="w-11 h-11 bg-brand-light rounded-xl flex items-center justify-center mb-5">
                   {svc.icon}
                 </div>
                 <h3 className="text-base font-bold text-brand-navy mb-3">{svc.title}</h3>
                 <p className="text-brand-muted text-sm leading-relaxed">{svc.description}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -198,6 +207,7 @@ export default function DonorsAndGovernmentsPage() {
       {/* Who we work with */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">Who We Work With</h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto">
@@ -205,13 +215,16 @@ export default function DonorsAndGovernmentsPage() {
               and development finance institutions.
             </p>
           </div>
+          </FadeUp>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {clientTypes.map((ct) => (
-              <div key={ct.label} className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+            {clientTypes.map((ct, i) => (
+              <Reveal key={ct.label} variant="up" delay={i * 70}>
+              <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm lift">
                 <div className="w-2 h-6 bg-brand-gold rounded-full mb-4" />
                 <h3 className="font-bold text-brand-navy mb-2">{ct.label}</h3>
                 <p className="text-brand-muted text-sm leading-relaxed">{ct.desc}</p>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -220,15 +233,18 @@ export default function DonorsAndGovernmentsPage() {
       {/* Our approach / process */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
+          <FadeUp>
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold text-brand-navy mb-4">How We Work</h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto">
               Our approach is rigorous, collaborative, and oriented toward lasting institutional change.
             </p>
           </div>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-6">
-            {approach.map((step) => (
-              <div key={step.step} className="flex gap-5">
+            {approach.map((step, i) => (
+              <Reveal key={step.step} variant="up" delay={i * 80}>
+              <div className="flex gap-5">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
                   <span className="text-brand-gold font-bold text-sm">{step.step}</span>
                 </div>
@@ -237,6 +253,7 @@ export default function DonorsAndGovernmentsPage() {
                   <p className="text-brand-muted text-sm leading-relaxed">{step.desc}</p>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -245,12 +262,17 @@ export default function DonorsAndGovernmentsPage() {
       {/* CTA */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Work Together?</h2>
-          <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-            Whether you are a donor designing a new portfolio, a government ministry building
-            a data system, or a development agency seeking an evaluation partner — we would
-            like to hear from you.
-          </p>
+          <FadeUp>
+            <h2 className="text-3xl font-bold mb-4">Ready to Work Together?</h2>
+          </FadeUp>
+          <FadeUp delay={100}>
+            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+              Whether you are a donor designing a new portfolio, a government ministry building
+              a data system, or a development agency seeking an evaluation partner — we would
+              like to hear from you.
+            </p>
+          </FadeUp>
+          <FadeUp delay={200}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
@@ -265,6 +287,7 @@ export default function DonorsAndGovernmentsPage() {
               See Our Projects
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
     </>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Evidence Generation & Verification | Astellic",
@@ -101,8 +102,9 @@ export default function EvidencePillarPage() {
       {/* Sub-units */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
-          {subUnits.map((s) => (
-            <div key={s.num} className="border-l-4 border-brand-navy pl-8">
+          {subUnits.map((s, si) => (
+            <Reveal key={s.num} variant="up" delay={si * 100}>
+            <div className="border-l-4 border-brand-navy pl-8">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-bold text-white bg-brand-navy px-2 py-0.5 rounded">{s.num}</span>
                 <h2 className="text-xl font-bold text-brand-navy">{s.title}</h2>
@@ -128,6 +130,7 @@ export default function EvidencePillarPage() {
                 </svg>
               </Link>
             </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -135,13 +138,17 @@ export default function EvidencePillarPage() {
       {/* Full offerings list */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Evidence Pillar: Full Service Range</h2>
+          <FadeUp>
+            <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Evidence Pillar: Full Service Range</h2>
+          </FadeUp>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted">
+              <Reveal key={i} variant="up" delay={i * 50}>
+              <div className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted lift">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-navy mt-1.5 shrink-0" />
                 {o}
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -150,11 +157,14 @@ export default function EvidencePillarPage() {
       {/* Related pillars */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-xl font-bold text-brand-navy mb-3">Evidence feeds the full delivery system.</h2>
-          <p className="text-brand-muted mb-8">
-            Our research outputs directly inform Astellic&apos;s policy advisory and programme delivery pillars,
-            creating an integrated system where no insight is wasted.
-          </p>
+          <FadeUp>
+            <h2 className="text-xl font-bold text-brand-navy mb-3">Evidence feeds the full delivery system.</h2>
+            <p className="text-brand-muted mb-8">
+              Our research outputs directly inform Astellic&apos;s policy advisory and programme delivery pillars,
+              creating an integrated system where no insight is wasted.
+            </p>
+          </FadeUp>
+          <FadeUp delay={100}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
               Pillar 02: Policy Development &amp; Advisory
@@ -163,6 +173,7 @@ export default function EvidencePillarPage() {
               Pillar 03: Programme Design &amp; Implementation
             </Link>
           </div>
+          </FadeUp>
         </div>
       </section>
     </>
