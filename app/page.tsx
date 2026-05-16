@@ -135,11 +135,11 @@ export default function Home() {
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
           fill
-          className="object-cover opacity-55"
+          className="object-cover opacity-90"
           priority
         />
-        {/* Directional gradient — image breathes on right, text stays legible left */}
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/85 to-brand-navy/30 pointer-events-none" />
+        {/* Minimal dark scrim — just enough for text legibility, no blue tint */}
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
             Research · Advisory · Implementation
