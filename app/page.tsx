@@ -409,8 +409,30 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
-          <FadeUp delay={200}>
-            <p className="text-center text-gray-600 text-xs mt-10 italic">
+          <Reveal variant="up" delay={200}>
+            <div className="mt-10 bg-white/5 border border-white/10 rounded-xl px-7 py-5">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Methodological Strengths</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Political Economy Analysis (PEA)",
+                  "Adaptive MERL System Design",
+                  "Data Quality Assurance (DQA)",
+                  "Health Systems Financing Diagnostics",
+                  "Programme Evaluation (formative, summative, impact)",
+                  "Theory of Change Development",
+                  "Institutional Capacity Diagnostics",
+                  "Evidence Synthesis & Policy Translation",
+                  "Implementation Readiness Assessment",
+                ].map((m) => (
+                  <span key={m} className="text-xs text-gray-300 bg-white/8 border border-white/10 px-3 py-1.5 rounded-lg">
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+          <FadeUp delay={250}>
+            <p className="text-center text-gray-600 text-xs mt-6 italic">
               We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
             </p>
           </FadeUp>

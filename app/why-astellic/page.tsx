@@ -238,13 +238,13 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── Sectors & Client Categories ──────────────────────────────────── */}
+      {/* ── Sectors, Clients & Methodological Strengths ─────────────────── */}
       <section className="py-20 px-6 bg-white">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-12">
           <FadeUp>
             <div>
               <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Sectors</p>
-              <h3 className="text-2xl font-bold text-brand-navy mb-6">Where We Have Worked</h3>
+              <h3 className="text-xl font-bold text-brand-navy mb-6">Where We Have Worked</h3>
               <div className="space-y-3">
                 {sectors.map((s) => (
                   <div key={s} className="flex items-center gap-3 text-brand-muted">
@@ -255,10 +255,10 @@ export default function WhyAstellicPage() {
               </div>
             </div>
           </FadeUp>
-          <FadeUp delay={100}>
+          <FadeUp delay={80}>
             <div>
               <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Clients</p>
-              <h3 className="text-2xl font-bold text-brand-navy mb-6">Who We Have Served</h3>
+              <h3 className="text-xl font-bold text-brand-navy mb-6">Who We Have Served</h3>
               <div className="space-y-3">
                 {clientCategories.map((c) => (
                   <div key={c} className="flex items-center gap-3 text-brand-muted">
@@ -271,6 +271,30 @@ export default function WhyAstellicPage() {
                 We do not publish client logos without explicit permission.
                 These are categories, not claims.
               </p>
+            </div>
+          </FadeUp>
+          <FadeUp delay={160}>
+            <div>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Methods</p>
+              <h3 className="text-xl font-bold text-brand-navy mb-6">Methodological Strengths</h3>
+              <div className="space-y-3">
+                {[
+                  "Political Economy Analysis (PEA)",
+                  "Adaptive MERL System Design",
+                  "Data Quality Assurance (DQA)",
+                  "Health Systems Financing Diagnostics",
+                  "Programme Evaluation",
+                  "Theory of Change Development",
+                  "Institutional Capacity Diagnostics",
+                  "Evidence Synthesis & Policy Translation",
+                  "Implementation Readiness Assessment",
+                ].map((m) => (
+                  <div key={m} className="flex items-center gap-3 text-brand-muted">
+                    <span className="w-2 h-2 rounded-full bg-brand-gold shrink-0" />
+                    <span className="text-sm">{m}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </FadeUp>
         </div>
