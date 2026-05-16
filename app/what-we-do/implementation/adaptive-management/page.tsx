@@ -2,27 +2,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Programme Implementation & Adaptive Management | Implementation | Astellic",
+  title: "Embedded Implementation Support & Adaptive Management | Astellic",
   description:
-    "Astellic's Programme Implementation & Adaptive Management sub-unit — direct delivery, consortium leadership, and real-time adaptive management for donor-funded and government programmes.",
+    "Astellic's embedded implementation support and adaptive management services — staying alongside institutions to strengthen delivery systems, build adaptive management capacity, and support sustained programme performance.",
 };
 
 const services = [
   {
-    label: "End-to-End Programme Management",
-    desc: "Complete programme management, including financial management, sub-contractor coordination, stakeholder engagement, and donor reporting, positioning Astellic as the primary accountable entity for programme performance.",
+    label: "Programme Management Support",
+    desc: "Technical advisory and embedded support for programme management — including financial management advisory, sub-contractor coordination support, and donor reporting — positioning Astellic as a senior technical resource within the programme team.",
   },
   {
     label: "Adaptive Management",
     desc: "Real-time integration of monitoring data and evaluation findings into programme decision-making, enabling iterative course-correction based on what the evidence is showing on the ground, not what the original log frame assumed.",
   },
   {
-    label: "Consortium Leadership",
-    desc: "Leadership and coordination of multi-organisational consortia on medium-to-large contracts, positioning Astellic as the African anchor and primary accountable entity in large-scale programme delivery.",
+    label: "Consortium Technical Support",
+    desc: "Technical advisory and coordination support for multi-organisational consortia — providing analytical rigour, adaptive management expertise, and senior technical leadership within programme delivery structures.",
   },
   {
-    label: "Technical Implementing Partner Services",
-    desc: "Serving as the technical implementing partner on donor-funded and government programmes, providing the analytical rigour, adaptive management systems, and senior technical leadership that translate strategic intent into measurable outcomes.",
+    label: "Technical Advisory to Implementing Partners",
+    desc: "Senior technical advisory embedded within donor-funded and government programmes — providing the evidence integration, adaptive management systems, and institutional intelligence that translate strategic intent into sustained outcomes.",
   },
   {
     label: "Learning Integration Systems",
@@ -43,14 +43,14 @@ export default function AdaptiveManagementPage() {
             <span className="text-white font-semibold">Implementation & Adaptive Management</span>
           </div>
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 3.3</span>
-          <h1 className="text-4xl font-bold mt-2 mb-4">Programme Implementation &<br />Adaptive Management</h1>
+          <h1 className="text-4xl font-bold mt-2 mb-4">Embedded Implementation Support<br />& Adaptive Management</h1>
           <p className="text-green-100 text-lg font-medium mb-4">
-            Direct delivery with the adaptive management systems to course-correct in real time.
+            Staying alongside institutions to strengthen delivery systems and build adaptive management capacity.
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
-            This is where Astellic acts as programme implementer, consortium lead, or
-            technical implementing partner, applying adaptive management throughout
-            the delivery cycle so that learning continuously shapes the decisions that determine outcomes.
+            Astellic provides embedded advisory support throughout programme cycles — working
+            inside institutions to strengthen delivery systems, bridge the gap between strategy
+            and execution, and ensure learning continuously shapes programme decisions.
           </p>
         </div>
       </section>
@@ -58,13 +58,15 @@ export default function AdaptiveManagementPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
-            Programme Implementation & Adaptive Management is Astellic&apos;s direct delivery function,
-            the commercial engine of Pillar 03 and the proving ground for our institutional credibility
-            as a full-spectrum delivery partner. We apply adaptive management principles throughout
-            the implementation cycle, ensuring that learning from our Evaluation & Learning function
-            continuously shapes delivery decisions. In an African development context, where
-            implementation environments change faster than plans can anticipate, adaptive management
-            is not a methodology; it is a survival requirement.
+            Astellic&apos;s embedded implementation support function stays alongside government
+            institutions, implementing organisations, and programme management units to
+            strengthen delivery systems and apply adaptive management throughout the programme
+            cycle. We are a specialist advisory firm — not a large-scale delivery contractor.
+            Our role is to build the institutional capacity, adaptive routines, and evidence
+            integration systems that allow organisations to deliver well and learn continuously.
+            In African development contexts, where implementation environments change faster
+            than plans can anticipate, adaptive management is not a methodology; it is a
+            survival requirement.
           </p>
           <div className="space-y-6">
             {services.map((s, i) => (

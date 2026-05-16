@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Implementation",
+  title: "Implementation Support | Our Projects | Astellic",
   description:
-    "Astellic's programme design, management, and direct delivery projects across health, governance, education, and climate.",
+    "Astellic's programme design, embedded advisory, and implementation support engagements — helping institutions strengthen delivery systems across health, governance, education, and climate.",
 };
 
 interface Project {
@@ -44,12 +44,12 @@ export default function ImplementationPage() {
             All Projects
           </Link>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            Implementation
+            Implementation Support
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Programme design, management, and direct delivery — translating
-            policy intent into results on the ground across health, governance,
-            education, and climate.
+            Programme design, embedded advisory, and implementation support —
+            helping institutions strengthen the systems, readiness, and adaptive
+            management that make programmes work in practice.
           </p>
         </div>
       </section>

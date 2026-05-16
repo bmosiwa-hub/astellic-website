@@ -37,16 +37,16 @@ const coreServices = [
   },
   {
     num: "03",
-    title: "Policy-to-Implementation Systems Support",
-    tagline: "We help organisations move from well-designed strategy to actual delivery.",
+    title: "Policy, Systems Analysis & Implementation Support",
+    tagline: "We help organisations develop sound policy and move from strategy to actual delivery.",
     problem: "Strategies look compelling in documents. They fail when they meet institutional inertia, unclear accountability, weak implementation readiness, and systems that were never built to execute them.",
     bullets: [
+      "Develop policy and systems strategies grounded in evidence",
       "Operationalise strategy within institutional realities",
       "Diagnose delivery bottlenecks before they become failures",
-      "Strengthen implementation readiness",
-      "Improve programme execution discipline",
+      "Strengthen implementation readiness and execution discipline",
     ],
-    engagements: ["Implementation readiness reviews", "Delivery diagnostics", "Political economy analysis", "Embedded technical advisory"],
+    engagements: ["Policy and systems analysis", "Implementation readiness reviews", "Delivery diagnostics", "Political economy analysis", "Embedded technical advisory"],
     color: "border-brand-green",
     numBg: "bg-brand-green",
     href: "/what-we-do/implementation",
@@ -346,6 +346,50 @@ export default function Home() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Credibility Signals ──────────────────────────────────────────── */}
+      <section className="py-16 px-6 bg-brand-navy text-white">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-10 text-center">
+            Institutional Track Record
+          </p>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              {
+                label: "Sectors",
+                items: ["Health & Nutrition Systems", "Governance & Public Sector Reform", "Public Financial Management", "Education & Social Services", "Climate & Sustainability"],
+              },
+              {
+                label: "Clients Supported",
+                items: ["Bilateral donors (FCDO, USAID, GIZ)", "Multilateral agencies (WHO, UNICEF, World Bank)", "National line ministries", "International NGOs & implementers", "Corporate foundations"],
+              },
+              {
+                label: "Partners Engaged",
+                items: ["Gavi", "Global Fund", "Africa CDC", "Gates Foundation", "AFIDEP", "VillageReach", "Palladium", "DAI"],
+              },
+              {
+                label: "Geographic Reach",
+                items: ["Malawi (primary)", "Kenya", "Nigeria", "Zambia", "Ethiopia", "South Africa", "Zimbabwe", "9+ countries total"],
+              },
+            ].map((col) => (
+              <div key={col.label}>
+                <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
+                <ul className="space-y-2">
+                  {col.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
+                      <span className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-gray-600 text-xs mt-10 italic">
+            We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
+          </p>
         </div>
       </section>
 

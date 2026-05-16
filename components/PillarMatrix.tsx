@@ -120,7 +120,7 @@ const PILLARS: Pillar[] = [
   },
   {
     num:      "03",
-    label:    "Programme Design & Implementation",
+    label:    "Policy, Systems Analysis & Implementation Support",
     href:     "/what-we-do/implementation",
     bg:       "bg-brand-green",
     text:     "text-brand-green",

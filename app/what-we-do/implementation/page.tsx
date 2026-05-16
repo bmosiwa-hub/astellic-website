@@ -3,66 +3,70 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Programme Design & Implementation | Astellic",
+  title: "Policy, Systems Analysis & Implementation Support | Astellic",
   description:
-    "Astellic's Programme Design & Implementation pillar — designing and delivering programmes that work in the institutional realities of African public systems.",
+    "Astellic's Policy, Systems Analysis & Implementation Support pillar — from evidence-grounded policy development to embedded implementation advisory in African institutional contexts.",
 };
 
 const subUnits = [
   {
     num: "3.1",
-    title: "Programme Design & Innovation",
-    tagline: "Translating strategic intent into implementation-ready programme architectures with a measurable design advantage.",
-    desc: "We develop theories of change, results frameworks, operational models, and implementation plans that are simultaneously technically sound and operationally realistic. We apply an innovation lens, testing new delivery models, piloting unconventional approaches, and building proprietary tools such as the Astellic Implementation Readiness Assessment, to give clients a design advantage before implementation begins. A strong programme design is the single most powerful predictor of implementation success.",
+    title: "Policy & Systems Analysis and Development",
+    tagline: "Translating evidence into policy frameworks and systems strategies that are technically credible, politically feasible, and institutionally deliverable.",
+    desc: "This is one of Astellic's core competencies. We develop national policies, sector strategies, ministerial guidelines, and reform roadmaps — grounded in evidence, informed by political economy analysis, and structured for the institutional realities of African public systems. We do not produce policy documents that sit on shelves. We produce policy frameworks built for implementation, with the analytical depth and contextual grounding to survive contact with reality.",
     services: [
-      "Complete programme architecture: theory of change, results chain, operational model, and risk framework",
-      "Implementation Readiness Assessment: a proprietary diagnostic for identifying design and systemic barriers before launch",
-      "Innovation and rapid prototyping of new delivery models and approaches",
-      "Financing architecture design: budget justification, cost modelling, and sub-grant design",
-      "AI-augmented research and programme design services",
+      "National policy and sector strategy development",
+      "Political economy analysis — mapping the actors, interests, and dynamics that shape policy outcomes",
+      "Health systems analysis and reform design",
+      "Public financial management advisory and budget analysis",
+      "Evidence-to-policy translation and strategic communication",
+      "Systems strengthening diagnostics and reform roadmaps",
+      "Ministerial and institutional advisory on governance and regulatory frameworks",
+    ],
+    href: "/what-we-do/policy/strategy-development",
+  },
+  {
+    num: "3.2",
+    title: "Programme Design & Implementation Readiness",
+    tagline: "Designing implementation-ready programmes and diagnosing the systemic conditions that determine whether they succeed.",
+    desc: "We develop theories of change, results frameworks, operational models, and implementation plans that are simultaneously technically sound and operationally realistic. Our implementation readiness approach identifies design flaws and systemic barriers before programmes launch — when prevention is still possible. A strong programme design, tested for institutional readiness, is the single most powerful predictor of implementation success.",
+    services: [
+      "Theory of change and results framework development",
+      "Programme architecture: operational models, risk frameworks, and financing design",
+      "Implementation Readiness Assessment — a diagnostic for systemic barriers before launch",
+      "Embedded technical advisory to government ministries and programme management units",
+      "Institutional development: governance design, process mapping, performance management",
+      "Organisational development support and systems strengthening",
     ],
     href: "/what-we-do/implementation/programme-design",
   },
   {
-    num: "3.2",
-    title: "Technical Assistance & Institutional Development",
-    tagline: "Sustained embedded advisory that builds institutional capability, not dependence.",
-    desc: "This sub-unit provides sustained, embedded advisory support to government institutions, implementing organisations, and programme management units. We distinguish Astellic from short-term consultancies by offering structured, long-duration embedded advisory, deploying Astellic associates and senior technical advisors within client institutions to build both technical knowledge and the institutional routines that sustain performance after the engagement ends.",
-    services: [
-      "Embedded technical assistance: Astellic advisors placed within government ministries and programme management units",
-      "Institutional development: governance design, process mapping, and performance management frameworks",
-      "Organisational development support and systems strengthening",
-      "Executive education — Policy Analysis Masterclass, Health Financing Essentials, MERL for Development Programmes",
-      "Evidence-to-Policy Practicum for senior government and development sector professionals",
-    ],
-    href: "/what-we-do/implementation/technical-assistance",
-  },
-  {
     num: "3.3",
-    title: "Programme Implementation & Adaptive Management",
-    tagline: "Direct delivery with the adaptive management systems to course-correct in real time.",
-    desc: "This sub-unit is where Astellic acts as programme implementer, consortium lead, or technical implementing partner on donor-funded and government programmes. We apply adaptive management principles throughout the implementation cycle, ensuring that learning from our Evaluation & Learning function continuously shapes delivery decisions. This is the commercial engine of Pillar 03 and the proving ground for Astellic's credibility as a full-spectrum delivery partner.",
+    title: "Embedded Implementation Support & Adaptive Management",
+    tagline: "Staying alongside institutions to strengthen delivery systems and support adaptive programme management.",
+    desc: "Astellic provides embedded implementation support — working alongside governments and implementing organisations to strengthen delivery systems, build institutional routines, and apply adaptive management throughout programme cycles. We are not a large-scale direct delivery contractor. We are a specialist advisory firm that stays embedded, bridges the gap between strategy and execution, and ensures that learning from monitoring continuously shapes delivery decisions.",
     services: [
-      "End-to-end programme management: financial management, sub-contractor coordination, and donor reporting",
-      "Adaptive management: real-time integration of monitoring data into programme decision-making",
-      "Consortium leadership and coordination of multi-organisational partnerships",
-      "Technical implementing partner services for donor-funded and government programmes",
-      "Real-time monitoring, learning, and course-correction systems embedded in programme delivery",
+      "Embedded advisory and technical assistance in government ministries and PMUs",
+      "Adaptive management support: real-time integration of monitoring data into programme decisions",
+      "Delivery diagnostics — identifying and addressing implementation bottlenecks",
+      "Consortium technical support and coordination advisory",
+      "Institutional capacity building for sustained performance after the engagement ends",
     ],
     href: "/what-we-do/implementation/adaptive-management",
   },
 ];
 
 const offerings = [
-  "Theory of change and results framework development",
-  "Programme architecture design and operational modelling",
+  "Policy and systems analysis and development",
+  "Political economy analysis",
+  "Theory of change and results framework design",
+  "Programme architecture and operational modelling",
   "Implementation Readiness Assessment",
-  "Embedded technical assistance to governments and programme units",
+  "Embedded technical assistance to governments",
   "Institutional development and capacity strengthening",
-  "Executive education and professional training",
-  "Programme implementation and end-to-end management",
   "Adaptive management and real-time course-correction",
-  "Consortium leadership for large-scale programmes",
+  "Health systems and public financial management advisory",
+  "Systems strengthening diagnostics",
 ];
 
 export default function ImplementationPillarPage() {
@@ -72,7 +76,7 @@ export default function ImplementationPillarPage() {
       <section className="relative text-white py-24 px-6 overflow-hidden" style={{ backgroundColor: "#3B7D23" }}>
         <Image
           src="/images/hero-approach.jpg"
-          alt="Programme implementation and delivery"
+          alt="Policy and implementation support"
           fill
           className="object-cover opacity-15"
           priority
@@ -83,19 +87,33 @@ export default function ImplementationPillarPage() {
               What We Do
             </Link>
             <span className="text-green-300">/</span>
-            <span className="text-white/70 text-sm font-semibold">Pillar 03</span>
+            <span className="text-white/70 text-sm font-semibold">Service 03</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
-            Programme Design<br />& Implementation
+            Policy, Systems Analysis<br />& Implementation Support
           </h1>
           <p className="text-green-100 text-lg font-medium mb-4">
-            Designing and delivering programmes that work — not on paper, but in the institutional realities of African public systems.
+            From evidence-grounded policy development to embedded advisory that strengthens delivery systems in practice.
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
-            This is where Astellic&apos;s analysis becomes action. We design implementation-ready
-            interventions and deliver them with adaptive management systems that ensure real-world
-            complexity is met with real-time intelligence.
+            Strategies look compelling in documents. They fail when they meet institutional
+            inertia, unclear accountability, and systems that were never built to execute them.
+            We address that gap — through rigorous policy analysis, strong programme design,
+            and embedded advisory that stays until strategy works.
           </p>
+        </div>
+      </section>
+
+      {/* Positioning statement */}
+      <section className="bg-brand-light py-12 px-6 border-b border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <blockquote className="text-xl text-brand-navy font-medium leading-relaxed border-l-4 border-brand-gold pl-6">
+            "Policy and systems analysis is one of Astellic&apos;s strongest capabilities.
+            We do not produce policy documents that sit on shelves. We produce policy that is
+            grounded in evidence, tested against political economy realities, and structured
+            for implementation in the institutional contexts we know well."
+          </blockquote>
+          <p className="text-brand-muted text-sm mt-3 pl-6">— Astellic operating principle</p>
         </div>
       </section>
 
@@ -123,7 +141,7 @@ export default function ImplementationPillarPage() {
                 href={s.href}
                 className="inline-flex items-center gap-2 text-brand-green font-semibold text-sm hover:gap-3 transition-all"
               >
-                Learn more about {s.title}
+                Explore {s.title}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
@@ -136,7 +154,10 @@ export default function ImplementationPillarPage() {
       {/* Full offerings */}
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Implementation Pillar — Full Service Range</h2>
+          <h2 className="text-2xl font-bold text-brand-navy mb-2 text-center">Full Service Range</h2>
+          <p className="text-center text-brand-muted text-sm mb-8 max-w-xl mx-auto">
+            The complete menu of analytical and advisory services within this pillar.
+          </p>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
               <div key={i} className="flex items-start gap-3 bg-white rounded-lg px-4 py-3 text-sm text-brand-muted">
@@ -148,21 +169,39 @@ export default function ImplementationPillarPage() {
         </div>
       </section>
 
+      {/* CTA */}
+      <section className="py-16 px-6 bg-brand-navy text-white">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-4">Explore Implementation Readiness Support</h2>
+          <p className="text-gray-300 text-base leading-relaxed mb-8 max-w-xl mx-auto">
+            Whether you need a policy framework developed, a delivery system diagnosed,
+            or an embedded advisor to support implementation — tell us what you are working on.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-8 py-3 rounded transition-colors">
+              Discuss Implementation Support
+            </Link>
+            <Link href="/what-we-do" className="border border-white/30 hover:border-white text-white font-semibold px-8 py-3 rounded transition-colors">
+              All Services
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Related pillars */}
-      <section className="py-16 px-6">
+      <section className="py-12 px-6 bg-brand-light">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-xl font-bold text-brand-navy mb-3">Implementation is the output of the full delivery system.</h2>
-          <p className="text-brand-muted mb-8">
-            Our programmes are designed using evidence from Pillar 01 and structured on policy
-            frameworks from Pillar 02 — ensuring that every delivery decision is grounded in
-            rigorous analysis and strategic intent.
+          <p className="text-brand-muted text-sm mb-6">
+            Implementation support is grounded in evidence from Pillar 01 and informed
+            by the policy analysis we do within this pillar — ensuring every advisory
+            decision is analytically rigorous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
-              Pillar 01: Evidence Generation &amp; Verification
+              Evidence Generation &amp; Verification
             </Link>
             <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
-              Pillar 02: Policy Development &amp; Advisory
+              Policy Development &amp; Advisory
             </Link>
           </div>
         </div>

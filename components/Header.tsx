@@ -30,7 +30,7 @@ const ourApproachItems = [
     dot: "bg-brand-teal",
   },
   {
-    label: "Programme Design & Implementation",
+    label: "Policy, Systems Analysis & Implementation",
     sub: "Pillar 03",
     href: "/what-we-do/implementation",
     dot: "bg-brand-green",

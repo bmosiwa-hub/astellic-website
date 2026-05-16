@@ -34,10 +34,10 @@ const categories = [
     ),
   },
   {
-    title: "Implementation",
+    title: "Implementation Support",
     href: "/our-projects/implementation",
     description:
-      "Programme design, management, and direct delivery, translating policy intent into results on the ground across health, governance, education, and climate.",
+      "Programme design, embedded advisory, and implementation support — helping institutions translate policy intent into delivery by strengthening the systems, readiness, and adaptive management that make programmes work.",
     accent: "bg-brand-teal",
     icon: (
       <svg className="w-8 h-8 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

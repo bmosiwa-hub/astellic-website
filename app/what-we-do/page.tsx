@@ -6,7 +6,7 @@ import PillarMatrix from "@/components/PillarMatrix";
 export const metadata: Metadata = {
   title: "What We Do | Astellic",
   description:
-    "Astellic's three-pillar integrated delivery architecture — Evidence Generation, Policy Development & Advisory, and Programme Design & Implementation — operating across four thematic domains.",
+    "Astellic's integrated delivery architecture — Evidence Generation, Policy Development & Advisory, and Policy, Systems Analysis & Implementation Support — operating across African development contexts.",
 };
 
 const pillars = [
@@ -66,27 +66,27 @@ const pillars = [
   },
   {
     num: "03",
-    title: "Programme Design & Implementation",
-    tagline: "Designing and delivering programmes that work: not on paper, but in the institutional realities of African public systems.",
-    desc: "This pillar is where Astellic's analysis becomes action. It encompasses the design of implementation-ready interventions and the hands-on delivery of programmes, with adaptive management systems to course-correct in real time. We do not hand over a report and leave. We stay to ensure the strategy works.",
+    title: "Policy, Systems Analysis & Implementation Support",
+    tagline: "From evidence-grounded policy development to embedded advisory that strengthens delivery systems in practice.",
+    desc: "This pillar covers Astellic's analytical and advisory work on policy, systems design, and implementation support. We develop policy frameworks, conduct systems analysis, design implementation-ready programmes, and provide embedded advisory to institutions navigating the gap between strategy and delivery. Policy and systems analysis is one of our strongest capabilities — grounded in evidence and calibrated for the institutional realities of African public systems.",
     href: "/what-we-do/implementation",
     bgClass: "bg-brand-green",
     borderClass: "border-brand-green",
     textClass: "text-brand-green",
     subUnits: [
       {
-        label: "Programme Design & Innovation",
-        desc: "Theories of change, results frameworks, and operational models, simultaneously technically sound and operationally realistic, with an innovation lens.",
+        label: "Policy & Systems Analysis and Development",
+        desc: "National policies, sector strategies, political economy analysis, and reform roadmaps — grounded in evidence, aligned with political realities, and structured for implementation.",
+        href: "/what-we-do/implementation",
+      },
+      {
+        label: "Programme Design & Implementation Readiness",
+        desc: "Theories of change, results frameworks, and Implementation Readiness Assessments — diagnosing systemic barriers before programmes launch.",
         href: "/what-we-do/implementation/programme-design",
       },
       {
-        label: "Technical Assistance & Institutional Development",
-        desc: "Sustained, embedded advisory, deploying senior technical advisors within client institutions to build knowledge and institutional routines that outlast the engagement.",
-        href: "/what-we-do/implementation/technical-assistance",
-      },
-      {
-        label: "Programme Implementation & Adaptive Management",
-        desc: "End-to-end programme management and direct delivery, applying adaptive management to ensure real-time learning continuously shapes implementation decisions.",
+        label: "Embedded Implementation Support & Adaptive Management",
+        desc: "Sustained embedded advisory within government ministries and programme units, applying adaptive management to support delivery without replacing institutional ownership.",
         href: "/what-we-do/implementation/adaptive-management",
       },
     ],
