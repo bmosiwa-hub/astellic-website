@@ -25,8 +25,8 @@ const stages = [
   },
   {
     num: "04",
-    title: "Implement & Adapt",
-    desc: "Hands-on delivery combined with adaptive management, maintaining responsiveness to evolving contexts and institutional dynamics.",
+    title: "Support Implementation & Adapt",
+    desc: "Embedded implementation support combined with adaptive management — strengthening delivery systems, maintaining responsiveness to evolving contexts, and ensuring learning continuously shapes execution decisions.",
   },
   {
     num: "05",

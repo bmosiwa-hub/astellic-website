@@ -170,7 +170,7 @@ export default function PolicyPillarPage() {
               Pillar 01: Evidence Generation &amp; Verification
             </Link>
             <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
-              Pillar 03: Programme Design &amp; Implementation
+              Pillar 03: Policy, Systems Analysis &amp; Implementation Support
             </Link>
           </div>
           </FadeUp>

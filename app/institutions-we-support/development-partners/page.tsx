@@ -131,7 +131,7 @@ export default function DevelopmentPartnersPage() {
             Stronger programmes. Sharper evidence. Lasting capacity.
             We work alongside implementing organisations to design better programmes,
             build M&E systems that drive real learning, and develop the institutional
-            capacity to deliver results at scale.
+            capacity to support sustained implementation at scale.
           </p>
         </div>
       </section>
