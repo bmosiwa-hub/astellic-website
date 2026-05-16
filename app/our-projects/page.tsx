@@ -4,12 +4,13 @@ import Link from "next/link";
 import { Reveal, FadeUp, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Our Work | Astellic",
+  title: "Founding Experience | Astellic",
   description:
-    "Astellic's research, advisory, and implementation support engagements across African health, governance, and development systems. Institutional case narratives, not project catalogues.",
+    "Astellic is a new firm. These are the prior professional engagements of its founder and team members — presented transparently as the experience that shapes our methodology, not as Astellic client work.",
 };
 
-// Structured case narratives: challenge → systems issue → contribution → implementation insight → strategic outcome → capability demonstrated
+// These engagements were completed by Astellic's founder in prior professional roles.
+// They are presented as founding team experience — not as Astellic firm engagements.
 const engagements = [
   {
     type: "Research & Evaluation",
@@ -22,7 +23,8 @@ const engagements = [
     contribution: "Conducted a full political economy analysis examining the actors, interests, institutional dynamics, and gender dimensions shaping TB care access at national and subnational levels. Applied a structured PEA framework to map stakeholder incentives, identify institutional misalignments, and separate technical barriers from politically manufactured ones. Findings challenged the prevailing technical framing of the problem.",
     outcome: "Research contributed to a peer-reviewed publication in World Medical & Health Policy (2025) and directly reoriented donor strategy on health financing reform in Malawi. The PEA framing has since shaped how the programme approaches institutional engagement.",
     capabilities: ["Political Economy Analysis", "Evidence-to-Policy Translation", "Health Systems Diagnostics"],
-    attribution: "Dr. Benjamin Azariah Mosiwa (lead author)",
+    attribution: "Dr. Benjamin Azariah Mosiwa — Lead Author",
+    priorRole: "Independent Research",
     status: "Completed",
   },
   {
@@ -36,7 +38,8 @@ const engagements = [
     contribution: "Led the research design, evidence synthesis, and drafting of a major policy publication drawing on health systems data and field implementation experience across Africa. The guide addressed financing architecture, governance design, community health system integration, and implementation readiness in an integrated, context-honest framework — structured to be used by Ministry of Health officials, not just read by academics.",
     outcome: "Published by VillageReach (2025) as a flagship policy resource. Distributed to health ministries and development partners across Africa. The guide has since been cited in PHC programme design discussions and referenced in donor strategy documents.",
     capabilities: ["Applied Policy Research", "Evidence Synthesis", "Health Systems Advisory"],
-    attribution: "Dr. Benjamin Azariah Mosiwa (co-author)",
+    attribution: "Dr. Benjamin Azariah Mosiwa — Co-Author",
+    priorRole: "Senior Manager, Policy & Advocacy — VillageReach",
     status: "Completed",
   },
   {
@@ -50,7 +53,8 @@ const engagements = [
     contribution: "Conducted a multi-country regulatory analysis mapping telehealth governance frameworks across African jurisdictions. Identified regulatory gaps, investment barriers, and policy advocacy entry points at national and regional levels. Developed a comparative framework for assessing regulatory readiness and risk. Presented findings at the HELINA Conference (Botswana, 2025).",
     outcome: "Informed a regional digital health advocacy strategy and contributed to the evidence base for regulatory reform dialogue across multiple African countries. Findings have been used to support investor engagement and regulatory reform advocacy in target markets.",
     capabilities: ["Regulatory Analysis", "Digital Health Policy", "Landscape Assessment"],
-    attribution: "Dr. Benjamin Azariah Mosiwa (lead analyst)",
+    attribution: "Dr. Benjamin Azariah Mosiwa — Lead Analyst",
+    priorRole: "Senior Manager, Policy & Advocacy — VillageReach",
     status: "Completed",
   },
   {
@@ -64,7 +68,8 @@ const engagements = [
     contribution: "Conducted a full market intelligence analysis examining supply chain dynamics, pricing patterns, procurement behaviour, regulatory constraints, and market concentration risks for priority HIV and TB products. Provided structured strategic recommendations on procurement reform entry points and advocacy strategy, sequenced by feasibility and impact potential.",
     outcome: "Published analysis used by KELIN Kenya (2025) to support procurement reform advocacy in Malawi. Specific recommendations were incorporated into the organisation's policy positions on Malawi's health commodity procurement systems.",
     capabilities: ["Market Systems Analysis", "Health Financing Research", "Advocacy Support"],
-    attribution: "Dr. Benjamin Azariah Mosiwa (author)",
+    attribution: "Dr. Benjamin Azariah Mosiwa — Author",
+    priorRole: "Research & Policy Associate — AFIDEP",
     status: "Completed",
   },
   {
@@ -78,7 +83,8 @@ const engagements = [
     contribution: "Provided sustained research and advisory support across four countries — conducting applied health financing research, designing and delivering structured learning programmes for Ministry of Health technical staff, and supporting evidence-informed dialogue between governments and development partners. Equipped government counterparts with the analytical frameworks, data tools, and negotiation capacity to engage substantively on UHC financing reform.",
     outcome: "Contributed to strengthened institutional analytical capacity in four national health ministries. Supported the development of evidence-grounded health financing strategies at national level, and helped shift the tenor of government-donor dialogue from passive reception to active engagement.",
     capabilities: ["Government Capacity Building", "Health Financing Advisory", "Institutional Diagnostics"],
-    attribution: "Dr. Benjamin Azariah Mosiwa (Research & Policy Associate, AFIDEP)",
+    attribution: "Dr. Benjamin Azariah Mosiwa — Research & Policy Associate",
+    priorRole: "Research & Policy Associate — AFIDEP",
     status: "Completed",
   },
 ];
@@ -107,40 +113,46 @@ export default function OurProjectsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5">
-            Our Work
+            Founding Experience
           </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6 max-w-3xl">
-            Not a portfolio. An institutional track record.
+            The firm is new. The experience that built it is not.
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            These are the institutional challenges we have addressed, the systems
-            we have diagnosed, and the advisory contributions that have shaped
-            policy and delivery across Africa.
+            Astellic launched in October 2025. What follows is the professional track record
+            of our founder — the engagements, analytical contributions, and institutional
+            experience that directly shaped this firm's methodology and approach.
           </p>
         </div>
       </section>
 
-      {/* Approach statement */}
-      <section className="py-12 px-6 bg-brand-light border-b border-gray-100">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-center">
+      {/* Transparency notice */}
+      <section className="py-10 px-6 bg-brand-light border-b border-gray-200">
+        <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <div>
-              <p className="text-brand-muted text-base leading-relaxed max-w-2xl">
-                Astellic is a young firm with a founder who brings over a decade of senior experience.
-                The engagements below reflect the institutional track record that preceded and
-                directly shaped the firm. Each is presented as a case narrative — structured around
-                the underlying systems issue, the analytical contribution, and the strategic outcome —
-                not as a catalogue of project titles.
-              </p>
+            <div className="flex items-start gap-5">
+              {/* Gold accent bar */}
+              <div className="w-1 shrink-0 self-stretch bg-brand-gold rounded" />
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-2">
+                  A Note on Transparency
+                </p>
+                <p className="text-brand-navy font-semibold text-base mb-2">
+                  These are not Astellic engagements. They are the prior professional work of our founder.
+                </p>
+                <p className="text-brand-muted text-sm leading-relaxed max-w-3xl">
+                  Astellic is a new firm. The engagements presented below were completed by
+                  Dr. Benjamin Azariah Mosiwa in previous professional roles — at VillageReach,
+                  AFIDEP, and through independent research. We present them to give prospective
+                  clients an honest picture of the experience and methodology their engagement
+                  will draw on, not to imply that Astellic as a firm has an existing client portfolio.
+                  Each card clearly attributes the engagement to its actual contributor and role.
+                  As Astellic delivers its own engagements, they will be added here under a
+                  separate section.
+                </p>
+              </div>
             </div>
           </FadeUp>
-          <ScaleIn>
-            <div className="text-center shrink-0">
-              <p className="text-brand-gold font-bold text-3xl">30+</p>
-              <p className="text-brand-muted text-xs font-bold uppercase tracking-widest">engagements</p>
-              <p className="text-gray-400 text-xs mt-1">15+ global partners & donors</p>
-            </div>
-          </ScaleIn>
         </div>
       </section>
 
@@ -148,10 +160,14 @@ export default function OurProjectsPage() {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto space-y-8">
           <FadeUp>
-            <div className="flex items-center gap-4 mb-10">
+            <div className="flex items-center gap-4 mb-2">
               <div className="w-1 h-8 bg-brand-gold rounded" />
-              <h2 className="text-2xl font-bold text-brand-navy">Selected Engagements</h2>
+              <h2 className="text-2xl font-bold text-brand-navy">Founder's Prior Engagements</h2>
             </div>
+            <p className="text-brand-muted text-sm ml-5 mb-10">
+              Work completed by Dr. Benjamin Azariah Mosiwa before founding Astellic.
+              Role and institutional context shown on each card.
+            </p>
           </FadeUp>
 
           {engagements.map((eng, i) => (
@@ -174,9 +190,11 @@ export default function OurProjectsPage() {
                       {eng.geography}
                     </span>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 bg-gray-100 text-gray-600">
-                    {eng.status}
-                  </span>
+                  {/* Attribution badge — prominent in header */}
+                  <div className="text-right shrink-0">
+                    <p className="text-xs font-bold text-brand-navy leading-tight">{eng.attribution}</p>
+                    <p className="text-xs text-gray-400 italic mt-0.5">{eng.priorRole}</p>
+                  </div>
                 </div>
 
                 {/* Card body */}
@@ -195,24 +213,21 @@ export default function OurProjectsPage() {
                       <p className="text-brand-muted text-sm leading-relaxed">{eng.challenge}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Astellic&apos;s Contribution</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">The Work Done</p>
                       <p className="text-brand-muted text-sm leading-relaxed">{eng.contribution}</p>
                     </div>
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Strategic Outcome</p>
                       <p className="text-brand-muted text-sm leading-relaxed mb-4">{eng.outcome}</p>
-                      <div className="border-t border-gray-100 pt-3 space-y-2.5">
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-1.5">Capability Demonstrated</p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {eng.capabilities.map((cap) => (
-                              <span key={cap} className="text-xs bg-brand-navy text-white px-2 py-0.5 rounded font-medium">
-                                {cap}
-                              </span>
-                            ))}
-                          </div>
+                      <div className="border-t border-gray-100 pt-3">
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-1.5">Capability Demonstrated</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {eng.capabilities.map((cap) => (
+                            <span key={cap} className="text-xs bg-brand-navy text-white px-2 py-0.5 rounded font-medium">
+                              {cap}
+                            </span>
+                          ))}
                         </div>
-                        <p className="text-xs text-gray-400 italic">{eng.attribution}</p>
                       </div>
                     </div>
                   </div>
@@ -223,22 +238,54 @@ export default function OurProjectsPage() {
         </div>
       </section>
 
-      {/* Upcoming capability callout */}
+      {/* Astellic's own portfolio — placeholder */}
+      <section className="py-12 px-6 bg-brand-light border-t border-gray-200">
+        <div className="max-w-5xl mx-auto">
+          <FadeUp>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-1 h-8 bg-brand-teal rounded" />
+              <h2 className="text-2xl font-bold text-brand-navy">Astellic Engagements</h2>
+            </div>
+            <div className="border border-dashed border-gray-300 rounded-2xl py-14 text-center px-6">
+              <p className="text-brand-gold font-bold text-sm uppercase tracking-widest mb-3">Coming Soon</p>
+              <p className="text-brand-navy font-semibold text-lg mb-2">
+                Astellic is actively building its own engagement portfolio.
+              </p>
+              <p className="text-brand-muted text-sm max-w-xl mx-auto leading-relaxed">
+                As we complete engagements under the Astellic banner, they will appear here —
+                fully attributed, clearly structured, and presented with the same rigour
+                you see above. If you would like to be among our first clients, we welcome the conversation.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 mt-6 bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 py-3 rounded transition-colors text-sm"
+              >
+                Start a Conversation
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* Capability callout */}
       <section className="py-16 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_1fr] gap-12">
           <SlideLeft>
             <div>
               <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
-                Astellic As a Firm
+                Ready to Engage
               </p>
               <h2 className="text-2xl font-bold mb-5 leading-snug">
                 The firm is new. The capabilities are not.
               </h2>
               <p className="text-gray-300 text-base leading-relaxed mb-6">
-                Astellic was founded in October 2025. The engagements above predate the firm
-                but are the direct foundation of its analytical and advisory capability. As Astellic
-                builds its institutional portfolio, the following services are available
-                for immediate engagement.
+                The experience above is the direct foundation of what Astellic offers today.
+                Our founder brings the same analytical rigour, methodological discipline, and
+                institutional knowledge to every engagement — now through a firm built
+                specifically to deliver it.
               </p>
               <Link
                 href="/contact"
