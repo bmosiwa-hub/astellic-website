@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import SearchModal from "@/components/SearchModal";
 
 const institutionsItems = [
   { label: "Donors & Governments",    href: "/institutions-we-support/donors-and-governments",  dot: "bg-brand-gold" },
@@ -182,11 +183,24 @@ export default function Header() {
   const [thematicOpen,   setThematicOpen]   = useState(false);
   const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
   const [scrolled,       setScrolled]       = useState(false);
+  const [searchOpen,     setSearchOpen]     = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Global ⌘K / Ctrl+K shortcut */
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen((o) => !o);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, []);
 
   const closeMobile = () => {
@@ -255,6 +269,23 @@ export default function Header() {
 
           <FlatDropdown label="Work With Us" items={workWithUsItems} />
 
+          {/* Search trigger */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search site (Ctrl+K)"
+            className="flex items-center gap-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-lg px-3 py-2 transition-all duration-200 group"
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z" />
+            </svg>
+            <span className="text-xs text-gray-500 group-hover:text-gray-300 transition-colors hidden lg:inline">
+              Search
+            </span>
+            <kbd className="hidden lg:inline-flex text-[10px] font-mono text-gray-600 group-hover:text-gray-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/10 transition-colors">
+              ⌘K
+            </kbd>
+          </button>
+
           <Link
             href="/contact"
             className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-sm font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-brand-gold/25"
@@ -262,6 +293,17 @@ export default function Header() {
             Get in Touch
           </Link>
         </nav>
+
+        {/* Mobile search icon */}
+        <button
+          className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
+          onClick={() => setSearchOpen(true)}
+          aria-label="Search"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z" />
+          </svg>
+        </button>
 
         {/* Mobile toggle */}
         <button
@@ -424,15 +466,29 @@ export default function Header() {
             )}
           </div>
 
+          {/* Mobile search shortcut */}
+          <button
+            className="mt-3 flex items-center gap-3 w-full border border-white/15 rounded-lg px-4 py-3 text-gray-400 hover:text-white hover:border-white/30 transition-colors"
+            onClick={() => { closeMobile(); setSearchOpen(true); }}
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z" />
+            </svg>
+            <span className="text-sm">Search the site…</span>
+          </button>
+
           <Link
             href="/contact"
-            className="mt-3 bg-brand-gold text-white font-semibold py-3 px-5 rounded text-sm text-center"
+            className="mt-2 bg-brand-gold text-white font-semibold py-3 px-5 rounded text-sm text-center"
             onClick={closeMobile}
           >
             Get in Touch
           </Link>
         </nav>
       )}
+
+      {/* Search modal — rendered inside header so it inherits the client boundary */}
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }
