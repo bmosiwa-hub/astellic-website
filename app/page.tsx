@@ -20,6 +20,8 @@ const coreServices = [
     color: "border-brand-navy",
     numBg: "bg-brand-navy",
     href: "/what-we-do/evidence/evaluation-learning",
+    img: "/images/hero-approach.jpg",
+    overlayHex: "#1B2A4A",
   },
   {
     num: "02",
@@ -36,6 +38,8 @@ const coreServices = [
     color: "border-brand-teal",
     numBg: "bg-brand-teal",
     href: "/what-we-do/evidence/data-quality",
+    img: "/images/thematic-governance.jpg",
+    overlayHex: "#0D7A6E",
   },
   {
     num: "03",
@@ -52,6 +56,8 @@ const coreServices = [
     color: "border-brand-green",
     numBg: "bg-brand-green",
     href: "/what-we-do/implementation",
+    img: "/images/hero-work.jpg",
+    overlayHex: "#3B7D23",
   },
 ];
 
@@ -228,48 +234,61 @@ export default function Home() {
           <div className="space-y-6">
             {coreServices.map((svc, i) => (
               <Reveal key={svc.num} variant={i % 2 === 0 ? "left" : "right"} delay={i * 80}>
-                <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 ${svc.color} p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start lift`}>
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded`}>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lift">
+                  {/* Photo header strip */}
+                  <div className="relative h-48 overflow-hidden">
+                    <Image src={svc.img} alt={svc.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: `linear-gradient(to top, ${svc.overlayHex}f2 0%, ${svc.overlayHex}99 45%, ${svc.overlayHex}30 100%)` }}
+                    />
+                    <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                      <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded self-start`}>
                         {svc.num}
                       </span>
-                      <h3 className="font-bold text-brand-navy text-lg leading-snug">{svc.title}</h3>
+                      <div>
+                        <h3 className="text-white font-bold text-xl leading-snug mb-1">{svc.title}</h3>
+                        <p className="text-white/75 text-sm font-medium italic">{svc.tagline}</p>
+                      </div>
                     </div>
-                    <p className="text-brand-gold text-sm font-semibold italic mb-3">{svc.tagline}</p>
-                    <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
-                      We Help Institutions
-                    </p>
-                    <ul className="space-y-2">
-                      {svc.bullets.map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
-                          <span className="text-brand-gold mt-0.5 shrink-0">→</span>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
-                      Example Engagements
-                    </p>
-                    <ul className="space-y-1.5 mb-6">
-                      {svc.engagements.map((e) => (
-                        <li key={e} className="text-sm text-brand-muted leading-snug">· {e}</li>
-                      ))}
-                    </ul>
-                    <Link
-                      href={svc.href}
-                      className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm hover:gap-2.5 transition-all"
-                    >
-                      Explore this service
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
+                  {/* Content grid */}
+                  <div className="p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start">
+                    <div>
+                      <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
+                        We Help Institutions
+                      </p>
+                      <ul className="space-y-2">
+                        {svc.bullets.map((b) => (
+                          <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
+                            <span className="text-brand-gold mt-0.5 shrink-0">→</span>
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">
+                        Example Engagements
+                      </p>
+                      <ul className="space-y-1.5 mb-6">
+                        {svc.engagements.map((e) => (
+                          <li key={e} className="text-sm text-brand-muted leading-snug">· {e}</li>
+                        ))}
+                      </ul>
+                      <Link
+                        href={svc.href}
+                        className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm hover:gap-2.5 transition-all"
+                      >
+                        Explore this service
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </Reveal>

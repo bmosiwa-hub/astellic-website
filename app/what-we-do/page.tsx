@@ -21,6 +21,8 @@ const pillars = [
     bgClass: "bg-brand-navy",
     borderClass: "border-brand-navy",
     textClass: "text-brand-navy",
+    img: "/images/hero-approach.jpg",
+    overlayHex: "#1B2A4A",
     subUnits: [
       {
         label: "Research & Analytics",
@@ -48,6 +50,8 @@ const pillars = [
     bgClass: "bg-brand-teal",
     borderClass: "border-brand-teal",
     textClass: "text-brand-teal",
+    img: "/images/thematic-governance.jpg",
+    overlayHex: "#0D7A6E",
     subUnits: [
       {
         label: "Policy & Strategy Development",
@@ -75,6 +79,8 @@ const pillars = [
     bgClass: "bg-brand-green",
     borderClass: "border-brand-green",
     textClass: "text-brand-green",
+    img: "/images/hero-work.jpg",
+    overlayHex: "#3B7D23",
     subUnits: [
       {
         label: "Policy & Systems Analysis and Development",
@@ -154,42 +160,54 @@ export default function WhatWeDoPage() {
             >
               {/* Pillar label block */}
               {i % 2 === 1 ? (
-                <SlideRight className="md:w-56 shrink-0">
-                  <div>
-                    <div className={`inline-flex items-center gap-2 mb-4`}>
-                      <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
-                      <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
+                <SlideRight className="md:w-64 shrink-0">
+                  <Link href={p.href} className="group relative rounded-2xl overflow-hidden block h-56 md:min-h-[300px]">
+                    <Image src={p.img} alt={p.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: `linear-gradient(to top, ${p.overlayHex}f2 0%, ${p.overlayHex}99 45%, ${p.overlayHex}30 100%)` }}
+                    />
+                    <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
+                        <span className="text-xs font-bold text-white/60 uppercase tracking-wide">Pillar</span>
+                      </div>
+                      <div>
+                        <h2 className="text-white font-bold text-lg leading-snug mb-3">{p.title}</h2>
+                        <span className="inline-flex items-center gap-1.5 text-white/80 font-semibold text-sm group-hover:text-white group-hover:gap-2.5 transition-all">
+                          Explore pillar
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
-                    <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
-                    <Link
-                      href={p.href}
-                      className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
-                    >
-                      Explore pillar
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </div>
+                  </Link>
                 </SlideRight>
               ) : (
-                <SlideLeft className="md:w-56 shrink-0">
-                  <div>
-                    <div className={`inline-flex items-center gap-2 mb-4`}>
-                      <span className={`text-sm font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
-                      <span className="text-sm font-bold text-brand-muted uppercase tracking-wide">Pillar</span>
+                <SlideLeft className="md:w-64 shrink-0">
+                  <Link href={p.href} className="group relative rounded-2xl overflow-hidden block h-56 md:min-h-[300px]">
+                    <Image src={p.img} alt={p.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: `linear-gradient(to top, ${p.overlayHex}f2 0%, ${p.overlayHex}99 45%, ${p.overlayHex}30 100%)` }}
+                    />
+                    <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold text-white ${p.bgClass} px-2 py-1 rounded`}>{p.num}</span>
+                        <span className="text-xs font-bold text-white/60 uppercase tracking-wide">Pillar</span>
+                      </div>
+                      <div>
+                        <h2 className="text-white font-bold text-lg leading-snug mb-3">{p.title}</h2>
+                        <span className="inline-flex items-center gap-1.5 text-white/80 font-semibold text-sm group-hover:text-white group-hover:gap-2.5 transition-all">
+                          Explore pillar
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
-                    <h2 className={`text-2xl font-bold ${p.textClass} leading-snug mb-3`}>{p.title}</h2>
-                    <Link
-                      href={p.href}
-                      className={`inline-flex items-center gap-2 text-sm font-semibold ${p.textClass} hover:gap-3 transition-all`}
-                    >
-                      Explore pillar
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </div>
+                  </Link>
                 </SlideLeft>
               )}
 
