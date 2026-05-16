@@ -117,6 +117,93 @@ const conferences = [
   },
 ];
 
+const consultancies = [
+  {
+    period: "Mar 2026 – May 2026",
+    client: "Norwegian Church Aid / DanChurchAid",
+    title: "Policy Evaluation for Faith-Based SRHR Programming",
+    geography: "Malawi",
+    summary: "Evaluated the policy environment for faith-based organisations delivering SRHR services, mapping institutional barriers, stakeholder incentives, and reform entry points for advocacy strategy.",
+  },
+  {
+    period: "Dec 2025 – Mar 2026",
+    client: "Ministry of Health, Malawi",
+    title: "Sub-National District Implementation Planning — HSSP III",
+    geography: "Malawi",
+    summary: "Led sub-national costing and implementation planning for Malawi's Health Sector Strategic Plan III, translating national priorities into district-level operational frameworks aligned with MoH financing realities.",
+  },
+  {
+    period: "Nov 2024 – Apr 2025",
+    client: "Mothers2Mothers",
+    title: "Midline Evaluation — Sondra Smalley Project",
+    geography: "Malawi",
+    summary: "Conducted a midline evaluation of a community-based PMTCT and maternal health programme, assessing reach, quality of service delivery, and adaptive learning mechanisms against the theory of change.",
+  },
+  {
+    period: "Oct 2024 – Mar 2025",
+    client: "Frontline AIDS",
+    title: "Baseline Assessment — READY+ Programme",
+    geography: "Malawi",
+    summary: "Established baseline for a multi-country programme supporting key population-led HIV responses, designing the measurement framework, data collection instruments, and learning architecture for the programme cycle.",
+  },
+  {
+    period: "Oct 2024 – Dec 2024",
+    client: "KELIN Kenya / CHeRA / ITPC Global",
+    title: "National Market Intelligence Analysis — HIV & TB Commodities",
+    geography: "Malawi",
+    summary: "Produced a national market intelligence report mapping commodity availability, procurement channels, pricing dynamics, and supply chain vulnerabilities for priority HIV and TB products — informing regional advocacy and procurement strategy.",
+  },
+  {
+    period: "Apr 2024 – Jan 2025",
+    client: "Palladium / USAID PROPEL Health",
+    title: "Family Planning–Primary Health Care Integration Assessment",
+    geography: "Malawi",
+    summary: "Assessed the institutional and operational readiness for integrating family planning services into primary health care platforms, including supply chain, human resource, and health information system dimensions.",
+  },
+  {
+    period: "Nov 2023 – Feb 2024",
+    client: "World Education Inc.",
+    title: "Endline Evaluation — HIV & Sexual and Reproductive Health Programme",
+    geography: "Malawi",
+    summary: "Led the endline evaluation of a USAID-funded HIV and SRH programme, assessing outcome-level results against the theory of change and synthesising learning for programme closure and donor reporting.",
+  },
+  {
+    period: "Nov 2022 – Jan 2023",
+    client: "World Education Inc.",
+    title: "Baseline Assessment — HIV & Sexual and Reproductive Health Programme",
+    geography: "Malawi",
+    summary: "Designed and conducted the programme baseline, establishing performance benchmarks, data quality standards, and the adaptive monitoring framework for the full programme cycle.",
+  },
+  {
+    period: "2022 – 2023",
+    client: "Kamuzu University of Health Sciences / UNAIDS",
+    title: "Total Market Approach Assessment for Condom Programming",
+    geography: "Malawi",
+    summary: "Mapped the full condom market — public, social, and commercial sectors — assessing segmentation, distribution reach, pricing gaps, and the conditions required for a coordinated total market approach.",
+  },
+  {
+    period: "2022 – 2023",
+    client: "Kamuzu University of Health Sciences / Gates Foundation",
+    title: "Blantyre HIV Prevention Strategy",
+    geography: "Malawi",
+    summary: "Contributed to the development of a city-level HIV prevention strategy for Blantyre, analysing epidemiological data, programme coverage gaps, and implementation bottlenecks to inform strategic prioritisation.",
+  },
+  {
+    period: "Mar 2022 – Aug 2022",
+    client: "On Call Africa",
+    title: "Community Health Systems Strengthening",
+    geography: "Zambia",
+    summary: "Assessed community health worker deployment, supervision structures, and data reporting systems in Zambia, identifying institutional strengthening priorities for programme scale-up.",
+  },
+  {
+    period: "Mar 2020 – Jun 2020",
+    client: "Southern Africa Litigation Centre (SALC)",
+    title: "Policy and Prison Health Assessment — TB and Drug-Resistant TB",
+    geography: "Malawi",
+    summary: "Conducted a legal, policy, and health systems assessment of TB and DRTB management in prison settings, documenting rights gaps, clinical care failures, and reform recommendations for litigation and advocacy use.",
+  },
+];
+
 const institutionalPartners = [
   "USAID", "FCDO", "World Bank", "WHO", "UNICEF", "Gavi",
   "Global Fund", "Africa CDC", "Gates Foundation", "Palladium", "DAI",
@@ -336,6 +423,44 @@ export default function FounderProfile() {
                     <p className="font-bold text-brand-navy text-sm">{item.role}</p>
                     <p className="text-brand-teal text-xs font-semibold mb-2">{item.org}</p>
                     <p className="text-brand-muted text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Prior Consultancies */}
+          <div>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-muted">Prior Consultancy Engagements</p>
+              <a
+                href="https://www.azariahmosiwa.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-gold text-xs font-semibold hover:underline"
+              >
+                Full profile & CV at azariahmosiwa.com →
+              </a>
+            </div>
+            <p className="text-brand-muted text-sm mb-5 leading-relaxed">
+              The following engagements were completed by Dr. Mosiwa as an independent consultant or in a principal advisory role, prior to founding Astellic. They form the direct professional foundation for Astellic's advisory practice.
+            </p>
+            <div className="space-y-0">
+              {consultancies.map((c, i) => (
+                <div
+                  key={i}
+                  className={`grid md:grid-cols-[160px_1fr] gap-4 ${
+                    i < consultancies.length - 1 ? "pb-5 mb-5 border-b border-gray-100" : ""
+                  }`}
+                >
+                  <div>
+                    <p className="text-xs text-gray-400 font-medium leading-snug">{c.period}</p>
+                    <p className="text-xs text-gray-400 mt-1">{c.geography}</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-brand-navy text-sm leading-snug mb-0.5">{c.title}</p>
+                    <p className="text-brand-teal text-xs font-semibold mb-1.5">{c.client}</p>
+                    <p className="text-brand-muted text-sm leading-relaxed">{c.summary}</p>
                   </div>
                 </div>
               ))}
