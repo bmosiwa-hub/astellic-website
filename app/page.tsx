@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import DeliveryFlowDiagram from "@/components/DeliveryFlowDiagram";
+import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 
 const coreServices = [
   {
@@ -141,23 +141,20 @@ export default function Home() {
       </section>
 
       {/* ── Operating Model ──────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-24 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <p className="text-brand-muted text-xs font-bold uppercase tracking-[0.2em] mb-3 text-center">
             Our Operating Model
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-navy text-center mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-brand-navy text-center mb-4">
             A Continuous Cycle, Not a Linear Process
           </h2>
-          <p className="text-brand-muted text-lg text-center max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-brand-muted text-lg text-center max-w-2xl mx-auto mb-10 leading-relaxed">
             The implementation gap is not a technical problem. It is a systems problem.
             We address it as one — by integrating evidence, policy, and delivery into a
             single adaptive architecture.
           </p>
-          <DeliveryFlowDiagram />
-          <p className="text-center text-brand-muted text-sm mt-6 italic">
-            "This is not a tagline. It is our operating model."
-          </p>
+          <OperatingModelDiagram />
         </div>
       </section>
 
