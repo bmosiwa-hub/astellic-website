@@ -11,6 +11,37 @@
   }
 }
 
+/* ── Entrance animations ───────────────────────────────────────────────────── */
+@keyframes astellicFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes astellicFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes astellicSlideRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up {
+  animation: astellicFadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in {
+  animation: astellicFadeIn 0.5s ease both;
+}
+.animate-slide-right {
+  animation: astellicSlideRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
 /* ── Print styles for reports ──────────────────────────────────────────────── */
 @media print {
   /* Hide navigation, sidebar, and screen-only chrome */

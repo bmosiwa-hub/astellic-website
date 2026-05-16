@@ -110,17 +110,17 @@ export default function Home() {
           priority
         />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6">
+          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
             Research · Advisory · Implementation
           </p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl animate-fade-up delay-100">
             Working at the Intersection of Evidence, Policy and Delivery.
           </h1>
-          <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12">
+          <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12 animate-fade-up delay-200">
             Astellic helps governments, donors, and corporations translate evidence,
             strategy, and investment into measurable and sustainable outcomes.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-4 rounded font-semibold text-base transition-colors"

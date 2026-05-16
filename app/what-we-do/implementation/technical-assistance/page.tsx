@@ -89,7 +89,7 @@ export default function TechnicalAssistancePage() {
           </div>
           <div className="flex gap-3">
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
-              Get in Touch
+              Discuss Technical Assistance
             </Link>
             <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
               Back to Pillar 03
