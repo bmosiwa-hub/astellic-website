@@ -119,6 +119,80 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Founding Narrative ───────────────────────────────────────────── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <FadeUp>
+            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-8">
+              On Founding
+            </p>
+          </FadeUp>
+          <div className="grid md:grid-cols-[1fr_260px] gap-12 items-start">
+            <div className="space-y-6 text-brand-muted text-lg leading-relaxed">
+              <FadeUp delay={80}>
+                <p>
+                  Astellic was not created because there was a gap in the consulting market.
+                  It was created because there is a specific, identifiable failure in how
+                  development organisations produce and use evidence — and because the organisations
+                  best positioned to address it are typically the ones least incentivised to do so.
+                </p>
+              </FadeUp>
+              <FadeUp delay={120}>
+                <p>
+                  The founder spent over a decade working inside Malawi&apos;s health system and
+                  African development institutions — as a clinician, as a programme manager
+                  embedded in partnership with the Ministry of Health and Population, as a
+                  health financing researcher across four countries, and as a global-level
+                  policy advisor. He watched well-designed programmes fail not for lack of
+                  funding or intent, but because the systems linking evidence to decision to
+                  delivery were broken. He reviewed evaluations that produced findings no one
+                  acted on. He observed policy translated from one context to the next without
+                  the political economy analysis that would have made it workable. He saw data
+                  that institutions collected but could not trust.
+                </p>
+              </FadeUp>
+              <FadeUp delay={160}>
+                <p>
+                  Astellic is the institutional form of a straightforward belief: that if you
+                  produce genuinely rigorous evidence, translate it into actionable policy with
+                  appropriate honesty, and build the implementation systems that actually determine
+                  whether programmes deliver — you create the conditions for sustained impact.
+                  Not because impact is guaranteed. But because the analytical and institutional
+                  foundations are sound.
+                </p>
+              </FadeUp>
+              <FadeUp delay={200}>
+                <p className="text-brand-navy font-semibold border-l-4 border-brand-gold pl-5">
+                  This is advisory from the inside. Not from the outside looking in.
+                </p>
+              </FadeUp>
+            </div>
+            <FadeUp delay={140}>
+              <div className="space-y-5 pt-2">
+                <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-gold">
+                  <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">Founded</p>
+                  <p className="text-brand-muted text-sm">October 2025, Lilongwe, Malawi</p>
+                </div>
+                <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-teal">
+                  <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">The Belief</p>
+                  <p className="text-brand-muted text-sm leading-relaxed">
+                    Evidence works when it is designed for decisions, not for publication.
+                    Implementation succeeds when advisory is grounded in how systems actually function.
+                  </p>
+                </div>
+                <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-navy">
+                  <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">The Commitment</p>
+                  <p className="text-brand-muted text-sm leading-relaxed">
+                    Senior expertise present throughout — not just at the proposal stage.
+                    The work does not end with the document.
+                  </p>
+                </div>
+              </div>
+            </FadeUp>
+          </div>
+        </div>
+      </section>
+
       {/* ── The Problem Statement ─────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-4xl mx-auto">

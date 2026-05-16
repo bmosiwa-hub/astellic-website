@@ -203,6 +203,29 @@ export default function InsightsPage() {
         </div>
       </section>
 
+      {/* ── Editorial Position ───────────────────────────────────────────── */}
+      <section className="py-12 px-6 bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto">
+          <FadeUp>
+            <div className="border-l-4 border-brand-gold pl-6">
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-2">
+                Editorial Position
+              </p>
+              <p className="text-brand-navy text-xl font-semibold leading-snug mb-3">
+                We publish because we think more clearly in public.
+              </p>
+              <p className="text-brand-muted text-base leading-relaxed">
+                The Insights series is not a marketing channel. It is an intellectual commitment —
+                to thinking rigorously about the systems we work in, sharing what we find with
+                practitioners who can use it, and building a body of analytical work that outlasts
+                any individual engagement. We publish with deliberate selectivity. Quality
+                over volume, always.
+              </p>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
       {/* ── Featured Article ──────────────────────────────────────────────── */}
       <section className="py-16 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
