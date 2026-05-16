@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Governance & Public Sector Reform",
   description:
-    "Astellic's work in governance and public sector reform â€” improving how institutions design, implement, and deliver policy across Africa.",
+    "Astellic's work in governance and public sector reform — improving how institutions design, implement, and deliver policy across Africa.",
 };
 
 const focusAreas = [

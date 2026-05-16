@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -57,7 +57,7 @@ export default function WorkWithUsPage() {
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic brings together researchers, policy advisors, and
             implementation specialists. Explore how you can contribute to our
-            work â€” whether as staff, a consultant, or a partner.
+            work — whether as staff, a consultant, or a partner.
           </p>
         </div>
       </section>
@@ -86,7 +86,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{job.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {job.type} Â· {job.location}
+                      {job.type} · {job.location}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
@@ -128,7 +128,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{c.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {c.area} Â· {c.duration}
+                      {c.area} · {c.duration}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
@@ -147,7 +147,7 @@ export default function WorkWithUsPage() {
             </div>
           )}
 
-          {/* Join Our Roster â€” sits under Consultancies */}
+          {/* Join Our Roster — sits under Consultancies */}
           <div className="mt-10 bg-brand-navy text-white rounded-2xl p-10 text-center">
             <h2 className="text-2xl font-bold mb-3">Join Our Roster</h2>
             <p className="text-gray-300 text-lg mb-6 max-w-xl mx-auto">
@@ -186,7 +186,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{i.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {i.department} Â· {i.duration}
+                      {i.department} · {i.duration}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">

@@ -1,10 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Our Approach",
   description:
-    "Astellic's 6-stage value delivery system â€” from evidence generation to system strengthening.",
+    "Astellic's 6-stage value delivery system — from evidence generation to system strengthening.",
 };
 
 const stages = [
@@ -26,7 +26,7 @@ const stages = [
   {
     num: "04",
     title: "Support Implementation & Adapt",
-    desc: "Embedded implementation support combined with adaptive management â€” strengthening delivery systems, maintaining responsiveness to evolving contexts, and ensuring learning continuously shapes execution decisions.",
+    desc: "Embedded implementation support combined with adaptive management — strengthening delivery systems, maintaining responsiveness to evolving contexts, and ensuring learning continuously shapes execution decisions.",
   },
   {
     num: "05",

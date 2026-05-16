@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -79,7 +79,7 @@ function FileUpload({
               Click to upload <span className="text-brand-navy font-medium">{label}</span>
             </p>
             <p className="text-base text-brand-muted mt-1">
-              PDF, DOC, DOCX â€” max {MAX_MB} MB
+              PDF, DOC, DOCX — max {MAX_MB} MB
             </p>
           </div>
         )}
@@ -279,7 +279,7 @@ export default function JoinOurRosterPage() {
                 <p className="text-base text-brand-muted mt-1.5 leading-relaxed">
                   Write <strong>Senior Consultant</strong> if you have 8+ years
                   of experience, or <strong>Associate Consultant</strong> if you
-                  have 5 â€“ 8 years&apos; experience.
+                  have 5 – 8 years&apos; experience.
                 </p>
               </div>
             </div>
@@ -290,7 +290,7 @@ export default function JoinOurRosterPage() {
               <p className="text-base text-brand-muted">
                 All four documents are required. For each of the two slots below,
                 upload either a <strong>sample of work</strong> or a{" "}
-                <strong>reference letter from a previous engagement</strong> â€”
+                <strong>reference letter from a previous engagement</strong> —
                 whichever is most relevant to your field. Maximum{" "}
                 <strong>{MAX_MB} MB</strong> per file. Accepted formats: PDF, DOC, DOCX.
               </p>
@@ -328,7 +328,7 @@ export default function JoinOurRosterPage() {
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {submitting ? "Submittingâ€¦" : "Submit Application"}
+                {submitting ? "Submitting…" : "Submit Application"}
               </button>
               {touched && missing.length > 0 && (
                 <p className="text-base text-red-500 text-center mt-2">

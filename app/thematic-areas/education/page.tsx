@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Human Development & Social Systems",
   description:
-    "Astellic's work in human development and social systems â€” enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
+    "Astellic's work in human development and social systems — enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
 };
 
 const focusAreas = [

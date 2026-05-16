@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -87,7 +87,7 @@ function FileUpload({
               <span className="text-brand-navy font-medium">{label}</span>
             </p>
             <p className="text-base text-brand-muted mt-1">
-              PDF, DOC, DOCX â€” max {MAX_MB} MB
+              PDF, DOC, DOCX — max {MAX_MB} MB
             </p>
           </div>
         )}
@@ -344,7 +344,7 @@ export default function ProposePartnershipPage() {
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {submitting ? "Submittingâ€¦" : "Submit Proposal"}
+                {submitting ? "Submitting…" : "Submit Proposal"}
               </button>
               {touched && missing.length > 0 && (
                 <p className="text-base text-red-500 text-center mt-2">

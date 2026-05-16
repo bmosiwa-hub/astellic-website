@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/compon
 export const metadata: Metadata = {
   title: "Insights & Thinking | Astellic",
   description:
-    "Implementation briefs, MERL insights, policy perspectives, and institutional intelligence from Astellic â€” analytical intelligence from the front lines of African development systems.",
+    "Implementation briefs, MERL insights, policy perspectives, and institutional intelligence from Astellic — analytical intelligence from the front lines of African development systems.",
 };
 
 const categories = [
@@ -21,9 +21,9 @@ const categories = [
 const featured = {
   category: "Implementation Brief",
   categoryColor: "bg-brand-navy",
-  issueLabel: "Issue 01 â€” Q3 2026",
+  issueLabel: "Issue 01 — Q3 2026",
   title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
-  excerpt: "The most preventable programme failures begin not at the point of delivery, but in the design phase â€” when implementation readiness is assumed rather than assessed. After reviewing multiple programme cycles, a consistent pattern emerges: organisations that invest in implementation readiness diagnostics before launch experience significantly fewer mid-course failures.",
+  excerpt: "The most preventable programme failures begin not at the point of delivery, but in the design phase — when implementation readiness is assumed rather than assessed. After reviewing multiple programme cycles, a consistent pattern emerges: organisations that invest in implementation readiness diagnostics before launch experience significantly fewer mid-course failures.",
   readTime: "6 min read",
   href: "/insights",
 };
@@ -73,7 +73,7 @@ const articles = [
     category: "MERL Insight",
     categoryColor: "bg-brand-teal",
     title: "The Evaluation That Changed the Programme: What Happens When Findings Are Actually Used",
-    excerpt: "The gap between evaluation findings and programme decisions is well documented. Less documented are the conditions under which that gap closes â€” and what it looks like when evaluation actually drives adaptation.",
+    excerpt: "The gap between evaluation findings and programme decisions is well documented. Less documented are the conditions under which that gap closes — and what it looks like when evaluation actually drives adaptation.",
     readTime: "6 min read",
     href: "/insights",
   },
@@ -87,7 +87,7 @@ const contentTypes = [
       </svg>
     ),
     title: "Implementation Briefs",
-    desc: "4â€“6 page evidence-based briefs on specific practical challenges in programme delivery, MERL, and policy implementation.",
+    desc: "4–6 page evidence-based briefs on specific practical challenges in programme delivery, MERL, and policy implementation.",
     accent: "bg-brand-navy/10",
   },
   {
@@ -97,7 +97,7 @@ const contentTypes = [
       </svg>
     ),
     title: "MERL Insights",
-    desc: "Practical intelligence on monitoring, evaluation, research, and learning â€” drawn from field experience in African programme contexts.",
+    desc: "Practical intelligence on monitoring, evaluation, research, and learning — drawn from field experience in African programme contexts.",
     accent: "bg-brand-teal/10",
   },
   {
@@ -137,7 +137,7 @@ const contentTypes = [
       </svg>
     ),
     title: "Institutional Diagnostics",
-    desc: "In-depth analytical pieces on specific institutional challenges â€” governance failures, MERL system weaknesses, delivery breakdowns â€” with practical recommendations.",
+    desc: "In-depth analytical pieces on specific institutional challenges — governance failures, MERL system weaknesses, delivery breakdowns — with practical recommendations.",
     accent: "bg-brand-teal/10",
   },
 ];
@@ -145,11 +145,11 @@ const contentTypes = [
 export default function InsightsPage() {
   return (
     <>
-      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative bg-brand-navy text-white py-28 px-6 overflow-hidden">
         <Image
           src="/images/hero-approach.jpg"
-          alt="Astellic Insights â€” institutional intelligence"
+          alt="Astellic Insights — institutional intelligence"
           fill
           className="object-cover opacity-50"
           priority
@@ -164,20 +164,20 @@ export default function InsightsPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed mb-8">
             Implementation briefs, MERL insights, policy perspectives, and institutional
-            diagnostics â€” grounded in practical experience across African development systems.
+            diagnostics — grounded in practical experience across African development systems.
           </p>
           {/* Launch note */}
           <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-lg px-5 py-3">
             <span className="w-2 h-2 rounded-full bg-brand-gold shrink-0" />
             <p className="text-gray-300 text-sm">
               <span className="text-white font-semibold">Series launches Q3 2026.</span>{" "}
-              Articles in this collection are forthcoming â€” subscribe below to be notified.
+              Articles in this collection are forthcoming — subscribe below to be notified.
             </p>
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Content Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Content Types ─────────────────────────────────────────────────── */}
       <section className="py-14 px-6 bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
@@ -204,7 +204,7 @@ export default function InsightsPage() {
         </div>
       </section>
 
-      {/* â”€â”€ Editorial Position â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Editorial Position ───────────────────────────────────────────── */}
       <section className="py-12 px-6 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto">
           <FadeUp>
@@ -216,7 +216,7 @@ export default function InsightsPage() {
                 We publish because we think more clearly in public.
               </p>
               <p className="text-brand-muted text-base leading-relaxed">
-                The Insights series is not a marketing channel. It is an intellectual commitment â€”
+                The Insights series is not a marketing channel. It is an intellectual commitment —
                 to thinking rigorously about the systems we work in, sharing what we find with
                 practitioners who can use it, and building a body of analytical work that outlasts
                 any individual engagement. We publish with deliberate selectivity. Quality
@@ -227,7 +227,7 @@ export default function InsightsPage() {
         </div>
       </section>
 
-      {/* â”€â”€ Featured Article â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Featured Article ──────────────────────────────────────────────── */}
       <section className="py-16 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -268,7 +268,7 @@ export default function InsightsPage() {
         </div>
       </section>
 
-      {/* â”€â”€ Article Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Article Grid ─────────────────────────────────────────────────── */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
@@ -332,7 +332,7 @@ export default function InsightsPage() {
         </div>
       </section>
 
-      {/* â”€â”€ Subscribe â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Subscribe ────────────────────────────────────────────────────── */}
       <section id="subscribe" className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-3xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -345,18 +345,18 @@ export default function InsightsPage() {
                   The Astellic Knowledge Engine
                 </h2>
                 <p className="text-gray-300 text-base leading-relaxed">
-                  The full Insights section â€” with downloadable PDFs, author pages, and category
-                  filtering â€” launches in Q3 2026. The first Implementation Brief will be the
+                  The full Insights section — with downloadable PDFs, author pages, and category
+                  filtering — launches in Q3 2026. The first Implementation Brief will be the
                   inaugural issue.
                 </p>
                 <div className="mt-6 space-y-2">
                   {[
-                    "Quarterly at most â€” no filler content",
+                    "Quarterly at most — no filler content",
                     "Implementation briefs in downloadable PDF",
                     "Policy commentary from active field engagements",
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-2 text-sm text-gray-300">
-                      <span className="text-brand-gold mt-0.5 shrink-0">Â·</span>
+                      <span className="text-brand-gold mt-0.5 shrink-0">·</span>
                       {item}
                     </div>
                   ))}
@@ -382,7 +382,7 @@ export default function InsightsPage() {
                   </Link>
                 </div>
                 <p className="text-gray-500 text-xs mt-3">
-                  Or send a note through our contact page â€” quarterly at most.
+                  Or send a note through our contact page — quarterly at most.
                 </p>
               </div>
             </SlideRight>

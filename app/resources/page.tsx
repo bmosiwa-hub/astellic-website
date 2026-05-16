@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ interface ResourceDoc {
 
 const documents: ResourceDoc[] = [
   {
-    title: "Expression of Interest â€” Consultants Roster",
+    title: "Expression of Interest — Consultants Roster",
     description:
       "Astellic is building a roster of qualified consultants and associates across its thematic areas in Malawi. Download the expressions of interest to learn more about the recruitment.",
     type: "Expression of Interest",

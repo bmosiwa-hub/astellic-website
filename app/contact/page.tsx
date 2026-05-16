@@ -1,10 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { FadeUp, SlideLeft, SlideRight } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Astellic â€” partnerships@astellic.com",
+  description: "Get in touch with Astellic — partnerships@astellic.com",
 };
 
 export default function ContactPage() {
@@ -70,11 +70,11 @@ export default function ContactPage() {
             <div className="mt-10 bg-brand-light rounded-xl p-6">
               <h3 className="font-semibold mb-2 text-lg">Who We Work With</h3>
               <ul className="text-brand-muted text-base space-y-1">
-                <li>â†’ National governments and public institutions</li>
-                <li>â†’ Bilateral and multilateral donors</li>
-                <li>â†’ International development organisations</li>
-                <li>â†’ Private sector organisations and firms</li>
-                <li>â†’ Civil society and research institutions</li>
+                <li>→ National governments and public institutions</li>
+                <li>→ Bilateral and multilateral donors</li>
+                <li>→ International development organisations</li>
+                <li>→ Private sector organisations and firms</li>
+                <li>→ Civil society and research institutions</li>
               </ul>
             </div>
           </div>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Astellic's research, advisory, and implementation support engagements across African health, governance, and development systems. Institutional case narratives, not project catalogues.",
 };
 
-// Structured case narratives: challenge â†’ systems issue â†’ contribution â†’ implementation insight â†’ strategic outcome â†’ capability demonstrated
+// Structured case narratives: challenge → systems issue → contribution → implementation insight → strategic outcome → capability demonstrated
 const engagements = [
   {
     type: "Research & Evaluation",
@@ -17,8 +17,8 @@ const engagements = [
     sector: "Health Systems",
     geography: "Malawi",
     title: "Political Economy Analysis of TB Care Access",
-    challenge: "A bilateral donor needed to understand why tuberculosis care coverage in Malawi remained persistently low despite sustained health system investments. Service availability was not the bottleneck. The question was what was preventing uptake â€” and whether the barriers were technical, institutional, or political.",
-    systemsIssue: "Persistent low TB coverage despite resource inputs signalled a political economy failure, not a service design failure. Institutional incentive structures at ministry level were generating behaviours that undermined programme uptake â€” a diagnostic invisible to standard monitoring systems.",
+    challenge: "A bilateral donor needed to understand why tuberculosis care coverage in Malawi remained persistently low despite sustained health system investments. Service availability was not the bottleneck. The question was what was preventing uptake — and whether the barriers were technical, institutional, or political.",
+    systemsIssue: "Persistent low TB coverage despite resource inputs signalled a political economy failure, not a service design failure. Institutional incentive structures at ministry level were generating behaviours that undermined programme uptake — a diagnostic invisible to standard monitoring systems.",
     contribution: "Conducted a full political economy analysis examining the actors, interests, institutional dynamics, and gender dimensions shaping TB care access at national and subnational levels. Applied a structured PEA framework to map stakeholder incentives, identify institutional misalignments, and separate technical barriers from politically manufactured ones. Findings challenged the prevailing technical framing of the problem.",
     outcome: "Research contributed to a peer-reviewed publication in World Medical & Health Policy (2025) and directly reoriented donor strategy on health financing reform in Malawi. The PEA framing has since shaped how the programme approaches institutional engagement.",
     capabilities: ["Political Economy Analysis", "Evidence-to-Policy Translation", "Health Systems Diagnostics"],
@@ -31,9 +31,9 @@ const engagements = [
     sector: "Primary Health Care",
     geography: "Multi-country (Africa)",
     title: "Foundations for Responsive Primary Health Care",
-    challenge: "A global health implementing organisation needed a practical, evidence-based guide for policymakers on what it actually takes to build responsive primary health care systems. Not aspirational frameworks â€” but operationally honest guidance grounded in what works, and what fails, in resource-constrained settings.",
+    challenge: "A global health implementing organisation needed a practical, evidence-based guide for policymakers on what it actually takes to build responsive primary health care systems. Not aspirational frameworks — but operationally honest guidance grounded in what works, and what fails, in resource-constrained settings.",
     systemsIssue: "Most PHC reform frameworks were designed for optimal conditions. The systems failure was that development partners and governments were applying aspiration-based models to contexts defined by financing shortfalls, governance fragmentation, and implementation readiness gaps that the frameworks did not account for.",
-    contribution: "Led the research design, evidence synthesis, and drafting of a major policy publication drawing on health systems data and field implementation experience across Africa. The guide addressed financing architecture, governance design, community health system integration, and implementation readiness in an integrated, context-honest framework â€” structured to be used by Ministry of Health officials, not just read by academics.",
+    contribution: "Led the research design, evidence synthesis, and drafting of a major policy publication drawing on health systems data and field implementation experience across Africa. The guide addressed financing architecture, governance design, community health system integration, and implementation readiness in an integrated, context-honest framework — structured to be used by Ministry of Health officials, not just read by academics.",
     outcome: "Published by VillageReach (2025) as a flagship policy resource. Distributed to health ministries and development partners across Africa. The guide has since been cited in PHC programme design discussions and referenced in donor strategy documents.",
     capabilities: ["Applied Policy Research", "Evidence Synthesis", "Health Systems Advisory"],
     attribution: "Dr. Benjamin Azariah Mosiwa (co-author)",
@@ -46,7 +46,7 @@ const engagements = [
     geography: "Pan-African",
     title: "Africa Telehealth Regulatory Landscape Analysis",
     challenge: "The digital health landscape in Africa was expanding rapidly, with telehealth platforms operating across diverse and often legally unclear regulatory environments. A development sector partner needed a comprehensive analysis of the regulatory landscape to inform investment readiness assessments and policy advocacy strategy.",
-    systemsIssue: "Platform growth had outpaced regulatory infrastructure. The systemic gap was not merely missing legislation â€” it was the absence of harmonised regional frameworks, creating investment uncertainty, cross-border governance risks, and patient safety vulnerabilities that fragmented national approaches could not resolve.",
+    systemsIssue: "Platform growth had outpaced regulatory infrastructure. The systemic gap was not merely missing legislation — it was the absence of harmonised regional frameworks, creating investment uncertainty, cross-border governance risks, and patient safety vulnerabilities that fragmented national approaches could not resolve.",
     contribution: "Conducted a multi-country regulatory analysis mapping telehealth governance frameworks across African jurisdictions. Identified regulatory gaps, investment barriers, and policy advocacy entry points at national and regional levels. Developed a comparative framework for assessing regulatory readiness and risk. Presented findings at the HELINA Conference (Botswana, 2025).",
     outcome: "Informed a regional digital health advocacy strategy and contributed to the evidence base for regulatory reform dialogue across multiple African countries. Findings have been used to support investor engagement and regulatory reform advocacy in target markets.",
     capabilities: ["Regulatory Analysis", "Digital Health Policy", "Landscape Assessment"],
@@ -58,9 +58,9 @@ const engagements = [
     typeColor: "bg-brand-gold",
     sector: "HIV & Market Systems",
     geography: "Malawi",
-    title: "Market Intelligence Analysis â€” Priority HIV & TB Products",
+    title: "Market Intelligence Analysis — Priority HIV & TB Products",
     challenge: "A legal and health advocacy organisation needed market intelligence on priority HIV and TB commodity supply chains in Malawi to inform procurement reform advocacy and assess whether current market structures were producing optimal access and pricing outcomes for patients.",
-    systemsIssue: "The market was producing suboptimal outcomes â€” but the mechanisms were not visible from standard programme monitoring. The structural issue was procurement fragmentation, pricing opacity, and regulatory constraints that collectively reduced the impact of health financing investments without appearing in routine health data.",
+    systemsIssue: "The market was producing suboptimal outcomes — but the mechanisms were not visible from standard programme monitoring. The structural issue was procurement fragmentation, pricing opacity, and regulatory constraints that collectively reduced the impact of health financing investments without appearing in routine health data.",
     contribution: "Conducted a full market intelligence analysis examining supply chain dynamics, pricing patterns, procurement behaviour, regulatory constraints, and market concentration risks for priority HIV and TB products. Provided structured strategic recommendations on procurement reform entry points and advocacy strategy, sequenced by feasibility and impact potential.",
     outcome: "Published analysis used by KELIN Kenya (2025) to support procurement reform advocacy in Malawi. Specific recommendations were incorporated into the organisation's policy positions on Malawi's health commodity procurement systems.",
     capabilities: ["Market Systems Analysis", "Health Financing Research", "Advocacy Support"],
@@ -71,11 +71,11 @@ const engagements = [
     type: "Health Systems Advisory",
     typeColor: "bg-brand-teal",
     sector: "Health Financing & Governance",
-    geography: "Malawi Â· Kenya Â· Nigeria Â· Zambia",
+    geography: "Malawi · Kenya · Nigeria · Zambia",
     title: "Government Capacity Building in Health Financing",
-    challenge: "A pan-African policy research institute was supporting governments across the region to lead health financing reform â€” but the limiting factor was not resources, nor political will. It was that ministries lacked the institutional capacity to interrogate financing data, stress-test reform scenarios, or engage with donors from an independent evidence base.",
-    systemsIssue: "The systemic issue was asymmetric capacity: donors and implementing partners could analyse financing systems; governments often could not. This imbalance produced dependency relationships that undermined reform ownership and sustainability â€” and meant that national health financing strategies were frequently shaped by external analysis that governments could not independently verify or challenge.",
-    contribution: "Provided sustained research and advisory support across four countries â€” conducting applied health financing research, designing and delivering structured learning programmes for Ministry of Health technical staff, and supporting evidence-informed dialogue between governments and development partners. Equipped government counterparts with the analytical frameworks, data tools, and negotiation capacity to engage substantively on UHC financing reform.",
+    challenge: "A pan-African policy research institute was supporting governments across the region to lead health financing reform — but the limiting factor was not resources, nor political will. It was that ministries lacked the institutional capacity to interrogate financing data, stress-test reform scenarios, or engage with donors from an independent evidence base.",
+    systemsIssue: "The systemic issue was asymmetric capacity: donors and implementing partners could analyse financing systems; governments often could not. This imbalance produced dependency relationships that undermined reform ownership and sustainability — and meant that national health financing strategies were frequently shaped by external analysis that governments could not independently verify or challenge.",
+    contribution: "Provided sustained research and advisory support across four countries — conducting applied health financing research, designing and delivering structured learning programmes for Ministry of Health technical staff, and supporting evidence-informed dialogue between governments and development partners. Equipped government counterparts with the analytical frameworks, data tools, and negotiation capacity to engage substantively on UHC financing reform.",
     outcome: "Contributed to strengthened institutional analytical capacity in four national health ministries. Supported the development of evidence-grounded health financing strategies at national level, and helped shift the tenor of government-donor dialogue from passive reception to active engagement.",
     capabilities: ["Government Capacity Building", "Health Financing Advisory", "Institutional Diagnostics"],
     attribution: "Dr. Benjamin Azariah Mosiwa (Research & Policy Associate, AFIDEP)",
@@ -128,8 +128,8 @@ export default function OurProjectsPage() {
               <p className="text-brand-muted text-base leading-relaxed max-w-2xl">
                 Astellic is a young firm with a founder who brings over a decade of senior experience.
                 The engagements below reflect the institutional track record that preceded and
-                directly shaped the firm. Each is presented as a case narrative â€” structured around
-                the underlying systems issue, the analytical contribution, and the strategic outcome â€”
+                directly shaped the firm. Each is presented as a case narrative — structured around
+                the underlying systems issue, the analytical contribution, and the strategic outcome —
                 not as a catalogue of project titles.
               </p>
             </div>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import PillarMatrix from "@/components/PillarMatrix";
@@ -8,7 +8,7 @@ import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/compon
 export const metadata: Metadata = {
   title: "What We Do | Astellic",
   description:
-    "Astellic's integrated delivery architecture â€” Evidence Generation, Policy Development & Advisory, and Policy, Systems Analysis & Implementation Support â€” operating across African development contexts.",
+    "Astellic's integrated delivery architecture — Evidence Generation, Policy Development & Advisory, and Policy, Systems Analysis & Implementation Support — operating across African development contexts.",
 };
 
 const pillars = [
@@ -74,7 +74,7 @@ const pillars = [
     num: "03",
     title: "Policy, Systems Analysis & Implementation Support",
     tagline: "From evidence-grounded policy development to embedded advisory that strengthens delivery systems in practice.",
-    desc: "This pillar covers Astellic's analytical and advisory work on policy, systems design, and implementation support. We develop policy frameworks, conduct systems analysis, design implementation-ready programmes, and provide embedded advisory to institutions navigating the gap between strategy and delivery. Policy and systems analysis is one of our strongest capabilities â€” grounded in evidence and calibrated for the institutional realities of African public systems.",
+    desc: "This pillar covers Astellic's analytical and advisory work on policy, systems design, and implementation support. We develop policy frameworks, conduct systems analysis, design implementation-ready programmes, and provide embedded advisory to institutions navigating the gap between strategy and delivery. Policy and systems analysis is one of our strongest capabilities — grounded in evidence and calibrated for the institutional realities of African public systems.",
     href: "/what-we-do/implementation",
     bgClass: "bg-brand-green",
     borderClass: "border-brand-green",
@@ -84,12 +84,12 @@ const pillars = [
     subUnits: [
       {
         label: "Policy & Systems Analysis and Development",
-        desc: "National policies, sector strategies, political economy analysis, and reform roadmaps â€” grounded in evidence, aligned with political realities, and structured for implementation.",
+        desc: "National policies, sector strategies, political economy analysis, and reform roadmaps — grounded in evidence, aligned with political realities, and structured for implementation.",
         href: "/what-we-do/implementation",
       },
       {
         label: "Programme Design & Implementation Readiness",
-        desc: "Theories of change, results frameworks, and Implementation Readiness Assessments â€” diagnosing systemic barriers before programmes launch.",
+        desc: "Theories of change, results frameworks, and Implementation Readiness Assessments — diagnosing systemic barriers before programmes launch.",
         href: "/what-we-do/implementation/programme-design",
       },
       {
@@ -144,7 +144,7 @@ export default function WhatWeDoPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic&apos;s organisational architecture is structured around three functional
-            pillars that operate in deliberate sequence and mutual reinforcement â€”
+            pillars that operate in deliberate sequence and mutual reinforcement —
             constituting a complete, end-to-end institutional delivery capability from
             evidence through to implementation.
           </p>
@@ -271,7 +271,7 @@ export default function WhatWeDoPage() {
               The three pillars function as a self-reinforcing delivery system.
               Programme implementation generates learning that feeds evidence generation.
               Evidence informs policy advisory. Policy advisory shapes programme design.
-              Better design drives better implementation â€” and the cycle deepens.
+              Better design drives better implementation — and the cycle deepens.
             </p>
           </FadeUp>
           <ScaleIn delay={150}>
@@ -289,7 +289,7 @@ export default function WhatWeDoPage() {
               The Lens Through Which the Pillars Operate
             </h2>
             <p className="text-center text-brand-muted text-lg max-w-3xl mx-auto mb-14">
-              Astellic&apos;s four thematic domains cut horizontally across all three pillars â€”
+              Astellic&apos;s four thematic domains cut horizontally across all three pillars —
               ensuring functional expertise is always deployed with deep sector knowledge
               and political economy awareness.
             </p>
@@ -312,7 +312,7 @@ export default function WhatWeDoPage() {
           {/* Interactive Matrix */}
           <ScaleIn>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h3 className="font-bold text-brand-navy mb-1">Pillar Ã— Domain Matrix</h3>
+              <h3 className="font-bold text-brand-navy mb-1">Pillar × Domain Matrix</h3>
               <p className="text-sm text-brand-muted mb-6">
                 How Astellic&apos;s three pillars activate within each thematic domain.
               </p>
@@ -332,7 +332,7 @@ export default function WhatWeDoPage() {
           </FadeUp>
           <FadeUp delay={100}>
             <p className="text-brand-muted text-lg mb-8">
-              Whether you need rigorous evidence, strategic advisory, or implementation support â€”
+              Whether you need rigorous evidence, strategic advisory, or implementation support —
               Astellic brings the integrated capability to work across the full results chain.
             </p>
           </FadeUp>
