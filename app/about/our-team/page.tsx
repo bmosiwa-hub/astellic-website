@@ -22,17 +22,31 @@ export interface TeamMember {
 
 const boardMembers: TeamMember[] = [];
 
-const expertise = [
-  "Adaptive MERL & learning systems design",
-  "Data quality assurance and verification (DQA)",
-  "Health systems strengthening and financing",
-  "Policy and systems analysis and development",
-  "Political economy analysis",
-  "Programme evaluation (formative, summative, impact)",
-  "Institutional capacity development",
-  "Public financial management advisory",
-  "Digital health policy and governance",
-  "Universal health coverage (UHC) financing",
+const methodologicalStrengths = [
+  {
+    area: "Adaptive MERL",
+    detail: "Real-time monitoring, evaluation, research, and learning system design for complex programmes operating in dynamic contexts.",
+  },
+  {
+    area: "Data Quality Assurance",
+    detail: "Verification frameworks, internal audit protocols, and DQA systems for donor-funded programmes and government data infrastructure.",
+  },
+  {
+    area: "Political Economy Analysis",
+    detail: "Institutional incentive mapping, reform feasibility assessment, and stakeholder landscape analysis informing programme strategy.",
+  },
+  {
+    area: "Health Systems Analysis",
+    detail: "Financing diagnostics, service delivery assessments, and PHC systems strengthening grounded in MoH institutional realities.",
+  },
+  {
+    area: "Programme Evaluation",
+    detail: "Formative, summative, and impact evaluations across health, governance, and social systems — theory of change to results synthesis.",
+  },
+  {
+    area: "Institutional Diagnostics",
+    detail: "Organisational assessments, capacity gap analysis, and reform readiness diagnostics for government ministries and implementing organisations.",
+  },
 ];
 
 const careerHistory = [
@@ -40,54 +54,38 @@ const careerHistory = [
     role: "Founder & CEO",
     org: "Astellic",
     period: "October 2025 — Present",
-    desc: "Leads all research, advisory, and implementation engagements. Directs business development, partnership cultivation, and quality assurance across the firm's growing portfolio.",
+    desc: "Founded Astellic to provide the kind of institutionally grounded, evidence-to-delivery advisory that the African development sector consistently lacks. Leads all research, evaluation, and advisory engagements directly — including health systems financing diagnostics, adaptive MERL system design, data quality frameworks, and programme evaluations across multiple African contexts. Directs partnership strategy, business development, and quality assurance for the firm's full portfolio.",
   },
   {
     role: "Policy Advisor",
     org: "Kamuzu University of Health Sciences / African Mental Health Research Initiative (AMARI)",
     period: "December 2025 — Present",
-    desc: "Multi-country mental health policy and research translation across Malawi, Ethiopia, South Africa, and Zimbabwe.",
+    desc: "Supports AMARI's multi-country policy translation work — bridging clinical research evidence and national mental health policy reform processes across Malawi, Ethiopia, South Africa, and Zimbabwe. Advises on evidence synthesis, policy brief development, stakeholder engagement strategy, and the design of policy translation pathways that move research findings into actionable government and donor commitments.",
   },
   {
     role: "Senior Manager, Policy & Advocacy",
     org: "VillageReach (Global)",
     period: "January 2025 — September 2025",
-    desc: "Primary health care, immunisation, digital health, and health financing policy. Co-authored the 2025 VillageReach guide on responsive primary health care for policymakers.",
+    desc: "Directed VillageReach's global policy and advocacy function, covering primary health care systems, immunisation programme policy, digital health governance, and health financing strategy. Led the development of the organisation's 2025 flagship policy publication — a practical guide on building responsive primary health care systems for policymakers — disseminated across African health ministries, donor networks, and multilateral organisations. Engaged FCDO, USAID, WHO, and Gavi on policy positioning, programme design inputs, and advocacy strategy.",
   },
   {
     role: "Research & Policy Associate",
     org: "African Institute for Development Policy (AFIDEP)",
     period: "January 2023 — December 2024",
-    desc: "Health financing research and government capacity building across Malawi, Kenya, Nigeria, and Zambia.",
+    desc: "Conducted applied health financing research and led government capacity building engagements across Malawi, Kenya, Nigeria, and Zambia. Designed and delivered structured learning programmes for Ministry of Health officials on health financing frameworks, benefit package costing, public financial management, and UHC planning systems. Produced policy reports and evidence briefs directly informing donor-funded health reform programmes and national health sector plans.",
   },
   {
     role: "Director of Programs and Strategy",
     org: "Facilitators of Community Transformation (FACT), Malawi",
     period: "2017 — 2021",
-    desc: "Led health systems and digital health programmes in direct partnership with Malawi's Ministry of Health and Population.",
+    desc: "Led FACT Malawi's health systems and digital health portfolio in direct institutional partnership with the Ministry of Health and Population. Oversaw full programme design, monitoring and evaluation, adaptive management, and stakeholder coordination across multiple USAID and FCDO-supported initiatives. Directed the integration of digital health tools into primary care delivery systems — including community health worker platforms and facility-level data systems — navigating the institutional, political, and implementation realities of the MoH environment from the inside.",
   },
   {
     role: "Medical Officer",
     org: "Ministry of Health — Queen Elizabeth Central Hospital, Blantyre",
     period: "2015 — 2017",
-    desc: "Clinical care and health system quality improvement at Malawi's largest public referral hospital.",
+    desc: "Clinical practice at Malawi's largest public referral hospital, providing acute care across internal medicine, paediatrics, and emergency settings. Contributed simultaneously to health system quality improvement initiatives — gaining first-hand, institutional-level insight into the data systems failures, human resource constraints, supply chain fragility, and governance barriers that characterise high-burden public systems. This clinical-institutional foundation underpins the diagnostic precision that defines his advisory practice.",
   },
-];
-
-const institutionalPartners = [
-  "USAID",
-  "FCDO",
-  "World Bank",
-  "WHO",
-  "UNICEF",
-  "Gavi",
-  "Global Fund",
-  "Africa CDC",
-  "Gates Foundation",
-  "Palladium",
-  "DAI",
-  "AFIDEP",
-  "VillageReach",
 ];
 
 const publications = [
@@ -115,6 +113,43 @@ const publications = [
     journal: "Public Health Challenges, 1, e40",
     type: "Peer-reviewed article",
   },
+];
+
+const conferences = [
+  {
+    year: "2025",
+    event: "HELINA Conference",
+    location: "Botswana",
+    topic: "Digital health governance, data systems readiness, and implementation constraints in Sub-Saharan African health systems.",
+  },
+  {
+    year: "2024",
+    event: "Global Symposium for Health Systems Research",
+    location: "Japan",
+    topic: "Health financing reforms and evidence-to-policy translation across African health systems.",
+  },
+  {
+    year: "2022",
+    event: "AFREhealth Conference",
+    location: "Zimbabwe",
+    topic: "Health system resilience, emerging public health challenges, and institutional response capacity during the COVID-19 period.",
+  },
+];
+
+const institutionalPartners = [
+  "USAID",
+  "FCDO",
+  "World Bank",
+  "WHO",
+  "UNICEF",
+  "Gavi",
+  "Global Fund",
+  "Africa CDC",
+  "Gates Foundation",
+  "Palladium",
+  "DAI",
+  "AFIDEP",
+  "VillageReach",
 ];
 
 function EmptyState({ label }: { label: string }) {
@@ -209,7 +244,7 @@ export default function OurTeamPage() {
             {/* Bio content */}
             <div>
               <div className="flex flex-wrap gap-2 mb-5">
-                {["Systems Strategist", "Health Policy Expert", "Evidence-to-Delivery Specialist", "Political Economy Analyst", "African Development Advisor"].map((tag) => (
+                {["Systems Strategist", "Health Policy Expert", "Evidence-to-Delivery Specialist", "Political Economy Analyst", "Institutional Reform Advisor"].map((tag) => (
                   <span key={tag} className="text-xs font-semibold bg-white border border-gray-200 text-brand-navy px-3 py-1 rounded-full">
                     {tag}
                   </span>
@@ -218,31 +253,44 @@ export default function OurTeamPage() {
 
               <div className="space-y-4 text-brand-muted text-base leading-relaxed">
                 <p>
-                  Dr. Benjamin Azariah Mosiwa is a systems strategist and evidence-to-delivery
-                  specialist with over a decade of senior experience working inside Malawi&apos;s
-                  health system and across African development contexts. He founded Astellic in
+                  Dr. Benjamin Azariah Mosiwa is a systems strategist and institutional reform
+                  advisor with over a decade of senior experience working inside Malawi&apos;s health
+                  system and across African development institutions. He founded Astellic in
                   October 2025 to provide the kind of grounded, intellectually rigorous advisory
-                  that the development sector consistently lacks.
+                  that the development sector consistently lacks: counsel that is embedded in
+                  institutional reality, not detached from it.
                 </p>
                 <p>
-                  His career spans clinical practice, government-embedded programme management,
-                  institutional policy research, and senior advisory — giving him a rare vantage
-                  point across the full evidence-to-delivery chain. He has worked embedded within
-                  the Ministry of Health and Population, supported donor-funded reform initiatives
-                  led by FCDO, WHO, UNICEF, WFP, and USAID implementing partners, contributed to
-                  peer-reviewed research, and designed and led the evaluation of complex development
-                  programmes across health, governance, and social systems.
+                  His career spans clinical practice at a major public referral hospital, government-embedded
+                  programme management in direct partnership with the Ministry of Health and Population,
+                  institutional policy research across four African countries, and global-level
+                  policy advisory at a leading international health organisation. This progression
+                  across the full evidence-to-delivery chain — from system-level clinical work to
+                  executive policy leadership — is rare. It produces a quality of diagnostic
+                  insight that most advisory firms cannot replicate.
                 </p>
                 <p>
-                  This is not advisory from the outside looking in. It is grounded intelligence
-                  from someone who has worked within the institutional machinery he now advises on.
-                  He understands why well-designed programmes fail, where data quality breaks down,
-                  and what implementation readiness actually requires in African public systems.
+                  He has designed and overseen the evaluation of complex, multi-country programmes;
+                  built adaptive MERL systems for donor-funded initiatives; advised governments on
+                  health financing frameworks and UHC planning; and supported evidence-to-policy
+                  translation processes for mental health, primary health care, and health
+                  system reform. He has worked embedded within the institutional machinery he
+                  now advises on — which means he understands why well-designed programmes fail,
+                  where data quality breaks down, and what implementation readiness actually
+                  requires in African public systems.
+                </p>
+                <p>
+                  He has engaged directly with FCDO, USAID implementing partners, WHO, UNICEF,
+                  WFP, Gavi, and the Global Fund — supporting reform initiatives, contributing
+                  peer-reviewed research, and co-authoring policy publications that have reached
+                  health ministries and multilateral organisations across the region. His work
+                  has been presented at international health systems conferences in Japan,
+                  Botswana, and Zimbabwe.
                 </p>
                 <p className="text-brand-navy font-medium">
                   As Founder and CEO, Dr. Mosiwa is present throughout every Astellic engagement —
-                  from design through to learning integration. The senior expertise does not disappear
-                  after the proposal is signed.
+                  from diagnostic design through to learning integration. The senior expertise does
+                  not disappear after the proposal is signed.
                 </p>
               </div>
 
@@ -256,24 +304,31 @@ export default function OurTeamPage() {
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-1">Geographic Reach</p>
                   <p className="text-sm text-brand-navy font-medium">9+ African countries + United Kingdom</p>
-                  <p className="text-xs text-gray-400">Malawi, Kenya, Nigeria, Zambia, Ethiopia, South Africa, Zimbabwe, and across the region</p>
-                </div>
-              </div>
-
-              {/* Expertise areas */}
-              <div className="mt-6">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">Areas of Expertise</p>
-                <div className="flex flex-wrap gap-2">
-                  {expertise.map((e) => (
-                    <span key={e} className="text-xs bg-white border border-gray-200 text-brand-muted px-3 py-1.5 rounded-lg">
-                      {e}
-                    </span>
-                  ))}
+                  <p className="text-xs text-gray-400">Malawi · Kenya · Nigeria · Zambia · Ethiopia · South Africa · Zimbabwe · Botswana · Japan (global engagement)</p>
                 </div>
               </div>
             </div>
           </div>
           </ScaleIn>
+
+          {/* ── Methodological Specialisations ────────────────────────────── */}
+          <FadeUp delay={80}>
+          <div className="bg-white rounded-2xl border border-gray-100 p-8 mb-8">
+            <h3 className="text-lg font-bold text-brand-navy mb-1">Methodological Specialisations</h3>
+            <p className="text-brand-muted text-sm mb-6">The methods through which Dr. Mosiwa produces analytically rigorous, operationally actionable results.</p>
+            <div className="grid md:grid-cols-2 gap-4">
+              {methodologicalStrengths.map((m, i) => (
+                <div key={i} className="flex items-start gap-3 bg-brand-light rounded-xl p-4">
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold text-brand-navy mb-1">{m.area}</p>
+                    <p className="text-xs text-brand-muted leading-relaxed">{m.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          </FadeUp>
 
           {/* ── Career History ─────────────────────────────────────────── */}
           <FadeUp delay={100}>
@@ -287,7 +342,7 @@ export default function OurTeamPage() {
                   </div>
                   <div>
                     <p className="font-bold text-brand-navy text-sm">{item.role}</p>
-                    <p className="text-brand-teal text-xs font-semibold mb-1">{item.org}</p>
+                    <p className="text-brand-teal text-xs font-semibold mb-2">{item.org}</p>
                     <p className="text-brand-muted text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
@@ -320,19 +375,42 @@ export default function OurTeamPage() {
               </div>
               </Reveal>
             ))}
-            <p className="text-xs text-gray-400 pl-1">
-              Also presented at: Global Symposium for Health Systems Research (Japan, 2024),
-              HELINA Conference (Botswana, 2025), AFREhealth Conference (Zimbabwe, 2022).
-            </p>
+          </div>
+        </section>
+
+        {/* ── Conferences & Presentations ───────────────────────────────── */}
+        <section>
+          <FadeUp>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-1 h-8 bg-brand-gold rounded" />
+            <h2 className="text-2xl font-bold text-brand-navy">Conferences & Presentations</h2>
+          </div>
+          </FadeUp>
+          <div className="space-y-4">
+            {conferences.map((conf, i) => (
+              <Reveal key={i} variant="up" delay={i * 80}>
+              <div className="bg-brand-light rounded-xl border border-gray-100 p-5 grid md:grid-cols-[80px_1fr] gap-4 items-start">
+                <div>
+                  <span className="text-brand-navy font-bold text-sm">{conf.year}</span>
+                  <p className="text-xs text-gray-400 mt-0.5">{conf.location}</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-brand-navy text-sm leading-snug mb-1">{conf.event}</p>
+                  <p className="text-xs text-brand-muted leading-relaxed">{conf.topic}</p>
+                </div>
+              </div>
+              </Reveal>
+            ))}
           </div>
         </section>
 
         {/* ── Institutional Partners ────────────────────────────────────── */}
         <section className="bg-white rounded-2xl border border-gray-100 p-8">
+          <FadeUp>
           <h3 className="text-lg font-bold text-brand-navy mb-2">Institutional Partnerships & Engagements</h3>
           <p className="text-brand-muted text-sm mb-6 leading-relaxed">
             Dr. Mosiwa has worked directly with or supported engagements involving the following
-            organisations. Listed by category, not by client claim.
+            organisations — listed by category of engagement, not as a client claim.
           </p>
           <div className="flex flex-wrap gap-2">
             {institutionalPartners.map((p) => (
@@ -344,6 +422,7 @@ export default function OurTeamPage() {
           <p className="text-xs text-gray-400 mt-4 italic">
             We do not publish client logos or claim institutional endorsement without explicit permission.
           </p>
+          </FadeUp>
         </section>
 
         {/* ── Board of Directors ────────────────────────────────────────── */}
