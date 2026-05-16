@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
@@ -6,28 +6,28 @@ import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/compon
 export const metadata: Metadata = {
   title: "Why Astellic | African Advisory & Implementation Intelligence",
   description:
-    "What makes Astellic different — five operating principles, competitive positioning, and the case for a specialist evidence-to-delivery advisory firm.",
+    "What makes Astellic different â€” five operating principles, competitive positioning, and the case for a specialist evidence-to-delivery advisory firm.",
 };
 
 const commitments = [
   {
     label: "We Stay",
-    expanded: "Most evaluators and advisors hand over a report and leave. Astellic stays. Our work does not end with a document. It ends when the learning is being used — when the system has been strengthened, when the strategy is working in practice.",
+    expanded: "Most evaluators and advisors hand over a report and leave. Astellic stays. Our work does not end with a document. It ends when the learning is being used â€” when the system has been strengthened, when the strategy is working in practice.",
     example: "We structure every engagement to include adaptive support beyond the initial deliverable.",
   },
   {
     label: "We Are Honest",
-    expanded: "We tell clients what the evidence shows — including when it shows problems. That is not a risk. That is the service. A finding that identifies a flaw in a programme is more valuable than a report that confirms what a client hoped to hear.",
+    expanded: "We tell clients what the evidence shows â€” including when it shows problems. That is not a risk. That is the service. A finding that identifies a flaw in a programme is more valuable than a report that confirms what a client hoped to hear.",
     example: "\"We found three data collection problems in the southern districts that are inflating your coverage numbers by 12%.\"",
   },
   {
     label: "We Know the Context",
-    expanded: "The founder has over ten years of senior experience working inside Malawi's health system — embedded within government ministries, engaged with bilateral donors, multilateral agencies, and implementing partners across the country and the region. This is not advisory from the outside looking in. It is grounded intelligence from an organisation that has worked within the institutional machinery it advises on.",
+    expanded: "The founder has over ten years of senior experience working inside Malawi's health system â€” embedded within government ministries, engaged with bilateral donors, multilateral agencies, and implementing partners across the country and the region. This is not advisory from the outside looking in. It is grounded intelligence from an organisation that has worked within the institutional machinery it advises on.",
     example: "Our advice accounts for how things actually work, not how they should work in theory.",
   },
   {
     label: "We Are Specialists",
-    expanded: "We do three things with exceptional depth: Adaptive MERL & Learning Systems, Data Quality & Verification, and Policy-to-Implementation Systems Support. We do not try to be everything to everyone. That focus is what makes our work reliable — and what distinguishes it from firms with broad service menus and shallow delivery.",
+    expanded: "We do three things with exceptional depth: Adaptive MERL & Learning Systems, Data Quality & Verification, and Policy-to-Implementation Systems Support. We do not try to be everything to everyone. That focus is what makes our work reliable â€” and what distinguishes it from firms with broad service menus and shallow delivery.",
     example: "A specialist firm delivers differently than a firm that adds services to grow its rate card.",
   },
   {
@@ -51,7 +51,7 @@ const comparisons = [
   {
     competitor: "Implementation NGOs",
     limitation: "Good at delivery but MERL treated as compliance; data quality rarely interrogated or verified",
-    astellic: "MERL and data quality are primary services, not add-ons — they are what we are built around",
+    astellic: "MERL and data quality are primary services, not add-ons â€” they are what we are built around",
   },
   {
     competitor: "International consulting firms",
@@ -81,15 +81,16 @@ const clientCategories = [
 export default function WhyAstellicPage() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative bg-brand-navy text-white py-28 px-6 overflow-hidden">
         <Image
           src="/images/hero-why.jpg"
           alt="Senior advisory environment"
           fill
-          className="object-cover opacity-15"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5">
             Why Astellic
@@ -105,7 +106,7 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── The Positioning ──────────────────────────────────────────────── */}
+      {/* â”€â”€ The Positioning â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14 items-start">
           <SlideLeft>
@@ -123,7 +124,7 @@ export default function WhyAstellicPage() {
               <p className="text-brand-muted text-lg leading-relaxed">
                 We are not a research firm that stops at analysis. We are not a policy advisor
                 disconnected from delivery. We are not an implementation partner without analytical
-                depth. We are positioned at the intersection — because that is where sustainable
+                depth. We are positioned at the intersection â€” because that is where sustainable
                 results are produced.
               </p>
             </div>
@@ -132,11 +133,11 @@ export default function WhyAstellicPage() {
             <div className="space-y-4">
               {[
                 { label: "Geography", value: "Africa-focused, operating from Malawi" },
-                { label: "Year founded", value: "October 2025 — Lilongwe, Malawi" },
-                { label: "Core services", value: "Adaptive MERL · Data Quality · Policy & Systems Analysis · Implementation Support" },
+                { label: "Year founded", value: "October 2025 â€” Lilongwe, Malawi" },
+                { label: "Core services", value: "Adaptive MERL Â· Data Quality Â· Policy & Systems Analysis Â· Implementation Support" },
                 { label: "Clients", value: "Donors, Governments, Development Partners, Corporations" },
                 { label: "Model", value: "Founder-led, specialist, senior-present throughout" },
-                { label: "Compliance", value: "MNBC · Helsinki · FCDO & USAID frameworks" },
+                { label: "Compliance", value: "MNBC Â· Helsinki Â· FCDO & USAID frameworks" },
               ].map((f, i) => (
                 <Reveal key={f.label} variant="up" delay={i * 70}>
                   <div className="bg-white rounded-xl border border-gray-100 p-5 flex gap-4 items-start lift">
@@ -153,7 +154,7 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── Five Commitments ─────────────────────────────────────────────── */}
+      {/* â”€â”€ Five Commitments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
@@ -166,7 +167,7 @@ export default function WhyAstellicPage() {
               </h2>
               <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
                 These are not aspirations. They are the operating principles that govern
-                how Astellic works — with every client, on every engagement.
+                how Astellic works â€” with every client, on every engagement.
               </p>
             </div>
           </FadeUp>
@@ -193,7 +194,7 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── Competitive Differentiation ──────────────────────────────────── */}
+      {/* â”€â”€ Competitive Differentiation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
@@ -206,7 +207,7 @@ export default function WhyAstellicPage() {
               </h2>
               <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
                 Every type of institution has a valuable role. This is not about criticism.
-                It is about clarity — so you know exactly what choosing Astellic means.
+                It is about clarity â€” so you know exactly what choosing Astellic means.
               </p>
             </div>
           </FadeUp>
@@ -238,7 +239,7 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── Sectors, Clients & Methodological Strengths ─────────────────── */}
+      {/* â”€â”€ Sectors, Clients & Methodological Strengths â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-12">
           <FadeUp>
@@ -300,7 +301,7 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <FadeUp>

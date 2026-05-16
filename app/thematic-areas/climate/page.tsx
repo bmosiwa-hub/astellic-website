@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Climate, Agriculture & Sustainability",
   description:
-    "Astellic's work in climate, agriculture and sustainability — supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
+    "Astellic's work in climate, agriculture and sustainability â€” supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
 };
 
 const focusAreas = [
@@ -41,9 +41,10 @@ export default function ClimatePage() {
           src="/images/thematic-climate.jpg"
           alt="African farmer working in the field"
           fill
-          className="object-cover opacity-25"
+          className="object-cover opacity-55"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-3xl font-bold mb-4">Thematic Area 03</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">

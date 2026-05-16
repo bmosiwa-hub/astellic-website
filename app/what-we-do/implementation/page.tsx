@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Policy, Systems Analysis & Implementation Support | Astellic",
   description:
-    "Astellic's Policy, Systems Analysis & Implementation Support pillar — from evidence-grounded policy development to embedded implementation advisory in African institutional contexts.",
+    "Astellic's Policy, Systems Analysis & Implementation Support pillar â€” from evidence-grounded policy development to embedded implementation advisory in African institutional contexts.",
 };
 
 const subUnits = [
@@ -14,10 +14,10 @@ const subUnits = [
     num: "3.1",
     title: "Policy & Systems Analysis and Development",
     tagline: "Translating evidence into policy frameworks and systems strategies that are technically credible, politically feasible, and institutionally deliverable.",
-    desc: "This is one of Astellic's core competencies. We develop national policies, sector strategies, ministerial guidelines, and reform roadmaps — grounded in evidence, informed by political economy analysis, and structured for the institutional realities of African public systems. We do not produce policy documents that sit on shelves. We produce policy frameworks built for implementation, with the analytical depth and contextual grounding to survive contact with reality.",
+    desc: "This is one of Astellic's core competencies. We develop national policies, sector strategies, ministerial guidelines, and reform roadmaps â€” grounded in evidence, informed by political economy analysis, and structured for the institutional realities of African public systems. We do not produce policy documents that sit on shelves. We produce policy frameworks built for implementation, with the analytical depth and contextual grounding to survive contact with reality.",
     services: [
       "National policy and sector strategy development",
-      "Political economy analysis — mapping the actors, interests, and dynamics that shape policy outcomes",
+      "Political economy analysis â€” mapping the actors, interests, and dynamics that shape policy outcomes",
       "Health systems analysis and reform design",
       "Public financial management advisory and budget analysis",
       "Evidence-to-policy translation and strategic communication",
@@ -30,11 +30,11 @@ const subUnits = [
     num: "3.2",
     title: "Programme Design & Implementation Readiness",
     tagline: "Designing implementation-ready programmes and diagnosing the systemic conditions that determine whether they succeed.",
-    desc: "We develop theories of change, results frameworks, operational models, and implementation plans that are simultaneously technically sound and operationally realistic. Our implementation readiness approach identifies design flaws and systemic barriers before programmes launch — when prevention is still possible. A strong programme design, tested for institutional readiness, is the single most powerful predictor of implementation success.",
+    desc: "We develop theories of change, results frameworks, operational models, and implementation plans that are simultaneously technically sound and operationally realistic. Our implementation readiness approach identifies design flaws and systemic barriers before programmes launch â€” when prevention is still possible. A strong programme design, tested for institutional readiness, is the single most powerful predictor of implementation success.",
     services: [
       "Theory of change and results framework development",
       "Programme architecture: operational models, risk frameworks, and financing design",
-      "Implementation Readiness Assessment — a diagnostic for systemic barriers before launch",
+      "Implementation Readiness Assessment â€” a diagnostic for systemic barriers before launch",
       "Embedded technical advisory to government ministries and programme management units",
       "Institutional development: governance design, process mapping, performance management",
       "Organisational development support and systems strengthening",
@@ -45,11 +45,11 @@ const subUnits = [
     num: "3.3",
     title: "Embedded Implementation Support & Adaptive Management",
     tagline: "Staying alongside institutions to strengthen delivery systems and support adaptive programme management.",
-    desc: "Astellic provides embedded implementation support — working alongside governments and implementing organisations to strengthen delivery systems, build institutional routines, and apply adaptive management throughout programme cycles. We are not a large-scale direct delivery contractor. We are a specialist advisory firm that stays embedded, bridges the gap between strategy and execution, and ensures that learning from monitoring continuously shapes delivery decisions.",
+    desc: "Astellic provides embedded implementation support â€” working alongside governments and implementing organisations to strengthen delivery systems, build institutional routines, and apply adaptive management throughout programme cycles. We are not a large-scale direct delivery contractor. We are a specialist advisory firm that stays embedded, bridges the gap between strategy and execution, and ensures that learning from monitoring continuously shapes delivery decisions.",
     services: [
       "Embedded advisory and technical assistance in government ministries and PMUs",
       "Adaptive management support: real-time integration of monitoring data into programme decisions",
-      "Delivery diagnostics — identifying and addressing implementation bottlenecks",
+      "Delivery diagnostics â€” identifying and addressing implementation bottlenecks",
       "Consortium technical support and coordination advisory",
       "Institutional capacity building for sustained performance after the engagement ends",
     ],
@@ -79,9 +79,10 @@ export default function ImplementationPillarPage() {
           src="/images/hero-approach.jpg"
           alt="Policy and implementation support"
           fill
-          className="object-cover opacity-15"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-5">
             <Link href="/what-we-do" className="text-green-100 hover:text-white text-sm transition-colors">
@@ -99,7 +100,7 @@ export default function ImplementationPillarPage() {
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
             Strategies look compelling in documents. They fail when they meet institutional
             inertia, unclear accountability, and systems that were never built to execute them.
-            We address that gap — through rigorous policy analysis, strong programme design,
+            We address that gap â€” through rigorous policy analysis, strong programme design,
             and embedded advisory that stays until strategy works.
           </p>
         </div>
@@ -114,7 +115,7 @@ export default function ImplementationPillarPage() {
             grounded in evidence, tested against political economy realities, and structured
             for implementation in the institutional contexts we know well."
           </blockquote>
-          <p className="text-brand-muted text-sm mt-3 pl-6">— Astellic operating principle</p>
+          <p className="text-brand-muted text-sm mt-3 pl-6">â€” Astellic operating principle</p>
         </div>
       </section>
 
@@ -185,7 +186,7 @@ export default function ImplementationPillarPage() {
           <FadeUp delay={100}>
             <p className="text-gray-300 text-base leading-relaxed mb-8 max-w-xl mx-auto">
               Whether you need a policy framework developed, a delivery system diagnosed,
-              or an embedded advisor to support implementation — tell us what you are working on.
+              or an embedded advisor to support implementation â€” tell us what you are working on.
             </p>
           </FadeUp>
           <FadeUp delay={200}>
@@ -206,7 +207,7 @@ export default function ImplementationPillarPage() {
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-brand-muted text-sm mb-6">
             Implementation support is grounded in evidence from Pillar 01 and informed
-            by the policy analysis we do within this pillar — ensuring every advisory
+            by the policy analysis we do within this pillar â€” ensuring every advisory
             decision is analytically rigorous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Human Development & Social Systems",
   description:
-    "Astellic's work in human development and social systems — enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
+    "Astellic's work in human development and social systems â€” enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
 };
 
 const focusAreas = [
@@ -37,9 +37,10 @@ export default function EducationPage() {
           src="/images/thematic-education.jpg"
           alt="African students learning"
           fill
-          className="object-cover opacity-25"
+          className="object-cover opacity-55"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-3xl font-bold mb-4">Thematic Area 04</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">

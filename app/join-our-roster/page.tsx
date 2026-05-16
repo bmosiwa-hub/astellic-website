@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -64,7 +64,7 @@ function FileUpload({
         {value.file ? (
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-brand-gold text-xl shrink-0">📄</span>
+              <span className="text-brand-gold text-xl shrink-0">ðŸ“„</span>
               <span className="text-base font-medium text-brand-navy truncate">
                 {value.file.name}
               </span>
@@ -79,7 +79,7 @@ function FileUpload({
               Click to upload <span className="text-brand-navy font-medium">{label}</span>
             </p>
             <p className="text-base text-brand-muted mt-1">
-              PDF, DOC, DOCX — max {MAX_MB} MB
+              PDF, DOC, DOCX â€” max {MAX_MB} MB
             </p>
           </div>
         )}
@@ -158,7 +158,7 @@ export default function JoinOurRosterPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6 py-20">
         <div className="max-w-lg text-center">
-          <div className="text-5xl mb-6">✅</div>
+          <div className="text-5xl mb-6">âœ…</div>
           <h1 className="text-3xl font-bold text-brand-navy mb-4">
             Application Received
           </h1>
@@ -180,9 +180,10 @@ export default function JoinOurRosterPage() {
           src="/images/hero-work.jpg"
           alt="Join the Astellic roster"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Join Our Roster
@@ -278,7 +279,7 @@ export default function JoinOurRosterPage() {
                 <p className="text-base text-brand-muted mt-1.5 leading-relaxed">
                   Write <strong>Senior Consultant</strong> if you have 8+ years
                   of experience, or <strong>Associate Consultant</strong> if you
-                  have 5 – 8 years&apos; experience.
+                  have 5 â€“ 8 years&apos; experience.
                 </p>
               </div>
             </div>
@@ -289,7 +290,7 @@ export default function JoinOurRosterPage() {
               <p className="text-base text-brand-muted">
                 All four documents are required. For each of the two slots below,
                 upload either a <strong>sample of work</strong> or a{" "}
-                <strong>reference letter from a previous engagement</strong> —
+                <strong>reference letter from a previous engagement</strong> â€”
                 whichever is most relevant to your field. Maximum{" "}
                 <strong>{MAX_MB} MB</strong> per file. Accepted formats: PDF, DOC, DOCX.
               </p>
@@ -327,7 +328,7 @@ export default function JoinOurRosterPage() {
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {submitting ? "Submitting…" : "Submit Application"}
+                {submitting ? "Submittingâ€¦" : "Submit Application"}
               </button>
               {touched && missing.length > 0 && (
                 <p className="text-base text-red-500 text-center mt-2">

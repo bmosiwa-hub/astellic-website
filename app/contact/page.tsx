@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { FadeUp, SlideLeft, SlideRight } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Astellic — partnerships@astellic.com",
+  description: "Get in touch with Astellic â€” partnerships@astellic.com",
 };
 
 export default function ContactPage() {
@@ -16,9 +16,10 @@ export default function ContactPage() {
           src="/images/hero-contact.jpg"
           alt="African professionals in conversation"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Let&apos;s Start a Conversation
@@ -69,11 +70,11 @@ export default function ContactPage() {
             <div className="mt-10 bg-brand-light rounded-xl p-6">
               <h3 className="font-semibold mb-2 text-lg">Who We Work With</h3>
               <ul className="text-brand-muted text-base space-y-1">
-                <li>→ National governments and public institutions</li>
-                <li>→ Bilateral and multilateral donors</li>
-                <li>→ International development organisations</li>
-                <li>→ Private sector organisations and firms</li>
-                <li>→ Civil society and research institutions</li>
+                <li>â†’ National governments and public institutions</li>
+                <li>â†’ Bilateral and multilateral donors</li>
+                <li>â†’ International development organisations</li>
+                <li>â†’ Private sector organisations and firms</li>
+                <li>â†’ Civil society and research institutions</li>
               </ul>
             </div>
           </div>

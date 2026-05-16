@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Health & Nutrition Systems",
   description:
-    "Astellic's work in health and nutrition systems — strengthening integrated service delivery, primary health care, and evidence-informed decision-making across Africa.",
+    "Astellic's work in health and nutrition systems â€” strengthening integrated service delivery, primary health care, and evidence-informed decision-making across Africa.",
 };
 
 const focusAreas = [
@@ -45,9 +45,10 @@ export default function HealthPage() {
           src="/images/thematic-health.jpg"
           alt="African healthcare professional"
           fill
-          className="object-cover opacity-25"
+          className="object-cover opacity-55"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-3xl font-bold mb-4">Thematic Area 01</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">

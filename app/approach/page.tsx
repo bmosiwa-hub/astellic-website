@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Our Approach",
   description:
-    "Astellic's 6-stage value delivery system — from evidence generation to system strengthening.",
+    "Astellic's 6-stage value delivery system â€” from evidence generation to system strengthening.",
 };
 
 const stages = [
@@ -26,7 +26,7 @@ const stages = [
   {
     num: "04",
     title: "Support Implementation & Adapt",
-    desc: "Embedded implementation support combined with adaptive management — strengthening delivery systems, maintaining responsiveness to evolving contexts, and ensuring learning continuously shapes execution decisions.",
+    desc: "Embedded implementation support combined with adaptive management â€” strengthening delivery systems, maintaining responsiveness to evolving contexts, and ensuring learning continuously shapes execution decisions.",
   },
   {
     num: "05",
@@ -49,9 +49,10 @@ export default function ApproachPage() {
           src="/images/hero-approach.jpg"
           alt="Professionals analysing policy data"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             From Evidence to Impact

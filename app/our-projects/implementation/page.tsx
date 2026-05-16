@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Implementation Support | Our Projects | Astellic",
   description:
-    "Astellic's programme design, embedded advisory, and implementation support engagements — helping institutions strengthen delivery systems across health, governance, education, and climate.",
+    "Astellic's programme design, embedded advisory, and implementation support engagements â€” helping institutions strengthen delivery systems across health, governance, education, and climate.",
 };
 
 interface Project {
@@ -33,9 +33,10 @@ export default function ImplementationPage() {
           src="/images/hero-work.jpg"
           alt="Implementation and programme delivery"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <Link href="/our-projects" className="inline-flex items-center gap-2 text-brand-gold text-base mb-6 hover:gap-3 transition-all">
             <svg className="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -47,7 +48,7 @@ export default function ImplementationPage() {
             Implementation Support
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Programme design, embedded advisory, and implementation support —
+            Programme design, embedded advisory, and implementation support â€”
             helping institutions strengthen the systems, readiness, and adaptive
             management that make programmes work in practice.
           </p>

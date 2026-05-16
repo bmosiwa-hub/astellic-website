@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -46,9 +46,10 @@ export default function WorkWithUsPage() {
           src="/images/hero-work.jpg"
           alt="Professionals in a job interview setting"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Work With Us
@@ -56,7 +57,7 @@ export default function WorkWithUsPage() {
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic brings together researchers, policy advisors, and
             implementation specialists. Explore how you can contribute to our
-            work — whether as staff, a consultant, or a partner.
+            work â€” whether as staff, a consultant, or a partner.
           </p>
         </div>
       </section>
@@ -85,7 +86,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{job.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {job.type} · {job.location}
+                      {job.type} Â· {job.location}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
@@ -127,7 +128,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{c.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {c.area} · {c.duration}
+                      {c.area} Â· {c.duration}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">
@@ -146,7 +147,7 @@ export default function WorkWithUsPage() {
             </div>
           )}
 
-          {/* Join Our Roster — sits under Consultancies */}
+          {/* Join Our Roster â€” sits under Consultancies */}
           <div className="mt-10 bg-brand-navy text-white rounded-2xl p-10 text-center">
             <h2 className="text-2xl font-bold mb-3">Join Our Roster</h2>
             <p className="text-gray-300 text-lg mb-6 max-w-xl mx-auto">
@@ -185,7 +186,7 @@ export default function WorkWithUsPage() {
                   <div>
                     <h3 className="font-bold text-lg text-brand-navy">{i.title}</h3>
                     <p className="text-brand-muted text-base mt-1">
-                      {i.department} · {i.duration}
+                      {i.department} Â· {i.duration}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 shrink-0">

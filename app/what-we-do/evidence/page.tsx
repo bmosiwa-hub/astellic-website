@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
@@ -6,7 +6,7 @@ import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Evidence Generation & Verification | Astellic",
   description:
-    "Astellic's Evidence Generation & Verification pillar — producing rigorous, policy-relevant research, evaluation, and data quality work across Africa.",
+    "Astellic's Evidence Generation & Verification pillar â€” producing rigorous, policy-relevant research, evaluation, and data quality work across Africa.",
 };
 
 const subUnits = [
@@ -74,9 +74,10 @@ export default function EvidencePillarPage() {
           src="/images/hero-approach.jpg"
           alt="Evidence generation and research"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-5">
             <Link href="/what-we-do" className="text-gray-400 hover:text-white text-sm transition-colors">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState } from "react";
 import Image from "next/image";
@@ -71,7 +71,7 @@ function FileUpload({
         {value.file ? (
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-brand-gold text-xl shrink-0">📄</span>
+              <span className="text-brand-gold text-xl shrink-0">ðŸ“„</span>
               <span className="text-base font-medium text-brand-navy truncate">
                 {value.file.name}
               </span>
@@ -87,7 +87,7 @@ function FileUpload({
               <span className="text-brand-navy font-medium">{label}</span>
             </p>
             <p className="text-base text-brand-muted mt-1">
-              PDF, DOC, DOCX — max {MAX_MB} MB
+              PDF, DOC, DOCX â€” max {MAX_MB} MB
             </p>
           </div>
         )}
@@ -160,7 +160,7 @@ export default function ProposePartnershipPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6 py-20">
         <div className="max-w-lg text-center">
-          <div className="text-5xl mb-6">✅</div>
+          <div className="text-5xl mb-6">âœ…</div>
           <h1 className="text-3xl font-bold text-brand-navy mb-4">
             Proposal Received
           </h1>
@@ -182,9 +182,10 @@ export default function ProposePartnershipPage() {
           src="/images/hero-work.jpg"
           alt="Propose a partnership with Astellic"
           fill
-          className="object-cover opacity-20"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Propose a Partnership
@@ -343,7 +344,7 @@ export default function ProposePartnershipPage() {
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                {submitting ? "Submitting…" : "Submit Proposal"}
+                {submitting ? "Submittingâ€¦" : "Submit Proposal"}
               </button>
               {touched && missing.length > 0 && (
                 <p className="text-base text-red-500 text-center mt-2">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/components/Reveal";
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 const highlights = [
   { label: "Founded",      value: "October 2025" },
   { label: "Headquarters", value: "Lilongwe, Malawi" },
-  { label: "Reach",        value: "Pan-African · 9+ countries" },
-  { label: "Model",        value: "Founder-led · Senior-present" },
+  { label: "Reach",        value: "Pan-African Â· 9+ countries" },
+  { label: "Model",        value: "Founder-led Â· Senior-present" },
 ];
 
 const notUs = [
@@ -26,15 +26,16 @@ const notUs = [
 export default function AboutPage() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative bg-brand-navy text-white py-28 px-6 overflow-hidden">
         <Image
           src="/images/hero-thematic.jpg"
           alt="Astellic advisory environment"
           fill
-          className="object-cover opacity-15"
+          className="object-cover opacity-50"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5 animate-fade-up">
             About Astellic
@@ -49,7 +50,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Identity ─────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Identity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-14 items-start">
           <SlideLeft>
@@ -79,8 +80,8 @@ export default function AboutPage() {
 
               <p className="text-brand-muted text-lg leading-relaxed mb-8">
                 Our work combines analytical rigour, contextual intelligence, and operational realism.
-                We bring together capabilities that are typically fragmented — adaptive MERL, data quality
-                and verification, policy analysis, and implementation support — into a coherent,
+                We bring together capabilities that are typically fragmented â€” adaptive MERL, data quality
+                and verification, policy analysis, and implementation support â€” into a coherent,
                 decision-focused approach grounded in how African systems actually work.
               </p>
 
@@ -90,7 +91,7 @@ export default function AboutPage() {
                 <div className="grid sm:grid-cols-2 gap-2">
                   {notUs.map((item) => (
                     <div key={item} className="flex items-center gap-2 text-sm text-brand-muted">
-                      <span className="text-gray-300 font-bold">✕</span>
+                      <span className="text-gray-300 font-bold">âœ•</span>
                       {item}
                     </div>
                   ))}
@@ -112,14 +113,14 @@ export default function AboutPage() {
                 className="block bg-brand-navy text-white rounded-xl p-5 shadow-sm text-center hover:bg-brand-navy/90 transition-colors"
               >
                 <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-1">Leadership</p>
-                <p className="font-semibold text-white text-sm">Meet Dr. Mosiwa →</p>
+                <p className="font-semibold text-white text-sm">Meet Dr. Mosiwa â†’</p>
               </Link>
             </div>
           </SlideRight>
         </div>
       </section>
 
-      {/* ── Founding Narrative ───────────────────────────────────────────── */}
+      {/* â”€â”€ Founding Narrative â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <FadeUp>
@@ -133,14 +134,14 @@ export default function AboutPage() {
                 <p>
                   Astellic was not created because there was a gap in the consulting market.
                   It was created because there is a specific, identifiable failure in how
-                  development organisations produce and use evidence — and because the organisations
+                  development organisations produce and use evidence â€” and because the organisations
                   best positioned to address it are typically the ones least incentivised to do so.
                 </p>
               </FadeUp>
               <FadeUp delay={120}>
                 <p>
                   The founder spent over a decade working inside Malawi&apos;s health system and
-                  African development institutions — as a clinician, as a programme manager
+                  African development institutions â€” as a clinician, as a programme manager
                   embedded in partnership with the Ministry of Health and Population, as a
                   health financing researcher across four countries, and as a global-level
                   policy advisor. He watched well-designed programmes fail not for lack of
@@ -156,7 +157,7 @@ export default function AboutPage() {
                   Astellic is the institutional form of a straightforward belief: that if you
                   produce genuinely rigorous evidence, translate it into actionable policy with
                   appropriate honesty, and build the implementation systems that actually determine
-                  whether programmes deliver — you create the conditions for sustained impact.
+                  whether programmes deliver â€” you create the conditions for sustained impact.
                   Not because impact is guaranteed. But because the analytical and institutional
                   foundations are sound.
                 </p>
@@ -183,7 +184,7 @@ export default function AboutPage() {
                 <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-navy">
                   <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">The Commitment</p>
                   <p className="text-brand-muted text-sm leading-relaxed">
-                    Senior expertise present throughout — not just at the proposal stage.
+                    Senior expertise present throughout â€” not just at the proposal stage.
                     The work does not end with the document.
                   </p>
                 </div>
@@ -193,7 +194,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── The Problem Statement ─────────────────────────────────────────── */}
+      {/* â”€â”€ The Problem Statement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-4xl mx-auto">
           <FadeUp>
@@ -202,7 +203,7 @@ export default function AboutPage() {
             </p>
             <blockquote className="text-2xl md:text-3xl font-bold leading-snug mb-10 max-w-3xl">
               &ldquo;Well-funded strategies and credible commitments consistently fail to deliver
-              measurable results — not because of weak intent, but because of a persistent
+              measurable results â€” not because of weak intent, but because of a persistent
               breakdown between analysis, decision-making, and execution.&rdquo;
             </blockquote>
           </FadeUp>
@@ -227,7 +228,7 @@ export default function AboutPage() {
                       <div className="flex items-center mx-1">
                         <div className="w-4 h-px bg-white/20" />
                         <div className="flex flex-col items-center mx-1">
-                          <span className="text-red-400 font-bold text-xs leading-none">✕</span>
+                          <span className="text-red-400 font-bold text-xs leading-none">âœ•</span>
                           <span className="text-red-400/60 text-[9px] font-medium mt-0.5 uppercase tracking-wider whitespace-nowrap">gap</span>
                         </div>
                         <div className="w-4 h-px bg-white/20" />
@@ -244,9 +245,9 @@ export default function AboutPage() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { label: "The gap", stat: "Evidence → Policy", desc: "Research rarely reaches the decision-makers who need it, in a form they can use." },
-              { label: "The gap", stat: "Policy → Delivery", desc: "Well-designed strategies fail when institutional readiness is assumed, not assessed." },
-              { label: "The gap", stat: "Delivery → Learning", desc: "Programmes rarely build in the adaptive systems needed to course-correct in real time." },
+              { label: "The gap", stat: "Evidence â†’ Policy", desc: "Research rarely reaches the decision-makers who need it, in a form they can use." },
+              { label: "The gap", stat: "Policy â†’ Delivery", desc: "Well-designed strategies fail when institutional readiness is assumed, not assessed." },
+              { label: "The gap", stat: "Delivery â†’ Learning", desc: "Programmes rarely build in the adaptive systems needed to course-correct in real time." },
             ].map((g, i) => (
               <Reveal key={i} variant="up" delay={i * 80}>
                 <div className="border border-white/10 rounded-xl p-6">
@@ -260,7 +261,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Current Focus ─────────────────────────────────────────────────── */}
+      {/* â”€â”€ Current Focus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-14">
@@ -272,7 +273,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-brand-muted text-base leading-relaxed mb-6">
                   We do not try to be everything to everyone.
-                  That focus is what makes our work reliable — and what distinguishes it
+                  That focus is what makes our work reliable â€” and what distinguishes it
                   from firms with broad service menus and shallow delivery.
                 </p>
                 <div className="space-y-3">
@@ -340,14 +341,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Navigation cards ─────────────────────────────────────────────── */}
+      {/* â”€â”€ Navigation cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-16 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <div className="grid sm:grid-cols-3 gap-5">
             {[
               { title: "Vision & Mission",  href: "/about/vision-mission", desc: "The purpose that drives every engagement and how we define success." },
               { title: "Our Team",          href: "/about/our-team",        desc: "Dr. Mosiwa's career, expertise, and the institutional depth behind the firm." },
-              { title: "Why Astellic",      href: "/why-astellic",          desc: "What makes us different — and why it matters for how the work gets done." },
+              { title: "Why Astellic",      href: "/why-astellic",          desc: "What makes us different â€” and why it matters for how the work gets done." },
             ].map((card, i) => (
               <Reveal key={card.href} variant="up" delay={i * 80}>
                 <Link
@@ -357,7 +358,7 @@ export default function AboutPage() {
                   <h3 className="font-bold text-brand-navy mb-2 group-hover:text-brand-gold transition-colors">{card.title}</h3>
                   <p className="text-brand-muted text-sm leading-relaxed">{card.desc}</p>
                   <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-xs mt-4 group-hover:gap-2 transition-all">
-                    Read more →
+                    Read more â†’
                   </span>
                 </Link>
               </Reveal>

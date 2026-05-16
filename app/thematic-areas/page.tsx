@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -56,16 +56,17 @@ export default function ThematicAreasPage() {
           src="/images/hero-thematic.jpg"
           alt="African professionals in a strategic meeting"
           fill
-          className="object-cover opacity-25"
+          className="object-cover opacity-55"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
             Where We Work
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic applies its integrated delivery model across four strategic
-            areas — each representing a domain where the gap between policy
+            areas â€” each representing a domain where the gap between policy
             intent and operational outcome demands a firm capable of bridging
             both.
           </p>

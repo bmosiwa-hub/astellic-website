@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 import AfricaPresenceMap from "@/components/AfricaPresenceMap";
@@ -8,7 +8,7 @@ const coreServices = [
   {
     num: "01",
     title: "Adaptive MERL & Learning Systems",
-    tagline: "We help programmes continuously learn and improve — not just report.",
+    tagline: "We help programmes continuously learn and improve â€” not just report.",
     problem: "Most monitoring systems generate data for compliance, not decisions. Programmes collect what donors require, not what managers need. Course-correction happens too late, if at all.",
     bullets: [
       "Learn continuously from implementation evidence",
@@ -68,7 +68,7 @@ const commitments = [
   },
   {
     label: "We Are Honest",
-    desc: "We tell clients what the evidence shows — including when it shows problems. That is not a risk. That is the service.",
+    desc: "We tell clients what the evidence shows â€” including when it shows problems. That is not a risk. That is the service.",
   },
   {
     label: "We Know the Context",
@@ -109,7 +109,7 @@ const insightCards = [
   {
     category: "Implementation Brief",
     title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
-    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase — when implementation readiness is assumed rather than assessed.",
+    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase â€” when implementation readiness is assumed rather than assessed.",
     color: "bg-brand-navy text-white",
   },
   {
@@ -129,20 +129,20 @@ const insightCards = [
 export default function Home() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="relative bg-brand-navy text-white py-32 px-6 overflow-hidden">
         <Image
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
           fill
-          className="object-cover opacity-25"
+          className="object-cover opacity-55"
           priority
         />
-        {/* Directional gradient — image breathes on right, text stays legible left */}
+        {/* Directional gradient â€” image breathes on right, text stays legible left */}
         <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/85 to-brand-navy/30 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
-            Research · Advisory · Implementation
+            Research Â· Advisory Â· Implementation
           </p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl animate-fade-up delay-100">
             Working at the Intersection of Evidence, Policy and Delivery.
@@ -171,7 +171,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Impact Metrics Band ──────────────────────────────────────────── */}
+      {/* â”€â”€ Impact Metrics Band â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="bg-[#0b1a38] border-b border-white/10 py-10 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-white/10">
           {[
@@ -193,7 +193,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Operating Model ──────────────────────────────────────────────── */}
+      {/* â”€â”€ Operating Model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-24 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <FadeUp className="text-center mb-10">
@@ -205,7 +205,7 @@ export default function Home() {
             </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
               The implementation gap is not a technical problem. It is a systems problem.
-              We address it as one — by integrating evidence, policy, and delivery into a
+              We address it as one â€” by integrating evidence, policy, and delivery into a
               single adaptive architecture.
             </p>
           </FadeUp>
@@ -215,7 +215,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Core Services ────────────────────────────────────────────────── */}
+      {/* â”€â”€ Core Services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <FadeUp className="text-center mb-16">
@@ -226,7 +226,7 @@ export default function Home() {
               Three Areas of Specialist Depth
             </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              Astellic is a specialist firm. We do three things with exceptional depth —
+              Astellic is a specialist firm. We do three things with exceptional depth â€”
               and a fourth for the private sector. We do not try to be everything to everyone.
             </p>
           </FadeUp>
@@ -235,7 +235,7 @@ export default function Home() {
             {coreServices.map((svc, i) => (
               <Reveal key={svc.num} variant={i % 2 === 0 ? "left" : "right"} delay={i * 80}>
                 <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lift">
-                  {/* Photo — tall enough to dominate; light gradient so photo reads clearly */}
+                  {/* Photo â€” tall enough to dominate; light gradient so photo reads clearly */}
                   <div className="relative h-64 overflow-hidden">
                     <Image
                       src={svc.img}
@@ -276,7 +276,7 @@ export default function Home() {
                       <ul className="space-y-2">
                         {svc.bullets.map((b) => (
                           <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
-                            <span className="text-brand-gold mt-0.5 shrink-0">→</span>
+                            <span className="text-brand-gold mt-0.5 shrink-0">â†’</span>
                             {b}
                           </li>
                         ))}
@@ -288,7 +288,7 @@ export default function Home() {
                       </p>
                       <ul className="space-y-1.5 mb-6">
                         {svc.engagements.map((e) => (
-                          <li key={e} className="text-sm text-brand-muted leading-snug">· {e}</li>
+                          <li key={e} className="text-sm text-brand-muted leading-snug">Â· {e}</li>
                         ))}
                       </ul>
                       <Link
@@ -345,7 +345,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Five Commitments ─────────────────────────────────────────────── */}
+      {/* â”€â”€ Five Commitments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp className="text-center mb-14">
@@ -383,7 +383,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Typographic Declaration ──────────────────────────────────────── */}
+      {/* â”€â”€ Typographic Declaration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-24 px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
@@ -410,7 +410,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Who We Work With ─────────────────────────────────────────────── */}
+      {/* â”€â”€ Who We Work With â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <FadeUp className="text-center mb-14">
@@ -421,8 +421,8 @@ export default function Home() {
               Institutions at Every Stage of the Results Chain
             </h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-              Whether you fund, design, or deliver development outcomes — or invest in
-              communities through the private sector — Astellic has an entry point for you.
+              Whether you fund, design, or deliver development outcomes â€” or invest in
+              communities through the private sector â€” Astellic has an entry point for you.
             </p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-6">
@@ -452,7 +452,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Geographic Presence & Track Record ───────────────────────────── */}
+      {/* â”€â”€ Geographic Presence & Track Record â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
@@ -532,7 +532,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Insights Teaser ──────────────────────────────────────────────── */}
+      {/* â”€â”€ Insights Teaser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
@@ -574,7 +574,7 @@ export default function Home() {
                     </h3>
                     <p className="text-brand-muted text-sm leading-relaxed flex-1">{card.desc}</p>
                     <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
-                      Read more →
+                      Read more â†’
                     </span>
                   </div>
                 </Link>
@@ -584,7 +584,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <FadeUp>
@@ -598,7 +598,7 @@ export default function Home() {
           <FadeUp delay={100}>
             <p className="text-gray-300 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
               We work with governments, donors, corporations, and development partners.
-              Tell us what you are working on — we will tell you honestly whether we can help.
+              Tell us what you are working on â€” we will tell you honestly whether we can help.
             </p>
           </FadeUp>
           <FadeUp delay={180}>
