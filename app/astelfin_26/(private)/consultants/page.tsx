@@ -25,11 +25,10 @@ export default async function ConsultantsPage({
     where: {
       active: true,
       deletedAt: null,
-      project: { status: "ACTIVE" },
+      projectId: { not: null },
     },
     orderBy: { name: "asc" },
     include: {
-      project: { select: { name: true, status: true } },
       payments: { select: { grossAmount: true, netAmount: true, withholdingTax: true } },
     },
   });
@@ -109,7 +108,7 @@ export default async function ConsultantsPage({
                         {c.email && <p className="text-xs text-gray-400">{c.email}</p>}
                       </td>
                       <td className="px-5 py-3 text-gray-500">
-                        {c.project?.name ?? <span className="text-gray-300">—</span>}
+                        <span className="text-gray-300">—</span>
                       </td>
                       <td className="px-5 py-3 text-right font-semibold text-brand-navy">
                         {formatCurrency(totalNet, c.currency)}
