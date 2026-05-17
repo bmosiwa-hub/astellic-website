@@ -261,79 +261,28 @@ export default function ASILPage() {
             </p>
           </FadeUp>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {/* NOT column */}
-            <SlideLeft>
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">ASIL is not</p>
-                <ul className="space-y-4">
-                  {[
-                    "A charitable foundation or grant-making institution",
-                    "A CSR implementation agency or philanthropic vehicle",
-                    "An NGO or social enterprise",
-                    "A donor-dependent community fund",
-                    "A think tank that synthesises others' evidence",
-                    "A separate commercial entity competing with Astellic",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-brand-muted text-sm">
-                      <svg className="w-4 h-4 text-gray-300 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </SlideLeft>
-
-            {/* IS column */}
-            <SlideRight>
-              <div className="bg-brand-navy rounded-2xl p-8">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-6">ASIL is</p>
-                <ul className="space-y-4">
-                  {[
-                    "A structured implementation laboratory embedded within Astellic's architecture",
-                    "An implementation intelligence platform generating evidence from practice",
-                    "A methodology development and validation environment",
-                    "A demonstration site for evidence-based delivery under real conditions",
-                    "A strategic credibility asset for Astellic's advisory positioning",
-                    "A source of practice-grounded institutional knowledge for the development community",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-gray-200 text-sm">
-                      <svg className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </SlideRight>
-          </div>
-
-          {/* Positioning comparison table */}
-          <FadeUp>
-            <div className="border border-gray-100 rounded-2xl overflow-hidden">
-              <div className="bg-brand-light px-6 py-4 border-b border-gray-100">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-muted">Institutional Positioning</p>
-              </div>
-              <div className="divide-y divide-gray-100">
+          <SlideLeft>
+            <div className="bg-brand-navy rounded-2xl p-8 max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-6">ASIL is</p>
+              <ul className="space-y-4">
                 {[
-                  { type: "NGO / Charity", them: "Service delivery, fundraising, community welfare", asil: "Systems learning, implementation intelligence, evidence from structured pilots" },
-                  { type: "Corporate Foundation", them: "Brand-linked philanthropy, donor relations, public image", asil: "Intellectually independent, evidence-driven, oriented toward institutional knowledge" },
-                  { type: "Academic Research Centre", them: "Publication-focused, peer-reviewed, theoretically grounded", asil: "Practice-grounded, decision-relevant, operationally embedded — research serves implementation" },
-                  { type: "Donor Think Tank", them: "Policy advocacy, evidence synthesis, sector influence", asil: "Pilot-based, generates original practice-grounded evidence rather than synthesising existing literature" },
-                  { type: "CSR Department", them: "Corporate reputation management, community liaison", asil: "Analytically rigorous, outcome-focused, governance-oriented — advisory discipline applied to social investment" },
-                ].map((row) => (
-                  <div key={row.type} className="grid md:grid-cols-[160px_1fr_1fr] gap-0 text-sm">
-                    <div className="px-6 py-4 bg-gray-50 font-semibold text-brand-navy border-r border-gray-100">{row.type}</div>
-                    <div className="px-6 py-4 text-brand-muted border-r border-gray-100">{row.them}</div>
-                    <div className="px-6 py-4 text-brand-navy font-medium">{row.asil}</div>
-                  </div>
+                  "A structured implementation laboratory embedded within Astellic's architecture",
+                  "An implementation intelligence platform generating evidence from practice",
+                  "A methodology development and validation environment",
+                  "A demonstration site for evidence-based delivery under real conditions",
+                  "A strategic credibility asset for Astellic's advisory positioning",
+                  "A source of practice-grounded institutional knowledge for the development community",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-gray-200 text-sm">
+                    <svg className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
-          </FadeUp>
+          </SlideLeft>
         </div>
       </section>
 
