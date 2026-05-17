@@ -30,9 +30,10 @@ const workWithUsItems = [
 ];
 
 const whoWeAreItems = [
-  { label: "About Astellic",  href: "/about"               },
-  { label: "Vision & Mission", href: "/about/vision-mission" },
-  { label: "Our Team",         href: "/about/our-team"       },
+  { label: "About Astellic",        href: "/about"               },
+  { label: "Vision & Mission",      href: "/about/vision-mission" },
+  { label: "Our Team",              href: "/about/our-team"       },
+  { label: "Astellic Social Impact Lab (ASIL)", href: "/asil"    },
 ];
 
 /* ── Simple flat dropdown ── */
