@@ -52,7 +52,7 @@ const thematicDomains = [
     overlayHex: "#1B2A4A",
     href: "/thematic-areas/health",
     systemsIssue: "Implementation system failures, not resource constraints, explain most persistent gaps between health policy intent and service delivery.",
-    focus: "ASIL's health pilots investigate specific, bounded questions: what governance arrangements improve data use within district health management teams? What accountability mechanisms sustain frontline worker performance in remote settings? What does adaptive management require in primary health care delivery?",
+    focus: "ASIL's health pilots investigate specific, bounded questions: what community governance arrangements sustain equitable adoption of women's health interventions? What accountability mechanisms reduce the household air pollution burden on women in rural communities? What does a community-governed health outcome look like under real implementation conditions?",
     strategicValue: "Documented health implementation evidence positions Astellic as a firm that has not just advised on health systems — but designed, managed, and honestly evaluated health system interventions under real conditions.",
   },
   {
@@ -236,7 +236,7 @@ export default function ASILPage() {
           <div className="mt-14 pt-8 border-t border-white/10 grid grid-cols-3 gap-6 max-w-lg">
             {[
               { value: "Y1", label: "Year One — Active" },
-              { value: "001", label: "Pilot in Design" },
+              { value: "001", label: "Pilot in Progress" },
               { value: "Malawi", label: "Primary Operating Context" },
             ].map((s) => (
               <div key={s.label}>
@@ -454,14 +454,27 @@ export default function ASILPage() {
               <div className="flex items-center gap-2 bg-brand-gold text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
                 Active
               </div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">ASIL Pilot 001</p>
+              <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">ASIL Pilot 001 · ASIL-P001-MW-2025</p>
             </div>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-3 max-w-3xl">
-              Governance of Data Use within District Health Management Teams
+              Clean Cooking, Household Air Quality, and Women&apos;s Health
             </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-12">
-              The inaugural ASIL implementation learning pilot. A bounded, ethics-cleared investigation into the governance arrangements that determine whether district health management teams in Malawi consistently use routine health data for operational decision-making.
+            <p className="text-brand-navy/60 text-base font-medium mb-4 max-w-2xl">
+              A Community Governance and Adaptive Accountability Pilot
             </p>
+            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-12">
+              The inaugural ASIL implementation learning pilot. A bounded investigation into whether purposefully designed community accountability systems can sustain the equitable adoption of improved cookstoves as a durable women&apos;s health intervention — not a brief product distribution, but a governed health outcome.
+            </p>
+          </FadeUp>
+
+          {/* Central intervention callout */}
+          <FadeUp>
+            <div className="mb-10 bg-brand-navy rounded-2xl p-8 max-w-full">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">The Central Intervention</p>
+              <p className="text-gray-200 text-base leading-relaxed">
+                Improved cookstove distribution in three Malawian communities, accompanied by a <span className="text-brand-gold font-semibold">Community Accountability Committee</span> with an explicit equity mandate, a <span className="text-brand-gold font-semibold">Women&apos;s Health Evidence System</span> that puts adoption data in community hands, and a <span className="text-brand-gold font-semibold">quarterly adaptive governance cycle</span>. One intervention. One population. One implementation question.
+              </p>
+            </div>
           </FadeUp>
 
           <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
@@ -469,10 +482,10 @@ export default function ASILPage() {
             {/* Pilot header band */}
             <div className="bg-brand-navy px-8 py-5 grid md:grid-cols-4 gap-6">
               {[
-                { label: "Domain", value: "Health & Nutrition Systems" },
-                { label: "Geography", value: "Mchinji · Nkhotakota Districts, Malawi" },
-                { label: "Design Phase", value: "February 2026" },
-                { label: "Expected Report", value: "Q1 2027" },
+                { label: "Primary Domain", value: "Health & Nutrition Systems" },
+                { label: "Geography", value: "Three Pilot Communities, Malawi" },
+                { label: "Duration", value: "12 months · 2025–2026" },
+                { label: "Expected Report", value: "Q4 2026 / Q1 2027" },
               ].map((item) => (
                 <div key={item.label}>
                   <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">{item.label}</p>
@@ -488,10 +501,13 @@ export default function ASILPage() {
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">Pilot Overview</p>
                   <p className="text-brand-muted text-base leading-relaxed">
-                    District health management teams (DHMTs) in Malawi's decentralised health system are responsible for translating routine health data into operational decisions — adjusting resource allocation, responding to performance gaps, and improving service delivery at facility level. In practice, data use within DHMTs is inconsistent, structurally constrained, and poorly understood.
+                    Household air pollution from solid fuel combustion is one of the most significant and persistently unaddressed environmental health burdens in sub-Saharan Africa — and it falls almost entirely on women. Improved cookstove programmes have existed for decades. Most fail: not because the technology doesn&apos;t work, but because adoption is unsustained, inequitable within households, and ungoverned.
                   </p>
                   <p className="text-brand-muted text-base leading-relaxed mt-3">
-                    Pilot 001 investigates the specific governance arrangements — accountability structures, data review mechanisms, incentive systems, and leadership practices — that produce more consistent and higher-quality data use among DHMT members. The pilot operates across two purposively selected districts with contrasting implementation environments, enabling systematic comparison of governance conditions and data use practice.
+                    Pilot 001 does not study cookstove technology. It does not measure air quality indices in isolation. It investigates whether a purposefully designed community governance system — a Community Accountability Committee with an explicit equity mandate, operating alongside a Women&apos;s Health Evidence System — can sustain equitable cookstove adoption across three Malawian communities over a 12-month implementation cycle.
+                  </p>
+                  <p className="text-brand-muted text-base leading-relaxed mt-3">
+                    The pilot is structured as a community governance design experiment: what accountability architecture, operating in a real community at realistic operational cost, is sufficient to make an improved cookstove a durable women&apos;s health intervention rather than a briefly adopted and abandoned product?
                   </p>
                 </div>
 
@@ -500,10 +516,10 @@ export default function ASILPage() {
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-4">Key Learning Questions</p>
                   <div className="space-y-3">
                     {[
-                      "What governance arrangements within DHMTs produce the most consistent, high-quality use of routine health data for operational decision-making?",
-                      "How do internal and external accountability mechanisms affect data literacy and data use practices among DHMT members?",
-                      "What adaptive management triggers — specific evidence signals, institutional events, or governance changes — are most effective at improving data use responsiveness during the implementation cycle?",
-                      "What does the gap between reported data use and observed data use reveal about the accountability culture within decentralised health management structures?",
+                      "Does a purposefully designed community accountability system, with an explicit equity mandate, sustain equitable improved cookstove adoption across 12 months — and through what governance mechanisms?",
+                      "What role does a community-held Women's Health Evidence System play in sustaining household adoption decisions and triggering accountability responses when adoption stalls?",
+                      "What design features of the Community Accountability Committee — composition, mandate, evidence protocols, decision authority — most reliably produce governance responses to adoption inequity?",
+                      "What does this pilot reveal about the institutional conditions required to make community-governed health interventions function as durable accountability systems rather than one-off programme outputs?",
                     ].map((q, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <span className="text-brand-gold font-bold text-sm mt-0.5 shrink-0">Q{i + 1}</span>
@@ -518,12 +534,12 @@ export default function ASILPage() {
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-4">Methodology Highlights</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {[
-                      { method: "Embedded case study", detail: "Two purposively selected districts — contrasting governance arrangements, comparable implementation environments" },
-                      { method: "Structured observation", detail: "DHMT data review meetings, supervisory visits, and performance management sessions observed and documented over six months" },
-                      { method: "Key informant interviews", detail: "DHMT members, facility in-charges, MoH district supervisors, and data officers at each site" },
-                      { method: "Document review", detail: "DHMT minutes, facility data review records, supervision logs, and data quality audit reports" },
-                      { method: "Adaptive management log", detail: "Documented decision log tracking all significant pilot adaptations and the evidence basis for each" },
-                      { method: "Ethics clearance", detail: "Malawi National Bioethics Committee clearance obtained prior to field activities. Helsinki Declaration principles apply throughout." },
+                      { method: "Community governance design", detail: "Three purposively selected pilot communities — Community Accountability Committee established with an explicit equity mandate and defined decision protocols" },
+                      { method: "Women's Health Evidence System", detail: "Community-held adoption tracking system that makes household-level data visible and actionable for the Accountability Committee each quarter" },
+                      { method: "Quarterly adaptive governance", detail: "Structured cycle: evidence review, committee deliberation, targeted follow-up, documented adaptation — at each site, each quarter" },
+                      { method: "Household adoption tracking", detail: "Consistent use monitoring across targeted households, with equity disaggregation by exposure burden and household composition" },
+                      { method: "Adaptive management log", detail: "Documented decision log tracking all significant pilot adaptations, evidence triggers, and the governance responses they produced" },
+                      { method: "Ethics clearance", detail: "Malawi National Bioethics Committee clearance required prior to field activities. Helsinki Declaration principles apply throughout." },
                     ].map((item) => (
                       <div key={item.method} className="bg-brand-light rounded-xl p-4 border border-gray-100">
                         <p className="font-bold text-brand-navy text-sm mb-1">{item.method}</p>
@@ -541,10 +557,10 @@ export default function ASILPage() {
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Timeline</p>
                   <div className="space-y-4">
                     {[
-                      { phase: "Phase 1 — Design", period: "Feb – Mar 2026", detail: "Design documentation, ethics submission, partner engagement, site selection" },
-                      { phase: "Phase 2 — Implementation", period: "Apr – Oct 2026", detail: "Field data collection, adaptive management, learning review meetings" },
-                      { phase: "Phase 3 — Evaluation", period: "Nov – Dec 2026", detail: "Data analysis, structured evaluation, Learning Report drafting" },
-                      { phase: "Publication", period: "Q1 2027", detail: "ASIL Learning Report 001 + Implementation Intelligence Brief 001" },
+                      { phase: "Phase 1 — Design", period: "2025 Q3–Q4", detail: "Concept note finalisation, ethics submission, community partner engagement, CAC design, site confirmation" },
+                      { phase: "Phase 2 — Implementation", period: "2026 Q1–Q3", detail: "Cookstove distribution, CAC establishment, WHES activation, quarterly governance cycles, adaptive management" },
+                      { phase: "Phase 3 — Evaluation", period: "2026 Q3–Q4", detail: "Adoption outcome analysis, governance system evaluation, Learning Report drafting" },
+                      { phase: "Publication", period: "Q4 2026 / Q1 2027", detail: "ASIL Learning Report 001 + Implementation Intelligence Brief 001" },
                     ].map((item, i) => (
                       <div key={i} className="flex gap-3">
                         <div className="flex flex-col items-center">
@@ -566,10 +582,10 @@ export default function ASILPage() {
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Expected Knowledge Products</p>
                   <div className="space-y-3">
                     {[
-                      "ASIL Learning Report 001 — full pilot evaluation",
-                      "ASIL Implementation Intelligence Brief 001 — practice-focused distillation",
-                      "Refined DHMT data governance diagnostic framework",
-                      "Methodology note on embedded case study design in public health systems",
+                      "ASIL Learning Report 001 — Clean Cooking & Women's Health Pilot",
+                      "ASIL Implementation Intelligence Brief — Community accountability for equitable cookstove adoption",
+                      "Community Accountability Committee design framework — replicable governance template",
+                      "Women's Health Evidence System — methodology note and community data protocol",
                     ].map((product) => (
                       <div key={product} className="flex items-start gap-2.5">
                         <div className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
@@ -583,7 +599,7 @@ export default function ASILPage() {
                 <div className="bg-brand-gold/10 border border-brand-gold/20 rounded-2xl p-6">
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
                   <p className="text-brand-navy text-sm leading-relaxed">
-                    This pilot directly strengthens Astellic's health systems advisory by generating original evidence on DHMT governance dynamics — evidence that no existing literature provides with Malawi-specific contextual depth. The Learning Report becomes part of Astellic's capability evidence base, applicable to health systems financing, MERL, and implementation advisory assignments across the region.
+                    This pilot cuts across health, governance, climate, and education simultaneously — generating original implementation evidence on community accountability design, women&apos;s health equity, and household energy governance from a single, bounded, real-world intervention. The Learning Report and CAC framework become directly applicable to Astellic&apos;s advisory work across all four thematic areas.
                   </p>
                 </div>
 
@@ -602,6 +618,99 @@ export default function ASILPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── 6b. CROSS-THEMATIC DEMONSTRATION ────────────────────────────── */}
+      <section className="py-24 px-6 bg-white border-t border-gray-200">
+        <div className="max-w-5xl mx-auto">
+          <FadeUp>
+            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Pilot 001 — Cross-Thematic Scope</p>
+            <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
+              One pilot. All four thematic domains.
+            </h2>
+            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-4">
+              ASIL Pilot 001 was not designed to touch every thematic area — but the nature of its central intervention means it cannot avoid doing so. A single, bounded community governance pilot on cookstove adoption generates implementation intelligence across health, governance, climate, and education simultaneously. This is what cross-thematic implementation learning looks like in practice.
+            </p>
+            <p className="text-brand-muted text-base leading-relaxed max-w-2xl mb-14">
+              The domains are not artificially connected. They are structurally present in the design of the intervention itself — each generating a distinct class of learning that feeds into a different strand of Astellic&apos;s advisory practice.
+            </p>
+          </FadeUp>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              {
+                num: "01",
+                domain: "Health & Nutrition Systems",
+                color: "#1B2A4A",
+                accent: "brand-gold",
+                question: "Can an improved cookstove become a durable women's health intervention?",
+                mechanism: "The Women's Health Evidence System tracks adoption as a health exposure metric. The pilot investigates whether community governance — not product quality or household income — is the binding constraint on sustained women's health outcomes from clean cooking.",
+                learning: "Community accountability design as a health systems intervention; equity-disaggregated adoption monitoring; governance conditions for sustained HAP burden reduction.",
+              },
+              {
+                num: "02",
+                domain: "Governance & Public Sector Reform",
+                color: "#0D7A6E",
+                accent: "brand-teal",
+                question: "What accountability architecture sustains an equity mandate at community level?",
+                mechanism: "The Community Accountability Committee is the governance experiment. The pilot investigates its composition, mandate design, evidence protocols, and decision authority — asking which design features produce responses when adoption stalls, and which do not.",
+                learning: "Community accountability committee design principles; equity mandate operationalisation; adaptive governance protocols for community-level implementation systems.",
+              },
+              {
+                num: "03",
+                domain: "Climate, Agriculture & Sustainability",
+                color: "#1A3A2A",
+                accent: "brand-navy",
+                question: "What makes a household energy transition stick?",
+                mechanism: "Improved cookstoves are a climate-adjacent household energy intervention. The pilot generates evidence on the institutional conditions — not the technical quality of the product — that determine whether a low-carbon household energy transition is sustained or abandoned after initial distribution.",
+                learning: "Governance architecture for sustained household energy transitions; community accountability as a climate finance delivery mechanism; institutional conditions for durable low-carbon behaviour change.",
+              },
+              {
+                num: "04",
+                domain: "Education & Social Systems",
+                color: "#2D4A1E",
+                accent: "brand-teal",
+                question: "What happens when communities hold their own health evidence?",
+                mechanism: "The Women's Health Evidence System is not only a data tool — it is a community education intervention. Putting adoption and health data in community hands, through a structured quarterly review, is a form of evidence literacy that the pilot examines for its effect on community decision-making and accountability responsiveness.",
+                learning: "Community data literacy as a governance mechanism; evidence-informed community decision-making design; social learning dynamics within structured accountability systems.",
+              },
+            ].map((item, i) => (
+              <ScaleIn key={i} delay={i * 80}>
+                <div className="bg-brand-light border border-gray-100 rounded-2xl p-7 h-full flex flex-col gap-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-xs font-bold text-gray-400 font-mono">{item.num}</span>
+                      <h3 className="text-brand-navy font-bold text-base mt-1 leading-snug">{item.domain}</h3>
+                    </div>
+                    <div className="w-2 h-2 rounded-full bg-brand-gold mt-1.5 shrink-0" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-gold mb-2">Implementation Question</p>
+                    <p className="text-brand-navy text-sm font-semibold leading-snug italic">&ldquo;{item.question}&rdquo;</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-muted mb-2">How the Pilot Addresses It</p>
+                    <p className="text-brand-muted text-sm leading-relaxed">{item.mechanism}</p>
+                  </div>
+                  <div className="border-t border-gray-200 pt-4">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-teal mb-2">Learning Output</p>
+                    <p className="text-brand-muted text-xs leading-relaxed">{item.learning}</p>
+                  </div>
+                </div>
+              </ScaleIn>
+            ))}
+          </div>
+
+          {/* Synthesis note */}
+          <FadeUp>
+            <div className="mt-10 bg-brand-navy rounded-2xl p-8">
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">The Learning Architecture</p>
+              <p className="text-gray-200 text-base leading-relaxed max-w-3xl">
+                Each of these four learning streams produces knowledge that is independently valuable — and collectively, they produce something that cannot be generated from a single-domain study: an integrated picture of how health outcomes, governance systems, environmental behaviour, and community evidence cultures interact in a real implementation environment. The Learning Report will disaggregate findings by domain. The cross-domain synthesis will constitute the most significant institutional intelligence contribution of the pilot.
+              </p>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
