@@ -9,6 +9,7 @@ const TAB_LABELS: Record<keyof TabPermissions, string> = {
   operations: "Operations",
   projects:   "Projects",
   bizdev:     "Business Development",
+  asil:       "ASIL — Implementation Lab",
 };
 
 interface Props {

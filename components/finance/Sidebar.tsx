@@ -215,6 +215,16 @@ const Icons = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
     </svg>
   ),
+  asil: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+    </svg>
+  ),
+  library: (
+    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+  ),
   chevron: (open: boolean) => (
     <svg
       className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -281,6 +291,7 @@ export default function Sidebar({
   const showProjects   = isCEO || isPM || !!(permissions?.tabs.projects);
   const showBizDev     = !!(permissions?.tabs.bizdev);
   const showHR         = isCEO || isFM || isPM;
+  const showASIL       = isCEO || !!(permissions?.tabs.asil);
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
@@ -300,6 +311,7 @@ export default function Sidebar({
 
   const bizdevPaths = ["/astelfin_26/bizdev"];
   const intelPaths  = ["/astelfin_26/intel"];
+  const asilPaths   = ["/astelfin_26/asil"];
 
   const [open, setOpen] = useState<Record<string, boolean>>({
     finance:    pathIn(pathname, financePaths),
@@ -308,6 +320,7 @@ export default function Sidebar({
     hr:         pathIn(pathname, hrPaths),
     bizdev:     pathIn(pathname, bizdevPaths),
     intel:      pathIn(pathname, intelPaths),
+    asil:       pathIn(pathname, asilPaths),
     mypage:     pathIn(pathname, myPaths),
     settings:   pathIn(pathname, settingsPaths),
   });
@@ -321,6 +334,7 @@ export default function Sidebar({
       hr:         prev.hr         || pathIn(pathname, hrPaths),
       bizdev:     prev.bizdev     || pathIn(pathname, ["/astelfin_26/bizdev"]),
       intel:      prev.intel      || pathIn(pathname, intelPaths),
+      asil:       prev.asil       || pathIn(pathname, asilPaths),
       mypage:     prev.mypage     || pathIn(pathname, myPaths),
       settings:   prev.settings   || pathIn(pathname, settingsPaths),
     }));
@@ -490,6 +504,23 @@ export default function Sidebar({
                 {(isCEO || isFM) && navLink("/astelfin_26/training",    "Training / CPD",   Icons.training)}
                 {navLink("/astelfin_26/travel",      "Travel",           Icons.travel)}
                 {navLink("/astelfin_26/contacts",    "Contacts",         Icons.contacts)}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── ASIL — Implementation Lab (CEO + granted) ───── */}
+        {showASIL && (
+          <>
+            <div className="px-3 pt-1">
+              <div className="border-t border-white/10" />
+            </div>
+            {sectionHeader("asil", "ASIL — Implementation Lab", Icons.asil)}
+            {open.asil && (
+              <div className="space-y-0.5">
+                {navLink("/astelfin_26/asil", "Hub", Icons.dashboard)}
+                {navLink("/astelfin_26/asil/pilots", "Pilot Registry", Icons.projects)}
+                {navLink("/astelfin_26/asil/library", "Knowledge Library", Icons.library)}
               </div>
             )}
           </>

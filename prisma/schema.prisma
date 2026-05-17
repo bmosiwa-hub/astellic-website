@@ -151,6 +151,7 @@ model Project {
   milestones         Milestone[]
   budgetLines        BudgetLine[]
   travelRequests     TravelRequest[]
+  pilotProfile       PilotProfile?
 }
 
 model Income {
@@ -1801,4 +1802,132 @@ model DeliverableSubmission {
   updatedAt     DateTime  @updatedAt
 
   @@index([milestoneId, version])
+}
+
+// ── ASIL: Astellic Social Impact Lab ─────────────────────────────────────────
+
+enum PilotPhase {
+  DESIGN
+  IMPLEMENTATION
+  EVALUATION
+  PUBLISHED
+}
+
+enum PilotDomain {
+  HEALTH
+  GOVERNANCE
+  EDUCATION
+  CLIMATE
+}
+
+enum EthicsClearance {
+  NOT_REQUIRED
+  PENDING
+  SUBMITTED
+  CLEARED
+}
+
+enum KnowledgeProductType {
+  LEARNING_REPORT
+  INTELLIGENCE_BRIEF
+  ANNUAL_REVIEW
+  PRACTICE_NOTE
+  WORKING_PAPER
+}
+
+enum KnowledgeProductStatus {
+  DRAFT
+  UNDER_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum IntelConfidence {
+  HIGH
+  MEDIUM
+  PROVISIONAL
+}
+
+enum IntelType {
+  ADVISORY_IMPLICATION
+  METHODOLOGY_FINDING
+  GOVERNANCE_PATTERN
+  POLITICAL_ECONOMY
+  IMPLEMENTATION_RISK
+}
+
+enum IntelTransfer {
+  INTERNAL
+  TRANSFERRED
+  PUBLISHED
+}
+
+model PilotProfile {
+  id                    String          @id @default(cuid())
+  projectId             String          @unique
+  project               Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  pilotCode             String          @unique
+  phase                 PilotPhase      @default(DESIGN)
+  domain                PilotDomain
+  learningQuestions     String[]        @default([])
+  theoryOfChange        String?
+  ethicsClearance       EthicsClearance @default(NOT_REQUIRED)
+  ethicsClearanceRef    String?
+  implementationSites   String[]        @default([])
+  methodologyNotes      String?
+  dataQualityProtocol   String?
+  politicalEconomyNotes String?
+  adaptiveManagementLog Json            @default("[]")
+  advisoryImplications  String?
+  nullResultsNote       String?
+  context               String?
+  archivedAt            DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  knowledgeProducts     KnowledgeProduct[]
+  intelligenceEntries   IntelligenceEntry[]
+}
+
+model KnowledgeProduct {
+  id                   String                 @id @default(cuid())
+  pilotId              String?
+  pilot                PilotProfile?          @relation(fields: [pilotId], references: [id], onDelete: SetNull)
+  title                String
+  productType          KnowledgeProductType
+  domain               PilotDomain
+  description          String?
+  advisoryImplications String[]               @default([])
+  keyLearnings         String[]               @default([])
+  status               KnowledgeProductStatus @default(DRAFT)
+  isPublicFacing       Boolean                @default(false)
+  publishedAt          DateTime?
+  targetAudience       String[]               @default([])
+  citationRef          String?
+  fileUrl              String?
+  filename             String?
+  archivedAt           DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  @@index([status])
+  @@index([domain])
+}
+
+model IntelligenceEntry {
+  id             String          @id @default(cuid())
+  pilotId        String?
+  pilot          PilotProfile?   @relation(fields: [pilotId], references: [id], onDelete: SetNull)
+  type           IntelType
+  domain         PilotDomain
+  content        String
+  confidence     IntelConfidence @default(PROVISIONAL)
+  geography      String[]        @default([])
+  tags           String[]        @default([])
+  transferStatus IntelTransfer   @default(INTERNAL)
+  archivedAt     DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([domain, type])
+  @@index([transferStatus])
 }

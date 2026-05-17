@@ -12,6 +12,7 @@ export interface TabPermissions {
   operations: boolean;  // Operations section
   projects:   boolean;  // Projects section
   bizdev:     boolean;  // Business Development section
+  asil:       boolean;  // ASIL — Implementation Lab
 }
 
 export interface FunctionPermissions {
@@ -44,7 +45,7 @@ export interface EffectivePermissions {
 // ── Role defaults ─────────────────────────────────────────────────────────────
 
 const FULL_PERMISSIONS: EffectivePermissions = {
-  tabs: { finance: true, operations: true, projects: true, bizdev: true },
+  tabs: { finance: true, operations: true, projects: true, bizdev: true, asil: true },
   functions: {
     canAddIncome: true, canAddExpense: true, canAddDebt: true,
     canManageAssets: true, canManageExchangeRates: true, canViewPayroll: true,
@@ -57,7 +58,7 @@ const FULL_PERMISSIONS: EffectivePermissions = {
 };
 
 const FM_DEFAULTS: EffectivePermissions = {
-  tabs: { finance: true, operations: true, projects: false, bizdev: false },
+  tabs: { finance: true, operations: true, projects: false, bizdev: false, asil: false },
   functions: {
     canAddIncome: true, canAddExpense: true, canAddDebt: true,
     canManageAssets: true, canManageExchangeRates: false, canViewPayroll: true,
@@ -70,7 +71,7 @@ const FM_DEFAULTS: EffectivePermissions = {
 };
 
 const PM_DEFAULTS: EffectivePermissions = {
-  tabs: { finance: false, operations: false, projects: true, bizdev: false },
+  tabs: { finance: false, operations: false, projects: true, bizdev: false, asil: false },
   functions: {
     canAddIncome: false, canAddExpense: false, canAddDebt: false,
     canManageAssets: false, canManageExchangeRates: false, canViewPayroll: false,
@@ -83,7 +84,7 @@ const PM_DEFAULTS: EffectivePermissions = {
 };
 
 const STAFF_DEFAULTS: EffectivePermissions = {
-  tabs: { finance: false, operations: false, projects: false, bizdev: false },
+  tabs: { finance: false, operations: false, projects: false, bizdev: false, asil: false },
   functions: {
     canAddIncome: false, canAddExpense: false, canAddDebt: false,
     canManageAssets: false, canManageExchangeRates: false, canViewPayroll: false,
@@ -157,6 +158,7 @@ export const TAB_PATHS: Record<keyof TabPermissions, string[]> = {
   ],
   projects:   ["/astelfin_26/projects", "/astelfin_26/deliverables"],
   bizdev:     ["/astelfin_26/bizdev"],
+  asil:       ["/astelfin_26/asil"],
 };
 
 /** All paths (for /my which is always accessible). */
@@ -203,4 +205,5 @@ export const TAB_FUNCTIONS: Record<keyof TabPermissions, (keyof FunctionPermissi
   operations: ["canCreateInvoice","canManageProcurement","canManagePayables","canManageReceivables"],
   projects:   ["canAddProject"],
   bizdev:     ["canAddOpportunity","canSubmitOpportunity","canRequestOppDeletion","canUpdateBidStatus"],
+  asil:       [],
 };
