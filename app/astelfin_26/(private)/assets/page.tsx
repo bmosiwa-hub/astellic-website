@@ -74,12 +74,12 @@ export default async function AssetsPage() {
         <div className="space-y-2">
           {expiredCount > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
-              ⚠ <strong>{expiredCount}</strong> asset{expiredCount > 1 ? "s have" : " has"} expired insurance. Renew immediately.
+              <strong>Warning:</strong> <strong>{expiredCount}</strong> asset{expiredCount > 1 ? "s have" : " has"} expired insurance. Renew immediately.
             </div>
           )}
           {expiringCount > 0 && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700">
-              🕐 <strong>{expiringCount}</strong> asset{expiringCount > 1 ? "s" : ""} with insurance expiring within 30 days.
+              <strong>{expiringCount}</strong> asset{expiringCount > 1 ? "s" : ""} with insurance expiring within 30 days.
             </div>
           )}
         </div>

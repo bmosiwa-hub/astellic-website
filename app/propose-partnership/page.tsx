@@ -160,7 +160,9 @@ export default function ProposePartnershipPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6 py-20">
         <div className="max-w-lg text-center">
-          <div className="text-5xl mb-6">âœ…</div>
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mx-auto mb-6">
+            <svg className="w-8 h-8 text-green-600" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
           <h1 className="text-3xl font-bold text-brand-navy mb-4">
             Proposal Received
           </h1>

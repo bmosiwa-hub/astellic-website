@@ -285,12 +285,12 @@ export default async function AssetDetailPage({
       {/* Insurance alert */}
       {insExpired && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
-          ⚠ Insurance expired on <strong>{formatDate(ins!.expiryDate)}</strong>. Renew immediately.
+          <strong>Warning:</strong> Insurance expired on <strong>{formatDate(ins!.expiryDate)}</strong>. Renew immediately.
         </div>
       )}
       {insExpiring && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700">
-          🕐 Insurance expires <strong>{formatDate(ins!.expiryDate)}</strong> — within 30 days.
+          Insurance expires <strong>{formatDate(ins!.expiryDate)}</strong> — within 30 days.
         </div>
       )}
 

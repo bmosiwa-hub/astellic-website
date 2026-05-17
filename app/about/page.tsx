@@ -91,7 +91,7 @@ export default function AboutPage() {
                 <div className="grid sm:grid-cols-2 gap-2">
                   {notUs.map((item) => (
                     <div key={item} className="flex items-center gap-2 text-sm text-brand-muted">
-                      <span className="text-gray-300 font-bold">âœ•</span>
+                      <svg className="w-3.5 h-3.5 text-gray-300 shrink-0" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
                       {item}
                     </div>
                   ))}
@@ -228,7 +228,7 @@ export default function AboutPage() {
                       <div className="flex items-center mx-1">
                         <div className="w-4 h-px bg-white/20" />
                         <div className="flex flex-col items-center mx-1">
-                          <span className="text-red-400 font-bold text-xs leading-none">âœ•</span>
+                          <svg className="w-3 h-3 text-red-400" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
                           <span className="text-red-400/60 text-[9px] font-medium mt-0.5 uppercase tracking-wider whitespace-nowrap">gap</span>
                         </div>
                         <div className="w-4 h-px bg-white/20" />
