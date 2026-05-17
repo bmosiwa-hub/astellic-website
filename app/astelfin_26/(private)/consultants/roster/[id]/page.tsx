@@ -43,7 +43,6 @@ export default async function RosterProfilePage({
               currency: true,
             },
           },
-          project: { select: { name: true, status: true } },
         },
       },
     },
@@ -168,19 +167,8 @@ export default async function RosterProfilePage({
                 <div key={c.id} className="py-3 flex items-center justify-between gap-4 flex-wrap">
                   <div>
                     <p className="text-sm font-medium text-brand-navy">
-                      {c.project?.name ?? "Unlinked project"}
+                      {c.name}
                     </p>
-                    {c.project?.status && (
-                      <span
-                        className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${
-                          c.project.status === "ACTIVE"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {c.project.status}
-                      </span>
-                    )}
                   </div>
                   <div className="text-right text-sm">
                     <p className="font-semibold text-brand-navy">
