@@ -12,6 +12,14 @@ enum IncomeType {
   DONATION
 }
 
+enum ConsultantQualification {
+  BACHELORS
+  MASTERS
+  PHD
+  PROFESSIONAL_CERT
+  OTHER
+}
+
 enum DebtStatus {
   ACTIVE
   PAID_OFF
@@ -219,6 +227,8 @@ model Consultant {
   withholdingTaxRate    Float               @default(20) // WHT % on professional fees
   supervisorId          String?             // internal contact / supervisor
   supervisor            Employee?           @relation("ConsultantSupervisor", fields: [supervisorId], references: [id], onDelete: SetNull)
+  rosterProfileId       String?
+  rosterProfile         ConsultantRoster?   @relation("RosterConsultant", fields: [rosterProfileId], references: [id], onDelete: SetNull)
   notes                 String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
@@ -1929,4 +1939,32 @@ model IntelligenceEntry {
 
   @@index([domain, type])
   @@index([transferStatus])
+}
+
+// ── Consultant Roster (Talent Database) ──────────────────────────────────────
+//
+// Separate from the payment-focused Consultant model.
+// Tracks talent profiles for consultants who may or may not have been
+// engaged on a specific project yet.
+
+model ConsultantRoster {
+  id                   String                  @id @default(cuid())
+  name                 String
+  email                String?
+  phone                String?
+  profileSummary       String
+  highestQualification ConsultantQualification @default(MASTERS)
+  areasOfExpertise     String[]                @default([])
+  specialisation       String?
+  nationality          String?
+  notes                String?
+  isAvailable          Boolean                 @default(true)
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  deletedAt            DateTime?
+
+  consultants          Consultant[]            @relation("RosterConsultant")
+
+  @@index([isAvailable])
+  @@index([highestQualification])
 }
