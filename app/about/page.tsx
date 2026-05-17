@@ -37,7 +37,7 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-5 animate-fade-up">
+          <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-5 animate-fade-up">
             About Astellic
           </p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-7 max-w-3xl animate-fade-up delay-100">
@@ -55,7 +55,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-14 items-start">
           <SlideLeft>
             <div>
-              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Who We Are</p>
+              <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">Who We Are</p>
               <h2 className="text-3xl font-bold text-brand-navy mb-8 leading-snug">
                 A specialist advisory firm.<br />African-led. Evidence-driven. Practically useful.
               </h2>
@@ -87,7 +87,7 @@ export default function AboutPage() {
 
               {/* What we are not */}
               <div className="bg-white rounded-xl border border-gray-100 p-5">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-4">What Astellic Is Not</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-4">What Astellic Is Not</p>
                 <div className="grid sm:grid-cols-2 gap-2">
                   {notUs.map((item) => (
                     <div key={item} className="flex items-center gap-2 text-sm text-brand-muted">
@@ -104,7 +104,7 @@ export default function AboutPage() {
             <div className="space-y-3 md:w-56">
               {highlights.map((h) => (
                 <div key={h.label} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-1">{h.label}</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-1">{h.label}</p>
                   <p className="font-semibold text-brand-navy text-sm">{h.value}</p>
                 </div>
               ))}
@@ -112,7 +112,7 @@ export default function AboutPage() {
                 href="/about/our-team"
                 className="block bg-brand-navy text-white rounded-xl p-5 shadow-sm text-center hover:bg-brand-navy/90 transition-colors"
               >
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-1">Leadership</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-1">Leadership</p>
                 <p className="font-semibold text-white text-sm">Meet Dr. Mosiwa →</p>
               </Link>
             </div>
@@ -124,7 +124,7 @@ export default function AboutPage() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-8">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-8">
               On Founding
             </p>
           </FadeUp>
@@ -198,7 +198,7 @@ export default function AboutPage() {
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-4xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-5">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-5">
               The Problem We Solve
             </p>
             <blockquote className="text-2xl md:text-3xl font-bold leading-snug mb-10 max-w-3xl">
@@ -251,7 +251,7 @@ export default function AboutPage() {
             ].map((g, i) => (
               <Reveal key={i} variant="up" delay={i * 80}>
                 <div className="border border-white/10 rounded-xl p-6">
-                  <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-2">{g.label}</p>
+                  <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-2">{g.label}</p>
                   <p className="text-white font-bold text-lg mb-3">{g.stat}</p>
                   <p className="text-gray-400 text-sm leading-relaxed">{g.desc}</p>
                 </div>
@@ -267,7 +267,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-14">
             <SlideLeft>
               <div>
-                <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">What We Do</p>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">What We Do</p>
                 <h2 className="text-2xl font-bold text-brand-navy mb-5">
                   Three Services. Exceptional Depth.
                 </h2>
@@ -304,7 +304,7 @@ export default function AboutPage() {
             </SlideLeft>
             <SlideRight>
               <div>
-                <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Primary Domains</p>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">Primary Domains</p>
                 <h2 className="text-2xl font-bold text-brand-navy mb-5">
                   Where We Currently Work
                 </h2>
@@ -327,7 +327,7 @@ export default function AboutPage() {
                 </div>
                 {/* Engagement model callout */}
                 <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-gold">
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-2">Engagement Model</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-2">Engagement Model</p>
                   <p className="text-brand-navy font-semibold text-sm leading-snug">
                     The person who designs your engagement is the person who delivers it.
                   </p>

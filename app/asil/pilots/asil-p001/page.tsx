@@ -69,7 +69,7 @@ export default function ASILPilot001Page() {
         <div className="max-w-5xl mx-auto">
           <FadeUp>
             <div className="border-l-4 border-brand-gold pl-8 py-2">
-              <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-3">The Central ASIL Question</p>
+              <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-3">The Central ASIL Question</p>
               <p className="text-2xl font-bold text-brand-navy leading-snug max-w-3xl">
                 Why do effective interventions fail during implementation — and what governance architectures
                 translate good interventions into durable outcomes under real community conditions?
@@ -83,7 +83,7 @@ export default function ASILPilot001Page() {
       <section className="py-16 px-6 bg-brand-light border-b border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-8">Why This Case Study</p>
+            <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-8">Why This Case Study</p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-5">
             {[
@@ -146,7 +146,7 @@ export default function ASILPilot001Page() {
               {/* Central intervention */}
               <FadeUp>
                 <div className="bg-brand-navy rounded-2xl p-8">
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">The Central Intervention</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">The Central Intervention</p>
                   <p className="text-gray-200 text-base leading-relaxed">
                     Improved cookstove distribution in three Malawian communities, accompanied by a{" "}
                     <span className="text-brand-gold font-semibold">Community Accountability Committee</span> with
@@ -162,7 +162,7 @@ export default function ASILPilot001Page() {
               {/* Overview */}
               <FadeUp>
                 <div>
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Overview</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Overview</p>
                   <div className="space-y-4">
                     <p className="text-brand-muted text-base leading-relaxed">
                       Clean cooking programmes make an ideal ASIL case study precisely because the intervention is not
@@ -191,7 +191,7 @@ export default function ASILPilot001Page() {
               {/* Learning questions */}
               <FadeUp>
                 <div>
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-5">Key Learning Questions</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-5">Key Learning Questions</p>
                   <div className="space-y-4">
                     {[
                       "Does a purposefully designed community accountability system sustain improved cookstove adoption beyond the sponsored project period — and through precisely what governance mechanisms?",
@@ -211,7 +211,7 @@ export default function ASILPilot001Page() {
               {/* Methodology */}
               <FadeUp>
                 <div>
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-5">Methodology</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-5">Methodology</p>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {[
                       { method: "Community governance design", detail: "Three purposively selected communities. Community Accountability Committee established with an explicit equity mandate and defined decision protocols before distribution commences." },
@@ -237,7 +237,7 @@ export default function ASILPilot001Page() {
 
               {/* Timeline */}
               <div className="bg-brand-light rounded-2xl p-6 border border-gray-100">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Timeline</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Timeline</p>
                 <div className="space-y-4">
                   {[
                     { phase: "Phase 1 — Design", period: "June – August 2026", detail: "Concept note finalisation, ethics submission, community partner engagement, CAC design, site confirmation", active: true },
@@ -262,7 +262,7 @@ export default function ASILPilot001Page() {
 
               {/* Primary domains */}
               <div className="bg-white border border-gray-100 rounded-2xl p-6">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-4">Primary Domains</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-4">Primary Domains</p>
                 <div className="space-y-2">
                   {[
                     { label: "Health", color: "bg-red-100 text-red-700" },
@@ -278,7 +278,7 @@ export default function ASILPilot001Page() {
 
               {/* Knowledge products */}
               <div className="bg-brand-navy rounded-2xl p-6">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Expected Knowledge Products</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Expected Knowledge Products</p>
                 <div className="space-y-3">
                   {[
                     "ASIL Learning Report 001 — Clean Cooking & Women's Health Pilot",
@@ -296,7 +296,7 @@ export default function ASILPilot001Page() {
 
               {/* Strategic significance */}
               <div className="bg-brand-gold/10 border border-brand-gold/20 rounded-2xl p-6">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
                 <p className="text-brand-navy text-sm leading-relaxed">
                   Because the intervention is known-good, the Learning Report&apos;s findings — whether positive
                   or negative — will constitute direct evidence on governance architecture as the binding constraint
@@ -326,7 +326,7 @@ export default function ASILPilot001Page() {
       <section className="py-20 px-6 bg-brand-light border-t border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Cross-Thematic Evidence</p>
+            <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Cross-Thematic Evidence</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               One implementation question. Three domains of evidence.
             </h2>
@@ -390,7 +390,7 @@ export default function ASILPilot001Page() {
 
           <FadeUp>
             <div className="mt-10 bg-brand-navy rounded-2xl p-8">
-              <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Why This Design Choice Matters</p>
+              <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Why This Design Choice Matters</p>
               <p className="text-gray-200 text-base leading-relaxed max-w-3xl">
                 By anchoring Pilot 001 in a case study where the intervention is already known to work,
                 ASIL eliminates the most common confound in implementation research. If adoption fails,
@@ -409,7 +409,7 @@ export default function ASILPilot001Page() {
           <SlideLeft>
             <div className="grid md:grid-cols-[1fr_auto] gap-12 items-start">
               <div>
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Engage with this Pilot</p>
+                <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Engage with this Pilot</p>
                 <h2 className="text-3xl font-bold mb-5 leading-tight max-w-xl">
                   Pilot 001 is open to institutional partners, implementation collaborators, and academic co-investigators.
                 </h2>

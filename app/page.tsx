@@ -141,7 +141,7 @@ export default function Home() {
         {/* Minimal dark scrim — just enough for text legibility, no blue tint */}
         <div className="absolute inset-0 bg-black/40 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
+          <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
             Research · Advisory · Implementation
           </p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl animate-fade-up delay-100">
@@ -197,7 +197,7 @@ export default function Home() {
       <section className="py-24 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <FadeUp className="text-center mb-10">
-            <p className="text-brand-muted text-sm font-bold uppercase tracking-[0.2em] mb-3">
+            <p className="text-brand-muted text-base font-bold uppercase tracking-[0.2em] mb-3">
               Our Operating Model
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
@@ -219,7 +219,7 @@ export default function Home() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <FadeUp className="text-center mb-16">
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-3">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
               What We Do
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-5">
@@ -266,11 +266,11 @@ export default function Home() {
                   {/* Content grid */}
                   <div className="p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start">
                     <div>
-                      <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-3">The Problem</p>
+                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">The Problem</p>
                       <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-3">
+                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">
                         We Help Institutions
                       </p>
                       <ul className="space-y-2">
@@ -283,7 +283,7 @@ export default function Home() {
                       </ul>
                     </div>
                     <div>
-                      <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-3">
+                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">
                         Example Engagements
                       </p>
                       <ul className="space-y-1.5 mb-6">
@@ -311,7 +311,7 @@ export default function Home() {
           <Reveal variant="up" delay={100}>
             <div className="mt-6 bg-brand-navy text-white rounded-2xl p-8 grid md:grid-cols-[1fr_auto] gap-6 items-center lift">
               <div>
-                <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-2">Corporate Track</p>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-2">Corporate Track</p>
                 <h3 className="text-xl font-bold mb-3">Corporate Advisory & Social Investment</h3>
                 <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
                   Most CSR programmes struggle not because of intent, but because evidence,
@@ -349,7 +349,7 @@ export default function Home() {
       <section className="py-20 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp className="text-center mb-14">
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-3">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
               Our Commitments
             </p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -414,7 +414,7 @@ export default function Home() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <FadeUp className="text-center mb-14">
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-3">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
               Who We Work With
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
@@ -456,7 +456,7 @@ export default function Home() {
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-12 text-center">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-12 text-center">
               Institutional Track Record
             </p>
           </FadeUp>
@@ -485,7 +485,7 @@ export default function Home() {
                   },
                 ].map((col, i) => (
                   <Reveal key={col.label} variant="up" delay={i * 80}>
-                    <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
+                    <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">{col.label}</p>
                     <ul className="space-y-2">
                       {col.items.map((item) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
@@ -501,7 +501,7 @@ export default function Home() {
               {/* Methodological strengths */}
               <Reveal variant="up" delay={150}>
                 <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-5">
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-4">Methodological Strengths</p>
+                  <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Methodological Strengths</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       "Political Economy Analysis (PEA)",
@@ -538,7 +538,7 @@ export default function Home() {
           <FadeUp>
             <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
               <div>
-                <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-3">
+                <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
                   Astellic Insights
                 </p>
                 <h2 className="text-3xl font-bold text-brand-navy mb-3">
@@ -566,7 +566,7 @@ export default function Home() {
                   className="group bg-white rounded-2xl overflow-hidden flex flex-col lift"
                 >
                   <div className={`${card.color} px-5 py-2.5`}>
-                    <span className="text-sm font-bold uppercase tracking-widest opacity-80">{card.category}</span>
+                    <span className="text-base font-bold uppercase tracking-widest opacity-80">{card.category}</span>
                   </div>
                   <div className="p-6 flex flex-col gap-3 flex-1">
                     <h3 className="font-bold text-brand-navy text-base leading-snug group-hover:text-brand-teal transition-colors">
@@ -588,7 +588,7 @@ export default function Home() {
       <section className="bg-brand-navy text-white py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <FadeUp>
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-6">
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-6">
               Start Here
             </p>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">

@@ -156,7 +156,7 @@ export default function InsightsPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-5">
+          <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-5">
             Astellic Insights
           </p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-7 max-w-3xl">
@@ -209,7 +209,7 @@ export default function InsightsPage() {
         <div className="max-w-3xl mx-auto">
           <FadeUp>
             <div className="border-l-4 border-brand-gold pl-6">
-              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-2">
+              <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-2">
                 Editorial Position
               </p>
               <p className="text-brand-navy text-xl font-semibold leading-snug mb-3">
@@ -231,7 +231,7 @@ export default function InsightsPage() {
       <section className="py-16 px-6 bg-brand-light">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest">Lead Brief</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-widest">Lead Brief</p>
             <span className="text-xs text-brand-muted border border-dashed border-gray-300 rounded-full px-3 py-1">
               Forthcoming
             </span>
@@ -240,7 +240,7 @@ export default function InsightsPage() {
             <div className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 grid md:grid-cols-[240px_1fr]">
               <div className={`${featured.categoryColor} text-white p-10 flex flex-col justify-between`}>
                 <div>
-                  <p className="text-sm font-bold uppercase tracking-widest opacity-60 mb-1">
+                  <p className="text-base font-bold uppercase tracking-widest opacity-60 mb-1">
                     {featured.category}
                   </p>
                   <p className="text-white/50 text-xs mt-1">{featured.issueLabel}</p>
@@ -300,7 +300,7 @@ export default function InsightsPage() {
               <Reveal key={article.title} variant="up" delay={i * 80}>
                 <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col lift">
                   <div className={`${article.categoryColor} text-white px-5 py-2.5`}>
-                    <span className="text-sm font-bold uppercase tracking-widest opacity-80">
+                    <span className="text-base font-bold uppercase tracking-widest opacity-80">
                       {article.category}
                     </span>
                   </div>
@@ -338,7 +338,7 @@ export default function InsightsPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <SlideLeft>
               <div>
-                <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">
+                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">
                   Stay Informed
                 </p>
                 <h2 className="text-3xl font-bold mb-5 leading-snug">
