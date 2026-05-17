@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@prisma/client";
 
-type PilotDomain         = "HEALTH" | "GOVERNANCE" | "EDUCATION" | "CLIMATE";
+type PilotDomain         = "HEALTH" | "ENVIRONMENTAL_SUSTAINABILITY" | "GENDER";
 type PilotPhase          = "DESIGN" | "IMPLEMENTATION" | "EVALUATION" | "PUBLISHED";
 type EthicsClearance     = "NOT_REQUIRED" | "PENDING" | "SUBMITTED" | "CLEARED";
 type KnowledgeProductType   = "LEARNING_REPORT" | "INTELLIGENCE_BRIEF" | "ANNUAL_REVIEW" | "PRACTICE_NOTE" | "WORKING_PAPER";

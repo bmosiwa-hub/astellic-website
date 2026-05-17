@@ -54,10 +54,9 @@ export default async function NewPilotPage() {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-navy"
               >
                 <option value="">Select domain…</option>
-                <option value="HEALTH">Health &amp; Nutrition Systems</option>
-                <option value="GOVERNANCE">Governance &amp; Public Sector Reform</option>
-                <option value="EDUCATION">Education &amp; Social Systems</option>
-                <option value="CLIMATE">Climate, Agriculture &amp; Sustainability</option>
+                <option value="HEALTH">Health</option>
+                <option value="ENVIRONMENTAL_SUSTAINABILITY">Environmental Sustainability</option>
+                <option value="GENDER">Gender</option>
               </select>
             </div>
           </div>

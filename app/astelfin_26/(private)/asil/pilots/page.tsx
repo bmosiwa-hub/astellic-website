@@ -26,16 +26,14 @@ const PHASE_COLORS: Record<string, string> = {
 
 const DOMAIN_COLORS: Record<string, string> = {
   HEALTH: "bg-red-100 text-red-700",
-  GOVERNANCE: "bg-brand-navy/10 text-brand-navy",
-  EDUCATION: "bg-green-100 text-green-700",
-  CLIMATE: "bg-teal-100 text-teal-700",
+  ENVIRONMENTAL_SUSTAINABILITY: "bg-teal-100 text-teal-700",
+  GENDER: "bg-purple-100 text-purple-700",
 };
 
 const DOMAIN_LABELS: Record<string, string> = {
-  HEALTH: "Health & Nutrition Systems",
-  GOVERNANCE: "Governance & Public Sector Reform",
-  EDUCATION: "Education & Social Systems",
-  CLIMATE: "Climate, Agriculture & Sustainability",
+  HEALTH: "Health",
+  ENVIRONMENTAL_SUSTAINABILITY: "Environmental Sustainability",
+  GENDER: "Gender",
 };
 
 const ETHICS_LABELS: Record<string, string> = {

@@ -25,21 +25,19 @@ const PRODUCT_STATUS_COLORS: Record<string, string> = {
 
 const DOMAIN_COLORS: Record<string, string> = {
   HEALTH: "bg-red-100 text-red-700",
-  GOVERNANCE: "bg-indigo-100 text-indigo-700",
-  EDUCATION: "bg-yellow-100 text-yellow-700",
-  CLIMATE: "bg-teal-100 text-teal-700",
+  ENVIRONMENTAL_SUSTAINABILITY: "bg-teal-100 text-teal-700",
+  GENDER: "bg-purple-100 text-purple-700",
 };
 
 const DOMAIN_LABELS: Record<string, string> = {
   HEALTH: "Health",
-  GOVERNANCE: "Governance",
-  EDUCATION: "Education",
-  CLIMATE: "Climate",
+  ENVIRONMENTAL_SUSTAINABILITY: "Environmental Sustainability",
+  GENDER: "Gender",
 };
 
 const TYPES   = ["LEARNING_REPORT", "INTELLIGENCE_BRIEF", "ANNUAL_REVIEW", "PRACTICE_NOTE", "WORKING_PAPER"];
 const STATUSES = ["DRAFT", "UNDER_REVIEW", "PUBLISHED", "ARCHIVED"];
-const DOMAINS  = ["HEALTH", "GOVERNANCE", "EDUCATION", "CLIMATE"];
+const DOMAINS  = ["HEALTH", "ENVIRONMENTAL_SUSTAINABILITY", "GENDER"];
 
 export default async function KnowledgeLibraryPage({
   searchParams,

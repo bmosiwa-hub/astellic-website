@@ -1815,9 +1815,8 @@ enum PilotPhase {
 
 enum PilotDomain {
   HEALTH
-  GOVERNANCE
-  EDUCATION
-  CLIMATE
+  ENVIRONMENTAL_SUSTAINABILITY
+  GENDER
 }
 
 enum EthicsClearance {

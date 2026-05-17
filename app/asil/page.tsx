@@ -47,43 +47,33 @@ const modelPhases = [
 const thematicDomains = [
   {
     num: "01",
-    title: "Health & Nutrition Systems",
+    title: "Health",
     img: "/images/thematic-health.jpg",
     overlayHex: "#1B2A4A",
     href: "/thematic-areas/health",
-    systemsIssue: "Implementation system failures, not resource constraints, explain most persistent gaps between health policy intent and service delivery.",
-    focus: "ASIL's health pilots investigate specific, bounded questions about implementation failure: why do known-effective community health interventions fail to produce durable outcomes, and what governance architectures change that? The inaugural pilot uses clean cooking as a case study in community-governed women's health outcomes.",
+    systemsIssue: "Implementation system failures, not resource constraints, explain most persistent gaps between health policy intent and health service delivery in African contexts.",
+    focus: "ASIL's health pilots investigate why known-effective community health interventions fail to produce durable outcomes — and what governance architectures change that. The inaugural pilot uses clean cooking as a case study in community-governed women's health outcomes.",
     strategicValue: "Documented health implementation evidence positions Astellic as a firm that has not just advised on health systems — but designed, managed, and honestly evaluated health system interventions under real conditions.",
   },
   {
     num: "02",
-    title: "Governance & Public Sector Reform",
-    img: "/images/thematic-governance.jpg",
-    overlayHex: "#0D7A6E",
-    href: "/thematic-areas/governance",
-    systemsIssue: "Most governance advisory is analytically competent but institutionally thin — technically correct and politically undeliverable.",
-    focus: "ASIL's governance pilots focus on accountability system design in decentralised service delivery, the gap between legislative intent and administrative capacity, and citizen engagement mechanisms that improve governance responsiveness rather than simulate it.",
-    strategicValue: "Governance implementation intelligence positions Astellic for complex, high-value advisory where contextually grounded implementation experience — not technical competence alone — is the differentiator.",
-  },
-  {
-    num: "03",
-    title: "Education & Social Systems",
-    img: "/images/thematic-education.jpg",
-    overlayHex: "#2D4A1E",
-    href: "/thematic-areas/education",
-    systemsIssue: "The implementation systems that determine whether educational investment reaches its objectives remain chronically understudied.",
-    focus: "ASIL's education pilots prioritise implementation systems questions over pedagogical content: MERL system design for education management information systems; governance arrangements that predict teacher performance in low-resource settings; institutional conditions for evidence use in district planning cycles.",
-    strategicValue: "A documented education implementation evidence base allows Astellic to pursue education advisory and evaluation assignments with demonstrable credentials extending beyond the founder's primary health specialisation.",
-  },
-  {
-    num: "04",
-    title: "Climate, Agriculture & Sustainability",
+    title: "Environmental Sustainability",
     img: "/images/thematic-climate.jpg",
     overlayHex: "#1A3A2A",
     href: "/thematic-areas/climate",
-    systemsIssue: "Climate finance is accelerating into African communities and systems that lack the institutional capacity to govern and account for it.",
-    focus: "ASIL targets the governance, accountability, and adaptive management systems that determine whether climate investment reaches intended outcomes — not the technical or scientific dimensions of climate response, but the institutional architecture required to deliver it.",
-    strategicValue: "As climate finance flows increase, the demand for credible implementation advisory in this sector will grow significantly. ASIL's documented pilots create the institutional credibility to compete for these opportunities.",
+    systemsIssue: "Environmental and clean energy investments consistently fail to produce durable behaviour change — not because the interventions are ineffective, but because the institutional conditions for sustained adoption are absent.",
+    focus: "ASIL investigates the governance and accountability architectures that determine whether environmental investments — clean energy, natural resource management, climate-resilient practice — produce sustained outcomes rather than brief, sponsored-period adoption.",
+    strategicValue: "As climate and environmental finance accelerates into communities that lack institutional capacity to govern it, demand for credible implementation advisory grows. ASIL's documented pilots create the credentials to compete for this work.",
+  },
+  {
+    num: "03",
+    title: "Gender",
+    img: "/images/thematic-governance.jpg",
+    overlayHex: "#3D1A47",
+    href: "/thematic-areas/gender",
+    systemsIssue: "Gender equity commitments in development programmes routinely fail at the implementation level — not because intentions are absent, but because the governance systems designed to operationalise them are insufficient.",
+    focus: "ASIL's gender pilots investigate what accountability architectures actually produce equitable outcomes for women — not gender-sensitive programme design, but the governance conditions that determine whether women benefit equitably from implementation in practice.",
+    strategicValue: "Gender-responsive implementation evidence positions Astellic to pursue programming where demonstrated equity outcomes — not just equity commitments — are the differentiator. The clean cooking pilot already generates core gender equity implementation evidence.",
   },
 ];
 
@@ -394,10 +384,10 @@ export default function ASILPage() {
           <FadeUp>
             <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Thematic Focus</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              Four domains. One institutional intelligence purpose.
+              Three domains. One institutional intelligence purpose.
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              ASIL's thematic domains mirror Astellic's four areas of advisory practice — but ASIL's engagement with each is distinctive: pilot-based, practice-grounded, and oriented toward generating reusable institutional intelligence rather than delivering services. Each domain represents a sustained area of learning inquiry, not a portfolio of projects.
+              ASIL's three thematic domains — Health, Environmental Sustainability, and Gender — reflect the implementation questions where Astellic has the deepest advisory positioning and the greatest need for practice-grounded evidence. Each domain is a sustained area of learning inquiry, not a portfolio of projects. And as Pilot 001 demonstrates, a single well-designed pilot can generate evidence across all three simultaneously.
             </p>
           </FadeUp>
 
@@ -541,7 +531,7 @@ export default function ASILPage() {
             {/* Pilot header band */}
             <div className="bg-brand-navy px-8 py-5 grid md:grid-cols-4 gap-6">
               {[
-                { label: "Primary Domain", value: "Health & Nutrition Systems" },
+                { label: "Primary Domain", value: "Health · Environmental Sustainability · Gender" },
                 { label: "Geography", value: "Three Pilot Communities, Malawi" },
                 { label: "Duration", value: "12 months · 2025–2026" },
                 { label: "Expected Report", value: "Q4 2026 / Q1 2027" },
@@ -686,45 +676,38 @@ export default function ASILPage() {
           <FadeUp>
             <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Pilot 001 — Cross-Thematic Scope</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              One implementation question. Four domains of evidence.
+              One implementation question. Three domains of evidence.
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-4">
-              The central ASIL question — why effective interventions fail during implementation — does not respect thematic boundaries. The clean cooking and women&apos;s health case study generates implementation intelligence simultaneously across health, governance, climate, and education. Not because the pilot was designed to cover every domain, but because implementation failure is inherently cross-cutting.
+              The central ASIL question — why effective interventions fail during implementation — does not respect thematic boundaries. The clean cooking and women&apos;s health case study generates implementation intelligence across all three ASIL domains simultaneously. Not because the pilot was designed to cover each domain, but because implementation failure is inherently cross-cutting.
             </p>
             <p className="text-brand-muted text-base leading-relaxed max-w-2xl mb-14">
               Each domain asks a version of the same question through a different institutional lens. The Learning Report will address each lens separately — and the synthesis will be the most significant output.
             </p>
           </FadeUp>
 
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-3 gap-5">
             {[
               {
                 num: "01",
-                domain: "Health & Nutrition Systems",
+                domain: "Health",
                 question: "Why does a known-effective women's health intervention fail to produce durable health outcomes?",
                 mechanism: "Because the failure is not in the intervention — it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
                 learning: "Governance design as the binding constraint on community health intervention durability; equity-disaggregated adoption as a health outcome metric; community accountability as a health systems tool.",
               },
               {
                 num: "02",
-                domain: "Governance & Public Sector Reform",
-                question: "What accountability architecture actually sustains community-level behaviour change over 12 months?",
-                mechanism: "The Community Accountability Committee is the governance experiment. The pilot tests which design features — composition, mandate specificity, evidence protocols, decision authority — produce real responses when adoption stalls, and which produce only process compliance.",
-                learning: "Community accountability committee design principles; equity mandate operationalisation in practice; adaptive governance protocols and their real-world conditions of effectiveness.",
+                domain: "Environmental Sustainability",
+                question: "Why do household clean energy transitions fail to persist — and what governance architecture changes that?",
+                mechanism: "Cookstove abandonment is a household energy governance failure. As climate and clean energy finance accelerates into communities, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
+                learning: "Governance architecture for durable household energy transitions; community accountability as a clean energy delivery mechanism; institutional conditions for sustained low-carbon behaviour change.",
               },
               {
                 num: "03",
-                domain: "Climate, Agriculture & Sustainability",
-                question: "Why do household clean energy transitions fail to persist — and what changes that?",
-                mechanism: "Cookstove abandonment is a household energy governance failure. As climate finance accelerates into community-level clean energy interventions, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
-                learning: "Governance architecture for durable household energy transitions; community accountability as a clean energy delivery mechanism; implementation conditions for sustained low-carbon behaviour change.",
-              },
-              {
-                num: "04",
-                domain: "Education & Social Systems",
-                question: "What happens to community decision-making when communities hold their own health evidence?",
-                mechanism: "The Women's Health Evidence System is not only an adoption tracking tool — it is a social learning intervention. The pilot examines whether community ownership of health data changes the quality of accountability responses, and what that implies for evidence-informed community governance more broadly.",
-                learning: "Community data literacy as a governance mechanism; evidence ownership and its effect on accountability responsiveness; social learning dynamics within structured community governance systems.",
+                domain: "Gender",
+                question: "What governance architecture is required to produce and sustain equitable outcomes for women specifically?",
+                mechanism: "The Community Accountability Committee has an explicit equity mandate — it is not just a governance body, it is a gender accountability instrument. The pilot tests whether a community-level governance structure with a specific women's equity mandate can operationalise that mandate in practice.",
+                learning: "Equity mandate design and operationalisation; community governance as a gender accountability mechanism; conditions under which gender equity commitments translate into durable implementation outcomes.",
               },
             ].map((item, i) => (
               <ScaleIn key={i} delay={i * 80}>
