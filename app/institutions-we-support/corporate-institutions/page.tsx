@@ -90,7 +90,7 @@ export default function CorporateInstitutionsPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5">
+          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-5">
             Corporate Advisory & Social Investment
           </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6 max-w-3xl">
@@ -122,7 +122,7 @@ export default function CorporateInstitutionsPage() {
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-5">The Problem</p>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-5">The Problem</p>
             <h2 className="text-3xl font-bold text-brand-navy mb-4 max-w-2xl leading-snug">
               Why most CSI programmes cannot demonstrate the impact they claim.
             </h2>
@@ -154,7 +154,7 @@ export default function CorporateInstitutionsPage() {
       <section className="py-12 px-6 bg-brand-navy text-white">
         <div className="max-w-4xl mx-auto text-center">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-5">Astellic&apos;s Position</p>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-5">Astellic&apos;s Position</p>
             <p className="text-2xl md:text-3xl font-bold leading-snug max-w-3xl mx-auto">
               &ldquo;We are not a CSR activation agency. We are a governance-oriented,
               evidence-driven advisory firm that helps corporations treat social investment
@@ -168,7 +168,7 @@ export default function CorporateInstitutionsPage() {
       <section id="services" className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">What We Do</p>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">What We Do</p>
             <h2 className="text-3xl font-bold text-brand-navy mb-12">Four Service Areas</h2>
           </FadeUp>
           <div className="space-y-8">
@@ -183,7 +183,7 @@ export default function CorporateInstitutionsPage() {
                   <p className="text-brand-muted text-base leading-relaxed">{svc.desc}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">Example Engagements</p>
+                  <p className="text-sm font-bold uppercase tracking-widest text-brand-muted mb-3">Example Engagements</p>
                   <ul className="space-y-1.5 mb-5">
                     {svc.engagements.map((e) => (
                       <li key={e} className="text-sm text-brand-muted flex items-start gap-2">
@@ -234,7 +234,7 @@ export default function CorporateInstitutionsPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <SlideLeft>
           <div>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Why Astellic</p>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Why Astellic</p>
             <h2 className="text-2xl font-bold text-brand-navy mb-5 leading-snug">
               Development expertise applied to corporate mandates.
             </h2>
@@ -277,7 +277,7 @@ export default function CorporateInstitutionsPage() {
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Start Here</p>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Start Here</p>
             <h2 className="text-3xl font-bold mb-5">
               Make Your Social Investment Credible.
             </h2>

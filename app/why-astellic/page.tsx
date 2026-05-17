@@ -92,7 +92,7 @@ export default function WhyAstellicPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5">
+          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-5">
             Why Astellic
           </p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-7 max-w-3xl">
@@ -111,7 +111,7 @@ export default function WhyAstellicPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14 items-start">
           <SlideLeft>
             <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Our Positioning</p>
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Our Positioning</p>
               <h2 className="text-3xl font-bold text-brand-navy mb-6 leading-snug">
                 Specialist African advisory firm. Three services. Exceptional depth.
               </h2>
@@ -143,7 +143,7 @@ export default function WhyAstellicPage() {
                   <div className="bg-white rounded-xl border border-gray-100 p-5 flex gap-4 items-start lift">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 shrink-0" />
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-widest text-brand-muted">{f.label}: </span>
+                      <span className="text-sm font-bold uppercase tracking-widest text-brand-muted">{f.label}: </span>
                       <span className="text-sm font-medium text-brand-navy">{f.value}</span>
                     </div>
                   </div>
@@ -159,7 +159,7 @@ export default function WhyAstellicPage() {
         <div className="max-w-5xl mx-auto">
           <FadeUp>
             <div className="text-center mb-14">
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-3">
                 Operating Principles
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
@@ -199,7 +199,7 @@ export default function WhyAstellicPage() {
         <div className="max-w-5xl mx-auto">
           <FadeUp>
             <div className="text-center mb-12">
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-3">
                 Comparative Positioning
               </p>
               <h2 className="text-3xl font-bold text-brand-navy mb-4">
@@ -213,7 +213,7 @@ export default function WhyAstellicPage() {
           </FadeUp>
           <ScaleIn delay={100}>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="grid grid-cols-[1fr_1fr_1fr] bg-brand-navy text-white text-xs font-bold uppercase tracking-widest">
+              <div className="grid grid-cols-[1fr_1fr_1fr] bg-brand-navy text-white text-sm font-bold uppercase tracking-widest">
                 <div className="px-6 py-4">Compared To</div>
                 <div className="px-6 py-4 border-l border-white/10">Their Limitation</div>
                 <div className="px-6 py-4 border-l border-white/10 text-brand-gold">Astellic&apos;s Distinction</div>
@@ -244,7 +244,7 @@ export default function WhyAstellicPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-12">
           <FadeUp>
             <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Sectors</p>
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Sectors</p>
               <h3 className="text-xl font-bold text-brand-navy mb-6">Where We Have Worked</h3>
               <div className="space-y-3">
                 {sectors.map((s) => (
@@ -258,7 +258,7 @@ export default function WhyAstellicPage() {
           </FadeUp>
           <FadeUp delay={80}>
             <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Clients</p>
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Clients</p>
               <h3 className="text-xl font-bold text-brand-navy mb-6">Who We Have Served</h3>
               <div className="space-y-3">
                 {clientCategories.map((c) => (
@@ -276,7 +276,7 @@ export default function WhyAstellicPage() {
           </FadeUp>
           <FadeUp delay={160}>
             <div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">Methods</p>
+              <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-4">Methods</p>
               <h3 className="text-xl font-bold text-brand-navy mb-6">Methodological Strengths</h3>
               <div className="space-y-3">
                 {[

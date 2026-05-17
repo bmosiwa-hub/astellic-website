@@ -47,7 +47,7 @@ export default function OurTeamPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-5">
+          <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-5">
             Our Team
           </p>
           <h1 className="text-5xl font-bold leading-tight mb-6">

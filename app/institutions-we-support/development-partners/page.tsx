@@ -162,7 +162,7 @@ export default function DevelopmentPartnersPage() {
           </SlideLeft>
           <SlideRight>
           <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-            <p className="text-xs font-bold text-brand-teal uppercase tracking-widest mb-6">The Astellic Difference</p>
+            <p className="text-sm font-bold text-brand-teal uppercase tracking-widest mb-6">The Astellic Difference</p>
             <div className="space-y-5">
               {[
                 { label: "Design", value: "Evidence-based, context-adapted programme architecture" },

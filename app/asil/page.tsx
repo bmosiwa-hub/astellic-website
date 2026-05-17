@@ -47,33 +47,43 @@ const modelPhases = [
 const thematicDomains = [
   {
     num: "01",
-    title: "Health",
+    title: "Health & Nutrition Systems",
     img: "/images/thematic-health.jpg",
     overlayHex: "#1B2A4A",
     href: "/thematic-areas/health",
-    systemsIssue: "Implementation system failures, not resource constraints, explain most persistent gaps between health policy intent and health service delivery in African contexts.",
-    focus: "ASIL's health pilots investigate why known-effective community health interventions fail to produce durable outcomes — and what governance architectures change that. The inaugural pilot uses clean cooking as a case study in community-governed women's health outcomes.",
-    strategicValue: "Documented health implementation evidence positions Astellic as a firm that has not just advised on health systems — but designed, managed, and honestly evaluated health system interventions under real conditions.",
+    systemsIssue: "Implementation system failures — not resource constraints or inadequate evidence — explain most persistent gaps between health and nutrition policy intent and service delivery outcomes across African contexts.",
+    focus: "ASIL's health pilots investigate why known-effective community health and nutrition interventions fail to produce durable outcomes, and what governance architectures change that. The inaugural pilot uses clean cooking as a case study in community-governed women's health outcomes.",
+    strategicValue: "Documented health implementation evidence positions Astellic as a firm that has not just advised on health systems — but designed, managed, and honestly evaluated interventions under real conditions and published what it learned.",
   },
   {
     num: "02",
-    title: "Environmental Sustainability",
-    img: "/images/thematic-climate.jpg",
-    overlayHex: "#1A3A2A",
-    href: "/thematic-areas/climate",
-    systemsIssue: "Environmental and clean energy investments consistently fail to produce durable behaviour change — not because the interventions are ineffective, but because the institutional conditions for sustained adoption are absent.",
-    focus: "ASIL investigates the governance and accountability architectures that determine whether environmental investments — clean energy, natural resource management, climate-resilient practice — produce sustained outcomes rather than brief, sponsored-period adoption.",
-    strategicValue: "As climate and environmental finance accelerates into communities that lack institutional capacity to govern it, demand for credible implementation advisory grows. ASIL's documented pilots create the credentials to compete for this work.",
+    title: "Governance & Public Sector Reform",
+    img: "/images/thematic-governance.jpg",
+    overlayHex: "#2A1B3A",
+    href: "/thematic-areas/governance",
+    systemsIssue: "Governance reform programmes consistently produce policy change without institutional change — because the accountability architectures that determine whether reforms hold are rarely designed with the same rigour as the reforms themselves.",
+    focus: "ASIL's governance pilots investigate what accountability, data-use, and institutional design architectures are required to make public sector reform durable — from district health management systems to decentralised service delivery governance.",
+    strategicValue: "Governance implementation evidence distinguishes Astellic from analytical-only advisory firms in procurement processes where demonstrated practical governance engagement — not just frameworks — is the differentiator.",
   },
   {
     num: "03",
-    title: "Gender",
-    img: "/images/thematic-governance.jpg",
-    overlayHex: "#3D1A47",
-    href: "/thematic-areas/gender",
-    systemsIssue: "Gender equity commitments in development programmes routinely fail at the implementation level — not because intentions are absent, but because the governance systems designed to operationalise them are insufficient.",
-    focus: "ASIL's gender pilots investigate what accountability architectures actually produce equitable outcomes for women — not gender-sensitive programme design, but the governance conditions that determine whether women benefit equitably from implementation in practice.",
-    strategicValue: "Gender-responsive implementation evidence positions Astellic to pursue programming where demonstrated equity outcomes — not just equity commitments — are the differentiator. The clean cooking pilot already generates core gender equity implementation evidence.",
+    title: "Education & Social Systems",
+    img: "/images/thematic-education.jpg",
+    overlayHex: "#1A2A3A",
+    href: "/thematic-areas/education",
+    systemsIssue: "Social protection and education delivery programmes regularly fail to reach intended beneficiaries — not because the designs are inadequate, but because implementation systems are not built to navigate the political economies and institutional constraints within which they operate.",
+    focus: "ASIL investigates the implementation conditions — governance design, institutional incentive structures, community accountability architectures — that determine whether social programmes produce durable outcomes for the populations they are designed to serve.",
+    strategicValue: "Implementation evidence in education and social systems positions Astellic to compete for increasingly rigorous donor mandates requiring demonstrated adaptive management, honest outcome evaluation, and evidence of community-level accountability.",
+  },
+  {
+    num: "04",
+    title: "Climate Agriculture & Sustainability",
+    img: "/images/thematic-climate.jpg",
+    overlayHex: "#1A3A2A",
+    href: "/thematic-areas/climate",
+    systemsIssue: "Environmental, agricultural, and climate-resilient practice investments consistently fail to produce durable behaviour change — not because the interventions are ineffective, but because the institutional conditions for sustained adoption are absent.",
+    focus: "ASIL investigates the governance architectures that determine whether environmental investments — clean energy, climate-resilient agricultural practice, natural resource management — produce sustained outcomes rather than brief, sponsored-period adoption.",
+    strategicValue: "As climate and environmental finance accelerates into communities that lack institutional governance capacity, demand for credible implementation advisory grows. ASIL's documented pilots create the credentials to compete for this work.",
   },
 ];
 
@@ -187,7 +197,7 @@ export default function ASILPage() {
           <div className="flex items-center gap-4 mb-8">
             <div className="flex items-center gap-2.5 bg-brand-gold/15 border border-brand-gold/30 rounded-full px-4 py-1.5">
               <span className="w-2 h-2 rounded-full bg-brand-gold" />
-              <span className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">Astellic Social Impact Lab</span>
+              <span className="text-brand-gold text-base font-bold uppercase tracking-[0.2em]">Astellic Social Impact Lab</span>
             </div>
           </div>
 
@@ -206,10 +216,10 @@ export default function ASILPage() {
 
           <div className="flex flex-wrap gap-4">
             <Link
-              href="#pilot-001"
+              href="#pilots"
               className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-7 py-3.5 rounded transition-all duration-200 text-sm"
             >
-              Explore Pilot 001
+              Explore Active Pilots
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -242,9 +252,9 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">What ASIL Is</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">What ASIL Is</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-6 max-w-3xl">
-              A systems laboratory. Not a charitable programme.
+              A structured implementation laboratory.
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
               ASIL occupies a specific and deliberately underoccupied position in the African development landscape: the implementation laboratory that takes ideas seriously enough to test them, and tests them rigorously enough to know what actually happened.
@@ -253,7 +263,7 @@ export default function ASILPage() {
 
           <SlideLeft>
             <div className="bg-brand-navy rounded-2xl p-8 max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-6">ASIL is</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-6">ASIL is</p>
               <ul className="space-y-4">
                 {[
                   "A structured implementation laboratory embedded within Astellic's architecture",
@@ -280,7 +290,7 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-brand-light border-t border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">The Problem</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">The Problem</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               Why implementation intelligence is missing — and why it matters.
             </h2>
@@ -294,7 +304,7 @@ export default function ASILPage() {
               <FadeUp key={i}>
                 <div className={`grid md:grid-cols-[120px_1fr] gap-8 ${i < implementationGapPoints.length - 1 ? "pb-12 mb-12 border-b border-gray-200" : ""}`}>
                   <div>
-                    <span className="inline-block text-xs font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/10 border border-brand-gold/20 px-3 py-1.5 rounded-full">{point.stat}</span>
+                    <span className="inline-block text-sm font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/10 border border-brand-gold/20 px-3 py-1.5 rounded-full">{point.stat}</span>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-brand-navy mb-3">{point.headline}</h3>
@@ -321,7 +331,7 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">How It Works</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">How It Works</p>
             <h2 className="text-4xl font-bold leading-tight mb-4 max-w-3xl">
               The ASIL Operating Model
             </h2>
@@ -359,7 +369,7 @@ export default function ASILPage() {
           {/* Evidence standards callout */}
           <FadeUp>
             <div className="mt-16 bg-white/5 border border-white/10 rounded-2xl p-8">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-5">Evidence Standards</p>
+              <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-5">Evidence Standards</p>
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   "All data collection protocols are documented before implementation — not constructed post-hoc to justify outcomes.",
@@ -382,12 +392,12 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Thematic Focus</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Thematic Focus</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              Three domains. One institutional intelligence purpose.
+              Four domains. One institutional intelligence purpose.
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              ASIL's three thematic domains — Health, Environmental Sustainability, and Gender — reflect the implementation questions where Astellic has the deepest advisory positioning and the greatest need for practice-grounded evidence. Each domain is a sustained area of learning inquiry, not a portfolio of projects. And as Pilot 001 demonstrates, a single well-designed pilot can generate evidence across all three simultaneously.
+              ASIL pilots are conducted across Astellic's four institutional thematic areas — the domains where we have the deepest advisory positioning and the greatest need for practice-grounded implementation evidence. Each domain is a sustained area of learning inquiry, not a portfolio of projects. A well-designed pilot, like Pilot 001, can generate implementation intelligence that speaks across multiple domains simultaneously.
             </p>
           </FadeUp>
 
@@ -416,15 +426,15 @@ export default function ASILPage() {
                     {/* Content panel */}
                     <div className="p-8 grid md:grid-cols-3 gap-6">
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-brand-gold mb-2">Systems Issue</p>
+                        <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-2">Systems Issue</p>
                         <p className="text-brand-muted text-sm leading-relaxed">{domain.systemsIssue}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-brand-teal mb-2">Lab Focus</p>
+                        <p className="text-sm font-bold uppercase tracking-widest text-brand-teal mb-2">Lab Focus</p>
                         <p className="text-brand-muted text-sm leading-relaxed">{domain.focus}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-brand-navy mb-2">Strategic Value</p>
+                        <p className="text-sm font-bold uppercase tracking-widest text-brand-navy mb-2">Strategic Value</p>
                         <p className="text-brand-muted text-sm leading-relaxed">{domain.strategicValue}</p>
                       </div>
                     </div>
@@ -436,315 +446,120 @@ export default function ASILPage() {
         </div>
       </section>
 
-      {/* ── 6. PILOT 001 ─────────────────────────────────────────────────── */}
-      <section id="pilot-001" className="py-24 px-6 bg-brand-light border-t border-gray-200">
-        <div className="max-w-5xl mx-auto">
-
-          {/* The ASIL question — framing block above the pilot */}
-          <FadeUp>
-            <div className="mb-16 border-l-4 border-brand-gold pl-8 py-2">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-3">The Central ASIL Question</p>
-              <p className="text-2xl font-bold text-brand-navy leading-snug max-w-3xl">
-                Why do effective interventions fail during implementation — and what governance architectures translate good interventions into durable outcomes under real community conditions?
-              </p>
-            </div>
-          </FadeUp>
-
-          <FadeUp>
-            <div className="flex items-center gap-4 mb-3">
-              <div className="flex items-center gap-2 bg-brand-gold text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
-                Active
-              </div>
-              <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">ASIL Pilot 001 · ASIL-P001-MW-2025 · Case Study</p>
-            </div>
-            <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-3 max-w-3xl">
-              Clean Cooking and Women&apos;s Health
-            </h2>
-            <p className="text-brand-navy/60 text-base font-medium mb-4 max-w-2xl">
-              A Community Governance and Adaptive Accountability Pilot
-            </p>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-12">
-              The inaugural ASIL case study pilot. Improved cookstoves are a well-evidenced, clearly effective women&apos;s health intervention. They also fail — consistently, across decades of programming — because sustained adoption beyond the sponsored project period rarely materialises. This pilot uses clean cooking as a live case study in the central ASIL implementation question: what governance architecture makes a known-good intervention durable?
-            </p>
-          </FadeUp>
-
-          {/* The implementation failure framing */}
-          <FadeUp>
-            <div className="mb-10 grid md:grid-cols-3 gap-4">
-              {[
-                {
-                  label: "The evidence is settled",
-                  body: "Improved cookstoves reduce exposure to household air pollution, which causes serious respiratory and cardiovascular harm. The technology works. The health case is unambiguous.",
-                  icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-                  tone: "positive",
-                },
-                {
-                  label: "The implementation fails",
-                  body: "Sustained adoption beyond the sponsored project period is consistently low. Cookstoves are distributed, used briefly, and abandoned. The failure repeats across geographies, implementers, and funding sources.",
-                  icon: "M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-                  tone: "negative",
-                },
-                {
-                  label: "The ASIL question",
-                  body: "If the failure is not in the technology or the evidence, it is in the implementation architecture. What governance system — designed deliberately, not assumed — is sufficient to make adoption durable?",
-                  icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.933-.399.08-.667.43-.667.808V14m0 4h.01",
-                  tone: "question",
-                },
-              ].map((card) => (
-                <div
-                  key={card.label}
-                  className={`rounded-2xl p-6 ${
-                    card.tone === "positive"
-                      ? "bg-white border border-gray-100"
-                      : card.tone === "negative"
-                      ? "bg-red-50 border border-red-100"
-                      : "bg-brand-navy"
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <svg
-                      className={`w-5 h-5 shrink-0 ${
-                        card.tone === "positive"
-                          ? "text-brand-teal"
-                          : card.tone === "negative"
-                          ? "text-red-500"
-                          : "text-brand-gold"
-                      }`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d={card.icon} />
-                    </svg>
-                    <p className={`text-xs font-bold uppercase tracking-widest ${
-                      card.tone === "question" ? "text-brand-gold" : card.tone === "negative" ? "text-red-600" : "text-brand-teal"
-                    }`}>{card.label}</p>
-                  </div>
-                  <p className={`text-sm leading-relaxed ${card.tone === "question" ? "text-gray-200" : "text-brand-muted"}`}>
-                    {card.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </FadeUp>
-
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-
-            {/* Pilot header band */}
-            <div className="bg-brand-navy px-8 py-5 grid md:grid-cols-4 gap-6">
-              {[
-                { label: "Primary Domain", value: "Health · Environmental Sustainability · Gender" },
-                { label: "Geography", value: "Three Pilot Communities, Malawi" },
-                { label: "Duration", value: "12 months · 2025–2026" },
-                { label: "Expected Report", value: "Q4 2026 / Q1 2027" },
-              ].map((item) => (
-                <div key={item.label}>
-                  <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">{item.label}</p>
-                  <p className="text-white text-sm font-semibold leading-snug">{item.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-8 grid md:grid-cols-[1fr_340px] gap-10">
-              {/* Main content */}
-              <div className="space-y-8">
-                {/* Overview */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-3">Why This Case Study</p>
-                  <p className="text-brand-muted text-base leading-relaxed">
-                    Clean cooking programmes make an ideal ASIL case study precisely because the intervention is not in question. The evidence base for improved cookstoves as a women&apos;s health intervention is robust, well-replicated, and uncontested. The failure point is equally well-documented: sustained adoption beyond the period of external support is low, consistently, across contexts.
-                  </p>
-                  <p className="text-brand-muted text-base leading-relaxed mt-3">
-                    This means any failure in this pilot is a pure implementation and governance failure — not a technology problem, not an evidence problem, not a context problem that invalidates the intervention. The cookstove is a known-good instrument. The question is whether a deliberately designed community governance architecture can overcome the implementation failure that has frustrated the same instrument for decades.
-                  </p>
-                  <p className="text-brand-muted text-base leading-relaxed mt-3">
-                    The pilot tests a specific governance design: a <strong className="text-brand-navy">Community Accountability Committee</strong> with an explicit equity mandate, a <strong className="text-brand-navy">Women&apos;s Health Evidence System</strong> that puts adoption data in community hands, and a structured <strong className="text-brand-navy">quarterly adaptive governance cycle</strong>. If this architecture sustains adoption where other programmes have not, it will constitute significant evidence for the central ASIL hypothesis — that governance design is the binding constraint on implementation success for known-good interventions.
-                  </p>
-                </div>
-
-                {/* Learning questions */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-4">Key Learning Questions</p>
-                  <div className="space-y-3">
-                    {[
-                      "Does a purposefully designed community accountability system sustain improved cookstove adoption beyond the sponsored project period — and through precisely what governance mechanisms?",
-                      "What design features of the Community Accountability Committee — composition, equity mandate, evidence protocols, decision authority — most reliably produce a governance response when adoption stalls?",
-                      "What role does a community-held Women's Health Evidence System play in sustaining adoption decisions and activating accountability responses at household level?",
-                      "What does this case study reveal about the governance conditions required to make known-effective community health interventions durable — and what does it imply for how such interventions are designed and governed in other sectors?",
-                    ].map((q, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="text-brand-gold font-bold text-sm mt-0.5 shrink-0">Q{i + 1}</span>
-                        <p className="text-brand-muted text-sm leading-relaxed">{q}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Methodology */}
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-4">Methodology Highlights</p>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {[
-                      { method: "Community governance design", detail: "Three purposively selected communities — Community Accountability Committee established with an explicit equity mandate and defined decision protocols before distribution commences" },
-                      { method: "Women's Health Evidence System", detail: "Community-held adoption tracking system that makes household-level data visible and actionable for the Accountability Committee each quarter" },
-                      { method: "Quarterly adaptive governance", detail: "Structured cycle: evidence review, committee deliberation, targeted follow-up, documented adaptation — at each site, each quarter" },
-                      { method: "Adoption outcome tracking", detail: "Consistent use monitoring across targeted households, disaggregated by equity exposure burden and household composition" },
-                      { method: "Adaptive management log", detail: "Documented decision log tracking all pilot adaptations, evidence triggers, and the governance responses they produced" },
-                      { method: "Ethics clearance", detail: "Malawi National Bioethics Committee clearance required prior to field activities. Helsinki Declaration principles apply throughout." },
-                    ].map((item) => (
-                      <div key={item.method} className="bg-brand-light rounded-xl p-4 border border-gray-100">
-                        <p className="font-bold text-brand-navy text-sm mb-1">{item.method}</p>
-                        <p className="text-brand-muted text-xs leading-relaxed">{item.detail}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Sidebar */}
-              <div className="space-y-5">
-                {/* Timeline */}
-                <div className="bg-brand-light rounded-2xl p-6 border border-gray-100">
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-5">Pilot Timeline</p>
-                  <div className="space-y-4">
-                    {[
-                      { phase: "Phase 1 — Design", period: "2025 Q3–Q4", detail: "Concept note finalisation, ethics submission, community partner engagement, CAC design, site confirmation" },
-                      { phase: "Phase 2 — Implementation", period: "2026 Q1–Q3", detail: "Cookstove distribution, CAC establishment, WHES activation, quarterly governance cycles, adaptive management" },
-                      { phase: "Phase 3 — Evaluation", period: "2026 Q3–Q4", detail: "Adoption outcome analysis, governance system evaluation, Learning Report drafting" },
-                      { phase: "Publication", period: "Q4 2026 / Q1 2027", detail: "ASIL Learning Report 001 + Implementation Intelligence Brief 001" },
-                    ].map((item, i) => (
-                      <div key={i} className="flex gap-3">
-                        <div className="flex flex-col items-center">
-                          <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${i === 0 ? "bg-brand-gold" : "bg-gray-300"}`} />
-                          {i < 3 && <div className="w-px flex-1 bg-gray-200 mt-1" />}
-                        </div>
-                        <div className="pb-4">
-                          <p className="font-semibold text-brand-navy text-xs">{item.phase}</p>
-                          <p className="text-brand-gold text-xs font-medium mb-1">{item.period}</p>
-                          <p className="text-brand-muted text-xs leading-snug">{item.detail}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Knowledge products */}
-                <div className="bg-brand-navy rounded-2xl p-6">
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Expected Knowledge Products</p>
-                  <div className="space-y-3">
-                    {[
-                      "ASIL Learning Report 001 — Clean Cooking & Women's Health Pilot",
-                      "ASIL Implementation Intelligence Brief — Governance architecture for durable community health interventions",
-                      "Community Accountability Committee design framework — replicable governance template",
-                      "Women's Health Evidence System — community data protocol and methodology note",
-                    ].map((product) => (
-                      <div key={product} className="flex items-start gap-2.5">
-                        <div className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
-                        <p className="text-gray-300 text-xs leading-relaxed">{product}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Strategic significance */}
-                <div className="bg-brand-gold/10 border border-brand-gold/20 rounded-2xl p-6">
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
-                  <p className="text-brand-navy text-sm leading-relaxed">
-                    Because the intervention is known-good, the Learning Report&apos;s findings — whether positive or negative — will constitute direct evidence on a question with implications far beyond clean cooking: whether governance architecture alone can determine the durability of community health interventions. That is learning applicable across every thematic area ASIL operates in.
-                  </p>
-                </div>
-
-                <Link
-                  href="/contact"
-                  className="flex items-center justify-between bg-white border border-gray-200 hover:border-brand-gold rounded-xl p-5 group transition-colors"
-                >
-                  <div>
-                    <p className="font-bold text-brand-navy text-sm">Request Pilot Briefing</p>
-                    <p className="text-brand-muted text-xs mt-0.5">Full concept note available to institutional partners</p>
-                  </div>
-                  <svg className="w-5 h-5 text-brand-gold group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6b. CROSS-THEMATIC DEMONSTRATION ────────────────────────────── */}
-      <section className="py-24 px-6 bg-white border-t border-gray-200">
+      {/* ── 6. ASIL PILOTS ───────────────────────────────────────────────── */}
+      <section id="pilots" className="py-24 px-6 bg-brand-light border-t border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Pilot 001 — Cross-Thematic Scope</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Active Research</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              One implementation question. Three domains of evidence.
+              The ASIL Pilot Programme
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-4">
-              The central ASIL question — why effective interventions fail during implementation — does not respect thematic boundaries. The clean cooking and women&apos;s health case study generates implementation intelligence across all three ASIL domains simultaneously. Not because the pilot was designed to cover each domain, but because implementation failure is inherently cross-cutting.
+              Each ASIL pilot is a structured implementation research study, selected for its learning value and designed to investigate a specific version of the central ASIL question: why effective interventions fail during implementation, and what governance architectures translate them into durable outcomes under real community conditions.
             </p>
             <p className="text-brand-muted text-base leading-relaxed max-w-2xl mb-14">
-              Each domain asks a version of the same question through a different institutional lens. The Learning Report will address each lens separately — and the synthesis will be the most significant output.
+              Pilots are deliberately small and bounded — large enough to generate meaningful evidence, small enough to manage with methodological rigour. ASIL does not scale before it learns.
             </p>
           </FadeUp>
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                num: "01",
-                domain: "Health",
-                question: "Why does a known-effective women's health intervention fail to produce durable health outcomes?",
-                mechanism: "Because the failure is not in the intervention — it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
-                learning: "Governance design as the binding constraint on community health intervention durability; equity-disaggregated adoption as a health outcome metric; community accountability as a health systems tool.",
-              },
-              {
-                num: "02",
-                domain: "Environmental Sustainability",
-                question: "Why do household clean energy transitions fail to persist — and what governance architecture changes that?",
-                mechanism: "Cookstove abandonment is a household energy governance failure. As climate and clean energy finance accelerates into communities, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
-                learning: "Governance architecture for durable household energy transitions; community accountability as a clean energy delivery mechanism; institutional conditions for sustained low-carbon behaviour change.",
-              },
-              {
-                num: "03",
-                domain: "Gender",
-                question: "What governance architecture is required to produce and sustain equitable outcomes for women specifically?",
-                mechanism: "The Community Accountability Committee has an explicit equity mandate — it is not just a governance body, it is a gender accountability instrument. The pilot tests whether a community-level governance structure with a specific women's equity mandate can operationalise that mandate in practice.",
-                learning: "Equity mandate design and operationalisation; community governance as a gender accountability mechanism; conditions under which gender equity commitments translate into durable implementation outcomes.",
-              },
-            ].map((item, i) => (
-              <ScaleIn key={i} delay={i * 80}>
-                <div className="bg-brand-light border border-gray-100 rounded-2xl p-7 h-full flex flex-col gap-5">
-                  <div className="flex items-start justify-between">
+          <div className="space-y-5">
+            {/* Pilot 001 */}
+            <FadeUp>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                {/* Status strip */}
+                <div className="flex items-center gap-3 px-8 py-3.5 bg-brand-gold/5 border-b border-brand-gold/15">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-brand-gold" />
+                    <span className="text-brand-gold text-sm font-bold uppercase tracking-widest">Active · Design Phase</span>
+                  </div>
+                  <span className="text-gray-400 text-xs font-mono ml-auto">ASIL-P001-MW-2025</span>
+                </div>
+
+                <div className="p-8">
+                  {/* Domain tags */}
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    {["Health & Nutrition Systems", "Climate Agriculture & Sustainability", "Governance & Public Sector Reform"].map((tag) => (
+                      <span key={tag} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-navy/5 text-brand-navy border border-brand-navy/10">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="grid md:grid-cols-[1fr_auto] gap-8 items-start">
                     <div>
-                      <span className="text-xs font-bold text-gray-400 font-mono">{item.num}</span>
-                      <h3 className="text-brand-navy font-bold text-base mt-1 leading-snug">{item.domain}</h3>
+                      <h3 className="text-2xl font-bold text-brand-navy leading-snug mb-1.5">
+                        Clean Cooking and Women&apos;s Health
+                      </h3>
+                      <p className="text-brand-navy/60 font-medium text-sm mb-5">
+                        A Community Governance and Adaptive Accountability Pilot · Malawi
+                      </p>
+                      <p className="text-brand-muted text-base leading-relaxed mb-6 max-w-2xl">
+                        The inaugural ASIL case study pilot. Improved cookstoves are a well-evidenced, clearly effective women&apos;s health intervention — and they fail, consistently, across decades of programming. Sustained adoption beyond the sponsored project period rarely materialises. This pilot uses clean cooking as a live investigation of the central ASIL question: what community governance architecture makes a known-good intervention durable?
+                      </p>
+
+                      <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          </svg>
+                          <span>Malawi — 3 communities</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>
+                          <span>Jun 2026 – May 2027</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                          </svg>
+                          <span>Expected report: Q2–Q3 2027</span>
+                        </div>
+                      </div>
+
+                      <Link
+                        href="/asil/pilots/asil-p001"
+                        className="inline-flex items-center gap-2 bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+                      >
+                        View Full Pilot Details
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-brand-gold mt-1.5 shrink-0" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-gold mb-2">The Domain Question</p>
-                    <p className="text-brand-navy text-sm font-semibold leading-snug italic">&ldquo;{item.question}&rdquo;</p>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-muted mb-2">What the Pilot Tests</p>
-                    <p className="text-brand-muted text-sm leading-relaxed">{item.mechanism}</p>
-                  </div>
-                  <div className="border-t border-gray-200 pt-4">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-teal mb-2">Learning Output</p>
-                    <p className="text-brand-muted text-xs leading-relaxed">{item.learning}</p>
+
+                    {/* Sidebar summary */}
+                    <div className="shrink-0 min-w-[220px] bg-brand-light rounded-xl border border-gray-100 p-5 space-y-4">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">The Investigation</p>
+                        <p className="text-brand-navy text-sm font-semibold leading-snug italic">
+                          &ldquo;What governance architecture makes a known-effective intervention durable?&rdquo;
+                        </p>
+                      </div>
+                      <div className="border-t border-gray-200 pt-4">
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Primary Output</p>
+                        <p className="text-brand-navy text-xs leading-relaxed">ASIL Learning Report 001 + Implementation Intelligence Brief</p>
+                      </div>
+                      <div className="border-t border-gray-200 pt-4">
+                        <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-2">Duration</p>
+                        <p className="text-brand-navy text-xs">12 months · Jun 2026 – May 2027</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </ScaleIn>
-            ))}
-          </div>
+              </div>
+            </FadeUp>
 
-          {/* Synthesis note */}
-          <FadeUp>
-            <div className="mt-10 bg-brand-navy rounded-2xl p-8">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-gold mb-4">Why This Design Choice Matters</p>
-              <p className="text-gray-200 text-base leading-relaxed max-w-3xl">
-                By anchoring Pilot 001 in a case study where the intervention is already known to work, ASIL eliminates the most common confound in implementation research: the question of whether the underlying approach was right. If adoption fails in this pilot, the failure cannot be attributed to the technology, the evidence base, or the theory of change. It will be an implementation and governance failure — and the investigation of exactly why will produce learning with direct application across every domain ASIL operates in. That is the design logic.
-              </p>
-            </div>
-          </FadeUp>
+            {/* Future pilots placeholder */}
+            <FadeUp>
+              <div className="bg-white rounded-2xl border border-dashed border-gray-200 py-10 px-8 text-center">
+                <p className="text-gray-400 text-sm font-medium mb-1">Pilot 002 — in development</p>
+                <p className="text-gray-300 text-xs">Domain and design to be confirmed · Expected commencement 2027</p>
+              </div>
+            </FadeUp>
+          </div>
         </div>
       </section>
 
@@ -752,7 +567,7 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-white border-t border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Knowledge Products</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Knowledge Products</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               Implementation Intelligence Library
             </h2>
@@ -779,12 +594,12 @@ export default function ASILPage() {
                     <p className="text-brand-muted text-xs leading-relaxed mb-3">{pub.description}</p>
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-muted">Frequency</span>
-                        <span className="text-[10px] text-brand-navy font-medium">{pub.frequency}</span>
+                        <span className="text-sm font-bold uppercase tracking-widest text-brand-muted">Frequency</span>
+                        <span className="text-xs text-brand-navy font-medium">{pub.frequency}</span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-muted shrink-0">Audience</span>
-                        <span className="text-[10px] text-brand-navy font-medium leading-snug">{pub.audience}</span>
+                        <span className="text-sm font-bold uppercase tracking-widest text-brand-muted shrink-0">Audience</span>
+                        <span className="text-xs text-brand-navy font-medium leading-snug">{pub.audience}</span>
                       </div>
                     </div>
                   </div>
@@ -803,7 +618,7 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Collaboration</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Collaboration</p>
             <h2 className="text-4xl font-bold leading-tight mb-4 max-w-3xl">
               Selective. Serious. Institutionally disciplined.
             </h2>
@@ -816,7 +631,7 @@ export default function ASILPage() {
             {partnershipCategories.map((cat, i) => (
               <FadeUp key={i}>
                 <div className="bg-white/5 border border-white/10 hover:border-white/20 rounded-2xl p-7 transition-colors">
-                  <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3">{cat.category}</p>
+                  <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-3">{cat.category}</p>
                   <p className="text-gray-200 text-sm leading-relaxed mb-4">{cat.description}</p>
                   <p className="text-gray-500 text-xs italic mb-4">{cat.examples}</p>
                   <div className="border-t border-white/10 pt-4">
@@ -847,7 +662,7 @@ export default function ASILPage() {
       <section className="py-24 px-6 bg-white border-t border-gray-200">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Institutional Architecture</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Institutional Architecture</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               ASIL within Astellic: integrated, but intellectually distinct.
             </h2>
@@ -887,7 +702,7 @@ export default function ASILPage() {
                     <span className="text-brand-gold font-bold">{flow.direction}</span>
                     <span className="text-xs font-bold text-brand-navy bg-white border border-gray-200 px-2 py-1 rounded">{flow.to}</span>
                   </div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-brand-teal mb-2">{flow.mechanism}</p>
+                  <p className="text-sm font-bold uppercase tracking-widest text-brand-teal mb-2">{flow.mechanism}</p>
                   <p className="text-brand-muted text-sm leading-relaxed flex-1">{flow.detail}</p>
                 </div>
               </SlideLeft>
@@ -898,7 +713,7 @@ export default function ASILPage() {
           <FadeUp>
             <div className="border border-gray-200 rounded-2xl overflow-hidden">
               <div className="bg-brand-light px-7 py-4 border-b border-gray-100">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-muted">Governance Rules</p>
+                <p className="text-sm font-bold uppercase tracking-widest text-brand-muted">Governance Rules</p>
               </div>
               <div className="divide-y divide-gray-100">
                 {[
@@ -924,7 +739,7 @@ export default function ASILPage() {
           <div className="grid md:grid-cols-[1fr_auto] gap-12 items-start">
             <SlideLeft>
               <div>
-                <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">Engage with ASIL</p>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Engage with ASIL</p>
                 <h2 className="text-4xl font-bold leading-tight mb-5 max-w-xl">
                   This is where African implementation systems are studied seriously.
                 </h2>
