@@ -57,21 +57,6 @@ const ETHICS_COLORS: Record<string, string> = {
   CLEARED: "text-green-600",
 };
 
-const PRODUCT_TYPE_LABELS: Record<string, string> = {
-  LEARNING_REPORT: "Learning Report",
-  INTELLIGENCE_BRIEF: "Intelligence Brief",
-  ANNUAL_REVIEW: "Annual Review",
-  PRACTICE_NOTE: "Practice Note",
-  WORKING_PAPER: "Working Paper",
-};
-
-const PRODUCT_STATUS_COLORS: Record<string, string> = {
-  DRAFT: "bg-gray-100 text-gray-600",
-  UNDER_REVIEW: "bg-amber-100 text-amber-700",
-  PUBLISHED: "bg-green-100 text-green-700",
-  ARCHIVED: "bg-gray-100 text-gray-400",
-};
-
 const INTEL_TYPE_LABELS: Record<string, string> = {
   ADVISORY_IMPLICATION: "Advisory Implication",
   METHODOLOGY_FINDING: "Methodology Finding",
@@ -130,10 +115,6 @@ export default async function PilotDetailPage({
           income:   { select: { amount: true, currency: true }, where: { deletedAt: null } },
           expenses: { select: { amount: true, currency: true }, where: { deletedAt: null } },
         },
-      },
-      knowledgeProducts: {
-        where: { archivedAt: null },
-        orderBy: { createdAt: "desc" },
       },
       intelligenceEntries: {
         where: { archivedAt: null },
@@ -354,58 +335,6 @@ export default async function PilotDetailPage({
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-700 leading-relaxed">{entry.note}</p>
                   <p className="text-xs text-gray-400 mt-1">{entry.by} · {new Date(entry.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Knowledge Products */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-bold text-brand-navy">
-            Knowledge Products ({pilot.knowledgeProducts.length})
-          </h2>
-          <Link
-            href={`/astelfin_26/asil/library/new?pilotId=${id}`}
-            className="text-xs text-brand-gold font-semibold hover:underline"
-          >
-            + New Publication
-          </Link>
-        </div>
-        {pilot.knowledgeProducts.length === 0 ? (
-          <p className="px-6 py-8 text-center text-gray-400 text-sm">
-            No knowledge products yet.{" "}
-            <Link href={`/astelfin_26/asil/library/new?pilotId=${id}`} className="text-brand-gold hover:underline">
-              Create the first publication.
-            </Link>
-          </p>
-        ) : (
-          <ul className="divide-y divide-gray-50">
-            {pilot.knowledgeProducts.map((kp) => (
-              <li key={kp.id} className="px-6 py-4 flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${PRODUCT_STATUS_COLORS[kp.status]}`}>
-                      {kp.status.replace("_", " ")}
-                    </span>
-                    <span className="text-xs text-gray-400">{PRODUCT_TYPE_LABELS[kp.productType]}</span>
-                    {kp.isPublicFacing && (
-                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">Public</span>
-                    )}
-                  </div>
-                  <p className="font-semibold text-brand-navy text-sm">{kp.title}</p>
-                  {kp.description && <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{kp.description}</p>}
-                  {kp.keyLearnings.length > 0 && (
-                    <ul className="mt-1.5 space-y-0.5">
-                      {kp.keyLearnings.slice(0, 2).map((l, i) => (
-                        <li key={i} className="text-xs text-gray-600 flex items-start gap-1">
-                          <span className="text-brand-gold shrink-0">·</span>{l}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
               </li>
             ))}

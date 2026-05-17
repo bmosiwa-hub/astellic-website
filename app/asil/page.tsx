@@ -87,44 +87,6 @@ const thematicDomains = [
   },
 ];
 
-const publicationTypes = [
-  {
-    label: "ASIL Learning Report",
-    description: "10–20 pages. The primary pilot knowledge product. Documents design, implementation, findings, and learning implications. Honest about failure.",
-    frequency: "Per pilot",
-    audience: "Donors, governments, development practitioners, academics",
-    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-  },
-  {
-    label: "Implementation Intelligence Brief",
-    description: "4–6 pages. Distils one key learning from a pilot into a practice-focused brief for programme managers and policymakers.",
-    frequency: "Quarterly from Year 1",
-    audience: "Programme officers, implementing partners, policy analysts",
-    icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-  },
-  {
-    label: "ASIL Annual Review",
-    description: "30–40 pages. Synthesises learning across all active and completed pilots. Includes methodological reflections and advisory implications.",
-    frequency: "Annual from Year 2",
-    audience: "Institutional partners, donors, government departments, research institutions",
-    icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
-  },
-  {
-    label: "Practice Notes",
-    description: "2–4 pages. Rapid, operationally focused notes on specific implementation challenges emerging from active pilots.",
-    frequency: "As needed",
-    audience: "Field practitioners, implementing NGOs, government officers",
-    icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z",
-  },
-  {
-    label: "ASIL Working Paper",
-    description: "Academic-format paper co-authored with university partners, peer-reviewed for submission to development journals.",
-    frequency: "Annual from Year 3",
-    audience: "Academic and research community; institutional credibility",
-    icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
-  },
-];
-
 const partnershipCategories = [
   {
     category: "Academic Institutions",
@@ -563,58 +525,7 @@ export default function ASILPage() {
         </div>
       </section>
 
-      {/* ── 7. INTELLIGENCE LIBRARY ───────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white border-t border-gray-200">
-        <div className="max-w-5xl mx-auto">
-          <FadeUp>
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Knowledge Products</p>
-            <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              Implementation Intelligence Library
-            </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-6">
-              ASIL's publications are not reports that sit on a shelf. They are the primary mechanism through which the Lab's learning reaches the advisory and policy community, generates institutional recognition for Astellic, and builds the intellectual authority that distinguishes ASIL from implementation agencies.
-            </p>
-            <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-2 mb-12">
-              <div className="w-2 h-2 rounded-full bg-brand-gold" />
-              <p className="text-amber-800 text-xs font-semibold">Publications will appear here as pilots are completed and reports are finalised. First publication expected Q1 2027.</p>
-            </div>
-          </FadeUp>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {publicationTypes.map((pub, i) => (
-              <FadeIn key={i}>
-                <div className="bg-brand-light border border-gray-100 rounded-2xl p-6 flex flex-col gap-4 h-full">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d={pub.icon} />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-bold text-brand-navy text-sm mb-2">{pub.label}</p>
-                    <p className="text-brand-muted text-xs leading-relaxed mb-3">{pub.description}</p>
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold uppercase tracking-widest text-brand-muted">Frequency</span>
-                        <span className="text-xs text-brand-navy font-medium">{pub.frequency}</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-sm font-bold uppercase tracking-widest text-brand-muted shrink-0">Audience</span>
-                        <span className="text-xs text-brand-navy font-medium leading-snug">{pub.audience}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-xs">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                    No publications yet
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 8. PARTNERSHIPS ──────────────────────────────────────────────── */}
+      {/* ── 7. PARTNERSHIPS ──────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>

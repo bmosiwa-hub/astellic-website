@@ -276,24 +276,6 @@ export default function ASILPilot001Page() {
                 </div>
               </div>
 
-              {/* Knowledge products */}
-              <div className="bg-brand-navy rounded-2xl p-6">
-                <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Expected Knowledge Products</p>
-                <div className="space-y-3">
-                  {[
-                    "ASIL Learning Report 001 — Clean Cooking & Women's Health Pilot",
-                    "ASIL Implementation Intelligence Brief — Governance architecture for durable community health interventions",
-                    "Community Accountability Committee design framework",
-                    "Women's Health Evidence System — community data protocol",
-                  ].map((product) => (
-                    <div key={product} className="flex items-start gap-2.5">
-                      <div className="w-1 h-1 rounded-full bg-brand-gold mt-2 shrink-0" />
-                      <p className="text-gray-300 text-xs leading-relaxed">{product}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Strategic significance */}
               <div className="bg-brand-gold/10 border border-brand-gold/20 rounded-2xl p-6">
                 <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
