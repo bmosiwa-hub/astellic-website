@@ -414,7 +414,7 @@ export default function Sidebar({
 
       {/* Brand */}
       <div className="px-5 py-5 border-b border-white/10">
-        <p className="font-bold text-lg tracking-tight">Astelfin</p>
+        <p className="font-bold text-lg tracking-tight">Astel<span className="text-brand-gold">fin</span></p>
       </div>
 
       {/* Nav */}

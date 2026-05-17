@@ -18,7 +18,7 @@ function formatCountdown(ms: number): string {
 export default function LoginPage() {
   const router       = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl  = searchParams.get("callbackUrl") ?? "/astelfin_26/dashboard";
+  const callbackUrl  = searchParams.get("callbackUrl") ?? "/astelfin_26/home";
 
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
