@@ -310,12 +310,12 @@ export default function ASILPilot001Page() {
           <FadeUp>
             <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-4">Cross-Thematic Evidence</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              One implementation question. Three domains of evidence.
+              One implementation question. Four thematic domains of evidence.
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-4">
               The central ASIL question does not respect thematic boundaries. This case study generates
-              implementation intelligence across all three ASIL domains simultaneously — not by design,
-              but because implementation failure is inherently cross-cutting.
+              implementation intelligence across all four of Astellic&apos;s thematic domains simultaneously —
+              not by design, but because implementation failure is inherently cross-cutting.
             </p>
             <p className="text-brand-muted text-base leading-relaxed max-w-2xl mb-14">
               Each domain asks a version of the same question through a different institutional lens.
@@ -323,28 +323,35 @@ export default function ASILPilot001Page() {
             </p>
           </FadeUp>
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               {
                 num: "01",
-                domain: "Health",
+                domain: "Health & Nutrition Systems",
                 question: "Why does a known-effective women's health intervention fail to produce durable health outcomes?",
                 mechanism: "The failure is not in the intervention — it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
                 learning: "Governance design as the binding constraint on community health intervention durability; equity-disaggregated adoption as a health outcome metric.",
               },
               {
                 num: "02",
-                domain: "Environmental Sustainability",
-                question: "Why do household clean energy transitions fail to persist — and what governance architecture changes that?",
-                mechanism: "Cookstove abandonment is a household energy governance failure. As clean energy finance accelerates into communities, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
-                learning: "Governance architecture for durable household energy transitions; institutional conditions for sustained low-carbon behaviour change.",
+                domain: "Governance & Public Sector Reform",
+                question: "What community-level governance architecture is required for sustained public health programme delivery?",
+                mechanism: "The Community Accountability Committee design is a governance intervention as much as a health one. The pilot tests whether a structured community accountability mechanism can operationalise an equity mandate in practice — not merely commit to it.",
+                learning: "Community governance design as a programme delivery mechanism; conditions under which accountability architecture translates into durable implementation outcomes.",
               },
               {
                 num: "03",
-                domain: "Gender",
-                question: "What governance architecture is required to produce and sustain equitable outcomes for women specifically?",
-                mechanism: "The Community Accountability Committee has an explicit equity mandate. The pilot tests whether a community-level governance structure with a women's equity mandate can operationalise that mandate in practice — not just commit to it.",
-                learning: "Equity mandate design and operationalisation; community governance as a gender accountability mechanism; conditions under which gender equity commitments translate into durable implementation outcomes.",
+                domain: "Education & Social Systems",
+                question: "What social system conditions determine whether communities adopt and sustain clean cooking behaviour?",
+                mechanism: "Cookstove abandonment is partly a social learning failure. The pilot examines the role of information flow, household decision-making structures, and community norm-setting in driving sustained behavioural change.",
+                learning: "Social system conditions for sustained behaviour change; community information architecture as a driver of health and energy adoption outcomes.",
+              },
+              {
+                num: "04",
+                domain: "Climate Agriculture & Sustainability",
+                question: "Why do household clean energy transitions fail to persist — and what governance architecture changes that?",
+                mechanism: "Cookstove abandonment is a household energy governance failure. As clean energy finance accelerates into communities, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
+                learning: "Governance architecture for durable household energy transitions; institutional conditions for sustained low-carbon behaviour change at community scale.",
               },
             ].map((item, i) => (
               <ScaleIn key={i} delay={i * 80}>
