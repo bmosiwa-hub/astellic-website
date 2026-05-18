@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Policy & Strategy Development | Policy Advisory | Astellic",
   description:
-    "Astellic's Policy & Strategy Development sub-unit — national policy frameworks, sector strategies, ministerial guidelines, and reform programme design.",
+    "Astellic's Policy & Strategy Development sub-unit: national policy frameworks, sector strategies, ministerial guidelines, and reform programme design.",
 };
 
 const services = [

@@ -7,7 +7,7 @@ import { FadeUp, SlideLeft, SlideRight } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Work done by Astellic and its Members | Astellic",
   description:
-    "Projects and engagements completed by Astellic and by its members prior to the firm's founding — presented with institutional context and outcomes.",
+    "Projects and engagements completed by Astellic and by its members prior to the firm's founding, presented with institutional context and outcomes.",
 };
 
 const availableNow = [
@@ -40,7 +40,7 @@ export default function OurProjectsPage() {
             Work done by Astellic and its Members
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Projects delivered by Astellic, and prior professional engagements brought to the firm by its members — presented by individual, with institutional context and outcomes.
+            Projects delivered by Astellic, and prior professional engagements brought to the firm by its members, presented by individual, with institutional context and outcomes.
           </p>
         </div>
       </section>
@@ -121,7 +121,7 @@ export default function OurProjectsPage() {
                     </Link>
                     <div className="bg-brand-light rounded-xl p-4 border border-gray-100">
                       <p className="text-xs font-bold uppercase tracking-widest text-brand-muted mb-1">Expected Output</p>
-                      <p className="text-brand-navy text-xs font-medium">ASIL Learning Report 001 — Q2 2027</p>
+                      <p className="text-brand-navy text-xs font-medium">ASIL Learning Report 001, Q2 2027</p>
                     </div>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function OurProjectsPage() {
                 Building a practice-grounded evidence base.
               </h2>
               <p className="text-gray-300 text-base leading-relaxed mb-6">
-                Astellic is actively building a portfolio of implementation pilots, advisory assignments, and documented evidence from real operational conditions. The experience our members bring is the direct foundation — and Astellic&apos;s own work is accumulating alongside it.
+                Astellic is actively building a portfolio of implementation pilots, advisory assignments, and documented evidence from real operational conditions. The experience our members bring is the direct foundation; and Astellic&apos;s own work is accumulating alongside it.
               </p>
               <Link
                 href="/contact"

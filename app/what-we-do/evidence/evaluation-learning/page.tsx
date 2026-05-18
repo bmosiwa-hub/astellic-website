@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Evaluation & Learning | Evidence Generation | Astellic",
   description:
-    "Astellic's Evaluation & Learning sub-unit — independent programme evaluation, real-time learning systems, and MERL framework architecture.",
+    "Astellic's Evaluation & Learning sub-unit: independent programme evaluation, real-time learning systems, and MERL framework architecture.",
 };
 
 const services = [

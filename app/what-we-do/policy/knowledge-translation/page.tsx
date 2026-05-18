@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Knowledge Translation & Strategic Communications | Policy Advisory | Astellic",
   description:
-    "Astellic's Knowledge Translation & Strategic Communications sub-unit — converting technical outputs into policy narratives and communications that catalyse action.",
+    "Astellic's Knowledge Translation & Strategic Communications sub-unit: converting technical outputs into policy narratives and communications that catalyse action.",
 };
 
 const services = [

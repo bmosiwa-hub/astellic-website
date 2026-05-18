@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Policy Development & Advisory | Astellic",
   description:
-    "Astellic's Policy Development & Advisory pillar — translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
+    "Astellic's Policy Development & Advisory pillar: translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
 };
 
 const subUnits = [
@@ -42,7 +42,7 @@ const subUnits = [
     num: "2.3",
     title: "Knowledge Translation & Strategic Communications",
     tagline: "Closing the gap between what is known and what is decided, through communications that catalyse action.",
-    desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives, visual communications, and engagement strategies that shift understanding at the decision-maker level. We also generate Astellic's flagship thought leadership products — positioning the firm as a trusted intellectual voice in African development.",
+    desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives, visual communications, and engagement strategies that shift understanding at the decision-maker level. We also generate Astellic's flagship thought leadership products, positioning the firm as a trusted intellectual voice in African development.",
     services: [
       "Knowledge translation: converting research findings into accessible briefs for non-technical audiences",
       "Strategic communications for reform programmes and policy launches",
@@ -140,7 +140,7 @@ export default function PolicyPillarPage() {
       <section className="bg-brand-light py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <FadeUp>
-            <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Policy Pillar — Full Service Range</h2>
+            <h2 className="text-3xl font-bold text-brand-navy mb-8 text-center">Policy Pillar: Full Service Range</h2>
           </FadeUp>
           <div className="grid md:grid-cols-2 gap-3">
             {offerings.map((o, i) => (
@@ -159,10 +159,10 @@ export default function PolicyPillarPage() {
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <FadeUp>
-            <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence — and for implementation.</h2>
+            <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence, and for implementation.</h2>
             <p className="text-brand-muted mb-8">
               Our policy work is grounded in rigorous evidence from Pillar 01 and designed to be
-              implementable through Pillar 03 — ensuring the full results chain holds together.
+              implementable through Pillar 03, ensuring the full results chain holds together.
             </p>
           </FadeUp>
           <FadeUp delay={100}>

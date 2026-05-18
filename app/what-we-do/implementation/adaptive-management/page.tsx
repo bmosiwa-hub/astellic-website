@@ -5,13 +5,13 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Embedded Implementation Support & Adaptive Management | Astellic",
   description:
-    "Astellic's embedded implementation support and adaptive management services — staying alongside institutions to strengthen delivery systems, build adaptive management capacity, and support sustained programme performance.",
+    "Astellic's embedded implementation support and adaptive management services: staying alongside institutions to strengthen delivery systems, build adaptive management capacity, and support sustained programme performance.",
 };
 
 const services = [
   {
     label: "Programme Management Support",
-    desc: "Technical advisory and embedded support for programme management — including financial management advisory, sub-contractor coordination support, and donor reporting — positioning Astellic as a senior technical resource within the programme team.",
+    desc: "Technical advisory and embedded support for programme management, including financial management advisory, sub-contractor coordination support, and donor reporting, positioning Astellic as a senior technical resource within the programme team.",
   },
   {
     label: "Adaptive Management",
@@ -19,11 +19,11 @@ const services = [
   },
   {
     label: "Consortium Technical Support",
-    desc: "Technical advisory and coordination support for multi-organisational consortia — providing analytical rigour, adaptive management expertise, and senior technical leadership within programme delivery structures.",
+    desc: "Technical advisory and coordination support for multi-organisational consortia, providing analytical rigour, adaptive management expertise, and senior technical leadership within programme delivery structures.",
   },
   {
     label: "Technical Advisory to Implementing Partners",
-    desc: "Senior technical advisory embedded within donor-funded and government programmes — providing the evidence integration, adaptive management systems, and institutional intelligence that translate strategic intent into sustained outcomes.",
+    desc: "Senior technical advisory embedded within donor-funded and government programmes, providing the evidence integration, adaptive management systems, and institutional intelligence that translate strategic intent into sustained outcomes.",
   },
   {
     label: "Learning Integration Systems",
@@ -49,7 +49,7 @@ export default function AdaptiveManagementPage() {
             Staying alongside institutions to strengthen delivery systems and build adaptive management capacity.
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
-            Astellic provides embedded advisory support throughout programme cycles — working
+            Astellic provides embedded advisory support throughout programme cycles, working
             inside institutions to strengthen delivery systems, bridge the gap between strategy
             and execution, and ensure learning continuously shapes programme decisions.
           </p>
@@ -62,7 +62,7 @@ export default function AdaptiveManagementPage() {
             Astellic&apos;s embedded implementation support function stays alongside government
             institutions, implementing organisations, and programme management units to
             strengthen delivery systems and apply adaptive management throughout the programme
-            cycle. We are a specialist advisory firm — not a large-scale delivery contractor.
+            cycle. We are a specialist advisory firm, not a large-scale delivery contractor.
             Our role is to build the institutional capacity, adaptive routines, and evidence
             integration systems that allow organisations to deliver well and learn continuously.
             In African development contexts, where implementation environments change faster

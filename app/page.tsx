@@ -8,7 +8,7 @@ const coreServices = [
   {
     num: "01",
     title: "Adaptive MERL & Learning Systems",
-    tagline: "We help programmes continuously learn and improve — not just report.",
+    tagline: "We help programmes continuously learn and improve, not just report.",
     problem: "Most monitoring systems generate data for compliance, not decisions. Programmes collect what donors require, not what managers need. Course-correction happens too late, if at all.",
     bullets: [
       "Learn continuously from implementation evidence",
@@ -68,7 +68,7 @@ const commitments = [
   },
   {
     label: "We Are Honest",
-    desc: "We tell clients what the evidence shows — including when it shows problems. That is not a risk. That is the service.",
+    desc: "We tell clients what the evidence shows, including when it shows problems. That is not a risk. That is the service.",
   },
   {
     label: "We Know the Context",
@@ -109,7 +109,7 @@ const insightCards = [
   {
     category: "Implementation Brief",
     title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
-    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase — when implementation readiness is assumed rather than assessed.",
+    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase, when implementation readiness is assumed rather than assessed.",
     color: "bg-brand-navy text-white",
   },
   {
@@ -205,7 +205,7 @@ export default function Home() {
             </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
               The implementation gap is not a technical problem. It is a systems problem.
-              We address it as one — by integrating evidence, policy, and delivery into a
+              We address it as one: by integrating evidence, policy, and delivery into a
               single adaptive architecture.
             </p>
           </FadeUp>
@@ -226,7 +226,7 @@ export default function Home() {
               Three Areas of Specialist Depth
             </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              Astellic is a specialist firm. We do three things with exceptional depth —
+              Astellic is a specialist firm. We do three things with exceptional depth,
               and a fourth for the private sector. We do not try to be everything to everyone.
             </p>
           </FadeUp>
@@ -421,8 +421,8 @@ export default function Home() {
               Institutions at Every Stage of the Results Chain
             </h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-              Whether you fund, design, or deliver development outcomes — or invest in
-              communities through the private sector — Astellic has an entry point for you.
+              Whether you fund, design, or deliver development outcomes, or invest in
+              communities through the private sector, Astellic has an entry point for you.
             </p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-6">
@@ -598,7 +598,7 @@ export default function Home() {
           <FadeUp delay={100}>
             <p className="text-gray-300 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
               We work with governments, donors, corporations, and development partners.
-              Tell us what you are working on — we will tell you honestly whether we can help.
+              Tell us what you are working on; we will tell you honestly whether we can help.
             </p>
           </FadeUp>
           <FadeUp delay={180}>

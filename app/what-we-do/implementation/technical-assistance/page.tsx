@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Technical Assistance & Institutional Development | Implementation | Astellic",
   description:
-    "Astellic's Technical Assistance & Institutional Development sub-unit — sustained embedded advisory that builds institutional capability and knowledge within government and implementing organisations.",
+    "Astellic's Technical Assistance & Institutional Development sub-unit: sustained embedded advisory that builds institutional capability and knowledge within government and implementing organisations.",
 };
 
 const services = [

@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Programme Design & Innovation | Implementation | Astellic",
   description:
-    "Astellic's Programme Design & Innovation sub-unit — theories of change, results frameworks, implementation-ready architectures, and proprietary design tools.",
+    "Astellic's Programme Design & Innovation sub-unit: theories of change, results frameworks, implementation-ready architectures, and proprietary design tools.",
 };
 
 const services = [

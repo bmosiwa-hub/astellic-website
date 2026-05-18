@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Data Quality & Research Integrity | Evidence Generation | Astellic",
   description:
-    "Astellic's Data Quality, Verification & Research Integrity sub-unit — ensuring every evidence output meets the highest standards of methodological rigour and ethical compliance.",
+    "Astellic's Data Quality, Verification & Research Integrity sub-unit: ensuring every evidence output meets the highest standards of methodological rigour and ethical compliance.",
 };
 
 const services = [

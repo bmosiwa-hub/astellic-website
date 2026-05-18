@@ -15,7 +15,7 @@ const segments = [
     accent: "bg-brand-gold",
     textAccent: "text-brand-gold",
     description:
-      "We help bilateral donors, multilateral funders, and national governments strengthen their systems for tracking what works — and acting on that knowledge.",
+      "We help bilateral donors, multilateral funders, and national governments strengthen their systems for tracking what works, and acting on that knowledge.",
     tags: ["Aid Effectiveness", "Public Financial Management", "Policy Advisory", "Programme Evaluation"],
     icon: (
       <svg className="w-8 h-8 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -72,7 +72,7 @@ export default function InstitutionsWeSupport() {
             Institutions We Support
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Astellic works across the development ecosystem — with the funders, the implementers,
+            Astellic works across the development ecosystem, with the funders, the implementers,
             and the private sector actors who shape how resources are mobilised and results are achieved.
           </p>
         </div>
@@ -85,8 +85,8 @@ export default function InstitutionsWeSupport() {
             One Integrated System. Three Distinct Partnerships.
           </h2>
           <p className="text-brand-muted text-lg leading-relaxed max-w-3xl mx-auto">
-            Regardless of where you sit in the development system — financing, designing, or
-            delivering — the challenge is the same: turning investment and intent into measurable,
+            Regardless of where you sit in the development system, whether financing, designing, or
+            delivering, the challenge is the same: turning investment and intent into measurable,
             lasting change. Astellic brings a consistent methodology and deep contextual knowledge
             to each of these relationships, tailoring our support to what each institution actually needs.
           </p>

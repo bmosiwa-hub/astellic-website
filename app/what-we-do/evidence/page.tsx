@@ -6,7 +6,7 @@ import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Evidence Generation & Verification | Astellic",
   description:
-    "Astellic's Evidence Generation & Verification pillar — producing rigorous, policy-relevant research, evaluation, and data quality work across Africa.",
+    "Astellic's Evidence Generation & Verification pillar: producing rigorous, policy-relevant research, evaluation, and data quality work across Africa.",
 };
 
 const subUnits = [

@@ -24,7 +24,7 @@ const problems = [
   },
   {
     issue: "Disconnected from business strategy",
-    detail: "CSI treated as a separate obligation produces compliance-grade outputs. Aligned social investment — connected to operating environment, supply chain, and community licence to operate — produces strategic value.",
+    detail: "CSI treated as a separate obligation produces compliance-grade outputs. Aligned social investment, connected to operating environment, supply chain, and community licence to operate, produces strategic value.",
   },
 ];
 
@@ -32,7 +32,7 @@ const services = [
   {
     num: "01",
     title: "Social Investment Strategy & Design",
-    desc: "We design social investment programmes that are strategically aligned, evidentially grounded, and built for accountability. This means a theory of change, clear results frameworks, governance structures, and implementation readiness — not a brochure.",
+    desc: "We design social investment programmes that are strategically aligned, evidentially grounded, and built for accountability. This means a theory of change, clear results frameworks, governance structures, and implementation readiness; not a brochure.",
     engagements: ["Community investment strategy", "CSI programme design", "Theory of change development", "Results framework & KPIs", "Implementation readiness review"],
     cta: "Request a CSI Strategy Review",
     color: "border-brand-navy",
@@ -41,7 +41,7 @@ const services = [
   {
     num: "02",
     title: "ESG Systems & Reporting Frameworks",
-    desc: "We help companies build ESG frameworks that reflect institutional reality — aligned to international standards (GRI, SASB, B-Team Responsible Business), adapted to African operating contexts, and structured to produce credible disclosure rather than curated narrative.",
+    desc: "We help companies build ESG frameworks that reflect institutional reality, aligned to international standards (GRI, SASB, B-Team Responsible Business), adapted to African operating contexts, and structured to produce credible disclosure rather than curated narrative.",
     engagements: ["ESG materiality assessment", "Reporting framework design", "Baseline data systems", "International standards alignment", "ESG governance advisory"],
     cta: "Discuss ESG Advisory",
     color: "border-brand-teal",
@@ -50,7 +50,7 @@ const services = [
   {
     num: "03",
     title: "Social Impact Measurement & Evaluation",
-    desc: "We design and operate impact measurement systems that produce defensible evidence — the kind that holds up to independent scrutiny from NGO critics, regulatory bodies, and institutional investors. We also conduct independent evaluations of existing CSI portfolios.",
+    desc: "We design and operate impact measurement systems that produce defensible evidence: the kind that holds up to independent scrutiny from NGO critics, regulatory bodies, and institutional investors. We also conduct independent evaluations of existing CSI portfolios.",
     engagements: ["Impact measurement system design", "Independent CSI evaluation", "Data collection & analysis", "Beneficiary outcome tracking", "Portfolio performance review"],
     cta: "Request an Impact Evaluation",
     color: "border-brand-green",
@@ -59,7 +59,7 @@ const services = [
   {
     num: "04",
     title: "Stakeholder Engagement & Social Risk",
-    desc: "We design meaningful stakeholder engagement processes, conduct social risk assessments, and develop community relations frameworks grounded in political economy analysis — reducing operational risk and building the social licence to operate.",
+    desc: "We design meaningful stakeholder engagement processes, conduct social risk assessments, and develop community relations frameworks grounded in political economy analysis, reducing operational risk and building the social licence to operate.",
     engagements: ["Social risk assessment", "Stakeholder mapping & engagement", "Community relations strategy", "Political economy analysis", "Grievance mechanism design"],
     cta: "Discuss Social Risk Advisory",
     color: "border-brand-gold",
@@ -98,7 +98,7 @@ export default function CorporateInstitutionsPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed mb-8">
             Astellic helps corporations move from compliance-grade social obligation to
-            evidence-based investment — with the governance, measurement, and learning
+            evidence-based investment, with the governance, measurement, and learning
             systems that institutional credibility demands.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -241,7 +241,7 @@ export default function CorporateInstitutionsPage() {
             <div className="space-y-4 text-brand-muted text-base leading-relaxed">
               <p>
                 Our social impact frameworks are built on the same rigorous standards used by
-                the world&apos;s leading development institutions — because we were trained in
+                the world&apos;s leading development institutions, because we were trained in
                 those institutions, and we apply that discipline to corporate work.
               </p>
               <p>
@@ -255,10 +255,10 @@ export default function CorporateInstitutionsPage() {
           <SlideRight>
           <div className="space-y-4">
             {[
-              { label: "Development rigour",      desc: "Frameworks built to withstand independent scrutiny — from NGO critics, regulators, and institutional investors" },
-              { label: "Africa-specific",         desc: "Grounded in African operating contexts and political economy — not imported frameworks applied generically" },
-              { label: "Governance-oriented",     desc: "We treat social investment with the governance discipline it deserves — not as a communications exercise" },
-              { label: "Founder-present",         desc: "Senior expertise drives every engagement — the person who designs it is the person who delivers it" },
+              { label: "Development rigour",      desc: "Frameworks built to withstand independent scrutiny from NGO critics, regulators, and institutional investors" },
+              { label: "Africa-specific",         desc: "Grounded in African operating contexts and political economy, not imported frameworks applied generically" },
+              { label: "Governance-oriented",     desc: "We treat social investment with the governance discipline it deserves, not as a communications exercise" },
+              { label: "Founder-present",         desc: "Senior expertise drives every engagement; the person who designs it is the person who delivers it" },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-4 bg-brand-light rounded-xl p-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-gold mt-2 shrink-0" />
@@ -285,7 +285,7 @@ export default function CorporateInstitutionsPage() {
           <FadeUp delay={100}>
             <p className="text-gray-300 text-lg mb-8 leading-relaxed max-w-xl mx-auto">
               Whether you are building a new ESG framework, evaluating an existing programme,
-              or designing a community investment strategy from scratch — we will tell you
+              or designing a community investment strategy from scratch; we will tell you
               honestly what it takes to do it well.
             </p>
           </FadeUp>

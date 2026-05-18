@@ -6,7 +6,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Climate, Agriculture & Sustainability",
   description:
-    "Astellic's work in climate, agriculture and sustainability — supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
+    "Astellic's work in climate, agriculture and sustainability: supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
 };
 
 const focusAreas = [

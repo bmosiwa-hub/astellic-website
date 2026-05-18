@@ -33,7 +33,7 @@ const services = [
   {
     title: "Programme Evaluation",
     description:
-      "We conduct independent and joint evaluations across the full results chain — from implementation fidelity and output delivery through to outcome and impact assessment. Our evaluations are designed to produce actionable learning, not just accountability documentation.",
+      "We conduct independent and joint evaluations across the full results chain, from implementation fidelity and output delivery through to outcome and impact assessment. Our evaluations are designed to produce actionable learning, not just accountability documentation.",
     icon: (
       <svg className="w-6 h-6 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
@@ -43,7 +43,7 @@ const services = [
   {
     title: "Capacity Development",
     description:
-      "We build the human and institutional capacity of partner organisations and government counterparts — through structured training, on-the-job coaching, systems design, and knowledge transfer. We design capacity development programmes that stick beyond the project lifecycle.",
+      "We build the human and institutional capacity of partner organisations and government counterparts, through structured training, on-the-job coaching, systems design, and knowledge transfer. We design capacity development programmes that stick beyond the project lifecycle.",
     icon: (
       <svg className="w-6 h-6 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
@@ -63,7 +63,7 @@ const services = [
   {
     title: "Technical Assistance & Embedded Support",
     description:
-      "We provide embedded technical assistance to implementing partners and government counterparts — placing our specialists within teams to provide day-to-day support on programme delivery, data management, policy analysis, and institutional strengthening.",
+      "We provide embedded technical assistance to implementing partners and government counterparts, placing our specialists within teams to provide day-to-day support on programme delivery, data management, policy analysis, and institutional strengthening.",
     icon: (
       <svg className="w-6 h-6 text-brand-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
@@ -85,17 +85,17 @@ const valueProps = [
   {
     number: "01",
     title: "We Work at the Whole System Level",
-    desc: "We do not just evaluate programmes in isolation. We analyse how programmes fit within national systems, policy environments, and institutional landscapes — and we design interventions that strengthen those systems, not just individual projects.",
+    desc: "We do not just evaluate programmes in isolation. We analyse how programmes fit within national systems, policy environments, and institutional landscapes, and we design interventions that strengthen those systems, not just individual projects.",
   },
   {
     number: "02",
     title: "We Build Adaptive Learning into Everything",
-    desc: "Astellic's approach to M&E is rooted in adaptive management. We design systems that generate learning for course-correction during implementation — not just summative evidence for the final report.",
+    desc: "Astellic's approach to M&E is rooted in adaptive management. We design systems that generate learning for course-correction during implementation, not just summative evidence for the final report.",
   },
   {
     number: "03",
     title: "We Are Honest About What the Evidence Shows",
-    desc: "Our evaluations and reviews are independent and evidence-driven. We report what the data shows — including what is not working — because that is the only basis on which programmes can genuinely improve.",
+    desc: "Our evaluations and reviews are independent and evidence-driven. We report what the data shows, including what is not working, because that is the only basis on which programmes can genuinely improve.",
   },
   {
     number: "04",
@@ -148,13 +148,13 @@ export default function DevelopmentPartnersPage() {
               <p className="text-brand-muted text-lg leading-relaxed mb-5">
                 Decades of development investment have produced an uncomfortable truth: even
                 well-designed programmes frequently underdeliver. The gap between what was planned
-                and what was achieved is rarely about intent — it is almost always about the quality
+                and what was achieved is rarely about intent; it is almost always about the quality
                 of systems, evidence, and adaptive management capacity available to those doing the work.
               </p>
               <p className="text-brand-muted text-lg leading-relaxed">
                 Astellic exists to close that gap for development partners. We bring the analytical
                 rigour of evaluation research together with the practical experience of implementation
-                support — helping partners design programmes that are more likely to work, monitor them
+                support, helping partners design programmes that are more likely to work, monitor them
                 with data that actually drives decisions, and build the institutional capacity to
                 sustain results after external support ends.
               </p>
@@ -280,7 +280,7 @@ export default function DevelopmentPartnersPage() {
             <p className="text-gray-300 text-lg mb-8 leading-relaxed">
               Whether you need an evaluation partner, help designing a new programme,
               support building an M&E system, or embedded technical assistance for a
-              complex implementation — we are here to work alongside you.
+              complex implementation; we are here to work alongside you.
             </p>
           </FadeUp>
           <FadeUp delay={200}>

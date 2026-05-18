@@ -5,7 +5,7 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Research & Analytics | Evidence Generation | Astellic",
   description:
-    "Astellic's Research & Analytics sub-unit — applied policy research, sector systems analysis, political economy analysis, and evidence synthesis calibrated for decision-makers across all thematic domains.",
+    "Astellic's Research & Analytics sub-unit: applied policy research, sector systems analysis, political economy analysis, and evidence synthesis calibrated for decision-makers across all thematic domains.",
 };
 
 const services = [

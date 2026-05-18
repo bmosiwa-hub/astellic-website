@@ -13,7 +13,7 @@ const services = [
   {
     title: "Programme Evaluation & Impact Assessment",
     description:
-      "We design and conduct rigorous evaluations — formative, process, summative, and impact — that give funders and governments credible evidence on what their investments are achieving. Our evaluations are built for use, not just reporting.",
+      "We design and conduct rigorous evaluations, formative, process, summative, and impact, that give funders and governments credible evidence on what their investments are achieving. Our evaluations are built for use, not just reporting.",
     icon: (
       <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
@@ -23,7 +23,7 @@ const services = [
   {
     title: "Public Financial Management Support",
     description:
-      "We work with national and subnational governments to strengthen budget systems, expenditure tracking, and accountability frameworks — ensuring public resources reach intended beneficiaries and deliver value for money.",
+      "We work with national and subnational governments to strengthen budget systems, expenditure tracking, and accountability frameworks, ensuring public resources reach intended beneficiaries and deliver value for money.",
     icon: (
       <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
@@ -43,7 +43,7 @@ const services = [
   {
     title: "Aid Effectiveness & Portfolio Review",
     description:
-      "We help bilateral and multilateral donors assess the effectiveness of their portfolios — identifying patterns of success and failure across programmes, countries, and sectors to sharpen future investment decisions.",
+      "We help bilateral and multilateral donors assess the effectiveness of their portfolios, identifying patterns of success and failure across programmes, countries, and sectors to sharpen future investment decisions.",
     icon: (
       <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
@@ -53,7 +53,7 @@ const services = [
   {
     title: "National Data & Evidence Systems",
     description:
-      "We support governments to build sustainable national data systems — from routine health information to civil registration, agricultural surveys, and social protection registers — that produce timely, reliable data for decision-making.",
+      "We support governments to build sustainable national data systems, from routine health information to civil registration, agricultural surveys, and social protection registers, that produce timely, reliable data for decision-making.",
     icon: (
       <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -85,7 +85,7 @@ const approach = [
   {
     step: "01",
     title: "Understand the System",
-    desc: "We begin by mapping the policy environment, institutional landscape, and political economy — not just the technical problem. Every recommendation accounts for what is feasible in context.",
+    desc: "We begin by mapping the policy environment, institutional landscape, and political economy, not just the technical problem. Every recommendation accounts for what is feasible in context.",
   },
   {
     step: "02",
@@ -100,7 +100,7 @@ const approach = [
   {
     step: "04",
     title: "Support Implementation",
-    desc: "We stay engaged through the implementation phase — providing technical backstopping, adaptive management support, and course-correction as realities on the ground emerge.",
+    desc: "We stay engaged through the implementation phase, providing technical backstopping, adaptive management support, and course-correction as realities on the ground emerge.",
   },
 ];
 
@@ -145,7 +145,7 @@ export default function DonorsAndGovernmentsPage() {
               The Challenge We Solve Together
             </h2>
             <p className="text-brand-muted text-lg leading-relaxed mb-5">
-              Donors and governments invest substantial resources in development programming — but too
+              Donors and governments invest substantial resources in development programming, but too
               often, the evidence needed to know what works, what does not, and why, is fragmented,
               delayed, or disconnected from decision-making. Policy reforms are designed without
               adequate data. Programmes are scaled before they are proven. Budgets are allocated
@@ -154,7 +154,7 @@ export default function DonorsAndGovernmentsPage() {
             <p className="text-brand-muted text-lg leading-relaxed">
               Astellic exists to bridge that gap. We work alongside donor agencies and government
               institutions to generate credible evidence, develop actionable policy, and build
-              the systems that make adaptive management possible — not as a one-off engagement,
+              the systems that make adaptive management possible, not as a one-off engagement,
               but as a sustained partnership oriented toward institutional change.
             </p>
           </div>
@@ -269,7 +269,7 @@ export default function DonorsAndGovernmentsPage() {
           <FadeUp delay={100}>
             <p className="text-gray-300 text-lg mb-8 leading-relaxed">
               Whether you are a donor designing a new portfolio, a government ministry building
-              a data system, or a development agency seeking an evaluation partner — we would
+              a data system, or a development agency seeking an evaluation partner; we would
               like to hear from you.
             </p>
           </FadeUp>

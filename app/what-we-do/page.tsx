@@ -8,7 +8,7 @@ import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/compon
 export const metadata: Metadata = {
   title: "What We Do | Astellic",
   description:
-    "Astellic's integrated delivery architecture — Evidence Generation, Policy Development & Advisory, and Policy, Systems Analysis & Implementation Support — operating across African development contexts.",
+    "Astellic's integrated delivery architecture: Evidence Generation, Policy Development & Advisory, and Policy, Systems Analysis & Implementation Support, operating across African development contexts.",
 };
 
 const pillars = [
@@ -74,7 +74,7 @@ const pillars = [
     num: "03",
     title: "Policy, Systems Analysis & Implementation Support",
     tagline: "From evidence-grounded policy development to embedded advisory that strengthens delivery systems in practice.",
-    desc: "This pillar covers Astellic's analytical and advisory work on policy, systems design, and implementation support. We develop policy frameworks, conduct systems analysis, design implementation-ready programmes, and provide embedded advisory to institutions navigating the gap between strategy and delivery. Policy and systems analysis is one of our strongest capabilities — grounded in evidence and calibrated for the institutional realities of African public systems.",
+    desc: "This pillar covers Astellic's analytical and advisory work on policy, systems design, and implementation support. We develop policy frameworks, conduct systems analysis, design implementation-ready programmes, and provide embedded advisory to institutions navigating the gap between strategy and delivery. Policy and systems analysis is one of our strongest capabilities, grounded in evidence and calibrated for the institutional realities of African public systems.",
     href: "/what-we-do/implementation",
     bgClass: "bg-brand-green",
     borderClass: "border-brand-green",
@@ -84,12 +84,12 @@ const pillars = [
     subUnits: [
       {
         label: "Policy & Systems Analysis and Development",
-        desc: "National policies, sector strategies, political economy analysis, and reform roadmaps — grounded in evidence, aligned with political realities, and structured for implementation.",
+        desc: "National policies, sector strategies, political economy analysis, and reform roadmaps, grounded in evidence, aligned with political realities, and structured for implementation.",
         href: "/what-we-do/implementation",
       },
       {
         label: "Programme Design & Implementation Readiness",
-        desc: "Theories of change, results frameworks, and Implementation Readiness Assessments — diagnosing systemic barriers before programmes launch.",
+        desc: "Theories of change, results frameworks, and Implementation Readiness Assessments, diagnosing systemic barriers before programmes launch.",
         href: "/what-we-do/implementation/programme-design",
       },
       {
@@ -144,7 +144,7 @@ export default function WhatWeDoPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic&apos;s organisational architecture is structured around three functional
-            pillars that operate in deliberate sequence and mutual reinforcement —
+            pillars that operate in deliberate sequence and mutual reinforcement,
             constituting a complete, end-to-end institutional delivery capability from
             evidence through to implementation.
           </p>
@@ -271,7 +271,7 @@ export default function WhatWeDoPage() {
               The three pillars function as a self-reinforcing delivery system.
               Programme implementation generates learning that feeds evidence generation.
               Evidence informs policy advisory. Policy advisory shapes programme design.
-              Better design drives better implementation — and the cycle deepens.
+              Better design drives better implementation, and the cycle deepens.
             </p>
           </FadeUp>
           <ScaleIn delay={150}>
