@@ -40,7 +40,7 @@ const modelPhases = [
     num: "05",
     verb: "Transfer",
     headline: "Intelligence into advisory practice",
-    body: "Learning moves from ASIL into Astellic's advisory work through three formal mechanisms: Quarterly Learning Integration Reviews, Methodology Development Cycles, and public publication. Published Learning Reports are attributed to ASIL and distributed through Astellic's donor and partner networks — converting pilot evidence into institutional credibility.",
+    body: "Learning moves from ASIL into Astellic's advisory work through three formal mechanisms: Quarterly Learning Integration Reviews, Methodology Development Cycles, and public publication. Published Learning Reports are attributed to ASIL and distributed through Astellic's donor and partner networks, converting pilot evidence into institutional credibility.",
   },
 ];
 
@@ -51,7 +51,7 @@ const thematicDomains = [
     img: "/images/thematic-health.jpg",
     overlayHex: "#1B2A4A",
     href: "/thematic-areas/health",
-    systemsIssue: "Implementation system failures — not resource constraints or inadequate evidence — explain most persistent gaps between health and nutrition policy intent and service delivery outcomes across African contexts.",
+    systemsIssue: "Implementation system failures, not resource constraints or inadequate evidence, explain most persistent gaps between health and nutrition policy intent and service delivery outcomes across African contexts.",
     focus: "ASIL's health pilots investigate why known-effective community health and nutrition interventions fail to produce durable outcomes, and what governance architectures change that. The inaugural pilot uses clean cooking as a case study in community-governed women's health outcomes.",
     strategicValue: "Documented health implementation evidence positions Astellic as a firm that has not just advised on health systems — but designed, managed, and honestly evaluated interventions under real conditions and published what it learned.",
   },
@@ -61,9 +61,9 @@ const thematicDomains = [
     img: "/images/thematic-governance.jpg",
     overlayHex: "#2A1B3A",
     href: "/thematic-areas/governance",
-    systemsIssue: "Governance reform programmes consistently produce policy change without institutional change — because the accountability architectures that determine whether reforms hold are rarely designed with the same rigour as the reforms themselves.",
+    systemsIssue: "Governance reform programmes consistently produce policy change without institutional change, because the accountability architectures that determine whether reforms hold are rarely designed with the same rigour as the reforms themselves.",
     focus: "ASIL's governance pilots investigate what accountability, data-use, and institutional design architectures are required to make public sector reform durable — from district health management systems to decentralised service delivery governance.",
-    strategicValue: "Governance implementation evidence distinguishes Astellic from analytical-only advisory firms in procurement processes where demonstrated practical governance engagement — not just frameworks — is the differentiator.",
+    strategicValue: "Governance implementation evidence distinguishes Astellic from analytical-only advisory firms in procurement processes where demonstrated practical governance engagement, not just frameworks, is the differentiator.",
   },
   {
     num: "03",
@@ -82,7 +82,7 @@ const thematicDomains = [
     overlayHex: "#1A3A2A",
     href: "/thematic-areas/climate",
     systemsIssue: "Environmental, agricultural, and climate-resilient practice investments consistently fail to produce durable behaviour change — not because the interventions are ineffective, but because the institutional conditions for sustained adoption are absent.",
-    focus: "ASIL investigates the governance architectures that determine whether environmental investments — clean energy, climate-resilient agricultural practice, natural resource management — produce sustained outcomes rather than brief, sponsored-period adoption.",
+    focus: "ASIL investigates the governance architectures that determine whether environmental investments in clean energy, climate-resilient agricultural practice and natural resource management produce sustained outcomes rather than brief, sponsored-period adoption.",
     strategicValue: "As climate and environmental finance accelerates into communities that lack institutional governance capacity, demand for credible implementation advisory grows. ASIL's documented pilots create the credentials to compete for this work.",
   },
 ];
@@ -104,7 +104,7 @@ const partnershipCategories = [
     category: "Implementation Learning Collaborations",
     description: "Structured engagements with INGOs and donor-funded programmes that benefit from embedding ASIL pilots within their operational context. Partners contribute to data collection costs and gain access to ASIL's published learning. They do not exercise editorial control over findings.",
     examples: "Donor-funded programmes with genuine adaptive management mandates",
-    selectivityNote: "ASIL selects implementation partners based on learning alignment and institutional seriousness — not funding availability.",
+    selectivityNote: "ASIL selects implementation partners based on learning alignment and institutional seriousness, not funding availability.",
   },
   {
     category: "Governance & Systems Pilots",
@@ -172,8 +172,8 @@ export default function ASILPage() {
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed mb-4">
             ASIL is Astellic's institutional implementation laboratory. It exists to test implementation models under real conditions, investigate governance systems, and generate the practice-grounded intelligence that makes Astellic's advisory work more credible and more authoritative.
           </p>
-          <p className="text-gray-400 text-base max-w-xl leading-relaxed mb-10">
-            This is not a charitable arm. It is not a foundation. It is a structured learning institution — built on the conviction that the most consequential knowledge in African development is produced from within the practice of delivery, not from the outside.
+          <p className="text-gray-400 text-base max-w-2xl leading-relaxed mb-10">
+            This is not a charitable arm. It is not a foundation. It is a structured learning institution built on the conviction that the most consequential knowledge in African development is produced from within the practice of delivery, not from the outside.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -210,41 +210,70 @@ export default function ASILPage() {
         </div>
       </section>
 
-      {/* ── 2. WHAT IS ASIL ──────────────────────────────────────────────── */}
+      {/* ── 2. WHAT ASIL DOES ────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">What ASIL Is</p>
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">What ASIL Does</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-6 max-w-3xl">
-              A structured implementation laboratory.
+              Two functions. One institutional purpose.
             </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              ASIL occupies a specific and deliberately underoccupied position in the African development landscape: the implementation laboratory that takes ideas seriously enough to test them, and tests them rigorously enough to know what actually happened.
+            <p className="text-brand-muted text-lg leading-relaxed max-w-3xl mb-16">
+              ASIL operates as both a testing ground and an implementation engine. It pilots ideas — Astellic&apos;s own and those brought by partners — and implements interventions whose evidence base is already established, for Astellic and for partners. Both functions generate the practice-grounded intelligence that makes Astellic&apos;s advisory work credible and authoritative.
             </p>
           </FadeUp>
 
-          <SlideLeft>
-            <div className="bg-brand-navy rounded-2xl p-8 max-w-2xl">
-              <p className="text-sm font-bold uppercase tracking-widest text-brand-gold mb-6">ASIL is</p>
-              <ul className="space-y-4">
-                {[
-                  "A structured implementation laboratory embedded within Astellic's architecture",
-                  "An implementation intelligence platform generating evidence from practice",
-                  "A methodology development and validation environment",
-                  "A demonstration site for evidence-based delivery under real conditions",
-                  "A strategic credibility asset for Astellic's advisory positioning",
-                  "A source of practice-grounded institutional knowledge for the development community",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-gray-200 text-sm">
-                    <svg className="w-4 h-4 text-brand-gold mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </SlideLeft>
+          <div className="grid md:grid-cols-2 gap-6">
+            <SlideLeft>
+              <div className="bg-brand-navy rounded-2xl p-8 h-full flex flex-col">
+                <div className="mb-5">
+                  <span className="text-brand-gold font-black text-4xl leading-none">01</span>
+                </div>
+                <p className="text-brand-gold text-sm font-bold uppercase tracking-widest mb-3">Test</p>
+                <h3 className="text-white font-bold text-xl mb-4 leading-snug">Test implementation ideas</h3>
+                <p className="text-gray-300 text-sm leading-relaxed flex-1">
+                  ASIL designs and runs structured pilots to investigate why interventions fail during implementation and what governance architectures make them durable. Pilots draw from Astellic&apos;s own research agenda and from partners seeking independent, rigorous evaluation of their ideas under real institutional and community conditions.
+                </p>
+                <div className="mt-6 pt-6 border-t border-white/10 space-y-2.5">
+                  {[
+                    "Astellic's own research and learning pilots",
+                    "Partner-commissioned pilot studies",
+                    "Independent evaluation of untested models",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-2.5 text-gray-400 text-xs">
+                      <div className="w-1 h-1 rounded-full bg-brand-gold mt-1.5 shrink-0" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </SlideLeft>
+
+            <SlideRight>
+              <div className="bg-brand-light border border-gray-100 rounded-2xl p-8 h-full flex flex-col">
+                <div className="mb-5">
+                  <span className="text-brand-gold font-black text-4xl leading-none">02</span>
+                </div>
+                <p className="text-brand-teal text-sm font-bold uppercase tracking-widest mb-3">Implement</p>
+                <h3 className="text-brand-navy font-bold text-xl mb-4 leading-snug">Implement proven interventions</h3>
+                <p className="text-brand-muted text-sm leading-relaxed flex-1">
+                  Where an intervention&apos;s evidence base is established, ASIL takes direct responsibility for implementation: for Astellic and for partners. This is managed delivery under ASIL&apos;s methodological standards, with honest evaluation of what the implementation produces and what it reveals about the conditions for success at scale.
+                </p>
+                <div className="mt-6 pt-6 border-t border-gray-200 space-y-2.5">
+                  {[
+                    "Delivery of evidence-backed interventions for Astellic",
+                    "Partner-commissioned implementation services",
+                    "Documented outcomes under real conditions",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-2.5 text-brand-muted text-xs">
+                      <div className="w-1 h-1 rounded-full bg-brand-teal mt-1.5 shrink-0" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </SlideRight>
+          </div>
         </div>
       </section>
 
@@ -254,10 +283,10 @@ export default function ASILPage() {
           <FadeUp>
             <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">The Problem</p>
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              Why implementation intelligence is missing — and why it matters.
+              Why implementation intelligence is missing, and why it matters.
             </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              Advisory firms that have worked inside systems — that have designed programmes, managed implementation, confronted delivery failures in real time, and adapted in response — command a fundamentally different order of credibility from those whose expertise is primarily analytical. Donors, governments, and institutional partners intuitively distinguish between the two.
+            <p className="text-brand-muted text-lg leading-relaxed max-w-3xl mb-16">
+              Advisory firms that have worked inside systems, designed programmes, managed implementation, confronted delivery failures in real time and adapted in response command a fundamentally different order of credibility from those whose expertise is primarily analytical. Donors, governments and institutional partners intuitively distinguish between the two.
             </p>
           </FadeUp>
 
@@ -281,7 +310,7 @@ export default function ASILPage() {
           <FadeUp>
             <div className="mt-16 border-l-4 border-brand-gold pl-8 py-4">
               <p className="text-2xl font-bold text-brand-navy leading-snug mb-3">
-                "ASIL exists to create a structured environment in which implementation learning is the primary product — and that learning feeds directly into better advisory practice."
+                "ASIL exists to create a structured environment in which implementation learning is the primary product; that learning feeds directly into better advisory practice."
               </p>
               <p className="text-brand-muted text-sm">ASIL Five-Year Institutional Strategy, 2025–2030</p>
             </div>
@@ -297,8 +326,8 @@ export default function ASILPage() {
             <h2 className="text-4xl font-bold leading-tight mb-4 max-w-3xl">
               The ASIL Operating Model
             </h2>
-            <p className="text-gray-300 text-lg leading-relaxed max-w-2xl mb-16">
-              A disciplined five-phase cycle in which every pilot is designed to answer a specific implementation question, actively managed under real conditions, honestly evaluated, and its learning formally transferred into Astellic's advisory practice and published for the broader development community.
+            <p className="text-gray-300 text-lg leading-relaxed max-w-3xl mb-16">
+              A disciplined five-phase cycle in which every pilot is designed to answer a specific implementation question, actively managed under real conditions, honestly evaluated, and its learning formally transferred into Astellic&apos;s advisory practice and published for the broader development community.
             </p>
           </FadeUp>
 
@@ -358,8 +387,8 @@ export default function ASILPage() {
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               Four domains. One institutional intelligence purpose.
             </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              ASIL pilots are conducted across Astellic's four institutional thematic areas — the domains where we have the deepest advisory positioning and the greatest need for practice-grounded implementation evidence. Each domain is a sustained area of learning inquiry, not a portfolio of projects. A well-designed pilot, like Pilot 001, can generate implementation intelligence that speaks across multiple domains simultaneously.
+            <p className="text-brand-muted text-lg leading-relaxed max-w-3xl mb-16">
+              ASIL pilots are conducted across Astellic&apos;s four institutional thematic areas: the domains where we have the deepest advisory positioning and the greatest need for practice-grounded implementation evidence. Each domain is a sustained area of learning inquiry, not a portfolio of projects. A well-designed pilot, like Pilot 001, can generate implementation intelligence that speaks across multiple domains simultaneously.
             </p>
           </FadeUp>
 
@@ -416,11 +445,11 @@ export default function ASILPage() {
             <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
               The ASIL Pilot Programme
             </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-4">
+            <p className="text-brand-muted text-lg leading-relaxed max-w-3xl mb-4">
               Each ASIL pilot is a structured implementation research study, selected for its learning value and designed to investigate a specific version of the central ASIL question: why effective interventions fail during implementation, and what governance architectures translate them into durable outcomes under real community conditions.
             </p>
-            <p className="text-brand-muted text-base leading-relaxed max-w-2xl mb-14">
-              Pilots are deliberately small and bounded — large enough to generate meaningful evidence, small enough to manage with methodological rigour. ASIL does not scale before it learns.
+            <p className="text-brand-muted text-base leading-relaxed max-w-3xl mb-14">
+              Pilots are deliberately small and bounded: large enough to generate meaningful evidence, small enough to manage with methodological rigour. ASIL does not scale before it learns.
             </p>
           </FadeUp>
 
@@ -534,7 +563,7 @@ export default function ASILPage() {
               Selective. Serious. Institutionally disciplined.
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed max-w-2xl mb-16">
-              ASIL does not seek partners broadly. It selects collaborators based on intellectual seriousness, institutional alignment, and genuine commitment to evidence standards. Every partnership agreement makes explicit that ASIL publishes findings as the evidence shows them — regardless of implications for partner preferences.
+              ASIL selects collaborators based on intellectual seriousness, institutional alignment and genuine commitment to evidence standards. Every partnership agreement makes explicit that ASIL publishes findings as the evidence shows them, regardless of implications for partner preferences.
             </p>
           </FadeUp>
 
@@ -569,82 +598,7 @@ export default function ASILPage() {
         </div>
       </section>
 
-      {/* ── 9. RELATIONSHIP TO ASTELLIC ──────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white border-t border-gray-200">
-        <div className="max-w-5xl mx-auto">
-          <FadeUp>
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-4">Institutional Architecture</p>
-            <h2 className="text-4xl font-bold text-brand-navy leading-tight mb-4 max-w-3xl">
-              ASIL within Astellic: integrated, but intellectually distinct.
-            </h2>
-            <p className="text-brand-muted text-lg leading-relaxed max-w-2xl mb-16">
-              The relationship between ASIL and Astellic's commercial operations is directional: ASIL generates learning and evidence that feeds into Astellic's advisory work. The reverse does not happen — Astellic's commercial priorities do not determine ASIL's research agenda. This separation is what preserves ASIL's intellectual integrity and, through it, its long-term value to Astellic.
-            </p>
-          </FadeUp>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            {[
-              {
-                direction: "→",
-                from: "ASIL Pilots",
-                to: "Advisory Credibility",
-                mechanism: "Quarterly Learning Integration Reviews",
-                detail: "Published Learning Reports become part of Astellic's capability evidence base — allowing the firm to point to documented implementation experience, not just analytical expertise.",
-              },
-              {
-                direction: "→",
-                from: "ASIL Methodology",
-                to: "Advisory Practice",
-                mechanism: "Methodology Development Cycles",
-                detail: "When pilots test or refine specific methodologies — DQA protocols, implementation readiness frameworks, adaptive MERL approaches — those refined tools are formally added to Astellic's methodology library.",
-              },
-              {
-                direction: "→",
-                from: "ASIL Publications",
-                to: "Market Positioning",
-                mechanism: "Publication & Credibility Transfer",
-                detail: "ASIL's published Learning Reports and Annual Reviews are attributed to ASIL as a platform within Astellic — distributing institutional credibility through Astellic's donor and partner networks.",
-              },
-            ].map((flow, i) => (
-              <SlideLeft key={i}>
-                <div className="bg-brand-light rounded-2xl p-6 border border-gray-100 h-full flex flex-col">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs font-bold text-brand-navy bg-white border border-gray-200 px-2 py-1 rounded">{flow.from}</span>
-                    <span className="text-brand-gold font-bold">{flow.direction}</span>
-                    <span className="text-xs font-bold text-brand-navy bg-white border border-gray-200 px-2 py-1 rounded">{flow.to}</span>
-                  </div>
-                  <p className="text-sm font-bold uppercase tracking-widest text-brand-teal mb-2">{flow.mechanism}</p>
-                  <p className="text-brand-muted text-sm leading-relaxed flex-1">{flow.detail}</p>
-                </div>
-              </SlideLeft>
-            ))}
-          </div>
-
-          {/* Governance rules */}
-          <FadeUp>
-            <div className="border border-gray-200 rounded-2xl overflow-hidden">
-              <div className="bg-brand-light px-7 py-4 border-b border-gray-100">
-                <p className="text-sm font-bold uppercase tracking-widest text-brand-muted">Governance Rules</p>
-              </div>
-              <div className="divide-y divide-gray-100">
-                {[
-                  { rule: "Institutional identity", text: "ASIL is presented as a platform within Astellic's architecture — not as a separate institution that happens to be associated with Astellic." },
-                  { rule: "Research independence", text: "ASIL's research agenda is not determined by Astellic's commercial pipeline. The Lab investigates questions strategically relevant to Astellic's work — but does not function as a free research arm for client assignments." },
-                  { rule: "Intellectual integrity", text: "ASIL's findings are reported as the evidence shows, regardless of implications for Astellic's commercial interests or for the positions of institutional partners. Any attempt to suppress findings is treated as a governance violation." },
-                  { rule: "Annual evaluation", text: "ASIL is evaluated annually against its contribution to Astellic's institutional credibility, not against a standalone impact metric. The governing question: Has ASIL made Astellic a more credible and effective advisory firm this year?" },
-                ].map((item) => (
-                  <div key={item.rule} className="grid md:grid-cols-[180px_1fr] gap-6 px-7 py-5">
-                    <p className="text-xs font-bold text-brand-navy uppercase tracking-wider">{item.rule}</p>
-                    <p className="text-brand-muted text-sm leading-relaxed">{item.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ── 10. FINAL CTA ────────────────────────────────────────────────── */}
+      {/* ── 8. FINAL CTA ────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-brand-navy text-white">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-[1fr_auto] gap-12 items-start">
@@ -654,8 +608,8 @@ export default function ASILPage() {
                 <h2 className="text-4xl font-bold leading-tight mb-5 max-w-xl">
                   This is where African implementation systems are studied seriously.
                 </h2>
-                <p className="text-gray-300 text-base leading-relaxed max-w-lg mb-10">
-                  ASIL is building a body of practice evidence that will, over five years, establish Astellic as an African institution that does not simply advise on implementation — but demonstrates what rigorous implementation looks like, under real conditions, and publishes what it learns.
+                <p className="text-gray-300 text-base leading-relaxed mb-10">
+                  ASIL is building a body of practice evidence that will, over five years, establish Astellic as an African institution that advises on implementation, demonstrates what rigorous implementation looks like under real conditions, and publishes what it learns.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Link

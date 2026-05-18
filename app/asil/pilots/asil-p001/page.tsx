@@ -71,7 +71,7 @@ export default function ASILPilot001Page() {
             <div className="border-l-4 border-brand-gold pl-8 py-2">
               <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-3">The Central ASIL Question</p>
               <p className="text-2xl font-bold text-brand-navy leading-snug max-w-3xl">
-                Why do effective interventions fail during implementation — and what governance architectures
+                Why do effective interventions fail during implementation, and what governance architectures
                 translate good interventions into durable outcomes under real community conditions?
               </p>
             </div>
@@ -95,13 +95,13 @@ export default function ASILPilot001Page() {
               },
               {
                 label: "The implementation fails",
-                body: "Sustained adoption beyond the sponsored project period is consistently low. Cookstoves are distributed, used briefly, and abandoned. The failure repeats across geographies, implementers, and funding sources — decade after decade.",
+                body: "Sustained adoption beyond the sponsored project period is consistently low. Cookstoves are distributed, used briefly, and abandoned. The failure repeats across geographies, implementers and funding sources, decade after decade.",
                 icon: "M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
                 tone: "negative" as const,
               },
               {
                 label: "The ASIL question",
-                body: "If the failure is not in the technology or the evidence, it is in the implementation architecture. What governance system — designed deliberately, not assumed — is sufficient to make adoption durable? That is what this pilot tests.",
+                body: "If the failure is not in the technology or the evidence, it is in the implementation architecture. What governance system, designed deliberately and not assumed, is sufficient to make adoption durable? That is what this pilot tests.",
                 icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.933-.399.08-.667.43-.667.808V14m0 4h.01",
                 tone: "question" as const,
               },
@@ -171,7 +171,7 @@ export default function ASILPilot001Page() {
                       sustained adoption beyond the period of external support is low, consistently, across contexts.
                     </p>
                     <p className="text-brand-muted text-base leading-relaxed">
-                      This means any failure in this pilot is a pure implementation and governance failure — not a
+                      This means any failure in this pilot is a pure implementation and governance failure: not a
                       technology problem, not an evidence problem. The cookstove is a known-good instrument.
                       The question is whether a deliberately designed community governance architecture can overcome
                       the implementation failure that has frustrated the same instrument for decades.
@@ -181,7 +181,7 @@ export default function ASILPilot001Page() {
                       explicit equity mandate, a Women&apos;s Health Evidence System that puts adoption data in
                       community hands, and a structured quarterly adaptive governance cycle. If this architecture
                       sustains adoption where other programmes have not, it will constitute significant evidence
-                      for the central ASIL hypothesis — that governance design is the binding constraint on
+                      for the central ASIL hypothesis: that governance design is the binding constraint on
                       implementation success for known-good interventions.
                     </p>
                   </div>
@@ -194,10 +194,10 @@ export default function ASILPilot001Page() {
                   <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-5">Key Learning Questions</p>
                   <div className="space-y-4">
                     {[
-                      "Does a purposefully designed community accountability system sustain improved cookstove adoption beyond the sponsored project period — and through precisely what governance mechanisms?",
-                      "What design features of the Community Accountability Committee — composition, equity mandate, evidence protocols, decision authority — most reliably produce a governance response when adoption stalls?",
+                      "Does a purposefully designed community accountability system sustain improved cookstove adoption beyond the sponsored project period, and through precisely what governance mechanisms?",
+                      "What design features of the Community Accountability Committee (composition, equity mandate, evidence protocols, decision authority) most reliably produce a governance response when adoption stalls?",
                       "What role does a community-held Women's Health Evidence System play in sustaining adoption decisions and activating accountability responses at household level?",
-                      "What does this case study reveal about the governance conditions required to make known-effective community health interventions durable — and what does it imply for how such interventions are designed and governed in other sectors?",
+                      "What does this case study reveal about the governance conditions required to make known-effective community health interventions durable, and what does it imply for how such interventions are designed and governed in other sectors?",
                     ].map((q, i) => (
                       <div key={i} className="flex items-start gap-4 bg-brand-light rounded-xl p-5 border border-gray-100">
                         <span className="text-brand-gold font-black text-lg shrink-0 leading-none mt-0.5">Q{i + 1}</span>
@@ -216,7 +216,7 @@ export default function ASILPilot001Page() {
                     {[
                       { method: "Community governance design", detail: "Three purposively selected communities. Community Accountability Committee established with an explicit equity mandate and defined decision protocols before distribution commences." },
                       { method: "Women's Health Evidence System", detail: "Community-held adoption tracking system that makes household-level data visible and actionable for the Accountability Committee each quarter." },
-                      { method: "Quarterly adaptive governance", detail: "Structured cycle: evidence review, committee deliberation, targeted follow-up, documented adaptation — at each site, each quarter." },
+                      { method: "Quarterly adaptive governance", detail: "Structured cycle: evidence review, committee deliberation, targeted follow-up and documented adaptation at each site, each quarter." },
                       { method: "Adoption outcome tracking", detail: "Consistent use monitoring across targeted households, disaggregated by equity exposure burden and household composition." },
                       { method: "Adaptive management log", detail: "Documented decision log tracking all pilot adaptations, evidence triggers, and the governance responses they produced." },
                       { method: "Ethics clearance", detail: "Malawi National Bioethics Committee clearance required prior to field activities. Helsinki Declaration principles apply throughout." },
@@ -280,8 +280,8 @@ export default function ASILPilot001Page() {
               <div className="bg-brand-gold/10 border border-brand-gold/20 rounded-2xl p-6">
                 <p className="text-base font-bold uppercase tracking-widest text-brand-gold mb-3">Strategic Significance</p>
                 <p className="text-brand-navy text-sm leading-relaxed">
-                  Because the intervention is known-good, the Learning Report&apos;s findings — whether positive
-                  or negative — will constitute direct evidence on governance architecture as the binding constraint
+                  Because the intervention is known-good, the Learning Report&apos;s findings, whether positive
+                  or negative, will constitute direct evidence on governance architecture as the binding constraint
                   on implementation success. That learning is applicable across every thematic area ASIL operates in.
                 </p>
               </div>
@@ -329,14 +329,14 @@ export default function ASILPilot001Page() {
                 num: "01",
                 domain: "Health & Nutrition Systems",
                 question: "Why does a known-effective women's health intervention fail to produce durable health outcomes?",
-                mechanism: "The failure is not in the intervention — it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
+                mechanism: "The failure is not in the intervention; it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
                 learning: "Governance design as the binding constraint on community health intervention durability; equity-disaggregated adoption as a health outcome metric.",
               },
               {
                 num: "02",
                 domain: "Governance & Public Sector Reform",
                 question: "What community-level governance architecture is required for sustained public health programme delivery?",
-                mechanism: "The Community Accountability Committee design is a governance intervention as much as a health one. The pilot tests whether a structured community accountability mechanism can operationalise an equity mandate in practice — not merely commit to it.",
+                mechanism: "The Community Accountability Committee design is a governance intervention as much as a health one. The pilot tests whether a structured community accountability mechanism can operationalise an equity mandate in practice, not merely commit to it.",
                 learning: "Community governance design as a programme delivery mechanism; conditions under which accountability architecture translates into durable implementation outcomes.",
               },
               {
@@ -349,7 +349,7 @@ export default function ASILPilot001Page() {
               {
                 num: "04",
                 domain: "Climate Agriculture & Sustainability",
-                question: "Why do household clean energy transitions fail to persist — and what governance architecture changes that?",
+                question: "Why do household clean energy transitions fail to persist, and what governance architecture changes that?",
                 mechanism: "Cookstove abandonment is a household energy governance failure. As clean energy finance accelerates into communities, the institutional conditions for sustained adoption become critical. This pilot generates direct evidence on what those conditions require.",
                 learning: "Governance architecture for durable household energy transitions; institutional conditions for sustained low-carbon behaviour change at community scale.",
               },
@@ -383,7 +383,7 @@ export default function ASILPilot001Page() {
               <p className="text-gray-200 text-base leading-relaxed max-w-3xl">
                 By anchoring Pilot 001 in a case study where the intervention is already known to work,
                 ASIL eliminates the most common confound in implementation research. If adoption fails,
-                the failure cannot be attributed to the technology or the evidence base — it will be a
+                the failure cannot be attributed to the technology or the evidence base; it will be a
                 pure implementation and governance failure. That is the design logic, and it is what
                 makes the Learning Report applicable far beyond clean cooking.
               </p>
