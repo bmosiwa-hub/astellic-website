@@ -2,64 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 import AfricaPresenceMap from "@/components/AfricaPresenceMap";
-import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
-
-const coreServices = [
-  {
-    num: "01",
-    title: "Adaptive MERL & Learning Systems",
-    tagline: "We help programmes continuously learn and improve, not just report.",
-    problem: "Most monitoring systems generate data for compliance, not decisions. Programmes collect what donors require, not what managers need. Course-correction happens too late, if at all.",
-    bullets: [
-      "Learn continuously from implementation evidence",
-      "Improve programme performance in real time",
-      "Strengthen adaptive management capacity",
-      "Generate decision-useful evidence at every stage",
-    ],
-    engagements: ["Baseline, midline & endline evaluations", "Real-time adaptive MERL design", "Learning system architecture", "Theory of change development"],
-    color: "border-brand-navy",
-    numBg: "bg-brand-navy",
-    href: "/what-we-do/evidence/evaluation-learning",
-    img: "/images/hero-approach.jpg",
-    overlayHex: "#1B2A4A",
-  },
-  {
-    num: "02",
-    title: "Data Quality, Verification & Research Integrity",
-    tagline: "We help institutions build confidence in what their data actually shows.",
-    problem: "Inflated coverage numbers. Inconsistent reporting. Evaluations built on data no one has verified. Most development programmes operate on evidence they have never truly scrutinised.",
-    bullets: [
-      "Verify programme data before it shapes decisions",
-      "Strengthen reporting credibility with donors",
-      "Improve research integrity and fidelity",
-      "Build confidence in evidence systems",
-    ],
-    engagements: ["Data quality audits (DQAs)", "Independent verification protocols", "Research integrity assessments", "Data governance advisory"],
-    color: "border-brand-teal",
-    numBg: "bg-brand-teal",
-    href: "/what-we-do/evidence/data-quality",
-    img: "/images/thematic-governance.jpg",
-    overlayHex: "#0D7A6E",
-  },
-  {
-    num: "03",
-    title: "Policy, Systems Analysis & Implementation Support",
-    tagline: "We help organisations develop sound policy and move from strategy to actual delivery.",
-    problem: "Strategies look compelling in documents. They fail when they meet institutional inertia, unclear accountability, weak implementation readiness, and systems that were never built to execute them.",
-    bullets: [
-      "Develop policy and systems strategies grounded in evidence",
-      "Operationalise strategy within institutional realities",
-      "Diagnose delivery bottlenecks before they become failures",
-      "Strengthen implementation readiness and execution discipline",
-    ],
-    engagements: ["Policy and systems analysis", "Implementation readiness reviews", "Delivery diagnostics", "Political economy analysis", "Embedded technical advisory"],
-    color: "border-brand-green",
-    numBg: "bg-brand-green",
-    href: "/what-we-do/implementation",
-    img: "/images/hero-work.jpg",
-    overlayHex: "#3B7D23",
-  },
-];
+import WhoWeWorkWithSection from "@/components/WhoWeWorkWithSection";
+import { Reveal, FadeUp } from "@/components/Reveal";
 
 const commitments = [
   {
@@ -84,26 +28,6 @@ const commitments = [
   },
 ];
 
-const clientTypes = [
-  {
-    label: "Donors & Governments",
-    desc: "Bilateral donors, multilateral funders, and national governments that need credible evidence, stronger data systems, and advisory that makes programmes work.",
-    href: "/institutions-we-support/donors-and-governments",
-    dot: "bg-brand-gold",
-  },
-  {
-    label: "Development Partners",
-    desc: "UN agencies, INGOs, and implementing organisations that need sharper programme design, adaptive M&E, and the institutional capacity to deliver at scale.",
-    href: "/institutions-we-support/development-partners",
-    dot: "bg-brand-teal",
-  },
-  {
-    label: "Corporate Institutions",
-    desc: "Private sector companies and financial institutions that need credible impact measurement, ESG frameworks, and social investment strategies grounded in evidence.",
-    href: "/institutions-we-support/corporate-institutions",
-    dot: "bg-brand-navy",
-  },
-];
 
 const insightCards = [
   {
@@ -215,135 +139,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Core Services ────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <FadeUp className="text-center mb-16">
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
-              What We Do
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-5">
-              Three Areas of Specialist Depth
-            </h2>
-            <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              Astellic is a specialist firm. We do three things with exceptional depth,
-              and a fourth for the private sector. We do not try to be everything to everyone.
-            </p>
-          </FadeUp>
-
-          <div className="space-y-6">
-            {coreServices.map((svc, i) => (
-              <Reveal key={svc.num} variant={i % 2 === 0 ? "left" : "right"} delay={i * 80}>
-                <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden lift">
-                  {/* Photo — tall enough to dominate; light gradient so photo reads clearly */}
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={svc.img}
-                      alt={svc.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    {/* Light gradient: photo fully visible top-half, fades to brand colour at base for text legibility */}
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: `linear-gradient(to top, ${svc.overlayHex}e6 0%, ${svc.overlayHex}55 42%, transparent 70%)` }}
-                    />
-                    <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                      <span className={`text-xs font-bold text-white ${svc.numBg} px-2.5 py-1 rounded self-start`}>
-                        {svc.num}
-                      </span>
-                      <div>
-                        <p className="text-white/60 text-sm font-bold uppercase tracking-[0.18em] mb-1.5">
-                          Area of Specialist Depth
-                        </p>
-                        <h3 className="text-white font-bold text-2xl leading-snug mb-1.5">{svc.title}</h3>
-                        <p className="text-white/80 text-sm font-medium italic">{svc.tagline}</p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Thin brand-colour accent bar separating photo from content */}
-                  <div className={`h-1 ${svc.numBg}`} />
-                  {/* Content grid */}
-                  <div className="p-8 grid md:grid-cols-[1fr_1fr_1fr] gap-8 items-start">
-                    <div>
-                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">The Problem</p>
-                      <p className="text-brand-muted text-sm leading-relaxed">{svc.problem}</p>
-                    </div>
-                    <div>
-                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">
-                        We Help Institutions
-                      </p>
-                      <ul className="space-y-2">
-                        {svc.bullets.map((b) => (
-                          <li key={b} className="flex items-start gap-2 text-sm text-brand-navy">
-                            <span className="text-brand-gold mt-0.5 shrink-0">→</span>
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="text-base font-bold uppercase tracking-widest text-brand-muted mb-3">
-                        Example Engagements
-                      </p>
-                      <ul className="space-y-1.5 mb-6">
-                        {svc.engagements.map((e) => (
-                          <li key={e} className="text-sm text-brand-muted leading-snug">· {e}</li>
-                        ))}
-                      </ul>
-                      <Link
-                        href={svc.href}
-                        className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm hover:gap-2.5 transition-all"
-                      >
-                        Explore this service
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Corporate track callout */}
-          <Reveal variant="up" delay={100}>
-            <div className="mt-6 bg-brand-navy text-white rounded-2xl p-8 grid md:grid-cols-[1fr_auto] gap-6 items-center lift">
-              <div>
-                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-2">Corporate Track</p>
-                <h3 className="text-xl font-bold mb-3">Corporate Advisory & Social Investment</h3>
-                <p className="text-gray-300 text-sm leading-relaxed max-w-xl">
-                  Most CSR programmes struggle not because of intent, but because evidence,
-                  governance, implementation systems, and learning mechanisms are weak.
-                  We help corporations design credible social investment strategies, build
-                  ESG evidence systems, and measure impact with the rigour donors expect.
-                </p>
-              </div>
-              <Link
-                href="/institutions-we-support/corporate-institutions"
-                className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors whitespace-nowrap shrink-0"
-              >
-                Corporate Advisory
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-          </Reveal>
-
-          <FadeUp delay={100}>
-            <div className="text-center mt-10">
-              <Link
-                href="/what-we-do"
-                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-6 py-3 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm"
-              >
-                View Full Delivery Architecture
-              </Link>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
+      {/* ── Who We Work With ─────────────────────────────────────────────── */}
+      <WhoWeWorkWithSection />
 
       {/* ── Five Commitments ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-navy text-white">
@@ -410,47 +207,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Who We Work With ─────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <FadeUp className="text-center mb-14">
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
-              Who We Work With
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
-              Institutions at Every Stage of the Results Chain
-            </h2>
-            <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-              Whether you fund, design, or deliver development outcomes, or invest in
-              communities through the private sector, Astellic has an entry point for you.
-            </p>
-          </FadeUp>
-          <div className="grid md:grid-cols-3 gap-6">
-            {clientTypes.map((ct, i) => (
-              <Reveal key={ct.label} variant="up" delay={i * 90}>
-                <Link
-                  href={ct.href}
-                  className="group bg-brand-light rounded-2xl p-7 flex flex-col gap-4 lift"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={`w-3 h-3 rounded-full ${ct.dot} shrink-0 group-hover:scale-125 transition-transform duration-200`} />
-                    <h3 className="font-bold text-brand-navy text-lg group-hover:text-brand-gold transition-colors">
-                      {ct.label}
-                    </h3>
-                  </div>
-                  <p className="text-brand-muted text-sm leading-relaxed flex-1">{ct.desc}</p>
-                  <span className="inline-flex items-center gap-1.5 text-brand-gold font-semibold text-sm group-hover:gap-2.5 transition-all">
-                    Learn more
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── Geographic Presence & Track Record ───────────────────────────── */}
       <section className="bg-brand-navy text-white py-20 px-6">

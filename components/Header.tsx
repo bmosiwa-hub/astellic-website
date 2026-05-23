@@ -5,9 +5,10 @@ import { useState, useEffect } from "react";
 import SearchModal from "@/components/SearchModal";
 
 const institutionsItems = [
-  { label: "Donors & Governments",    href: "/institutions-we-support/donors-and-governments",  dot: "bg-brand-gold" },
-  { label: "Corporate Institutions",  href: "/institutions-we-support/corporate-institutions",   dot: "bg-brand-navy" },
-  { label: "Development Partners",    href: "/institutions-we-support/development-partners",     dot: "bg-brand-teal" },
+  { label: "Governments & Ministries",      href: "/institutions-we-support/governments",      dot: "bg-brand-gold"  },
+  { label: "Bilateral & Multilateral Donors", href: "/institutions-we-support/bilateral-donors", dot: "bg-brand-navy"  },
+  { label: "NGOs & Implementing Partners",  href: "/institutions-we-support/ngos-and-partners", dot: "bg-brand-teal"  },
+  { label: "Private Corporations",          href: "/institutions-we-support/corporations",      dot: "bg-brand-green" },
 ];
 
 const thematicAreas = [
