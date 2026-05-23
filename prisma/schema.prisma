@@ -1612,7 +1612,10 @@ model JobPosting {
   title        String
   department   String?
   description  String
-  requirements String?
+  requirements         String?
+  mandatoryConditions  String[]  @default([])
+  requiredDocuments    String[]  @default([])
+  isPublishedToWebsite Boolean   @default(false)
   contractType String        @default("PERMANENT") // mirrors Employee.contractType
   location     String?
   // DRAFT | OPEN | CLOSED | FILLED
@@ -1635,6 +1638,10 @@ model JobApplication {
   applicantPhone String?
   cvUrl          String?           // uploaded document URL
   coverLetterUrl String?
+  qualificationAnswers Json?     // { "0": true, "1": true } — index → answer
+  isQualified          Boolean   @default(false)
+  uploadedDocuments    Json?     // { "Document Label": "filename" }
+  fromWebPortal        Boolean   @default(false)
   status         ApplicationStatus @default(APPLIED)
   interviewDate  DateTime?
   interviewNotes String?

@@ -57,7 +57,10 @@ async function updatePosting(formData: FormData) {
   const id = formData.get("id") as string;
   await prisma.jobPosting.update({
     where: { id },
-    data:  { status: formData.get("status") as string },
+    data:  {
+      status: formData.get("status") as string,
+      isPublishedToWebsite: formData.get("isPublishedToWebsite") === "on",
+    },
   });
   revalidatePath(`/astelfin_26/recruitment/${id}`);
 }
@@ -92,9 +95,43 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           <select name="status" defaultValue={posting.status} className="border rounded-lg px-3 py-1.5 text-sm">
             {["DRAFT","OPEN","CLOSED","FILLED"].map(s => <option key={s} value={s}>{s}</option>)}
           </select>
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            <input type="checkbox" name="isPublishedToWebsite" defaultChecked={posting.isPublishedToWebsite} className="h-4 w-4 accent-brand-gold" />
+            Published
+          </label>
           <button className="bg-brand-navy text-white text-sm px-3 py-1.5 rounded-lg hover:opacity-90">Update</button>
         </form>
       </div>
+
+      {/* Conditions & Documents */}
+      {(posting.mandatoryConditions.length > 0 || posting.requiredDocuments.length > 0) && (
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          {posting.mandatoryConditions.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-2">Mandatory Conditions ({posting.mandatoryConditions.length})</p>
+              <ul className="space-y-1">
+                {posting.mandatoryConditions.map((c, i) => (
+                  <li key={i} className="text-sm text-amber-900 flex items-start gap-1.5">
+                    <span className="text-amber-500 mt-0.5">✓</span>{c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {posting.requiredDocuments.length > 0 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-2">Required Documents ({posting.requiredDocuments.length})</p>
+              <ul className="space-y-1">
+                {posting.requiredDocuments.map((d, i) => (
+                  <li key={i} className="text-sm text-blue-900 flex items-start gap-1.5">
+                    <span className="text-blue-500 mt-0.5">📎</span>{d}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Add Application */}
       <section className="bg-white rounded-xl border border-gray-200 p-5">
@@ -123,7 +160,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
         </form>
       </section>
 
-      {/* Kanban-style applications */}
+      {/* Applications table */}
       <section>
         <h2 className="font-semibold text-gray-800 mb-3">Applications ({posting.applications.length})</h2>
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -132,6 +169,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Applicant</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Contact</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-600">Eligible</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Notes</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Move to</th>
@@ -139,12 +177,19 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
             </thead>
             <tbody className="divide-y divide-gray-100">
               {posting.applications.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400">No applicants yet</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No applicants yet</td></tr>
               )}
               {posting.applications.map(app => (
                 <tr key={app.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">{app.applicantName}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{app.applicantEmail ?? app.applicantPhone ?? "—"}</td>
+                  <td className="px-4 py-3">
+                    {app.fromWebPortal ? (
+                      app.isQualified
+                        ? <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ Qualified</span>
+                        : <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">✗ Not qualified</span>
+                    ) : <span className="text-gray-400 text-xs">—</span>}
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${APP_STATUS_COLOURS[app.status] ?? ""}`}>
                       {app.status.replace("_"," ")}
