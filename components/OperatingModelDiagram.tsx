@@ -2,6 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import EvidenceIllustration from "@/components/illustrations/EvidenceIllustration";
+import PolicyIllustration from "@/components/illustrations/PolicyIllustration";
+import DeliveryIllustration from "@/components/illustrations/DeliveryIllustration";
+
+// ── Illustration lookup (outside stages const so JSX is allowed) ──────────────
+const illustrations: Record<string, React.ComponentType<{ className?: string }>> = {
+  evidence: EvidenceIllustration,
+  policy:   PolicyIllustration,
+  delivery: DeliveryIllustration,
+};
 
 // ── Stage data ────────────────────────────────────────────────────────────────
 const stages = [
@@ -422,24 +432,27 @@ export default function OperatingModelDiagram() {
                 transform: isActive ? "translateY(-2px)" : "none",
               }}
             >
-              {/* Coloured top bar */}
-              <div
-                className="h-1 w-full transition-all duration-200"
-                style={{
-                  backgroundColor: stage.color,
-                  opacity: isActive ? 1 : 0.35,
-                }}
-              />
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className="text-xs font-bold text-white px-2 py-0.5 rounded"
+              {/* Illustrated header */}
+              {(() => {
+                const Illustration = illustrations[stage.id];
+                return (
+                  <div
+                    className="relative h-28 overflow-hidden"
                     style={{ backgroundColor: stage.color }}
                   >
-                    {stage.num}
-                  </span>
-                  <h3 className="font-bold text-brand-navy text-sm">{stage.title}</h3>
-                </div>
+                    <Illustration className="absolute inset-0 w-full h-full opacity-50" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30" />
+                    <span className="absolute top-3 left-3 text-xs font-bold text-white bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded">
+                      {stage.num}
+                    </span>
+                    <h3 className="absolute bottom-3 left-3 font-bold text-white text-sm drop-shadow">
+                      {stage.title}
+                    </h3>
+                  </div>
+                );
+              })()}
+
+              <div className="p-5">
                 <p
                   className="text-xs font-medium mb-3"
                   style={{ color: stage.color }}
