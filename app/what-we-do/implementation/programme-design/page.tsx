@@ -3,31 +3,31 @@ import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Programme Design & Innovation | Implementation | Astellic",
+  title: "Programme Design and Readiness Assessment | Delivery | Astellic",
   description:
-    "Astellic's Programme Design & Innovation sub-unit: theories of change, results frameworks, implementation-ready architectures, and proprietary design tools.",
+    "Astellic's Programme Design and Readiness Assessment sub-unit: advisory support on theories of change, results frameworks, programme architecture, and implementation readiness diagnostics.",
 };
 
 const services = [
   {
-    label: "Complete Programme Architecture",
-    desc: "Development of full programme designs, including theory of change, results chain, operational model, implementation sequencing, and risk framework, calibrated to client context and donor requirements.",
+    label: "Theory of Change and Results Framework Development",
+    desc: "Rigorous, facilitated development of theories of change, results chains, and indicator frameworks, building the analytical architecture on which accountable programme performance depends.",
   },
   {
-    label: "Astellic Implementation Readiness Assessment",
-    desc: "A proprietary diagnostic tool that identifies design weaknesses, institutional constraints, and systemic barriers before implementation begins, giving clients a measurable advantage on Day 1.",
+    label: "Programme Architecture Advisory",
+    desc: "Advisory support on full programme design, including operational models, implementation sequencing, risk frameworks, and financing design, calibrated to the institutional context and donor requirements of each engagement.",
   },
   {
-    label: "Innovation & Prototyping",
-    desc: "Rapid design, testing, and iteration of new delivery models, tools, and approaches, including AI-augmented research services and unconventional implementation models adapted to the African institutional context.",
+    label: "Implementation Readiness Assessment",
+    desc: "A structured diagnostic that identifies design weaknesses, institutional constraints, and systemic barriers before implementation begins, giving clients a measurable advantage before the first activity starts.",
   },
   {
-    label: "Financing Architecture",
-    desc: "Design of financing structures for donor-funded programmes, government initiatives, and blended finance mechanisms, including budget justification, cost modelling, and sub-grant design.",
+    label: "Programme Design Advisory to Governments and Donors",
+    desc: "Technical advisory to government ministries and programme management units on programme design decisions, ensuring that intent is translated into operational structures that can actually be executed.",
   },
   {
-    label: "Results Framework & Theory of Change Development",
-    desc: "Rigorous, facilitated development of theories of change, results chains, and indicator frameworks, producing the analytical architecture on which accountable programme performance is built.",
+    label: "Institutional Governance Design and Process Mapping",
+    desc: "Design of institutional governance arrangements, accountability structures, and operational processes that give programmes the organisational infrastructure needed to perform consistently under pressure.",
   },
 ];
 
@@ -39,19 +39,19 @@ export default function ProgrammeDesignPage() {
           <div className="flex items-center gap-2 text-sm text-green-200 mb-5 flex-wrap">
             <Link href="/what-we-do" className="hover:text-white transition-colors">What We Do</Link>
             <span>/</span>
-            <Link href="/what-we-do/implementation" className="hover:text-white transition-colors">Implementation</Link>
+            <Link href="/what-we-do/implementation" className="hover:text-white transition-colors">Delivery</Link>
             <span>/</span>
-            <span className="text-white font-semibold">Programme Design & Innovation</span>
+            <span className="text-white font-semibold">Programme Design and Readiness Assessment</span>
           </div>
           <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 3.1</span>
-          <h1 className="text-4xl font-bold mt-2 mb-4">Programme Design<br />& Innovation</h1>
+          <h1 className="text-4xl font-bold mt-2 mb-4">Programme Design and<br />Readiness Assessment</h1>
           <p className="text-green-100 text-lg font-medium mb-4">
-            Translating strategic intent into implementation-ready programme architectures with a measurable design advantage.
+            Supporting and advising on implementation-ready programme architectures, with the design rigour to close the gap between intent and execution.
           </p>
           <p className="text-green-50 text-lg max-w-2xl leading-relaxed opacity-90">
-            Strong programme design is the single most powerful predictor of implementation success.
-            We build the analytical architecture, including theory of change, results frameworks, and operational
-            models, that gives every programme a structural advantage before the first activity begins.
+            We support and advise on programme design, not direct implementation at scale.
+            Strong programme design, tested against institutional readiness, is the single
+            most powerful predictor of implementation success.
           </p>
         </div>
       </section>
@@ -59,12 +59,12 @@ export default function ProgrammeDesignPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
-            The Programme Design & Innovation sub-unit applies an innovation lens to every
-            design assignment, testing new delivery models, piloting unconventional approaches,
-            and building proprietary tools including the Astellic Implementation Readiness Assessment.
-            We recognise that in African development contexts, the gap between design intent and
-            implementation reality is often a failure of design, not of execution.
-            Our role is to close that gap at the design stage.
+            The Programme Design and Readiness Assessment sub-unit brings rigorous advisory
+            support to the most consequential phase of any programme: the design stage.
+            We recognise that in African development contexts, the gap between design intent
+            and implementation reality is often a failure of design, not of execution.
+            Our role is to close that gap before programmes launch, through sound architecture,
+            honest readiness diagnostics, and advisory grounded in how institutions actually work.
           </p>
           <div className="space-y-6">
             {services.map((s, i) => (
@@ -85,12 +85,12 @@ export default function ProgrammeDesignPage() {
       <section className="bg-brand-light py-12 px-6">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div>
-            <p className="font-bold text-brand-navy">Commission a programme design?</p>
+            <p className="font-bold text-brand-navy">Commission programme design advisory?</p>
             <p className="text-brand-muted text-sm">We work with donors, governments, and implementers.</p>
           </div>
           <div className="flex gap-3">
             <Link href="/contact" className="bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-2.5 rounded font-medium text-sm transition-colors">
-              Commission a Programme Design
+              Discuss Programme Design
             </Link>
             <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
               Back to Pillar 03

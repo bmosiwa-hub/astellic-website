@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const services = [
-  { label: "Adaptive MERL & Learning Systems",           href: "/what-we-do/evidence/evaluation-learning" },
-  { label: "Data Quality & Verification",                href: "/what-we-do/evidence/data-quality" },
-  { label: "Policy & Systems Analysis and Development",  href: "/what-we-do/implementation" },
-  { label: "Implementation Readiness Support",           href: "/what-we-do/implementation" },
-  { label: "Corporate Advisory & Social Investment",     href: "/institutions-we-support/corporate-institutions" },
-  { label: "Full Delivery Architecture",                 href: "/what-we-do" },
+  { label: "Research & Analytics",                       href: "/what-we-do/evidence/research-analytics" },
+  { label: "Evaluation and Audit",                       href: "/what-we-do/evidence/evaluation-learning" },
+  { label: "Policy & Strategy Analysis",                 href: "/what-we-do/policy/strategy-development" },
+  { label: "Knowledge Translation & Advisory",           href: "/what-we-do/policy/knowledge-translation" },
+  { label: "Programme Design & Readiness",               href: "/what-we-do/implementation/programme-design" },
+  { label: "Implementation Support & Adaptive Mgmt",     href: "/what-we-do/implementation/adaptive-management" },
 ];
 
 const about = [

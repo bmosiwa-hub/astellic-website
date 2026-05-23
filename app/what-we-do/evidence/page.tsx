@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Evidence Generation & Verification | Astellic",
+  title: "Evidence | Astellic",
   description:
-    "Astellic's Evidence Generation & Verification pillar: producing rigorous, policy-relevant research, evaluation, and data quality work across Africa.",
+    "Astellic's Evidence pillar: rigorous, policy-relevant research, evaluation, audit, and data quality work across Africa.",
 };
 
 const subUnits = [
@@ -18,7 +18,7 @@ const subUnits = [
     services: [
       "Primary data collection and analysis across health, governance, education, and climate domains",
       "Political economy analysis (PEA) for reform strategy and programme design",
-      "Sector systems & policy analysis across all thematic areas",
+      "Sector systems and policy analysis across all thematic areas",
       "Landscape assessments, institutional diagnostics, and needs assessments",
       "Rapid evidence synthesis and applied analytics",
     ],
@@ -26,41 +26,30 @@ const subUnits = [
   },
   {
     num: "1.2",
-    title: "Evaluation & Learning",
-    tagline: "Not just measuring outputs: engineering the institutional conditions for continuous improvement.",
-    desc: "Our Evaluation & Learning sub-unit designs, manages, and delivers independent programme evaluation, real-time learning systems, and adaptive management support. We position Astellic as a premium MERL partner, one that builds the systems through which programmes can continuously improve, not just report on outcomes. As donors intensify demands for evidence and value-for-money, this is one of our fastest-growing and most strategically significant capabilities.",
+    title: "Evaluation and Audit",
+    tagline: "Independent evaluation, audit, and data integrity: building the institutional conditions for evidence that can be trusted.",
+    desc: "Our Evaluation and Audit sub-unit designs, manages, and delivers independent programme evaluation, audit, real-time learning systems, and adaptive MERL support. We go beyond compliance-driven monitoring to ensure that the evidence programmes generate is analytically sound, methodologically rigorous, and ethically compliant. Data quality and research integrity are embedded in everything we do, not treated as afterthoughts.",
     services: [
-      "Independent mid-term and end-of-programme evaluations",
+      "Independent mid-term and end-of-programme evaluations and audit",
       "Impact assessments and formative programme reviews",
       "Real-time learning system design and implementation",
-      "Theory of change development and results framework design",
-      "MERL system strengthening for donor-funded programmes and government initiatives",
-    ],
-    href: "/what-we-do/evidence/evaluation-learning",
-  },
-  {
-    num: "1.3",
-    title: "Data Quality & Research Integrity",
-    tagline: "A strategic differentiator: ensuring evidence meets the highest standards of methodological integrity.",
-    desc: "This sub-unit is a deliberate competitive differentiator in the African development consulting market. We provide a dedicated function ensuring that the evidence Astellic produces, and the evidence clients present to donors and governments, meets the highest standards of data quality, methodological integrity, and ethical compliance. In a sector where weak evidence undermines both policy design and donor confidence, our explicit commitment to research integrity is both a quality assurance mechanism and a positioning statement.",
-    services: [
+      "Adaptive MERL system strengthening for donor-funded programmes and government initiatives",
       "Data quality assurance: internal and client-facing verification protocols",
       "Research ethics compliance and ethical review management",
-      "Informed consent framework design and data protection compliance",
       "Structured internal peer review of all research and evaluation outputs",
-      "Research integrity training and institutional capacity building",
     ],
-    href: "/what-we-do/evidence/data-quality",
+    href: "/what-we-do/evidence/evaluation-learning",
   },
 ];
 
 const offerings = [
   "Applied policy research and landscape assessments",
   "Political economy analysis for reform and programme design",
-  "Sector systems & policy analysis across all thematic areas",
+  "Sector systems and policy analysis across all thematic areas",
   "Programme evaluations across health, governance, education, and climate",
   "Impact assessment and formative programme reviews",
   "Real-time monitoring, evaluation, research, and learning (MERL) systems",
+  "Independent programme audit",
   "Data quality assurance and research integrity compliance",
   "Institutional diagnostic reviews and rapid evidence synthesis",
 ];
@@ -72,7 +61,7 @@ export default function EvidencePillarPage() {
       <section className="relative bg-brand-navy text-white py-24 px-6 overflow-hidden">
         <Image
           src="/images/hero-approach.jpg"
-          alt="Evidence generation and research"
+          alt="Evidence research and analytics"
           fill
           className="object-cover opacity-50"
           priority
@@ -87,7 +76,7 @@ export default function EvidencePillarPage() {
             <span className="text-brand-gold text-sm font-semibold">Pillar 01</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
-            Evidence Generation<br />& Verification
+            Evidence
           </h1>
           <p className="text-brand-gold text-lg font-medium mb-4">
             Producing the rigorous, context-grounded intelligence that drives policy and programme decisions.
@@ -168,10 +157,10 @@ export default function EvidencePillarPage() {
           <FadeUp delay={100}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/what-we-do/policy" className="bg-brand-teal text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-teal/90 transition-colors">
-              Pillar 02: Policy Development &amp; Advisory
+              Pillar 02: Policy
             </Link>
             <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
-              Pillar 03: Policy, Systems Analysis &amp; Implementation Support
+              Pillar 03: Delivery
             </Link>
           </div>
           </FadeUp>

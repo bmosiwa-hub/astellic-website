@@ -4,51 +4,40 @@ import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Policy Development & Advisory | Astellic",
+  title: "Policy | Astellic",
   description:
-    "Astellic's Policy Development & Advisory pillar: translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
+    "Astellic's Policy pillar: translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.",
 };
 
 const subUnits = [
   {
     num: "2.1",
-    title: "Policy & Strategy Development",
+    title: "Policy & Strategy Analysis and Development",
     tagline: "Translating evidence into actionable policy at the highest levels of government and donor engagement.",
-    desc: "This sub-unit works at the intersection of technical expertise and political feasibility, supporting ministries in drafting policy, advising donors on programme design, and shaping the strategic intent behind major reform initiatives. We do not produce strategies that are technically correct but institutionally impossible. Every framework, guideline, and reform roadmap we produce is designed to be survived in practice.",
+    desc: "This sub-unit works at the intersection of technical expertise and political feasibility, supporting ministries in drafting policy, advising donors on programme design, and shaping the strategic intent behind major reform initiatives. We combine national policy and sector strategy development with rigorous systems analysis and political economy work. Every framework, guideline, and reform roadmap we produce is designed to be survived in practice.",
     services: [
       "National policy framework design and sector strategy development",
-      "Ministerial guidelines, regulatory frameworks, and institutional policy documents",
-      "Senior-level strategic advisory to government ministries and development partners",
-      "Reform programme design: from situation analysis through implementation sequencing",
-      "Donor programme design support and technical input to concept notes and proposals",
+      "Political economy analysis: mapping actors, interests, and dynamics that shape policy outcomes",
+      "Systems analysis and health systems analysis for reform design",
+      "Public financial management advisory and budget analysis",
+      "Reform roadmaps: from situation analysis through implementation sequencing",
+      "Ministerial advisory on governance, regulation, and institutional policy",
+      "Evidence-to-policy translation and donor programme design support",
     ],
     href: "/what-we-do/policy/strategy-development",
   },
   {
     num: "2.2",
-    title: "Systems Strengthening & Advisory",
-    tagline: "Embedded institutional development that builds genuine capability, not dependency.",
-    desc: "This sub-unit works within governments and public institutions to build the enduring capacity, systems, and governance structures through which sustained performance becomes possible. We operate at the intersection of technical advisory and institutional transformation, distinguishing Astellic from firms that deliver recommendations without building the absorptive capacity to act on them. The difference between advice and change is institutional capability. We build both.",
-    services: [
-      "Public financial management system design and strengthening",
-      "Health information system design and governance structure strengthening",
-      "Accountability framework development and institutional diagnostics",
-      "Structured capacity strengthening: technical assistance, coaching, and embedded advisory",
-      "Governance and anti-corruption system design, legislative effectiveness, and intergovernmental fiscal relations",
-    ],
-    href: "/what-we-do/policy/systems-strengthening",
-  },
-  {
-    num: "2.3",
-    title: "Knowledge Translation & Strategic Communications",
-    tagline: "Closing the gap between what is known and what is decided, through communications that catalyse action.",
-    desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives, visual communications, and engagement strategies that shift understanding at the decision-maker level. We also generate Astellic's flagship thought leadership products, positioning the firm as a trusted intellectual voice in African development.",
+    title: "Knowledge Translation and Advisory",
+    tagline: "Converting evidence into decisions: through communications, advisory, and the institutional capability to act.",
+    desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives and engagement strategies that shift understanding at the decision-maker level. It also builds the systems and institutional capacity through which clients can sustain performance beyond the engagement, combining knowledge translation, strategic communications, systems strengthening, and embedded advisory.",
     services: [
       "Knowledge translation: converting research findings into accessible briefs for non-technical audiences",
       "Strategic communications for reform programmes and policy launches",
-      "Stakeholder engagement design and media strategy for institutional change initiatives",
-      "Production of Policy Intelligence Briefs, Implementation Reviews, and sector commentary",
-      "Narrative development and communications strategy for high-stakes reform environments",
+      "Systems strengthening: governance structures, accountability frameworks, and institutional diagnostics",
+      "Capacity development advisory and structured technical assistance",
+      "Embedded institutional advisory within government ministries and public bodies",
+      "Stakeholder engagement design and narrative development for high-stakes reform environments",
     ],
     href: "/what-we-do/policy/knowledge-translation",
   },
@@ -56,13 +45,15 @@ const subUnits = [
 
 const offerings = [
   "National policy framework and sector strategy development",
+  "Political economy analysis",
+  "Systems analysis and health systems reform design",
   "Senior advisory to government ministries and development partners",
-  "Public financial management advisory and reform design",
-  "Health systems policy and financing reform",
+  "Public financial management advisory",
   "Legislative strengthening and governance advisory",
-  "Capacity strengthening and embedded technical assistance",
   "Knowledge translation and policy brief production",
   "Strategic communications for reform and institutional change",
+  "Systems strengthening and capacity development advisory",
+  "Embedded institutional advisory",
 ];
 
 export default function PolicyPillarPage() {
@@ -87,7 +78,7 @@ export default function PolicyPillarPage() {
             <span className="text-white/70 text-sm font-semibold">Pillar 02</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-5">
-            Policy Development<br />& Advisory
+            Policy
           </h1>
           <p className="text-teal-100 text-lg font-medium mb-4">
             Translating evidence into policies, strategies, and systems that are technically credible, politically feasible, and institutionally deliverable.
@@ -159,19 +150,19 @@ export default function PolicyPillarPage() {
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <FadeUp>
-            <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence, and for implementation.</h2>
+            <h2 className="text-xl font-bold text-brand-navy mb-3">Policy advisory works because of evidence, and for delivery.</h2>
             <p className="text-brand-muted mb-8">
               Our policy work is grounded in rigorous evidence from Pillar 01 and designed to be
-              implementable through Pillar 03, ensuring the full results chain holds together.
+              deliverable through Pillar 03, ensuring the full results chain holds together.
             </p>
           </FadeUp>
           <FadeUp delay={100}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/what-we-do/evidence" className="bg-brand-navy text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-navy/90 transition-colors">
-              Pillar 01: Evidence Generation &amp; Verification
+              Pillar 01: Evidence
             </Link>
             <Link href="/what-we-do/implementation" className="bg-brand-green text-white px-6 py-2.5 rounded font-medium text-sm hover:bg-brand-green/90 transition-colors">
-              Pillar 03: Policy, Systems Analysis &amp; Implementation Support
+              Pillar 03: Delivery
             </Link>
           </div>
           </FadeUp>

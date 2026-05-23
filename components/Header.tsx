@@ -18,9 +18,9 @@ const thematicAreas = [
 ];
 
 const ourApproachItems = [
-  { label: "Evidence Generation & Verification",               sub: "Pillar 01", href: "/what-we-do/evidence",        dot: "bg-brand-navy"  },
-  { label: "Policy Development & Advisory",                    sub: "Pillar 02", href: "/what-we-do/policy",          dot: "bg-brand-teal"  },
-  { label: "Policy, Systems Analysis & Implementation",         sub: "Pillar 03", href: "/what-we-do/implementation",  dot: "bg-brand-green" },
+  { label: "Evidence",  sub: "Pillar 01", href: "/what-we-do/evidence",        dot: "bg-brand-navy"  },
+  { label: "Policy",    sub: "Pillar 02", href: "/what-we-do/policy",          dot: "bg-brand-teal"  },
+  { label: "Delivery",  sub: "Pillar 03", href: "/what-we-do/implementation",  dot: "bg-brand-green" },
 ];
 
 const workWithUsItems = [
@@ -114,9 +114,9 @@ function OurWorkDropdown() {
           {/* Our Approach — nested flyout with pillars */}
           <div className="relative group/approach">
             <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
-              <Link href="/what-we-do" className="text-brand-navy text-sm font-medium hover:text-brand-gold transition-colors flex-1">
+              <span className="text-brand-navy text-sm font-medium flex-1">
                 Our Approach
-              </Link>
+              </span>
               <svg className="w-3.5 h-3.5 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -133,11 +133,6 @@ function OurWorkDropdown() {
                     </div>
                   </Link>
                 ))}
-                <div className="border-t border-gray-100 mt-1 pt-1">
-                  <Link href="/what-we-do" className="block px-5 py-2.5 text-brand-gold text-sm font-semibold hover:bg-brand-light transition-colors">
-                    View full architecture →
-                  </Link>
-                </div>
               </div>
             </div>
           </div>
@@ -397,9 +392,9 @@ export default function Header() {
                 {/* Our Approach */}
                 <div>
                   <div className="flex items-center justify-between">
-                    <Link href="/what-we-do" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
+                    <span className="text-gray-400 py-1.5 text-sm">
                       Our Approach
-                    </Link>
+                    </span>
                     <button className="px-2 text-gray-400 hover:text-white" onClick={() => setApproachOpen(!approachOpen)}>
                       <svg className={`w-3.5 h-3.5 transition-transform ${approachOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
