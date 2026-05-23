@@ -90,6 +90,13 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           <h1 className="text-2xl font-bold text-gray-900 mt-1">{posting.title}</h1>
           <p className="text-sm text-gray-500">{posting.department} · {posting.contractType.replace("_"," ")}{posting.deadline ? ` · Deadline: ${formatDate(posting.deadline)}` : ""}</p>
         </div>
+        <div className="flex items-center gap-3">
+        <a
+          href={`/astelfin_26/recruitment/${posting.id}/edit`}
+          className="border border-gray-300 text-gray-700 text-sm px-3 py-1.5 rounded-lg hover:bg-gray-50"
+        >
+          Edit Posting
+        </a>
         <form action={updatePosting} className="flex items-center gap-2">
           <input type="hidden" name="id" value={posting.id} />
           <select name="status" defaultValue={posting.status} className="border rounded-lg px-3 py-1.5 text-sm">
@@ -101,6 +108,7 @@ export default async function PostingDetailPage({ params }: { params: Promise<{ 
           </label>
           <button className="bg-brand-navy text-white text-sm px-3 py-1.5 rounded-lg hover:opacity-90">Update</button>
         </form>
+        </div>
       </div>
 
       {/* Conditions & Documents */}
