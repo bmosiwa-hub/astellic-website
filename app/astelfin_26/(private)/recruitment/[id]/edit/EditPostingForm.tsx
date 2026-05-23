@@ -25,8 +25,13 @@ export default function EditPostingForm({ posting }: { posting: Posting }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Show stored UTC deadline as local time in the datetime-local input
   const deadlineDefault = posting.deadline
-    ? new Date(posting.deadline).toISOString().slice(0, 16)
+    ? (() => {
+        const d = new Date(posting.deadline);
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      })()
     : "";
 
   function addCondition() { setConditions(prev => [...prev, ""]); }
@@ -43,6 +48,9 @@ export default function EditPostingForm({ posting }: { posting: Posting }) {
     setSubmitting(true);
     try {
       const fd = new FormData(e.currentTarget);
+      // Convert deadline from local time to UTC ISO string before sending.
+      const deadlineRaw = fd.get("deadline") as string;
+      if (deadlineRaw) fd.set("deadline", new Date(deadlineRaw).toISOString());
       const res = await fetch(`/api/astelfin/recruitment/${posting.id}`, { method: "PATCH", body: fd });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

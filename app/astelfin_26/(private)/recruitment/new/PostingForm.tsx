@@ -23,7 +23,11 @@ export default function PostingForm() {
     setSubmitting(true);
     try {
       const fd = new FormData(e.currentTarget);
-      // Append dynamic arrays (the hidden inputs will carry the values)
+      // Convert deadline from local time to UTC ISO string before sending.
+      // datetime-local gives "YYYY-MM-DDTHH:mm" with no timezone; the browser
+      // parses it as local time, so toISOString() correctly converts to UTC.
+      const deadlineRaw = fd.get("deadline") as string;
+      if (deadlineRaw) fd.set("deadline", new Date(deadlineRaw).toISOString());
       const res = await fetch("/api/astelfin/recruitment", { method: "POST", body: fd });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
