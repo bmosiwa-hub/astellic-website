@@ -1,31 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Work With Us",
+  title: "Work With Us | Astellic",
   description:
     "Explore open positions, consultancy opportunities, and tenders at Astellic.",
 };
-
-const jobs: { title: string; type: string; location: string; closing: string }[] =
-  [];
-
-const consultancies: {
-  title: string;
-  area: string;
-  duration: string;
-  closing: string;
-}[] = [];
-
-const internships: {
-  title: string;
-  department: string;
-  duration: string;
-  closing: string;
-}[] = [];
-
-const tenders: { title: string; reference: string; closing: string }[] = [];
 
 function EmptyState({ label }: { label: string }) {
   return (
@@ -37,7 +21,21 @@ function EmptyState({ label }: { label: string }) {
   );
 }
 
-export default function WorkWithUsPage() {
+export default async function WorkWithUsPage() {
+  const now = new Date();
+  const postings = await prisma.jobPosting.findMany({
+    where: {
+      status: "OPEN",
+      isPublishedToWebsite: true,
+      OR: [{ deadline: null }, { deadline: { gt: now } }],
+    },
+    orderBy: [{ deadline: "asc" }, { createdAt: "desc" }],
+  });
+
+  const positions    = postings.filter(p => p.contractType === "PERMANENT");
+  const consultancies = postings.filter(p => p.contractType === "CONSULTANCY" || p.contractType === "CONTRACT");
+  const internships  = postings.filter(p => p.contractType === "INTERNSHIP" || p.contractType === "VOLUNTEER");
+
   return (
     <>
       {/* Hero */}
@@ -74,33 +72,12 @@ export default function WorkWithUsPage() {
             Full-time and part-time roles across research, advisory, and
             operations.
           </p>
-          {jobs.length === 0 ? (
+          {positions.length === 0 ? (
             <EmptyState label="positions" />
           ) : (
             <div className="space-y-4">
-              {jobs.map((job) => (
-                <div
-                  key={job.title}
-                  className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                >
-                  <div>
-                    <h3 className="font-bold text-lg text-brand-navy">{job.title}</h3>
-                    <p className="text-brand-muted text-base mt-1">
-                      {job.type} · {job.location}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-base">
-                      Closes: {job.closing}
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
-                    >
-                      Apply
-                    </Link>
-                  </div>
-                </div>
+              {positions.map((job) => (
+                <PostingCard key={job.id} posting={job} applyLabel="Apply" />
               ))}
             </div>
           )}
@@ -121,28 +98,7 @@ export default function WorkWithUsPage() {
           ) : (
             <div className="space-y-4">
               {consultancies.map((c) => (
-                <div
-                  key={c.title}
-                  className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                >
-                  <div>
-                    <h3 className="font-bold text-lg text-brand-navy">{c.title}</h3>
-                    <p className="text-brand-muted text-base mt-1">
-                      {c.area} · {c.duration}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-base">
-                      Closes: {c.closing}
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
-                    >
-                      Express Interest
-                    </Link>
-                  </div>
-                </div>
+                <PostingCard key={c.id} posting={c} applyLabel="Express Interest" />
               ))}
             </div>
           )}
@@ -179,28 +135,7 @@ export default function WorkWithUsPage() {
           ) : (
             <div className="space-y-4">
               {internships.map((i) => (
-                <div
-                  key={i.title}
-                  className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                >
-                  <div>
-                    <h3 className="font-bold text-lg text-brand-navy">{i.title}</h3>
-                    <p className="text-brand-muted text-base mt-1">
-                      {i.department} · {i.duration}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-base">
-                      Closes: {i.closing}
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
-                    >
-                      Apply
-                    </Link>
-                  </div>
-                </div>
+                <PostingCard key={i.id} posting={i} applyLabel="Apply" />
               ))}
             </div>
           )}
@@ -210,45 +145,83 @@ export default function WorkWithUsPage() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-1 h-8 bg-brand-navy rounded" />
-            <h2 className="text-2xl font-bold text-brand-navy">Tenders & Bids</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Tenders &amp; Bids</h2>
           </div>
           <p className="text-brand-muted text-lg mb-8">
             Procurement opportunities and requests for proposals from Astellic
             and its partners.
           </p>
-          {tenders.length === 0 ? (
-            <EmptyState label="tenders" />
-          ) : (
-            <div className="space-y-4">
-              {tenders.map((t) => (
-                <div
-                  key={t.reference}
-                  className="bg-brand-light rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                >
-                  <div>
-                    <h3 className="font-bold text-lg text-brand-navy">{t.title}</h3>
-                    <p className="text-brand-muted text-base mt-1">
-                      Ref: {t.reference}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 shrink-0">
-                    <p className="text-brand-muted text-base">
-                      Closes: {t.closing}
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded text-base transition-colors"
-                    >
-                      Submit Bid
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <EmptyState label="tenders" />
         </section>
 
       </div>
     </>
+  );
+}
+
+type Posting = {
+  id: string;
+  title: string;
+  contractType: string;
+  location: string | null;
+  department: string | null;
+  deadline: Date | null;
+  salary: string | null;
+  description: string;
+  mandatoryConditions: string[];
+};
+
+function PostingCard({ posting, applyLabel }: { posting: Posting; applyLabel: string }) {
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl p-7 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Open</span>
+            <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">
+              {posting.contractType.replace(/_/g, " ")}
+            </span>
+            {posting.department && (
+              <span className="inline-block bg-brand-light text-brand-navy text-xs px-2.5 py-0.5 rounded-full">{posting.department}</span>
+            )}
+          </div>
+          <h3 className="text-xl font-bold text-brand-navy mb-1">{posting.title}</h3>
+          {posting.location && <p className="text-sm text-brand-muted mb-2">{posting.location}</p>}
+          <p className="text-brand-muted text-sm leading-relaxed line-clamp-3">{posting.description}</p>
+          {posting.deadline && (
+            <p className="text-sm text-brand-muted mt-3">
+              <span className="font-semibold text-brand-navy">Closing:</span>{" "}
+              {new Date(posting.deadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+            </p>
+          )}
+          {posting.salary && (
+            <p className="text-sm text-brand-muted">
+              <span className="font-semibold text-brand-navy">Salary:</span> {posting.salary}
+            </p>
+          )}
+        </div>
+        <div className="shrink-0">
+          <Link
+            href={`/vacancies/${posting.id}/apply`}
+            className="inline-flex items-center gap-2 bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-sm"
+          >
+            {applyLabel}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+      {posting.mandatoryConditions.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Mandatory Requirements</p>
+          <ul className="flex flex-wrap gap-2">
+            {posting.mandatoryConditions.map((c, i) => (
+              <li key={i} className="text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded-full px-3 py-1">{c}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
