@@ -56,9 +56,7 @@ export default function Footer() {
               &ldquo;Astellic exists to close the gap between what evidence is showing,
               what policy intends, and what systems actually deliver.&rdquo;
             </p>
-            <p className="text-gray-500 text-sm mt-2">
-              African-led. Specialist. Founder-present throughout every engagement.
-            </p>
+
           </div>
           <Link
             href="/contact"
