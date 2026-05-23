@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import DeliveryIllustration from "@/components/illustrations/DeliveryIllustration";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
 
@@ -59,14 +59,8 @@ export default function ImplementationPillarPage() {
     <>
       {/* Hero */}
       <section className="relative text-white py-24 px-6 overflow-hidden" style={{ backgroundColor: "#3B7D23" }}>
-        <Image
-          src="/images/hero-approach.jpg"
-          alt="Programme delivery and advisory"
-          fill
-          className="object-cover opacity-50"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
+        <DeliveryIllustration className="absolute inset-0 w-full h-full opacity-65" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-5">
             <Link href="/what-we-do" className="text-green-100 hover:text-white text-sm transition-colors">

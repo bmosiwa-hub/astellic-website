@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import EvidenceIllustration from "@/components/illustrations/EvidenceIllustration";
 import Link from "next/link";
 import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
 
@@ -59,14 +59,8 @@ export default function EvidencePillarPage() {
     <>
       {/* Hero */}
       <section className="relative bg-brand-navy text-white py-24 px-6 overflow-hidden">
-        <Image
-          src="/images/hero-approach.jpg"
-          alt="Evidence research and analytics"
-          fill
-          className="object-cover opacity-50"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
+        <EvidenceIllustration className="absolute inset-0 w-full h-full opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-5">
             <Link href="/what-we-do" className="text-gray-400 hover:text-white text-sm transition-colors">
