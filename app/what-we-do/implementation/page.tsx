@@ -18,6 +18,7 @@ const subUnits = [
     services: [
       "Theory of change and results framework development",
       "Programme architecture: operational models, risk frameworks, and financing design",
+      "Intervention modelling and simulation: modelling programme interventions, impact pathways, and scenario testing for delivery planning",
       "Implementation Readiness Assessment: a diagnostic for systemic barriers before launch",
       "Programme design advisory to government ministries and programme management units",
       "Institutional governance design and process mapping",
@@ -44,6 +45,7 @@ const subUnits = [
 const offerings = [
   "Theory of change and results framework design",
   "Programme architecture and operational modelling",
+  "Intervention modelling and simulation",
   "Implementation Readiness Assessment",
   "Programme design advisory to governments and donors",
   "Embedded technical assistance",

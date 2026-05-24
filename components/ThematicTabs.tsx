@@ -119,10 +119,10 @@ const PILLARS: Pillar[] = [
         label: "Policy & Strategy Development",
         href:  "/what-we-do/policy/strategy-development",
         activities: {
-          health:     ["Health policy development", "Sector strategy design", "Reform programme design", "Policy advisory"],
-          governance: ["Public sector policy development", "Governance strategy", "Reform design", "Senior advisory"],
-          education:  ["Social sector policy", "Education & social strategy", "Reform programme design", "Policy advisory"],
-          climate:    ["Climate & sustainability policy", "Environmental strategy", "Reform programme design", "Policy advisory"],
+          health:     ["Health policy development", "Sector strategy design", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
+          governance: ["Public sector policy development", "Governance strategy", "Policy modelling & simulation", "Reform design", "Senior advisory"],
+          education:  ["Social sector policy", "Education & social strategy", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
+          climate:    ["Climate & sustainability policy", "Environmental strategy", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
         },
       },
       {
@@ -160,10 +160,10 @@ const PILLARS: Pillar[] = [
         label: "Programme Design & Innovation",
         href:  "/what-we-do/implementation/programme-design",
         activities: {
-          health:     ["Health programme architecture", "Theory of change development", "Results framework design", "Financing architecture"],
-          governance: ["Governance programme architecture", "Theory of change", "Results frameworks", "Programme design"],
-          education:  ["Social programme architecture", "Theory of change", "Results framework design", "Programme design"],
-          climate:    ["Climate programme architecture", "Theory of change", "Results frameworks", "Financing architecture"],
+          health:     ["Health programme architecture", "Theory of change development", "Intervention modelling & simulation", "Results framework design", "Financing architecture"],
+          governance: ["Governance programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Programme design"],
+          education:  ["Social programme architecture", "Theory of change", "Intervention modelling & simulation", "Results framework design", "Programme design"],
+          climate:    ["Climate programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Financing architecture"],
         },
       },
       {

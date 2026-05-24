@@ -18,6 +18,10 @@ const services = [
     desc: "Advisory support on full programme design, including operational models, implementation sequencing, risk frameworks, and financing design, calibrated to the institutional context and donor requirements of each engagement.",
   },
   {
+    label: "Intervention Modelling and Simulation",
+    desc: "Modelling of programme interventions, impact pathways, and delivery scenarios to test assumptions, optimise design choices, and anticipate implementation outcomes before resources are committed.",
+  },
+  {
     label: "Implementation Readiness Assessment",
     desc: "A structured diagnostic that identifies design weaknesses, institutional constraints, and systemic barriers before implementation begins, giving clients a measurable advantage before the first activity starts.",
   },
