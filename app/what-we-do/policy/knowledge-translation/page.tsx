@@ -47,7 +47,7 @@ export default function KnowledgeTranslationPage() {
             <span>/</span>
             <span className="text-white font-semibold">Knowledge Translation and Advisory</span>
           </div>
-          <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 2.2</span>
+          <span className="text-xs font-bold text-white/50 uppercase tracking-widest">Sub-unit 2.3</span>
           <h1 className="text-4xl font-bold mt-2 mb-4">Knowledge Translation<br />and Advisory</h1>
           <p className="text-teal-100 text-lg font-medium mb-4">
             Converting evidence into decisions: through communications, advisory, and the institutional capability to act.

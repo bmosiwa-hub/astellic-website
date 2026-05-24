@@ -19,7 +19,6 @@ const subUnits = [
       "National policy framework design and sector strategy development",
       "Political economy analysis: mapping actors, interests, and dynamics that shape policy outcomes",
       "Systems analysis and health systems analysis for reform design",
-      "Policy modelling and simulation: quantitative and qualitative modelling of policy options, impact pathways, and scenario testing",
       "Public financial management advisory and budget analysis",
       "Reform roadmaps: from situation analysis through implementation sequencing",
       "Ministerial advisory on governance, regulation, and institutional policy",
@@ -29,6 +28,19 @@ const subUnits = [
   },
   {
     num: "2.2",
+    title: "Policy Modelling and Simulation",
+    tagline: "Quantitative and qualitative modelling to test policy options, forecast impact, and strengthen the evidence base for reform decisions.",
+    desc: "This sub-unit brings analytical rigour to policy design through modelling, simulation, and scenario testing. We build quantitative and qualitative models that allow policymakers and donors to explore the likely effects of alternative policy choices before committing resources. From health financing simulations to fiscal impact modelling, our work ensures that policy decisions are stress-tested against evidence, not made on intuition alone.",
+    services: [
+      "Quantitative policy modelling and forecasting for health, education, fiscal, and governance sectors",
+      "Scenario analysis and stress-testing of policy options and reform alternatives",
+      "Simulation modelling for policy impact assessment and ex-ante evaluation",
+      "Data-driven policy analytics, indicator modelling, and evidence synthesis for decision support",
+    ],
+    href: "/what-we-do/policy/policy-modelling-and-simulation",
+  },
+  {
+    num: "2.3",
     title: "Knowledge Translation and Advisory",
     tagline: "Converting evidence into decisions: through communications, advisory, and the institutional capability to act.",
     desc: "In the development sector, the gap between what is known and what is decided is often a communications failure, not an evidence failure. This sub-unit converts technical outputs into policy narratives and engagement strategies that shift understanding at the decision-maker level. It also builds the systems and institutional capacity through which clients can sustain performance beyond the engagement, combining knowledge translation, strategic communications, systems strengthening, and embedded advisory.",

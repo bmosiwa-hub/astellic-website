@@ -88,10 +88,21 @@ const PILLARS: Pillar[] = [
         label: "Policy & Strategy Development",
         href:  "/what-we-do/policy/strategy-development",
         activities: {
-          health:     ["Health policy development", "Sector strategy design", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
-          governance: ["Public sector policy development", "Governance strategy", "Policy modelling & simulation", "Reform design", "Senior advisory"],
-          education:  ["Social sector policy", "Education & social strategy", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
-          climate:    ["Climate & sustainability policy", "Environmental strategy", "Policy modelling & simulation", "Reform programme design", "Policy advisory"],
+          health:     ["Health policy development", "Sector strategy design", "Reform programme design", "Policy advisory"],
+          governance: ["Public sector policy development", "Governance strategy", "Reform design", "Senior advisory"],
+          education:  ["Social sector policy", "Education & social strategy", "Reform programme design", "Policy advisory"],
+          climate:    ["Climate & sustainability policy", "Environmental strategy", "Reform programme design", "Policy advisory"],
+        },
+      },
+      {
+        id:    "modelling",
+        label: "Policy Modelling & Simulation",
+        href:  "/what-we-do/policy/policy-modelling-and-simulation",
+        activities: {
+          health:     ["Health policy modelling", "Disease burden simulation", "Health financing scenarios", "Health impact forecasting"],
+          governance: ["Governance policy modelling", "Public sector simulation", "Fiscal scenario analysis", "Institutional modelling"],
+          education:  ["Education policy modelling", "Sector simulation", "Education financing scenarios", "Social impact forecasting"],
+          climate:    ["Climate policy modelling", "Environmental simulation", "Climate scenario analysis", "Sustainability forecasting"],
         },
       },
       {
@@ -233,7 +244,7 @@ export default function PillarMatrix() {
                   {/* Pillar cell — only rendered on first sub-unit row */}
                   {isFirstRow && (
                     <td
-                      rowSpan={3}
+                      rowSpan={pillar.subUnits.length}
                       className={`border border-gray-200 p-0 align-middle text-center ${pillar.headerBg} transition-colors duration-150`}
                       style={{ width: 80 }}
                     >

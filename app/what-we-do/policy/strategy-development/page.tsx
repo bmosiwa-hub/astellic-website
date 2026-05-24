@@ -22,10 +22,6 @@ const services = [
     desc: "Rigorous analysis of system-level constraints, governance structures, and institutional incentives within health, education, fiscal, and governance systems, providing the analytical foundation for credible reform design.",
   },
   {
-    label: "Policy Modelling and Simulation",
-    desc: "Quantitative and qualitative modelling of policy options, impact pathways, and scenario testing to assess the likely effects of alternative policy choices before decisions are made, enabling evidence-driven reform design.",
-  },
-  {
     label: "Reform Roadmaps and Implementation Sequencing",
     desc: "End-to-end design of governance, health, education, and fiscal reform programmes, from situation analysis through reform logic, sequencing, and the political economy considerations that determine survivability.",
   },
