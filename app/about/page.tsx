@@ -169,10 +169,6 @@ export default function AboutPage() {
             </div>
             <FadeUp delay={140}>
               <div className="space-y-5 pt-2">
-                <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-gold">
-                  <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">Founded</p>
-                  <p className="text-brand-muted text-sm">October 2025, Lilongwe, Malawi</p>
-                </div>
                 <div className="bg-brand-light rounded-xl p-5 border-l-4 border-brand-teal">
                   <p className="text-brand-navy font-bold text-xs uppercase tracking-widest mb-1.5">The Belief</p>
                   <p className="text-brand-muted text-sm leading-relaxed">
