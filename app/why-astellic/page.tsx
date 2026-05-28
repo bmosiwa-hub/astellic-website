@@ -133,10 +133,9 @@ export default function WhyAstellicPage() {
             <div className="space-y-4">
               {[
                 { label: "Geography", value: "Africa-focused, operating from Malawi" },
-                { label: "Year founded", value: "October 2025, Lilongwe, Malawi" },
                 { label: "Core services", value: "Adaptive MERL · Data Quality · Policy & Systems Analysis · Implementation Support" },
                 { label: "Clients", value: "Donors, Governments, Development Partners, Corporations" },
-                { label: "Model", value: "Founder-led, specialist, senior-present throughout" },
+                { label: "Model", value: "Specialist, senior-present throughout" },
                 { label: "Compliance", value: "MNBC · Helsinki · FCDO & USAID frameworks" },
               ].map((f, i) => (
                 <Reveal key={f.label} variant="up" delay={i * 70}>

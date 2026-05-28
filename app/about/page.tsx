@@ -10,10 +10,9 @@ export const metadata: Metadata = {
 };
 
 const highlights = [
-  { label: "Founded",      value: "October 2025" },
   { label: "Headquarters", value: "Lilongwe, Malawi" },
   { label: "Reach",        value: "Pan-African · 9+ countries" },
-  { label: "Model",        value: "Founder-led · Senior-present" },
+  { label: "Model",        value: "Senior-present" },
 ];
 
 const notUs = [

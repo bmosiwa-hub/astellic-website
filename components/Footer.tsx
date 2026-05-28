@@ -90,7 +90,7 @@ export default function Footer() {
             <div className="space-y-2 mb-5">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <span className="w-1 h-1 rounded-full bg-brand-gold shrink-0" />
-                Founded October 2025 · Lilongwe, Malawi
+                Lilongwe, Malawi
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <span className="w-1 h-1 rounded-full bg-brand-gold shrink-0" />
@@ -259,7 +259,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10 py-5 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
-          <span>© {new Date().getFullYear()} Astellic. All rights reserved. Founded October 2025 · Lilongwe, Malawi.</span>
+          <span>© {new Date().getFullYear()} Astellic. All rights reserved. Lilongwe, Malawi.</span>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
