@@ -32,16 +32,21 @@ export default async function ClientsPage() {
             Companies and organisations supported by Astelfin.
           </p>
         </div>
-        <span className="text-sm text-brand-muted">{clients.length} client{clients.length !== 1 ? "s" : ""}</span>
+        <Link
+          href="/astelfin_26/astelfin/clients/new"
+          className="bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+        >
+          + Add Client
+        </Link>
       </div>
 
       {clients.length === 0 ? (
         <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
           <p className="text-2xl mb-2">🏢</p>
           <p className="font-semibold text-brand-navy">No clients yet</p>
-          <p className="text-sm text-brand-muted mt-1">
-            Add client companies via the database to see them here.
-          </p>
+          <Link href="/astelfin_26/astelfin/clients/new" className="mt-3 inline-block bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+            Add First Client
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">

@@ -55,7 +55,7 @@ export default async function AstelfinStaffPage() {
           <p className="text-brand-muted text-sm">{staff.length} active staff member{staff.length !== 1 ? "s" : ""}</p>
         </div>
         <Link
-          href="/astelfin_26/employees/new"
+          href="/astelfin_26/astelfin/staff/new"
           className="bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
         >
           + Add Staff
@@ -71,7 +71,7 @@ export default async function AstelfinStaffPage() {
       {org && staff.length === 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-10 text-center text-brand-muted">
           No staff added yet.{" "}
-          <Link href="/astelfin_26/employees/new" className="text-brand-gold font-semibold hover:underline">
+          <Link href="/astelfin_26/astelfin/staff/new" className="text-brand-gold font-semibold hover:underline">
             Add the first staff member
           </Link>
         </div>
@@ -88,7 +88,7 @@ export default async function AstelfinStaffPage() {
                 return (
                   <Link
                     key={emp.id}
-                    href={`/astelfin_26/employees/${emp.id}`}
+                    href={`/astelfin_26/astelfin/staff/${emp.id}`}
                     className="group flex items-center gap-4 bg-white border border-gray-100 hover:border-brand-gold/40 rounded-2xl px-5 py-4 transition-all hover:shadow-sm"
                   >
                     <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center text-white text-sm font-bold shrink-0">

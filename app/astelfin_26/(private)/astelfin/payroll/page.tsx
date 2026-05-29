@@ -64,7 +64,7 @@ export default async function AstelfinPayrollPage() {
           <p className="text-brand-muted text-sm">Period: {period}</p>
         </div>
         <Link
-          href="/astelfin_26/payroll/run"
+          href="/astelfin_26/astelfin/payroll/run"
           className="bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
         >
           Run Payroll

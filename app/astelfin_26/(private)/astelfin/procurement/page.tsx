@@ -135,7 +135,7 @@ export default async function AstelfinProcurementPage({
           {(procurements as { id: string; title: string; category: string | null; estimatedCost: number; currency: string; status: string; createdAt: Date; requester: { name: string }; quotations: { id: string }[] }[]).map((p) => (
             <Link
               key={p.id}
-              href={`/astelfin_26/procurement/${p.id}`}
+              href={`/astelfin_26/astelfin/procurement/${p.id}`}
               className="group flex items-center justify-between bg-white border border-gray-100 hover:border-brand-gold/40 rounded-xl px-5 py-4 transition-all hover:shadow-sm gap-4"
             >
               <div className="min-w-0 flex-1">

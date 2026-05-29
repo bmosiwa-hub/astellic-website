@@ -78,7 +78,7 @@ export default async function AstelfinInvoicesPage({
           <p className="text-brand-muted text-sm">Payment requests submitted within Astelfin</p>
         </div>
         <Link
-          href="/astelfin_26/invoices/new"
+          href="/astelfin_26/astelfin/invoices/new"
           className="bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
         >
           + New Request
@@ -119,7 +119,7 @@ export default async function AstelfinInvoicesPage({
           {(list as { id: string; type: string; status: string; totalAmount: number; currency: string; purpose: string | null; createdAt: Date; submitter: { name: string }; project: { name: string } | null }[]).map((s) => (
             <Link
               key={s.id}
-              href={`/astelfin_26/invoices/${s.id}`}
+              href={`/astelfin_26/astelfin/invoices/${s.id}`}
               className="group flex items-center justify-between bg-white border border-gray-100 hover:border-brand-gold/40 rounded-xl px-5 py-4 transition-all hover:shadow-sm gap-4"
             >
               <div className="min-w-0 flex-1">

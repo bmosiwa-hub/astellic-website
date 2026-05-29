@@ -96,22 +96,6 @@ export default async function PrivateFinanceLayout({
           }),
         ]);
 
-  // ── IMS Platform home — no sidebar, full-page layout ────────────────────────
-  const isImsHome = pathname === "/astelfin_26/home";
-
-  if (isImsHome) {
-    return (
-      <>
-        <InactivityGuard />
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-          <main className="flex-1 flex items-center justify-center p-8">
-            {children}
-          </main>
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
       <InactivityGuard />
