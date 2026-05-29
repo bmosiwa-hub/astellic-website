@@ -1,19 +1,31 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Astelfin | Management Platform",
+  title: "Astelfin | Management Consulting",
   robots: { index: false, follow: false },
 };
 
 const departments = [
   {
-    key:   "hr",
-    label: "Human Resources",
-    desc:  "Talent acquisition, employee lifecycle, leave & compliance advisory for client organisations.",
-    href:  "/astelfin_26/astelfin/hr",
+    slug: "clients",
+    name: "Clients",
+    tagline: "Managed client companies and engagements",
+    href: "/astelfin_26/astelfin/clients",
+    comingSoon: false,
+    icon: (
+      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    slug: "hr",
+    name: "Human Resources",
+    tagline: "Internal HR and people management",
+    href: "/astelfin_26/astelfin/hr",
+    comingSoon: true,
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -21,21 +33,11 @@ const departments = [
     ),
   },
   {
-    key:   "finance",
-    label: "Finance & Accounting",
-    desc:  "Financial management, bookkeeping, payroll processing, and reporting services for clients.",
-    href:  "/astelfin_26/astelfin/finance",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    key:   "it",
-    label: "IT & Systems",
-    desc:  "Platform management, software support, security, and technology advisory.",
-    href:  "/astelfin_26/astelfin/it",
+    slug: "it",
+    name: "IT Services",
+    tagline: "Technology infrastructure and system support",
+    href: "/astelfin_26/astelfin/it",
+    comingSoon: true,
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -43,132 +45,165 @@ const departments = [
     ),
   },
   {
-    key:   "marketing",
-    label: "Marketing & Communications",
-    desc:  "Brand strategy, digital presence, content development, and communications management.",
-    href:  "/astelfin_26/astelfin/marketing",
+    slug: "finance",
+    name: "Finance Advisory",
+    tagline: "Internal financial management and advisory",
+    href: "/astelfin_26/astelfin/finance",
+    comingSoon: true,
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
   {
-    key:   "me",
-    label: "Monitoring & Evaluation",
-    desc:  "Results tracking, data systems, programme monitoring frameworks, and internal performance M&E.",
-    href:  "/astelfin_26/astelfin/me",
+    slug: "marketing",
+    name: "Marketing",
+    tagline: "Brand, communications and business development",
+    href: "/astelfin_26/astelfin/marketing",
+    comingSoon: true,
+    icon: (
+      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+      </svg>
+    ),
+  },
+  {
+    slug: "mande",
+    name: "M&E Services",
+    tagline: "Monitoring, evaluation and learning",
+    href: "/astelfin_26/astelfin/mande",
+    comingSoon: true,
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
       </svg>
     ),
   },
+];
+
+const managedClients = [
   {
-    key:   "admin",
-    label: "Administration & Operations",
-    desc:  "Office management, compliance, vendor relationships, and operational support services.",
-    href:  "/astelfin_26/astelfin/admin",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
+    name: "Astellic",
+    tagline: "Research, Advisory & Implementation",
+    href: "/astelfin_26/dashboard",
+    color: "#0a1628",
   },
 ];
 
-export default async function AstelfinHomePage() {
+export default async function AstelfinRoomPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
   const role = session.user.role;
-  if (role === "STAFF" || role === "CONSULTANT") redirect("/astelfin_26/my");
-
-  // Fetch managed clients
-  const clients = await prisma.managedCompany.findMany({
-    where:   { type: "CLIENT", active: true },
-    orderBy: { name: "asc" },
-    select:  { id: true, name: true, slug: true, tagline: true, color: true },
-  });
-
-  const name = session.user.name ?? "there";
-  const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" :
-    hour < 17 ? "Good afternoon" :
-                "Good evening";
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") {
+    redirect("/astelfin_26/home");
+  }
 
   return (
-    <div className="max-w-5xl space-y-12">
+    <div className="max-w-4xl mx-auto space-y-12">
 
       {/* Header */}
-      <div>
-        <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-1">Astelfin Management Platform</p>
-        <h1 className="text-3xl font-bold text-brand-navy">
-          {greeting}, {name.split(" ")[0]}.
-        </h1>
-        <p className="text-brand-muted text-sm mt-1">
-          Management consulting services hub — HR, Finance, IT, Marketing, M&E.
+      <div className="space-y-1.5">
+        <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">
+          Platform Owner
+        </p>
+        <h1 className="text-3xl font-bold text-brand-navy">Astelfin</h1>
+        <p className="text-brand-muted text-sm">
+          Management Consulting &amp; Platform
         </p>
       </div>
 
-      {/* Service departments */}
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Service Departments</p>
+      {/* Service departments grid */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-brand-muted">
+          Departments
+        </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {departments.map((dept) => (
+          {departments.map((dept) => {
+            const card = (
+              <div
+                className={`group relative bg-white border-2 rounded-2xl p-6 flex flex-col gap-4 transition-all ${
+                  dept.comingSoon
+                    ? "border-gray-100 opacity-60 cursor-default"
+                    : "border-gray-100 hover:border-brand-gold/40 hover:shadow-md cursor-pointer"
+                }`}
+              >
+                {dept.comingSoon && (
+                  <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                    Coming soon
+                  </span>
+                )}
+
+                <div className="w-10 h-10 rounded-xl bg-brand-navy/5 flex items-center justify-center text-brand-navy group-hover:bg-brand-gold/10 group-hover:text-brand-gold transition-colors">
+                  {dept.icon}
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-brand-navy group-hover:text-brand-gold transition-colors">
+                    {dept.name}
+                  </h3>
+                  <p className="text-xs text-brand-muted mt-0.5 leading-snug">
+                    {dept.tagline}
+                  </p>
+                </div>
+
+                {!dept.comingSoon && (
+                  <div className="flex items-center gap-1 text-brand-gold text-xs font-semibold mt-auto">
+                    Open
+                    <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            );
+
+            return dept.comingSoon ? (
+              <div key={dept.slug}>{card}</div>
+            ) : (
+              <Link key={dept.slug} href={dept.href}>
+                {card}
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Managed clients */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-brand-muted">
+          Managed Clients
+        </h2>
+        <div className="flex flex-col gap-3">
+          {managedClients.map((client) => (
             <Link
-              key={dept.key}
-              href={dept.href}
-              className="group bg-white border border-gray-100 hover:border-brand-gold/40 rounded-xl p-6 flex flex-col gap-3 transition-all hover:shadow-sm"
+              key={client.name}
+              href={client.href}
+              className="group flex items-center justify-between bg-white border-2 border-gray-100 hover:border-brand-gold/40 rounded-2xl px-6 py-4 transition-all hover:shadow-md"
             >
-              <div className="text-brand-navy group-hover:text-brand-gold transition-colors">
-                {dept.icon}
+              <div className="flex items-center gap-4">
+                <div
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: client.color }}
+                />
+                <div>
+                  <p className="font-bold text-brand-navy group-hover:text-brand-gold transition-colors">
+                    {client.name}
+                  </p>
+                  <p className="text-xs text-brand-muted">{client.tagline}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-brand-navy text-sm group-hover:text-brand-gold transition-colors">
-                  {dept.label}
-                </p>
-                <p className="text-xs text-gray-400 mt-1 leading-relaxed">{dept.desc}</p>
-              </div>
-              <div className="mt-auto flex items-center gap-1 text-brand-gold text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                Open
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <span className="flex items-center gap-1 text-brand-gold text-xs font-semibold">
+                Go to dashboard
+                <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </div>
+              </span>
             </Link>
           ))}
         </div>
-      </div>
-
-      {/* Managed clients */}
-      {clients.length > 0 && (
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Managed Clients</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {clients.map((client) => (
-              <Link
-                key={client.id}
-                href={`/astelfin_26/dashboard`}
-                className="group bg-white border border-gray-100 hover:border-brand-gold/40 rounded-xl px-5 py-4 flex items-center justify-between transition-all hover:shadow-sm"
-              >
-                <div>
-                  <p className="font-semibold text-brand-navy text-sm group-hover:text-brand-gold transition-colors">
-                    {client.name}
-                  </p>
-                  {client.tagline && (
-                    <p className="text-xs text-gray-400 mt-0.5">{client.tagline}</p>
-                  )}
-                </div>
-                <svg className="w-4 h-4 text-gray-300 group-hover:text-brand-gold transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      </section>
 
     </div>
   );
