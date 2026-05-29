@@ -26,6 +26,20 @@ const subUnits = [
     href: "/what-we-do/implementation/programme-design",
   },
   {
+    num: "3.3",
+    title: "Intervention Modelling and Simulation",
+    tagline: "Quantitative and scenario-based modelling of programme interventions to test design assumptions, optimise delivery choices, and anticipate outcomes before resources are committed.",
+    desc: "Before a programme launches, the most consequential decisions have already been made: which intervention logic to pursue, how resources will flow, what the critical assumptions are, and which delivery pathways will be used. This sub-unit applies modelling and simulation techniques to those decisions — building quantitative impact pathway models, testing delivery scenarios, and stress-testing design assumptions against the institutional realities programmes will actually face. The result is a programme architecture that has been tested, not assumed.",
+    services: [
+      "Quantitative intervention modelling: impact pathway modelling and results chain simulation for programme design",
+      "Delivery scenario analysis: testing alternative implementation approaches against institutional, financial, and contextual conditions",
+      "Assumption stress-testing: identifying which design assumptions are most fragile and which are robust across scenarios",
+      "Pre-launch simulation: agent-based and systems dynamics modelling of how interventions will behave in complex delivery environments",
+      "Design optimisation: using modelling outputs to refine programme architecture, sequencing, and resource allocation before commitment",
+    ],
+    href: "/what-we-do/implementation/intervention-modelling-and-simulation",
+  },
+  {
     num: "3.2",
     title: "Implementation Support and Adaptive Management",
     tagline: "Staying embedded alongside institutions to strengthen delivery systems, integrate learning, and sustain programme performance.",
@@ -45,7 +59,8 @@ const subUnits = [
 const offerings = [
   "Theory of change and results framework design",
   "Programme architecture and operational modelling",
-  "Intervention modelling and simulation",
+  "Intervention modelling and delivery scenario analysis",
+  "Pre-launch simulation and assumption stress-testing",
   "Implementation Readiness Assessment",
   "Programme design advisory to governments and donors",
   "Embedded technical assistance",
