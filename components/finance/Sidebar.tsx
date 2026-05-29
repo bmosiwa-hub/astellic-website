@@ -653,7 +653,7 @@ export default function Sidebar({
         <p className="text-sm font-semibold text-white truncate">{userName}</p>
         <p className="text-xs text-gray-400">{ROLE_LABELS[userRole] ?? userRole}</p>
         <button
-          onClick={() => signOut({ callbackUrl: "/astelfin_26/login" })}
+          onClick={() => { localStorage.removeItem("astelfin_last_activity"); signOut({ callbackUrl: "/astelfin_26/login" }); }}
           className="mt-3 flex items-center gap-2 text-xs text-gray-400 hover:text-white transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

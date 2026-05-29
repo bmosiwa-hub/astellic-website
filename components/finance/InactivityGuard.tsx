@@ -106,12 +106,15 @@ export default function InactivityGuard() {
 
   useEffect(() => {
     // On mount: check if we've been inactive since the last page load.
-    // Only enforce if a timestamp already exists — a missing key means
-    // fresh login (no prior activity recorded yet), so we don't log out.
+    // If the stored timestamp is stale (≥ timeout), it means either the tab
+    // was left open and reloaded, OR the user signed out without clearing
+    // localStorage. Distinguish by checking if the page was just loaded
+    // (performance.now() < 10s) — if so, treat as a fresh session.
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const elapsed = Date.now() - parseInt(stored, 10);
-      if (elapsed >= TIMEOUT_MS) {
+      const freshPageLoad = performance.now() < 10_000;
+      if (elapsed >= TIMEOUT_MS && !freshPageLoad) {
         logout();
         return;
       }
