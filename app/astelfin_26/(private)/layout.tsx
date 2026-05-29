@@ -21,9 +21,11 @@ export default async function PrivateFinanceLayout({
   if (!session?.user) redirect("/astelfin_26/login");
 
   // If the user must change their password, gate everything except the change-password page
+  // Read pathname once — used for access control and layout switching
+  const headersList = await headers();
+  const pathname    = headersList.get("x-pathname") ?? "";
+
   if (session.user.mustChangePassword) {
-    const headersList = await headers();
-    const pathname    = headersList.get("x-pathname") ?? "";
     if (!pathname.startsWith("/astelfin_26/change-password")) {
       redirect("/astelfin_26/change-password");
     }
@@ -45,8 +47,6 @@ export default async function PrivateFinanceLayout({
   const isFM  = role === "FINANCE_MANAGER";
 
   if (!isCEO && !isFM) {
-    const headersList = await headers();
-    const pathname    = headersList.get("x-pathname") ?? "";
 
     if (!canAccessPath(pathname, perms)) {
       // Redirect to the first accessible area
@@ -95,6 +95,22 @@ export default async function PrivateFinanceLayout({
             where: { expectedDate: { lt: now }, status: { in: ["EXPECTED", "PARTIAL"] } },
           }),
         ]);
+
+  // ── IMS Platform home — no sidebar, full-page layout ────────────────────────
+  const isImsHome = pathname === "/astelfin_26/home";
+
+  if (isImsHome) {
+    return (
+      <>
+        <InactivityGuard />
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+          <main className="flex-1 flex items-center justify-center p-8">
+            {children}
+          </main>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
