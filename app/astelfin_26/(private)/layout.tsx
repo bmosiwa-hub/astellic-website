@@ -6,6 +6,7 @@ import Sidebar from "@/components/finance/Sidebar";
 import InactivityGuard from "@/components/finance/InactivityGuard";
 import { getEffectivePermissions, canAccessPath } from "@/lib/permissions";
 import { getActiveOrgId } from "@/lib/org";
+import { getUserCompanies } from "@/lib/company";
 
 export const metadata = {
   robots: { index: false, follow: false },
@@ -59,14 +60,15 @@ export default async function PrivateFinanceLayout({
 
   const isLimitedRole = !isCEO && !isFM;
 
-  // Fetch organisations for the switcher
-  const [orgs, activeOrgId] = await Promise.all([
+  // Fetch organisations for the switcher + company memberships
+  const [orgs, activeOrgId, companies] = await Promise.all([
     prisma.organisation.findMany({
       where:   { active: true },
       orderBy: { name: "asc" },
       select:  { id: true, name: true, shortCode: true },
     }),
     getActiveOrgId(session),
+    getUserCompanies(session.user.id!),
   ]);
 
   // Fetch sidebar badge counts
@@ -108,6 +110,7 @@ export default async function PrivateFinanceLayout({
         overdueReceivables={overdueReceivables}
         orgs={orgs}
         activeOrgId={activeOrgId}
+        companies={companies}
       />
       <div className="flex-1 flex flex-col min-w-0">
         <main className="flex-1 p-8 overflow-y-auto">{children}</main>

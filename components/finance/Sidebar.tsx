@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import type { EffectivePermissions } from "@/lib/permissions";
 import { OrgSwitcher } from "@/components/finance/OrgSwitcher";
+import type { CompanyItem } from "@/lib/company";
 
 const ROLE_LABELS: Record<string, string> = {
   CEO:             "Chief Executive Officer",
@@ -254,6 +255,7 @@ interface SidebarProps {
   overdueReceivables?: number;
   orgs?: OrgItem[];
   activeOrgId?: string | null;
+  companies?: CompanyItem[];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -277,8 +279,14 @@ export default function Sidebar({
   overdueReceivables = 0,
   orgs = [],
   activeOrgId = null,
+  companies = [],
 }: SidebarProps) {
   const pathname = usePathname();
+
+  // Detect which company room is active
+  const isAstelfinRoom = pathname.startsWith("/astelfin_26/astelfin");
+  const activeCompanyName = isAstelfinRoom ? "Astelfin" : "Astellic";
+  const hasMultipleCompanies = companies.length > 1;
 
   const isCEO   = userRole === "CEO";
   const isFM    = userRole === "FINANCE_MANAGER";
@@ -417,8 +425,52 @@ export default function Sidebar({
         <p className="font-bold text-lg tracking-tight">Astel<span className="text-brand-gold">fin</span></p>
       </div>
 
+      {/* Company context strip */}
+      {companies.length > 0 && (
+        <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-brand-gold shrink-0" />
+            <span className="text-sm font-semibold text-white truncate">{activeCompanyName}</span>
+          </div>
+          {hasMultipleCompanies && (
+            <Link
+              href="/astelfin_26/home"
+              className="text-[11px] text-gray-400 hover:text-white transition-colors shrink-0 font-medium"
+            >
+              Switch ↕
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="flex-1 px-2 py-3 overflow-y-auto space-y-0.5">
+
+        {/* ══ ASTELFIN ROOM NAV ══════════════════════════════ */}
+        {isAstelfinRoom && (
+          <>
+            {navLink("/astelfin_26/astelfin", "Home", Icons.dashboard)}
+            <div className="pt-2" />
+            <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Departments</p>
+            {navLink("/astelfin_26/astelfin/hr",        "Human Resources",    Icons.employees)}
+            {navLink("/astelfin_26/astelfin/finance",   "Finance",            financeIcon)}
+            {navLink("/astelfin_26/astelfin/it",        "IT & Systems",       Icons.settings)}
+            {navLink("/astelfin_26/astelfin/marketing", "Marketing",          Icons.bizdev)}
+            {navLink("/astelfin_26/astelfin/me",        "M&E",                Icons.asil)}
+            {navLink("/astelfin_26/astelfin/admin",     "Administration",     Icons.documents)}
+            <div className="pt-2" />
+            <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Platform</p>
+            {navLink("/astelfin_26/settings",           "Settings",           Icons.settings)}
+            <div className="px-3 pt-2">
+              <div className="border-t border-white/10" />
+            </div>
+            <div className="pt-1" />
+          </>
+        )}
+
+        {/* ══ ASTELLIC / DEFAULT ROOM NAV ════════════════════ */}
+        {!isAstelfinRoom && (
+        <>
 
         {/* ── My Page (all roles) ─────────────────────────── */}
         {sectionHeader("mypage", "My Page", Icons.myPage)}
@@ -585,6 +637,9 @@ export default function Sidebar({
               </div>
             )}
           </>
+        )}
+
+        </> /* end !isAstelfinRoom */
         )}
       </nav>
 
