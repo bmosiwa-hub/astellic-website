@@ -1084,7 +1084,9 @@ model Milestone {
 // ── Tax Remittances ───────────────────────────────────────────────────────────
 
 model TaxRemittance {
-  id                   String    @id @default(cuid())
+  id                   String        @id @default(cuid())
+  organisationId       String?
+  organisation         Organisation? @relation("OrgTaxRemittances", fields: [organisationId], references: [id], onDelete: SetNull)
   taxType              String    // PAYE | WHT | PENSION | CIT
   period               String    // descriptive label, e.g. "Jan 2026" or "Q1 2026"
   amount               Float
@@ -1495,6 +1497,7 @@ model Organisation {
   donorGrants        DonorGrant[]
   submissions        Submission[]   @relation("OrgSubmissions")
   procurements       Procurement[]  @relation("OrgProcurements")
+  taxRemittances     TaxRemittance[] @relation("OrgTaxRemittances")
 
   @@index([active])
 }
