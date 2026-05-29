@@ -461,10 +461,12 @@ export default function Sidebar({
             {navLink("/astelfin_26/astelfin/admin",     "Administration",     Icons.documents)}
             <div className="pt-2" />
             <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Company Operations</p>
-            {navLink("/astelfin_26/astelfin/staff",    "Staff Directory",     Icons.employees)}
-            {navLink("/astelfin_26/astelfin/payroll",  "Payroll",             Icons.payroll)}
-            {navLink("/astelfin_26/astelfin/accounts", "Accounts",            Icons.income)}
-            {navLink("/astelfin_26/astelfin/tax",      "Tax & Compliance",    Icons.tax)}
+            {navLink("/astelfin_26/astelfin/staff",       "Staff Directory",     Icons.employees)}
+            {navLink("/astelfin_26/astelfin/payroll",   "Payroll",             Icons.payroll)}
+            {navLink("/astelfin_26/astelfin/accounts",  "Accounts",            Icons.income)}
+            {navLink("/astelfin_26/astelfin/invoices",  "Invoices",            Icons.invoices)}
+            {navLink("/astelfin_26/astelfin/procurement","Procurement",         Icons.procurement)}
+            {navLink("/astelfin_26/astelfin/tax",       "Tax & Compliance",    Icons.tax)}
             <div className="pt-2" />
             <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">System</p>
             {navLink("/astelfin_26/settings",           "Settings",           Icons.settings)}

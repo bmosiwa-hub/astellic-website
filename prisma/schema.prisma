@@ -531,11 +531,13 @@ enum ReviewAction {
 }
 
 model Submission {
-  id           String           @id @default(cuid())
-  submittedBy  String
-  submitter    User             @relation("SubmittedBy", fields: [submittedBy], references: [id])
-  type         SubmissionType
-  status       SubmissionStatus @default(PENDING_FM)
+  id             String           @id @default(cuid())
+  organisationId String?
+  organisation   Organisation?    @relation("OrgSubmissions", fields: [organisationId], references: [id], onDelete: SetNull)
+  submittedBy    String
+  submitter      User             @relation("SubmittedBy", fields: [submittedBy], references: [id])
+  type           SubmissionType
+  status         SubmissionStatus @default(PENDING_FM)
 
   // Invoice-specific
   projectId    String?
@@ -841,15 +843,17 @@ enum ProcurementStatus {
 }
 
 model Procurement {
-  id            String               @id @default(cuid())
-  title         String
-  description   String?
-  category      String?
-  estimatedCost Float
-  currency      String               @default("MWK")
-  status        ProcurementStatus    @default(DRAFT)
-  requestedBy   String
-  requester     User                 @relation("ProcurementRequester", fields: [requestedBy], references: [id])
+  id             String               @id @default(cuid())
+  organisationId String?
+  organisation   Organisation?        @relation("OrgProcurements", fields: [organisationId], references: [id], onDelete: SetNull)
+  title          String
+  description    String?
+  category       String?
+  estimatedCost  Float
+  currency       String               @default("MWK")
+  status         ProcurementStatus    @default(DRAFT)
+  requestedBy    String
+  requester      User                 @relation("ProcurementRequester", fields: [requestedBy], references: [id])
   reviewedBy    String?
   reviewer      User?                @relation("ProcurementReviewer", fields: [reviewedBy], references: [id])
   reviewNote    String?
@@ -1489,6 +1493,8 @@ model Organisation {
   payrolls           Payroll[]
   debts              Debt[]
   donorGrants        DonorGrant[]
+  submissions        Submission[]   @relation("OrgSubmissions")
+  procurements       Procurement[]  @relation("OrgProcurements")
 
   @@index([active])
 }
