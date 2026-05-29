@@ -1,6 +1,7 @@
 ﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { ProcurementStatus } from "@prisma/client";
 import { getAstelfinOrg } from "@/lib/astelfin-org";
 import Link from "next/link";
 
@@ -45,7 +46,7 @@ export default async function AstelfinProcurementPage({
         where: {
           organisationId: org.id,
           deletedAt: null,
-          ...(status ? { status } : {}),
+          ...(status ? { status: status as ProcurementStatus } : {}),
         },
         orderBy: { createdAt: "desc" },
         include: {
