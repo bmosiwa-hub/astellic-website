@@ -25,10 +25,21 @@ export default async function PrivateFinanceLayout({
   const headersList = await headers();
   const pathname    = headersList.get("x-pathname") ?? "";
 
+  const onChangePassword = pathname.startsWith("/astelfin_26/change-password");
+
   if (session.user.mustChangePassword) {
-    if (!pathname.startsWith("/astelfin_26/change-password")) {
+    if (!onChangePassword) {
       redirect("/astelfin_26/change-password");
     }
+    // User must change password and is on the change-password page.
+    // Render a minimal, sidebar-free layout so the form is clearly visible.
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {children}
+        </div>
+      </div>
+    );
   }
 
   const role = session.user.role;
