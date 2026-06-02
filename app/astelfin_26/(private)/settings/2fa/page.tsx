@@ -6,6 +6,7 @@ import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import ConfirmDeleteButton from "@/components/finance/ConfirmDeleteButton";
 
 export const metadata = {
   title: "Two-Factor Authentication Setup | Astelfin IMS",
@@ -295,25 +296,19 @@ export default async function TwoFASettingsPage({
           {user.totpEnabled && (
             <div className="flex items-center gap-2 shrink-0">
               <form action={regenerateBackupCodes}>
-                <button type="submit"
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
-                  onClick={(e) => {
-                    if (!confirm("Generate new backup codes? Your existing backup codes will be invalidated immediately."))
-                      e.preventDefault();
-                  }}>
+                <ConfirmDeleteButton
+                  message="Generate new backup codes? Your existing backup codes will be invalidated immediately."
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold transition-colors">
                   New backup codes
-                </button>
+                </ConfirmDeleteButton>
               </form>
               <form action={disable2fa}>
                 <input type="hidden" name="targetUserId" value={userId} />
-                <button type="submit"
-                  className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                  onClick={(e) => {
-                    if (!confirm("Disable two-factor authentication? Your account will be protected by password only."))
-                      e.preventDefault();
-                  }}>
+                <ConfirmDeleteButton
+                  message="Disable two-factor authentication? Your account will be protected by password only."
+                  className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                   Disable 2FA
-                </button>
+                </ConfirmDeleteButton>
               </form>
             </div>
           )}

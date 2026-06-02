@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import Link from "next/link";
+import ConfirmDeleteButton from "@/components/finance/ConfirmDeleteButton";
 
 export const metadata = {
   title: "Settings | Astelfin IMS",
@@ -802,9 +803,9 @@ export default async function SettingsPage({
                           </Link>
                           <form action={deleteThreshold}>
                             <input type="hidden" name="thresholdId" value={t.id} />
-                            <button type="submit"
-                              className="text-xs text-red-500 font-semibold hover:underline"
-                              onClick={(e) => { if (!confirm("Delete this tier?")) e.preventDefault(); }}>
+                            <ConfirmDeleteButton
+                              message="Delete this procurement tier?"
+                              className="text-xs text-red-500 font-semibold hover:underline">
                               Delete
                             </button>
                           </form>

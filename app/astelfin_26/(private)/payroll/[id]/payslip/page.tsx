@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { PrintButton } from "@/components/finance/PrintButton";
 
 export const metadata = {
   title: "Payslip | Astelfin IMS",
@@ -60,10 +61,7 @@ export default async function PayslipPage({
           className="text-sm text-brand-gold font-semibold hover:underline">
           ← Back to Payroll
         </Link>
-        <button onClick={() => window.print()}
-          className="bg-brand-navy text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-brand-navy/90 transition-colors">
-          🖨 Print / Save PDF
-        </button>
+        <PrintButton className="bg-brand-navy text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-brand-navy/90 transition-colors" />
       </div>
 
       {/* Payslip */}
