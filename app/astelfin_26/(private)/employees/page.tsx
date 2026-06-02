@@ -63,17 +63,29 @@ export default async function EmployeesPage() {
   const activeOrgId = await getActiveOrgId(session);
   const orgFilter   = orgWhere(activeOrgId);
 
-  // Exclude Astelfin employees — they are managed in their own room
+  // Exclude Astelfin employees — they are managed in their own room.
+  // We must use an explicit OR with { organisationId: null } because SQL's
+  // NOT (col = value) returns NULL (falsy) when col IS NULL, which would
+  // accidentally hide legacy Astellic employees that have no organisationId set.
   const astelfinOrg = await prisma.organisation.findFirst({
     where:  { shortCode: "ASTELFIN", active: true },
     select: { id: true },
   });
 
+  const astelfinExclude = astelfinOrg
+    ? {
+        OR: [
+          { organisationId: null },                              // keep legacy records
+          { organisationId: { not: astelfinOrg.id } },          // keep any other-org records
+        ],
+      }
+    : {};
+
   // Fetch ALL employees (active and former) scoped to active org, excluding Astelfin
   const allEmployees = await prisma.employee.findMany({
     where: {
       ...orgFilter,
-      ...(astelfinOrg ? { NOT: { organisationId: astelfinOrg.id } } : {}),
+      ...astelfinExclude,
     },
     orderBy: [{ active: "desc" }, { employeeNumber: "asc" }, { name: "asc" }],
   });
