@@ -20,12 +20,19 @@ function fmt(n: number, cur = "MWK") {
   return cur + " " + n.toLocaleString("en-MW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export default async function AstelfinStaffDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AstelfinStaffDetailPage({
+  params,
+  searchParams,
+}: {
+  params:       Promise<{ id: string }>;
+  searchParams: Promise<{ success?: string }>;
+}) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/home");
 
-  const { id } = await params;
+  const { id }      = await params;
+  const { success } = await searchParams;
   const emp = await prisma.employee.findUnique({
     where: { id },
     include: {
@@ -57,6 +64,17 @@ export default async function AstelfinStaffDetailPage({ params }: { params: Prom
       <Link href="/astelfin_26/astelfin/staff" className="text-sm text-brand-muted hover:text-brand-gold transition-colors">
         &larr; Back to Staff Directory
       </Link>
+
+      {success === "updated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Staff profile updated successfully.
+        </div>
+      )}
+      {success === "taxes_updated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          Tax and benefit settings updated.
+        </div>
+      )}
 
       <div className="bg-white border border-gray-100 rounded-2xl p-7 flex items-start gap-6">
         <div className="w-16 h-16 rounded-full bg-brand-navy flex items-center justify-center text-white text-xl font-bold shrink-0">

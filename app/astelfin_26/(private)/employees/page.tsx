@@ -63,9 +63,18 @@ export default async function EmployeesPage() {
   const activeOrgId = await getActiveOrgId(session);
   const orgFilter   = orgWhere(activeOrgId);
 
-  // Fetch ALL employees (active and former) scoped to active org
+  // Exclude Astelfin employees — they are managed in their own room
+  const astelfinOrg = await prisma.organisation.findFirst({
+    where:  { shortCode: "ASTELFIN", active: true },
+    select: { id: true },
+  });
+
+  // Fetch ALL employees (active and former) scoped to active org, excluding Astelfin
   const allEmployees = await prisma.employee.findMany({
-    where:   { ...orgFilter },
+    where: {
+      ...orgFilter,
+      ...(astelfinOrg ? { NOT: { organisationId: astelfinOrg.id } } : {}),
+    },
     orderBy: [{ active: "desc" }, { employeeNumber: "asc" }, { name: "asc" }],
   });
 
