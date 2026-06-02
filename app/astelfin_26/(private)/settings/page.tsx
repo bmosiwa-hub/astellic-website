@@ -807,7 +807,7 @@ export default async function SettingsPage({
                               message="Delete this procurement tier?"
                               className="text-xs text-red-500 font-semibold hover:underline">
                               Delete
-                            </button>
+                            </ConfirmDeleteButton>
                           </form>
                         </div>
                       </td>
