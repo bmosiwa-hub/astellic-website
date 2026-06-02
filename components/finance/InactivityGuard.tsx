@@ -105,22 +105,13 @@ export default function InactivityGuard() {
   // ── mount ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    // On mount: check if we've been inactive since the last page load.
-    // If the stored timestamp is stale (≥ timeout), it means either the tab
-    // was left open and reloaded, OR the user signed out without clearing
-    // localStorage. Distinguish by checking if the page was just loaded
-    // (performance.now() < 10s) — if so, treat as a fresh session.
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const elapsed = Date.now() - parseInt(stored, 10);
-      const freshPageLoad = performance.now() < 10_000;
-      if (elapsed >= TIMEOUT_MS && !freshPageLoad) {
-        logout();
-        return;
-      }
-    }
-
-    // Stamp now so any subsequent checks have a valid baseline
+    // On mount: always stamp the current time and arm the inactivity timer.
+    // We intentionally do NOT check for a stale localStorage value here —
+    // performance.now() in Next.js App Router keeps ticking from the initial
+    // page load (not from each navigation), so the "freshPageLoad" heuristic
+    // was incorrectly firing logout() for users who took > 10 s to reach a
+    // private page after logging in.
+    // The visibilitychange handler below covers the "returned to old tab" case.
     stampActivity();
     arm();
 

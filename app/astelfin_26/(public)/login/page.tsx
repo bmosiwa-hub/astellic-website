@@ -70,6 +70,9 @@ export default function LoginPage() {
     setLoading(false);
 
     if (!result?.error) {
+      // Clear any stale inactivity timestamp from a previous session so the
+      // InactivityGuard starts fresh and doesn't immediately sign the user out.
+      localStorage.removeItem("astelfin_last_activity");
       router.push(callbackUrl);
       return;
     }
