@@ -163,7 +163,7 @@ async function updateUser(formData: FormData) {
     detail: `Role → ${role}`,
   });
 
-  redirect("/astelfin_26/settings");
+  redirect("/astelfin_26/settings?success=user_updated");
 }
 
 async function resetPassword(formData: FormData) {
@@ -292,7 +292,8 @@ export default async function SettingsPage({
 }: {
   searchParams: Promise<{ editUser?: string; deleteUser?: string; editThreshold?: string; error?: string; success?: string }>;
 }) {
-  const { editUser, deleteUser: deleteUserId, editThreshold, error, success } = await searchParams;
+  const { editUser, deleteUser: deleteUserId, editThreshold, error, success: successParam } = await searchParams;
+  const success = successParam;
   const session = await auth();
   const isCEO = session?.user?.role === "CEO";
 
@@ -352,6 +353,11 @@ export default async function SettingsPage({
       {success === "deleted" && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
           User account permanently deleted.
+        </div>
+      )}
+      {success === "user_updated" && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+          User account updated successfully.
         </div>
       )}
 
