@@ -36,10 +36,20 @@ export async function createSubmission(formData: FormData): Promise<void> {
     totalAmount = parseFloat(formData.get("amount") as string) || 0;
   }
 
+  // If no active FM exists, skip straight to PENDING_CEO (FM bypass).
+  // When an FM is hired and their account activated, this auto-reverts.
+  const fms = await prisma.user.findMany({
+    where:  { role: "FINANCE_MANAGER", active: true },
+    select: { email: true },
+  });
+  const hasFM          = fms.length > 0;
+  const initialStatus  = hasFM ? "PENDING_FM" : "PENDING_CEO";
+
   const submission = await prisma.submission.create({
     data: {
       submittedBy: session.user.id!,
       type,
+      status: initialStatus,
       currency,
       totalAmount,
       notes,
@@ -70,28 +80,41 @@ export async function createSubmission(formData: FormData): Promise<void> {
     action: "CREATE",
     entity: "Submission",
     entityId: submission.id,
-    detail: `${type} submitted — ${currency} ${totalAmount}`,
+    detail: `${type} submitted — ${currency} ${totalAmount}${!hasFM ? " (FM bypass: no active FM)" : ""}`,
   });
 
-  // Notify all Finance Managers that a new submission needs review
+  // Email: notify FM if one exists, otherwise notify CEO directly
   try {
-    const fms = await prisma.user.findMany({
-      where:  { role: "FINANCE_MANAGER", active: true },
-      select: { email: true },
-    });
-    if (fms.length > 0) {
-      const submissionLabel = type === "INVOICE" ? "Invoice" : "Expense Request";
+    const submissionLabel = type === "INVOICE" ? "Invoice" : "Expense Request";
+    if (hasFM) {
       await notifyFMOfNewSubmission({
-        to:               fms.map((u) => u.email),
-        submitterName:    session.user.name ?? "A team member",
-        submissionId:     submission.id,
+        to:            fms.map((u) => u.email),
+        submitterName: session.user.name ?? "A team member",
+        submissionId:  submission.id,
         submissionLabel,
-        amount:           totalAmount,
+        amount:        totalAmount,
         currency,
       });
+    } else {
+      // No FM — notify CEO directly so they know a submission is pending
+      const ceos = await prisma.user.findMany({
+        where:  { role: "CEO", active: true },
+        select: { email: true },
+      });
+      if (ceos.length > 0) {
+        await notifyCEOOfFMApproval({
+          to:            ceos.map((u) => u.email),
+          submitterName: session.user.name ?? "A team member",
+          submissionId:  submission.id,
+          submissionLabel,
+          amount:        totalAmount,
+          currency,
+          fmNote:        "(No Finance Manager — submitted directly for CEO approval)",
+        });
+      }
     }
   } catch (err) {
-    console.error("[createSubmission] FM email failed:", err);
+    console.error("[createSubmission] notification email failed:", err);
   }
 
   revalidatePath("/astelfin_26/my/submissions");
@@ -121,12 +144,21 @@ export async function resubmitSubmission(submissionId: string, formData: FormDat
     totalAmount = parseFloat(formData.get("amount") as string) || 0;
   }
 
-  // Determine where to send it back
-  const lastFMReview = await prisma.submissionReview.findFirst({
-    where: { submissionId, reviewerRole: "FM" },
-    orderBy: { createdAt: "desc" },
-  });
-  const nextStatus = lastFMReview?.action === "CHANGES_REQUESTED" ? "PENDING_FM" : "PENDING_CEO";
+  // Determine where to send it back.
+  // If no active FM exists, always go to PENDING_CEO (FM bypass).
+  const activeFMCount = await prisma.user.count({ where: { role: "FINANCE_MANAGER", active: true } });
+  const hasFMForResubmit = activeFMCount > 0;
+
+  let nextStatus: "PENDING_FM" | "PENDING_CEO";
+  if (!hasFMForResubmit) {
+    nextStatus = "PENDING_CEO";
+  } else {
+    const lastFMReview = await prisma.submissionReview.findFirst({
+      where: { submissionId, reviewerRole: "FM" },
+      orderBy: { createdAt: "desc" },
+    });
+    nextStatus = lastFMReview?.action === "CHANGES_REQUESTED" ? "PENDING_FM" : "PENDING_CEO";
+  }
 
   // Delete old line items and recreate
   await prisma.submissionItem.deleteMany({ where: { submissionId } });

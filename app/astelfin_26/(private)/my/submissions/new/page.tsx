@@ -12,24 +12,27 @@ export default async function NewSubmissionPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const projects = await prisma.project.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  const [projects, fmCount] = await Promise.all([
+    prisma.project.findMany({
+      where:   { status: "ACTIVE" },
+      select:  { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.count({ where: { role: "FINANCE_MANAGER", active: true } }),
+  ]);
 
-  const budgetLines = [
-    "Admin",
-    ...projects.map((p) => p.name),
-  ];
+  const hasFM = fmCount > 0;
+  const budgetLines = ["Admin", ...projects.map((p) => p.name)];
 
   return (
     <div className="max-w-3xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-navy">New Submission</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Submit an invoice for services rendered, or request funds for an upcoming activity.
-          Your submission will be reviewed by the Finance Manager, then the Chief Executive Officer.
+          Submit an invoice for services rendered, or request funds for an upcoming activity.{" "}
+          {hasFM
+            ? "Your submission will be reviewed by the Finance Manager, then the Chief Executive Officer."
+            : "Your submission will go directly to the Chief Executive Officer for approval."}
         </p>
       </div>
 
