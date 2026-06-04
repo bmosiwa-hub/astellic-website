@@ -75,6 +75,86 @@ const ACTION_LABEL: Record<string, string> = {
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
 /**
+ * Notify all Finance Managers that a new submission has been created
+ * and is waiting for their review.
+ */
+export async function notifyFMOfNewSubmission({
+  to,
+  submitterName,
+  submissionId,
+  submissionLabel,
+  amount,
+  currency,
+}: {
+  to: string | string[];
+  submitterName: string;
+  submissionId: string;
+  submissionLabel: string;
+  amount: number;
+  currency: string;
+}): Promise<void> {
+  const formatted = new Intl.NumberFormat("en-MW", {
+    style: "currency", currency, minimumFractionDigits: 2,
+  }).format(amount).replace(currency, currency + " ");
+
+  const body = `
+    <h2>New Submission Awaiting Review</h2>
+    <p><strong>${submitterName}</strong> has submitted a new request that requires your review:</p>
+    <p><strong>${submissionLabel}</strong></p>
+    <p><strong>Amount:</strong> ${formatted}</p>
+    <p>Please review this submission and either approve it for CEO sign-off or request changes.</p>
+    <a class="btn" href="${BASE_URL}/astelfin_26/invoices/${submissionId}">Review Submission</a>
+  `;
+
+  await sendMail({
+    to,
+    subject: `New Submission Awaiting Review — ${submissionLabel}`,
+    html: layout(body),
+  });
+}
+
+/**
+ * Notify CEO(s) that FM has approved a submission and it needs their sign-off.
+ */
+export async function notifyCEOOfFMApproval({
+  to,
+  submitterName,
+  submissionId,
+  submissionLabel,
+  amount,
+  currency,
+  fmNote,
+}: {
+  to: string | string[];
+  submitterName: string;
+  submissionId: string;
+  submissionLabel: string;
+  amount: number;
+  currency: string;
+  fmNote: string | null;
+}): Promise<void> {
+  const formatted = new Intl.NumberFormat("en-MW", {
+    style: "currency", currency, minimumFractionDigits: 2,
+  }).format(amount).replace(currency, currency + " ");
+
+  const body = `
+    <h2>Submission Awaiting Your Approval</h2>
+    <p>The <strong>Finance Manager</strong> has reviewed and approved the following submission from <strong>${submitterName}</strong>. It now requires your sign-off:</p>
+    <p><strong>${submissionLabel}</strong></p>
+    <p><strong>Amount:</strong> ${formatted}</p>
+    ${fmNote ? `<div class="note-box"><strong>FM Note:</strong> ${fmNote}</div>` : ""}
+    <p>Please review and approve or request changes.</p>
+    <a class="btn" href="${BASE_URL}/astelfin_26/invoices/${submissionId}">Review &amp; Approve</a>
+  `;
+
+  await sendMail({
+    to,
+    subject: `Action Required: Submission Pending Your Approval — ${submissionLabel}`,
+    html: layout(body),
+  });
+}
+
+/**
  * Notify the submitter that FM has actioned their submission.
  */
 export async function notifySubmitterOfFMAction({

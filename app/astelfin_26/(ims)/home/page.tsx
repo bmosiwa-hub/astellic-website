@@ -10,8 +10,8 @@ export const metadata = {
 
 function companyHref(slug: string) {
   if (slug === "astelfin") return "/astelfin_26/astelfin";
-  if (slug === "astellic") return "/astelfin_26/dashboard";
-  return "/astelfin_26/dashboard";
+  if (slug === "astellic") return "/astelfin_26/overview";
+  return "/astelfin_26/overview";
 }
 
 // Per-company visual config

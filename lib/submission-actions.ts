@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
-import { notifySubmitterOfFMAction, notifyFMOfCEOAction } from "@/lib/mail";
+import { notifySubmitterOfFMAction, notifyFMOfCEOAction, notifyFMOfNewSubmission, notifyCEOOfFMApproval } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -72,6 +72,27 @@ export async function createSubmission(formData: FormData): Promise<void> {
     entityId: submission.id,
     detail: `${type} submitted — ${currency} ${totalAmount}`,
   });
+
+  // Notify all Finance Managers that a new submission needs review
+  try {
+    const fms = await prisma.user.findMany({
+      where:  { role: "FINANCE_MANAGER", active: true },
+      select: { email: true },
+    });
+    if (fms.length > 0) {
+      const submissionLabel = type === "INVOICE" ? "Invoice" : "Expense Request";
+      await notifyFMOfNewSubmission({
+        to:               fms.map((u) => u.email),
+        submitterName:    session.user.name ?? "A team member",
+        submissionId:     submission.id,
+        submissionLabel,
+        amount:           totalAmount,
+        currency,
+      });
+    }
+  } catch (err) {
+    console.error("[createSubmission] FM email failed:", err);
+  }
 
   revalidatePath("/astelfin_26/my/submissions");
   redirect("/astelfin_26/my/submissions");
@@ -227,10 +248,27 @@ export async function reviewSubmission(
       ? `Invoice${sub.milestone ? ` — ${sub.milestone}` : ""}`
       : `Expense Request${sub.purpose ? ` — ${sub.purpose}` : ""}`;
 
-  if (action === "CHANGES_REQUESTED" || action === "REJECTED") {
-    try {
+  try {
+    if (reviewerRole === "FM" && action === "APPROVED") {
+      // FM approved → notify all CEOs that the submission needs their sign-off
+      const ceos = await prisma.user.findMany({
+        where:  { role: "CEO", active: true },
+        select: { email: true },
+      });
+      if (ceos.length > 0) {
+        await notifyCEOOfFMApproval({
+          to:               ceos.map((u) => u.email),
+          submitterName:    sub.submitter.name,
+          submissionId,
+          submissionLabel,
+          amount:           sub.totalAmount,
+          currency:         sub.currency,
+          fmNote:           note,
+        });
+      }
+    } else if (action === "CHANGES_REQUESTED" || action === "REJECTED") {
       if (reviewerRole === "FM") {
-        // FM acted → notify the submitter
+        // FM requested changes/rejected → notify the submitter
         await notifySubmitterOfFMAction({
           to: sub.submitter.email,
           submitterName: sub.submitter.name,
@@ -240,7 +278,7 @@ export async function reviewSubmission(
           submissionLabel,
         });
       } else {
-        // CEO acted → notify all active Finance Managers
+        // CEO requested changes/rejected → notify all active Finance Managers
         const fms = await prisma.user.findMany({
           where: { role: "FINANCE_MANAGER", active: true },
           select: { email: true },
@@ -256,10 +294,10 @@ export async function reviewSubmission(
           });
         }
       }
-    } catch (err) {
-      // Email failure must never block the review action
-      console.error("[reviewSubmission] email failed:", err);
     }
+  } catch (err) {
+    // Email failure must never block the review action
+    console.error("[reviewSubmission] email failed:", err);
   }
   // ────────────────────────────────────────────────────────────────────────
 
