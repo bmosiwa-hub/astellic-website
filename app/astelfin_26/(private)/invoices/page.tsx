@@ -35,7 +35,7 @@ export default async function InvoicesPage({
   const pendingStatuses =
     role === "FINANCE_MANAGER"
       ? ["PENDING_FM"]
-      : ["PENDING_CEO", "APPROVED"]; // CEO reviews + marks ready for FM to pay
+      : ["PENDING_FM", "PENDING_CEO", "APPROVED"]; // CEO sees all stages
 
   const [pending, all] = await Promise.all([
     prisma.submission.findMany({

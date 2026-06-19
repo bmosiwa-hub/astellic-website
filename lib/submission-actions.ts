@@ -203,7 +203,7 @@ export async function resubmitSubmission(submissionId: string, formData: FormDat
 export async function reviewSubmission(
   submissionId: string,
   action: "APPROVED" | "CHANGES_REQUESTED" | "REJECTED",
-  reviewerRole: "FM" | "CEO",
+  reviewerRole: "FM" | "CEO" | "CEO_BYPASS",
   formData: FormData
 ): Promise<void> {
   const session = await auth();
@@ -219,8 +219,8 @@ export async function reviewSubmission(
     },
   });
 
-  // Reviewer must not be the same person who submitted
-  if (action === "APPROVED") {
+  // Self-approval check applies only to the final CEO approval (not FM stage or CEO bypass)
+  if (action === "APPROVED" && reviewerRole === "CEO") {
     assertNotSelfApproval(session.user.id!, sub.submittedBy, "submission");
   }
 
@@ -231,6 +231,10 @@ export async function reviewSubmission(
     if (action === "APPROVED") newStatus = "PENDING_CEO";
     else if (action === "CHANGES_REQUESTED") newStatus = "FM_CHANGES_REQUESTED";
     else newStatus = "REJECTED";
+  } else if (reviewerRole === "CEO_BYPASS") {
+    // CEO approves directly from PENDING_FM, bypassing FM stage
+    if (action === "APPROVED") newStatus = "APPROVED";
+    else newStatus = "REJECTED";
   } else {
     // CEO
     if (action === "APPROVED") newStatus = "APPROVED";
@@ -238,11 +242,13 @@ export async function reviewSubmission(
     else newStatus = "REJECTED";
   }
 
+  const storedRole = reviewerRole === "CEO_BYPASS" ? "CEO" : reviewerRole;
+
   await prisma.submissionReview.create({
     data: {
       submissionId,
       reviewedBy: session.user.id!,
-      reviewerRole,
+      reviewerRole: storedRole,
       action,
       note,
     },

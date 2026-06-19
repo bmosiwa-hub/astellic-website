@@ -43,10 +43,11 @@ export default async function ReviewSubmissionPage({
   const isFM  = role === "FINANCE_MANAGER";
   const isCEO = ceoAuth.authorized;
 
-  // FM can action PENDING_FM; CEO (or delegate) can action PENDING_CEO or APPROVED (mark paid)
-  const canFMAction  = isFM && sub.status === "PENDING_FM";
-  const canCEOAction = isCEO && sub.status === "PENDING_CEO";
-  const canMarkPaid  = (isFM || isCEO) && sub.status === "APPROVED";
+  // FM can action PENDING_FM; CEO (or delegate) can action PENDING_CEO, APPROVED, or bypass FM stage
+  const canFMAction      = isFM  && sub.status === "PENDING_FM";
+  const canCEOBypass     = isCEO && sub.status === "PENDING_FM";   // CEO bypasses FM stage
+  const canCEOAction     = isCEO && sub.status === "PENDING_CEO";
+  const canMarkPaid      = (isFM || isCEO) && sub.status === "APPROVED";
 
   // Server action bindings
   const approveFM   = reviewSubmission.bind(null, id, "APPROVED",          "FM");
@@ -55,6 +56,9 @@ export default async function ReviewSubmissionPage({
   const approveCEO  = reviewSubmission.bind(null, id, "APPROVED",          "CEO");
   const changesCEO  = reviewSubmission.bind(null, id, "CHANGES_REQUESTED", "CEO");
   const rejectCEO   = reviewSubmission.bind(null, id, "REJECTED",          "CEO");
+  // CEO bypass: approve from PENDING_FM directly to APPROVED
+  const bypassApproveCEO  = reviewSubmission.bind(null, id, "APPROVED",          "CEO_BYPASS" as "CEO");
+  const bypassRejectCEO   = reviewSubmission.bind(null, id, "REJECTED",          "CEO_BYPASS" as "CEO");
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -172,6 +176,32 @@ export default async function ReviewSubmissionPage({
           </form>
 
           <form action={rejectFM} className="flex items-center gap-3">
+            <input name="note" placeholder="Reason for rejection (optional)…"
+              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
+            <button type="submit" className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">
+              ✗ Reject
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* CEO bypass panel — approve/reject directly from PENDING_FM */}
+      {canCEOBypass && (
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 space-y-4">
+          <div>
+            <h2 className="font-bold text-brand-navy">CEO Direct Approval</h2>
+            <p className="text-xs text-gray-500 mt-0.5">No Finance Manager review — approve or reject directly as CEO.</p>
+          </div>
+
+          <form action={bypassApproveCEO} className="flex items-center gap-3">
+            <input name="note" placeholder="Optional note…"
+              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400" />
+            <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">
+              ✓ Approve
+            </button>
+          </form>
+
+          <form action={bypassRejectCEO} className="flex items-center gap-3">
             <input name="note" placeholder="Reason for rejection (optional)…"
               className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
             <button type="submit" className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">
