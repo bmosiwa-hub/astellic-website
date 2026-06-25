@@ -100,8 +100,8 @@ export default async function InvoicesPage({
           {tab === "pending" ? "Nothing needs your attention right now." : "No submissions yet."}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+          <table className="w-full text-sm min-w-[760px]">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Date</th>

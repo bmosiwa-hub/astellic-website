@@ -53,8 +53,8 @@ export default async function LiquidationsPage() {
           No liquidations submitted yet.
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+          <table className="w-full text-sm min-w-[920px]">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th className="text-left px-5 py-3 font-semibold text-gray-600">Date</th>
@@ -73,27 +73,27 @@ export default async function LiquidationsPage() {
               {liquidations.map((l) => (
                 <tr key={l.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3 text-gray-500 whitespace-nowrap">{formatDate(l.liquidationDate)}</td>
-                  <td className="px-5 py-3 font-medium text-brand-navy">{l.submitter.name}</td>
+                  <td className="px-5 py-3 font-medium text-brand-navy whitespace-nowrap">{l.submitter.name}</td>
                   <td className="px-5 py-3 text-gray-700 max-w-xs truncate">{l.activity}</td>
-                  <td className="px-5 py-3 text-gray-500">{l.budgetLine}</td>
-                  <td className="px-5 py-3 text-right">{formatCurrency(l.fundsReceived, l.currency)}</td>
-                  <td className="px-5 py-3 text-right">{formatCurrency(l.fundsAccountedFor, l.currency)}</td>
-                  <td className={`px-5 py-3 text-right font-semibold ${l.refundRequired > 0 ? "text-orange-600" : l.refundRequired < 0 ? "text-red-600" : "text-green-600"}`}>
+                  <td className="px-5 py-3 text-gray-500 whitespace-nowrap">{l.budgetLine}</td>
+                  <td className="px-5 py-3 text-right whitespace-nowrap">{formatCurrency(l.fundsReceived, l.currency)}</td>
+                  <td className="px-5 py-3 text-right whitespace-nowrap">{formatCurrency(l.fundsAccountedFor, l.currency)}</td>
+                  <td className={`px-5 py-3 text-right font-semibold whitespace-nowrap ${l.refundRequired > 0 ? "text-orange-600" : l.refundRequired < 0 ? "text-red-600" : "text-green-600"}`}>
                     {l.refundRequired > 0
                       ? `+${formatCurrency(l.refundRequired, l.currency)}`
                       : l.refundRequired < 0
                       ? `−${formatCurrency(Math.abs(l.refundRequired), l.currency)}`
                       : "—"}
                   </td>
-                  <td className="px-5 py-3 text-center text-gray-500 text-xs">
+                  <td className="px-5 py-3 text-center text-gray-500 text-xs whitespace-nowrap">
                     {l.documents.length} file{l.documents.length !== 1 ? "s" : ""}
                   </td>
-                  <td className="px-5 py-3 text-center">
+                  <td className="px-5 py-3 text-center whitespace-nowrap">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_STYLES[l.status] ?? "bg-gray-100"}`}>
                       {l.status.replace("FM_", "").replace("_", " ")}
                     </span>
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-5 py-3 whitespace-nowrap">
                     <Link href={`/astelfin_26/liquidations/${l.id}`}
                       className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
                       Review →
