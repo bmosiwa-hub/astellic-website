@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
+import { excludeAstelfinWhere } from "@/lib/astelfin-org";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -24,6 +25,7 @@ export default async function FinancialHealthPage() {
 
   const activeOrgId = await getActiveOrgId(session);
   const orgFilter   = orgWhere(activeOrgId);
+  const astelfinExclude = await excludeAstelfinWhere();
 
   const [
     activeEmployees,
@@ -38,7 +40,7 @@ export default async function FinancialHealthPage() {
   ] = await Promise.all([
     // Active employees for salary obligations (org-scoped)
     prisma.employee.findMany({
-      where:  { active: true, ...orgFilter },
+      where:  { active: true, ...orgFilter, ...astelfinExclude },
       select: { grossSalary: true, currency: true, salaryExchangeRate: true, pensionRate: true },
     }),
 

@@ -4,6 +4,8 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { calculateNetPay, calculateEmployerPension, formatCurrency } from "@/lib/finance-utils";
 import { getActiveBandSet } from "@/lib/paye";
+import { getLiveSalaryRate } from "@/lib/payroll-rate";
+import { excludeAstelfinWhere, getAstelfinOrg } from "@/lib/astelfin-org";
 import { LAUNCH_PERIOD } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -38,6 +40,10 @@ async function runPayrollForEmployee(formData: FormData) {
   const employee = await prisma.employee.findUnique({ where: { id: employeeId } });
   if (!employee) return;
 
+  // Astelfin staff are paid/taxed in their own room, never through Astellic payroll
+  const astelfinOrg = await getAstelfinOrg();
+  if (astelfinOrg && employee.organisationId === astelfinOrg.id) return;
+
   // Reject if this period has already been locked by CEO
   const lockedRecord = await prisma.payroll.findFirst({
     where: { period, lockedAt: { not: null } },
@@ -47,7 +53,9 @@ async function runPayrollForEmployee(formData: FormData) {
     redirect(`/astelfin_26/payroll/new?period=${encodeURIComponent(period)}&error=period_locked`);
   }
 
-  const rate = employee.currency !== "MWK" ? (employee.salaryExchangeRate ?? 1) : 1;
+  // PAYE must use the prevailing system exchange rate, not a snapshot from hire time —
+  // foreign-currency salaries' PAYE fluctuates with the rate.
+  const rate = await getLiveSalaryRate(employee.currency);
 
   // Resolve the active PAYE band set for this period (e.g. "2025-01" → 2025-01-01)
   const [periodYear, periodMonth] = period.split("-").map(Number);
@@ -196,11 +204,17 @@ export default async function NewPayrollPage({
   const currentPeriod = new Date().toISOString().slice(0, 7);
   const defaultPeriod = qPeriod || (currentPeriod >= LAUNCH_PERIOD ? currentPeriod : LAUNCH_PERIOD);
 
-  // Fetch active employees
+  // Fetch active employees — excludes Astelfin staff, who are paid/taxed in their own room
+  const astelfinExclude = await excludeAstelfinWhere();
   const employees = await prisma.employee.findMany({
-    where:   { active: true },
+    where:   { active: true, ...astelfinExclude },
     orderBy: { name: "asc" },
   });
+
+  // Live exchange rates for PAYE preview — same prevailing-rate rule used when payroll is actually run
+  const liveRates = await prisma.exchangeRate.findMany({ select: { currency: true, middleRate: true } });
+  const liveRateMap: Record<string, number> = {};
+  for (const r of liveRates) liveRateMap[r.currency] = r.middleRate;
 
   // Payrolls already run for this period
   const existingPayrolls = qPeriod
@@ -320,7 +334,7 @@ export default async function NewPayrollPage({
         <div className="space-y-4">
           {employees.map((emp) => {
             const done    = alreadyRun.has(emp.id);
-            const rate    = isMWK(emp.currency) ? 1 : (emp.salaryExchangeRate ?? 1);
+            const rate    = isMWK(emp.currency) ? 1 : (liveRateMap[emp.currency] ?? 1);
             const calc    = calculateNetPay(emp.grossSalary, emp.pensionRate, rate, {
               payeExempt:       emp.payeExempt,
               nssfApplicable:   emp.nssfApplicable,

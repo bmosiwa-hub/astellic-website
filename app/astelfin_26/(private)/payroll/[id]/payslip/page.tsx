@@ -174,7 +174,7 @@ export default async function PayslipPage({
                 <tr>
                   <td className="py-2.5 text-gray-700">Employee Pension Contribution ({emp.pensionRate}%)</td>
                   <td className="py-2.5 text-right text-red-600">− {formatCurrency(payroll.pension, payroll.currency)}</td>
-                  {!isMWK && <td className="py-2.5 text-right text-gray-400 text-xs">{formatCurrency(payroll.pensionEmployer / 2)}</td>}
+                  {!isMWK && <td className="py-2.5 text-right text-gray-400 text-xs">{formatCurrency(payroll.pensionEmployer * (emp.pensionRate / 10))}</td>}
                 </tr>
               )}
               {payroll.nssfEmployee > 0 && (

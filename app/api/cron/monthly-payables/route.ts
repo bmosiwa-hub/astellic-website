@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { calculateNetPay, calculateEmployerPension } from "@/lib/finance-utils";
 import { getActiveBandSet } from "@/lib/paye";
+import { getLiveSalaryRate } from "@/lib/payroll-rate";
+import { excludeAstelfinWhere } from "@/lib/astelfin-org";
 import { NextResponse } from "next/server";
 
 /**
@@ -40,7 +42,9 @@ export async function GET(req: Request) {
     }
 
     // ── 1. Backfill missing PAYE/Pension records for the current period ──────
-    const activeEmployees = await prisma.employee.findMany({ where: { active: true } });
+    // Excludes Astelfin staff — they are paid/taxed in their own room.
+    const astelfinExclude = await excludeAstelfinWhere();
+    const activeEmployees = await prisma.employee.findMany({ where: { active: true, ...astelfinExclude } });
     const existingForPeriod = await prisma.payroll.findMany({
       where: { period: currentPeriod },
       select: { employeeId: true },
@@ -53,7 +57,8 @@ export async function GET(req: Request) {
     for (const employee of activeEmployees) {
       if (alreadyHasRecord.has(employee.id)) continue;
 
-      const rate = employee.currency !== "MWK" ? (employee.salaryExchangeRate ?? 1) : 1;
+      // PAYE must use the prevailing system exchange rate, not a hire-time snapshot
+      const rate = await getLiveSalaryRate(employee.currency);
       const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
         payeExempt:       employee.payeExempt,
         nssfApplicable:   employee.nssfApplicable,
