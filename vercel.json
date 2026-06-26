@@ -16,6 +16,10 @@
     {
       "path": "/api/cron/exchange-rates",
       "schedule": "0 9 * * 1-5"
+    },
+    {
+      "path": "/api/cron/monthly-payables",
+      "schedule": "0 8 27 * *"
     }
   ]
 }
