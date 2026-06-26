@@ -135,11 +135,11 @@ export default async function TaxDashboardPage({
   const activeOrgId = await getActiveOrgId(session);
   const orgFilter   = orgWhere(activeOrgId);
 
-  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT, outstandingPension] = await Promise.all([
+  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT, outstandingPensionRecords] = await Promise.all([
     // Payroll PAYE/pension (org-scoped)
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
-      select: { paye: true, pension: true, createdAt: true },
+      select: { paye: true, pension: true, pensionEmployer: true, grossSalary: true, createdAt: true },
     }),
     // WHT from consultant payments (global — ConsultantPayment has no organisationId)
     prisma.consultantPayment.findMany({
@@ -179,12 +179,25 @@ export default async function TaxDashboardPage({
       _sum:   { withholdingTax: true },
       where:  { whtStatus: "OUTSTANDING", withholdingTax: { gt: 0 } },
     }),
-    // Outstanding Pension (org-scoped)
-    prisma.payroll.aggregate({
-      _sum:   { pension: true },
+    // Outstanding Pension (org-scoped) — findMany, not aggregate, so each
+    // record's employee-side pension can be converted to MWK individually
+    // (pension is stored in the employee's native currency; mixing currencies
+    // in a raw SQL SUM would silently misreport foreign-currency salaries)
+    prisma.payroll.findMany({
       where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 }, ...orgFilter },
+      select: { pension: true, pensionEmployer: true, grossSalary: true },
     }),
   ]);
+
+  // Employee-side pension is stored in the employee's native currency; employer-side
+  // pension (always exactly 10% of gross) is always stored in MWK. Recover the implied
+  // MWK conversion rate from pensionEmployer/grossSalary and apply it to the employee
+  // side, rather than summing native-currency amounts together as if they were MWK.
+  function employeePensionMWK(p: { pension: number; pensionEmployer: number; grossSalary: number }): number {
+    if (p.pensionEmployer <= 0 || p.grossSalary <= 0) return p.pension; // MWK-equivalent already (or zero)
+    const impliedRate = (p.pensionEmployer * 10) / p.grossSalary;
+    return p.pension * impliedRate;
+  }
 
   // Group by calendar month
   const payeByMonth    = Array.from({ length: 12 }, () => 0);
@@ -193,7 +206,7 @@ export default async function TaxDashboardPage({
 
   for (const p of payrollRecords) {
     payeByMonth[p.createdAt.getMonth()]    += p.paye;
-    pensionByMonth[p.createdAt.getMonth()] += p.pension;
+    pensionByMonth[p.createdAt.getMonth()] += employeePensionMWK(p);
   }
   for (const w of whtRecords) whtByMonth[w.createdAt.getMonth()] += w.withholdingTax;
 
@@ -206,7 +219,7 @@ export default async function TaxDashboardPage({
   const currentMonth        = now.getMonth() + 1; // 1-indexed
   const outstandingPAYEAmt    = outstandingPAYE._sum.paye ?? 0;
   const outstandingWHTAmt     = outstandingWHT._sum.withholdingTax ?? 0;
-  const outstandingPensionAmt = outstandingPension._sum.pension ?? 0;
+  const outstandingPensionAmt = outstandingPensionRecords.reduce((s, p) => s + employeePensionMWK(p), 0);
   const totalOutstanding      = outstandingPAYEAmt + outstandingWHTAmt + outstandingPensionAmt;
 
   return (
