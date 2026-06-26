@@ -107,6 +107,21 @@ async function runPayrollForEmployee(formData: FormData) {
     },
   });
 
+  // Record the cash outflow so the dashboard balance reflects this payment
+  if (status === "PAID") {
+    await prisma.expense.create({
+      data: {
+        description: `Payroll — ${employee.name} — ${period}`,
+        amount:      netPay,
+        currency:    employee.currency,
+        category:    "Payroll",
+        paidDate:    paidDate ?? new Date(),
+        vendor:      employee.name,
+        notes:       `Auto-generated from payroll run (Payroll ID: ${record.id})`,
+      },
+    });
+  }
+
   // Mark included overspending refunds as added to payroll
   if (refundIds.length > 0) {
     await prisma.overspendingRefund.updateMany({
