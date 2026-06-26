@@ -232,6 +232,21 @@ export async function approveTaxRemittance(formData: FormData) {
   // Mark the underlying records as REMITTED or WAIVED
   const finalStatus = remittance!.remittanceType === "WAIVED" ? "WAIVED" : "REMITTED";
 
+  // Record the cash outflow so the dashboard balance reflects this remittance
+  if (finalStatus === "REMITTED") {
+    await prisma.expense.create({
+      data: {
+        description: `Tax Remittance — ${remittance!.taxType} — ${remittance!.period}`,
+        amount:      remittance!.amount,
+        currency:    "MWK",
+        category:    "Tax",
+        paidDate:    new Date(),
+        vendor:      "Malawi Revenue Authority",
+        notes:       `Auto-generated from tax remittance approval (TaxRemittance ID: ${remittanceId})`,
+      },
+    });
+  }
+
   if (remittance!.payrollIds.length > 0) {
     await prisma.payroll.updateMany({
       where: { id: { in: remittance!.payrollIds } },

@@ -131,9 +131,22 @@ export async function markPayablePaid(id: string, formData: FormData): Promise<v
   const note     = (formData.get("note") as string) || null;
   const paidDate = new Date();
 
-  await prisma.accountPayable.update({
+  const ap = await prisma.accountPayable.update({
     where: { id },
     data: { status: "PAID", paidDate, note: note ?? undefined },
+  });
+
+  // Record the cash outflow so the dashboard balance reflects this payment
+  await prisma.expense.create({
+    data: {
+      description: ap.description,
+      amount:      ap.amount,
+      currency:    ap.currency,
+      category:    ap.budgetLine || "Payables",
+      paidDate,
+      vendor:      ap.vendor ?? undefined,
+      notes:       `Auto-generated from accounts payable payment (AccountPayable ID: ${id})`,
+    },
   });
 
   await auditLog({

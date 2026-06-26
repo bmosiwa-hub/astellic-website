@@ -357,7 +357,11 @@ export async function markSubmissionPaid(submissionId: string, formData: FormDat
   // Fetch submission with line items to calculate liquidation deadline
   const sub = await prisma.submission.findUnique({
     where: { id: submissionId },
-    include: { lineItems: { select: { activityDate: true } } },
+    include: {
+      lineItems: { select: { activityDate: true } },
+      submitter: { select: { name: true } },
+      project:   { select: { name: true } },
+    },
   });
 
   // Determine liquidation deadline for REQUEST-type submissions only
@@ -386,6 +390,25 @@ export async function markSubmissionPaid(submissionId: string, formData: FormDat
       ...(liquidationDeadline ? { liquidationDeadline } : {}),
     },
   });
+
+  // Record the cash outflow so the dashboard balance reflects this payment
+  if (sub) {
+    const label = sub.type === "INVOICE"
+      ? `Invoice${sub.milestone ? ` — ${sub.milestone}` : ""}${sub.project?.name ? ` (${sub.project.name})` : ""}`
+      : sub.purpose ?? "Expense Request";
+
+    await prisma.expense.create({
+      data: {
+        description: `${label} — ${sub.submitter.name}`,
+        amount:      sub.totalAmount,
+        currency:    sub.currency,
+        category:    sub.type === "INVOICE" ? "Invoice" : (sub.budgetLine || "Operations"),
+        paidDate:    new Date(),
+        vendor:      sub.submitter.name,
+        notes:       `Auto-generated from submission payment (Submission ID: ${submissionId})`,
+      },
+    });
+  }
 
   await auditLog({
     userId: session.user.id!,
