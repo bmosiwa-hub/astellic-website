@@ -117,6 +117,10 @@ export default async function BizDevPage({
     (o) => o.deadline && o.deadline <= new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
   ).length;
 
+  // Deadline passed but never marked submitted — needs a yes/no resolution before
+  // it can keep sitting in the open pipeline.
+  const needsResolution = opportunities.filter((o) => o.deadline && o.deadline < today);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -153,6 +157,49 @@ export default async function BizDevPage({
       {urgentCount > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
           ⚠ <strong>{urgentCount}</strong> opportunit{urgentCount > 1 ? "ies have" : "y has"} a deadline within 7 days.
+        </div>
+      )}
+
+      {/* Deadline-passed resolution prompt */}
+      {needsResolution.length > 0 && (
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 space-y-3">
+          <p className="text-sm font-bold text-amber-800">
+            ⚠ {needsResolution.length} opportunit{needsResolution.length > 1 ? "ies" : "y"} past deadline — was the proposal submitted?
+          </p>
+          <p className="text-xs text-amber-700">
+            These deadlines have passed without being marked submitted. Confirm what happened so the pipeline stays accurate.
+          </p>
+          <div className="space-y-2">
+            {needsResolution.map((opp) => (
+              <div key={opp.id} className="flex items-center justify-between bg-white border border-amber-200 rounded-xl px-4 py-3">
+                <div>
+                  <p className="font-semibold text-brand-navy text-sm">{opp.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {opp.funder ?? "—"} · Deadline was {formatDate(opp.deadline!)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-amber-700 font-medium mr-1">Submitted?</span>
+                  {perms.functions.canSubmitOpportunity && (
+                    <form action={markSubmitted}>
+                      <input type="hidden" name="id" value={opp.id} />
+                      <button type="submit"
+                        className="text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors">
+                        Yes — Mark Submitted
+                      </button>
+                    </form>
+                  )}
+                  <form action={ignoreOpportunity}>
+                    <input type="hidden" name="id" value={opp.id} />
+                    <button type="submit"
+                      className="text-xs font-semibold bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition-colors">
+                      No — Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
