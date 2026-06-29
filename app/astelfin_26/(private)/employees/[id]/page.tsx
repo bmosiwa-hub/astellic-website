@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { redirect, notFound } from "next/navigation";
 import { calculateNetPay, formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getLiveSalaryRate } from "@/lib/payroll-rate";
 import { getEffectivePermissions } from "@/lib/permissions";
 import Link from "next/link";
 import bcrypt from "bcryptjs";
@@ -46,6 +47,8 @@ const DEPARTMENTS = [
   "Senior Management",
   "Support Staff",
 ];
+
+const SALARY_CURRENCIES = ["MWK", "USD", "GBP", "EUR", "ZAR", "AUD", "CAD", "NOK", "SEK", "DKK"];
 
 /* ── Server Actions ──────────────────────────────────────────── */
 
@@ -143,11 +146,17 @@ async function updateEmploymentTerms(formData: FormData) {
 
   const grossSalaryRaw = formData.get("grossSalary") as string;
   const grossSalary    = grossSalaryRaw ? parseFloat(grossSalaryRaw) : undefined;
+  const currency       = (formData.get("currency") as string) || undefined;
   const departments    = formData.getAll("departments").map(String).filter(Boolean);
   const email          = (formData.get("email") as string) || null;
   const position       = (formData.get("position") as string) || undefined;
   const level          = (formData.get("level") as string) || null;
   const supervisorId   = (formData.get("supervisorId") as string) || null;
+
+  const before = await prisma.employee.findUnique({
+    where:  { id: employeeId },
+    select: { grossSalary: true, currency: true },
+  });
 
   await prisma.employee.update({
     where: { id: employeeId },
@@ -157,6 +166,7 @@ async function updateEmploymentTerms(formData: FormData) {
       endDate,
       departments,
       ...(grossSalary !== undefined ? { grossSalary } : {}),
+      ...(currency ? { currency } : {}),
       ...(position ? { position } : {}),
       level,
       email,
@@ -164,12 +174,17 @@ async function updateEmploymentTerms(formData: FormData) {
     },
   });
 
+  const salaryChanged =
+    (grossSalary !== undefined && grossSalary !== before?.grossSalary) ||
+    (currency && currency !== before?.currency);
+
   await auditLog({
     userId:   session.user.id,
     action:   "UPDATE",
     entity:   "Employee",
     entityId: employeeId,
-    detail:   `Contract updated: ${contractType}${startDate ? `, starts ${startDate.toISOString().slice(0, 10)}` : ""}${endDate ? `, ends ${endDate.toISOString().slice(0, 10)}` : ""}`,
+    detail:   `Contract updated: ${contractType}${startDate ? `, starts ${startDate.toISOString().slice(0, 10)}` : ""}${endDate ? `, ends ${endDate.toISOString().slice(0, 10)}` : ""}` +
+      (salaryChanged ? ` — Salary changed: ${before?.grossSalary} ${before?.currency} → ${grossSalary ?? before?.grossSalary} ${currency ?? before?.currency}` : ""),
   });
 
   redirect(`/astelfin_26/employees/${employeeId}?success=terms_updated`);
@@ -402,8 +417,8 @@ export default async function EmployeeDetailPage({
 
   const linkedUser = allUsers[0] ?? null;
 
-  // Salary calc
-  const rate = employee.currency === "MWK" ? 1 : (employee.salaryExchangeRate ?? 1);
+  // Salary calc — uses the live system exchange rate, same as actual payroll runs
+  const rate = await getLiveSalaryRate(employee.currency);
   const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
     payeExempt:       employee.payeExempt,
     nssfApplicable:   employee.nssfApplicable,
@@ -524,7 +539,7 @@ export default async function EmployeeDetailPage({
           <div className="divide-y divide-gray-50 text-sm">
             <SRow label={`Gross (${employee.currency})`} value={formatCurrency(employee.grossSalary, employee.currency)} />
             {employee.currency !== "MWK" && (
-              <SRow label={`Gross MWK  ×  ${(employee.salaryExchangeRate ?? 1).toFixed(4)}`} value={formatCurrency(calc.grossMWK, "MWK")} muted />
+              <SRow label={`Gross MWK  ×  ${rate.toFixed(4)} (live rate)`} value={formatCurrency(calc.grossMWK, "MWK")} muted />
             )}
             {employee.payeExempt ? (
               <SRow label="PAYE" value="Exempt" exempt />
@@ -686,9 +701,18 @@ export default async function EmployeeDetailPage({
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary ({employee.currency})</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Gross Monthly Salary</label>
                 <input name="grossSalary" type="number" min="0" step="0.01"
                   defaultValue={employee.grossSalary} className={inp} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Currency
+                  <span className="ml-1.5 font-normal text-gray-400">— PAYE uses the live system exchange rate, not a snapshot</span>
+                </label>
+                <select name="currency" defaultValue={employee.currency} className={`${inp} bg-white`}>
+                  {SALARY_CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Contract Start Date</label>
