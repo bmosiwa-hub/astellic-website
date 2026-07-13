@@ -78,7 +78,6 @@ export default async function AstellicOverviewPage() {
     { label: "Employees",     href: "/astelfin_26/employees",  icon: "👥", desc: "Staff directory & payroll" },
     { label: "Projects",      href: "/astelfin_26/projects",   icon: "🗂",  desc: "Active projects & deliverables" },
     { label: "Business Dev",  href: "/astelfin_26/bizdev",     icon: "📈", desc: "Opportunities & pipeline" },
-    { label: "Astelfin Room", href: "/astelfin_26/astelfin",   icon: "🏢", desc: "Astelfin company operations" },
   ];
 
   const STATUS_LABEL: Record<string, string> = {
@@ -115,10 +114,6 @@ export default async function AstellicOverviewPage() {
             {now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
-        <Link href="/astelfin_26/home"
-          className="text-sm text-brand-muted hover:text-brand-gold font-semibold transition-colors">
-          Switch Room →
-        </Link>
       </div>
 
       {/* KPI cards — CEO / FM only */}

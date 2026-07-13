@@ -125,8 +125,6 @@ model User {
   jobPostings               JobPosting[]            @relation("JobPostingCreator")
   deliverableSubmissions    DeliverableSubmission[] @relation("DeliverableSubmitter")
   deliverableReviews        DeliverableSubmission[] @relation("DeliverableReviewer")
-  // Phase 17 — Multi-company
-  memberships               CompanyMembership[]
 }
 
 model Project {
@@ -1987,33 +1985,3 @@ model ConsultantRoster {
   @@index([highestQualification])
 }
 
-// ── Phase 17: Multi-company platform ──────────────────────────────────────────
-
-enum CompanyType {
-  PLATFORM_OWNER
-  CLIENT
-}
-
-model ManagedCompany {
-  id          String              @id @default(cuid())
-  name        String
-  slug        String              @unique
-  type        CompanyType         @default(CLIENT)
-  tagline     String?
-  color       String              @default("#1e3a5f")
-  active      Boolean             @default(true)
-  createdAt   DateTime            @default(now())
-  memberships CompanyMembership[]
-}
-
-model CompanyMembership {
-  id        String         @id @default(cuid())
-  userId    String
-  companyId String
-  role      String         @default("MEMBER")
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  company   ManagedCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt DateTime       @default(now())
-
-  @@unique([userId, companyId])
-}
