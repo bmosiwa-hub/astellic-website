@@ -30,14 +30,16 @@ export default async function RootLayout({
   const headersList = await headers();
   const pathname = headersList.get("x-pathname") ?? "";
   const isFinance = pathname.startsWith("/astelfin_26");
+  const isHerVoice = pathname.startsWith("/hervoice_26");
+  const isStandalone = isFinance || isHerVoice;
 
   return (
     <html lang="en">
-      <body className={isFinance ? "flex min-h-screen bg-gray-50" : "flex flex-col min-h-screen"}>
-        {!isFinance && <Header />}
-        {isFinance ? children : <main className="flex-1">{children}</main>}
-        {!isFinance && <Footer />}
-        {!isFinance && <CookieBanner />}
+      <body className={isFinance ? "flex min-h-screen bg-gray-50" : isHerVoice ? "min-h-screen" : "flex flex-col min-h-screen"}>
+        {!isStandalone && <Header />}
+        {isStandalone ? children : <main className="flex-1">{children}</main>}
+        {!isStandalone && <Footer />}
+        {!isStandalone && <CookieBanner />}
       </body>
     </html>
   );
