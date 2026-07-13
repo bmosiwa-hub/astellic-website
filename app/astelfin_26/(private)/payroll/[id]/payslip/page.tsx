@@ -44,11 +44,12 @@ export default async function PayslipPage({
   const grossNative = payroll.grossSalary;
   const netNative   = payroll.netPay;
 
-  // Estimate MWK gross from stored pensions (pension = emp.pensionRate% of grossMWK)
-  // We stored paye in MWK always.
-  const grossMWKest = emp.pensionRate > 0
-    ? (payroll.pension / (emp.pensionRate / 100)) || (grossNative)
-    : grossNative;
+  // Prefer the exact snapshot captured at run time; fall back to estimating from
+  // stored pensions (pension = emp.pensionRate% of grossMWK) for older records.
+  const grossMWKest = payroll.grossMWK
+    ?? (emp.pensionRate > 0
+      ? (payroll.pension / (emp.pensionRate / 100)) || (grossNative)
+      : grossNative);
 
   const totalDeductions =
     payroll.paye + payroll.pension + payroll.nssfEmployee + payroll.otherDeductions;
@@ -174,7 +175,7 @@ export default async function PayslipPage({
                 <tr>
                   <td className="py-2.5 text-gray-700">Employee Pension Contribution ({emp.pensionRate}%)</td>
                   <td className="py-2.5 text-right text-red-600">− {formatCurrency(payroll.pension, payroll.currency)}</td>
-                  {!isMWK && <td className="py-2.5 text-right text-gray-400 text-xs">{formatCurrency(payroll.pensionEmployer * (emp.pensionRate / 10))}</td>}
+                  {!isMWK && <td className="py-2.5 text-right text-gray-400 text-xs">{formatCurrency(payroll.exchangeRateUsed ? payroll.pension * payroll.exchangeRateUsed : payroll.pensionEmployer * (emp.pensionRate / 10))}</td>}
                 </tr>
               )}
               {payroll.nssfEmployee > 0 && (

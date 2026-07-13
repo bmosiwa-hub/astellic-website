@@ -139,7 +139,7 @@ export default async function TaxDashboardPage({
     // Payroll PAYE/pension (org-scoped)
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
-      select: { paye: true, pension: true, pensionEmployer: true, grossSalary: true, createdAt: true },
+      select: { paye: true, pension: true, pensionEmployer: true, grossSalary: true, exchangeRateUsed: true, createdAt: true },
     }),
     // WHT from consultant payments (global — ConsultantPayment has no organisationId)
     prisma.consultantPayment.findMany({
@@ -185,15 +185,17 @@ export default async function TaxDashboardPage({
     // in a raw SQL SUM would silently misreport foreign-currency salaries)
     prisma.payroll.findMany({
       where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 }, ...orgFilter },
-      select: { pension: true, pensionEmployer: true, grossSalary: true },
+      select: { pension: true, pensionEmployer: true, grossSalary: true, exchangeRateUsed: true },
     }),
   ]);
 
   // Employee-side pension is stored in the employee's native currency; employer-side
-  // pension (always exactly 10% of gross) is always stored in MWK. Recover the implied
-  // MWK conversion rate from pensionEmployer/grossSalary and apply it to the employee
-  // side, rather than summing native-currency amounts together as if they were MWK.
-  function employeePensionMWK(p: { pension: number; pensionEmployer: number; grossSalary: number }): number {
+  // pension (always exactly 10% of gross) is always stored in MWK. Prefer the exact
+  // exchange rate snapshotted at run time; for older records fall back to recovering
+  // the implied rate from pensionEmployer/grossSalary, rather than summing
+  // native-currency amounts together as if they were MWK.
+  function employeePensionMWK(p: { pension: number; pensionEmployer: number; grossSalary: number; exchangeRateUsed: number | null }): number {
+    if (p.exchangeRateUsed) return p.pension * p.exchangeRateUsed;
     if (p.pensionEmployer <= 0 || p.grossSalary <= 0) return p.pension; // MWK-equivalent already (or zero)
     const impliedRate = (p.pensionEmployer * 10) / p.grossSalary;
     return p.pension * impliedRate;

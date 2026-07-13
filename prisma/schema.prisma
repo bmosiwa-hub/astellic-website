@@ -321,6 +321,10 @@ model Payroll {
   employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   period          String
   grossSalary     Float
+  // ── Calculation snapshot — inputs captured at run time so historical payslips
+  //    stay reproducible after exchange rates or PAYE bands change ─────────────
+  exchangeRateUsed Float?       // MWK per 1 unit of currency at run time (1 for MWK)
+  grossMWK        Float?        // gross salary in MWK at run time
   paye            Float         @default(0)
   pension         Float         @default(0)   // employee pension in employee's currency
   pensionEmployer Float         @default(0)   // employer pension contribution in MWK

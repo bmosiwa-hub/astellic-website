@@ -88,92 +88,100 @@ async function runPayrollForEmployee(formData: FormData) {
   const totalDeductions  = otherDeductions;
   const netPay           = Math.max(0, calc.netPay + totalAdditions - totalDeductions);
 
-  const record = await prisma.payroll.create({
-    data: {
-      employeeId,
-      period,
-      grossSalary:     employee.grossSalary,
-      paye:            calc.payeMWK,
-      pension:         calc.pension,         // employee pension in native currency
-      pensionEmployer: employerPensionMWK,   // employer pension in MWK
-      nssfEmployee:    calc.nssfEmployee,
-      nssfEmployer:    calc.nssfEmployer,
-      otherAdditions:  totalAdditions,
-      additionNote:    additionNote || (refundIds.length > 0 ? "Includes approved overspending refund" : null),
-      otherDeductions: totalDeductions,
-      deductionNote,
-      netPay,
-      currency:        employee.currency,
-      paidDate,
-      status,
-      notes,
-      // PAYE band versioning (snapshot stored as plain JSON)
-      payeBandSetId:    bandSetInfo?.id ?? null,
-      payeBandSnapshot: bandSetInfo?.snapshot
-        ? (bandSetInfo.snapshot as unknown as import("@prisma/client").Prisma.InputJsonValue)
-        : undefined,
-    },
-  });
-
-  // Record the cash outflow so the dashboard balance reflects this payment
-  if (status === "PAID") {
-    await prisma.expense.create({
+  // All writes are atomic: the payroll record, its expense, refund updates and the
+  // pension payable succeed or fail together — a partial run would desync the books.
+  const record = await prisma.$transaction(async (tx) => {
+    const created = await tx.payroll.create({
       data: {
-        description: `Payroll — ${employee.name} — ${period}`,
-        amount:      netPay,
-        currency:    employee.currency,
-        category:    "Payroll",
-        paidDate:    paidDate ?? new Date(),
-        vendor:      employee.name,
-        notes:       `Auto-generated from payroll run (Payroll ID: ${record.id})`,
-      },
-    });
-  }
-
-  // Mark included overspending refunds as added to payroll
-  if (refundIds.length > 0) {
-    await prisma.overspendingRefund.updateMany({
-      where: { id: { in: refundIds }, status: "CEO_APPROVED" },
-      data:  { status: "PAYROLL_ADDED", payrollId: record.id },
-    });
-  }
-
-  // Auto-create / update pension payable for this period (only if pension applies)
-  if (employee.pensionRate > 0) {
-    const pensionDesc = `Pension Contributions — ${period}`;
-    const totalPensionMWK = calc.pensionMWK + employerPensionMWK; // 5% + 10% = 15%
-
-    const existing = await prisma.accountPayable.findFirst({
-      where: {
-        description: pensionDesc,
-        budgetLine:  "Pension",
-        status:      { not: "PAID" },
+        employeeId,
+        period,
+        grossSalary:     employee.grossSalary,
+        exchangeRateUsed: rate,
+        grossMWK:        calc.grossMWK,
+        paye:            calc.payeMWK,
+        pension:         calc.pension,         // employee pension in native currency
+        pensionEmployer: employerPensionMWK,   // employer pension in MWK
+        nssfEmployee:    calc.nssfEmployee,
+        nssfEmployer:    calc.nssfEmployer,
+        otherAdditions:  totalAdditions,
+        additionNote:    additionNote || (refundIds.length > 0 ? "Includes approved overspending refund" : null),
+        otherDeductions: totalDeductions,
+        deductionNote,
+        netPay,
+        currency:        employee.currency,
+        paidDate,
+        status,
+        notes,
+        // PAYE band versioning (snapshot stored as plain JSON)
+        payeBandSetId:    bandSetInfo?.id ?? null,
+        payeBandSnapshot: bandSetInfo?.snapshot
+          ? (bandSetInfo.snapshot as unknown as import("@prisma/client").Prisma.InputJsonValue)
+          : undefined,
       },
     });
 
-    if (existing) {
-      await prisma.accountPayable.update({
-        where: { id: existing.id },
-        data:  { amount: existing.amount + totalPensionMWK },
-      });
-    } else {
-      // Due on last day of the pay period month
-      const [year, month] = period.split("-").map(Number);
-      const dueDate = new Date(year, (month || 1), 0); // last day of that month
-      await prisma.accountPayable.create({
+    // Record the cash outflow so the dashboard balance reflects this payment
+    if (status === "PAID") {
+      await tx.expense.create({
         data: {
-          description: pensionDesc,
-          vendor:      "Pension Fund",
-          amount:      totalPensionMWK,
-          currency:    "MWK",
-          dueDate,
-          budgetLine:  "Pension",
-          status:      "UPCOMING",
-          createdBy:   session.user.id!,
+          description: `Payroll — ${employee.name} — ${period}`,
+          amount:      netPay,
+          currency:    employee.currency,
+          category:    "Payroll",
+          paidDate:    paidDate ?? new Date(),
+          vendor:      employee.name,
+          notes:       `Auto-generated from payroll run (Payroll ID: ${created.id})`,
         },
       });
     }
-  }
+
+    // Mark included overspending refunds as added to payroll
+    if (refundIds.length > 0) {
+      await tx.overspendingRefund.updateMany({
+        where: { id: { in: refundIds }, status: "CEO_APPROVED" },
+        data:  { status: "PAYROLL_ADDED", payrollId: created.id },
+      });
+    }
+
+    // Auto-create / update pension payable for this period (only if pension applies)
+    if (employee.pensionRate > 0) {
+      const pensionDesc = `Pension Contributions — ${period}`;
+      const totalPensionMWK = calc.pensionMWK + employerPensionMWK; // 5% + 10% = 15%
+
+      const existing = await tx.accountPayable.findFirst({
+        where: {
+          description: pensionDesc,
+          budgetLine:  "Pension",
+          status:      { not: "PAID" },
+        },
+      });
+
+      if (existing) {
+        await tx.accountPayable.update({
+          where: { id: existing.id },
+          data:  { amount: existing.amount + totalPensionMWK },
+        });
+      } else {
+        // Due on last day of the pay period month
+        const [year, month] = period.split("-").map(Number);
+        const dueDate = new Date(year, (month || 1), 0); // last day of that month
+        await tx.accountPayable.create({
+          data: {
+            description: pensionDesc,
+            vendor:      "Pension Fund",
+            amount:      totalPensionMWK,
+            currency:    "MWK",
+            dueDate,
+            budgetLine:  "Pension",
+            status:      "UPCOMING",
+            createdBy:   session.user.id!,
+          },
+        });
+      }
+    }
+
+    return created;
+  });
 
   await auditLog({
     userId:   session.user.id!,

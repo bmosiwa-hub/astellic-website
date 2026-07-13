@@ -108,32 +108,41 @@ export async function reviewLiquidation(
     assertNotSelfApproval(session.user.id!, liqBefore.submittedBy, "liquidation");
   }
 
-  const liq = await prisma.liquidation.update({
-    where: { id: liquidationId },
-    data: {
-      status: action,
-      fmNote: note || null,
-      reviewedByName: session.user.name,
-      reviewedAt: new Date(),
-    },
-    include: {
-      submitter: { select: { name: true, employeeId: true } },
-    },
-  });
-
-  // If FM approved and employee overspent, create an OverspendingRefund for CEO to review
-  if (action === "FM_APPROVED" && liq.refundRequired < 0) {
-    const overspentAmount = Math.abs(liq.refundRequired);
-    await prisma.overspendingRefund.create({
+  // Status change and refund creation are atomic — an approved overspent
+  // liquidation with no refund record would silently drop money owed to staff.
+  const liq = await prisma.$transaction(async (tx) => {
+    const updated = await tx.liquidation.update({
+      where: { id: liquidationId },
       data: {
-        liquidationId,
-        employeeName: liq.submitter.name ?? "Unknown",
-        employeeId:   liq.submitter.employeeId ?? null,
-        amount:       overspentAmount,
-        currency:     liq.currency,
-        status:       "PENDING_CEO",
+        status: action,
+        fmNote: note || null,
+        reviewedByName: session.user.name,
+        reviewedAt: new Date(),
+      },
+      include: {
+        submitter: { select: { name: true, employeeId: true } },
       },
     });
+
+    if (action === "FM_APPROVED" && updated.refundRequired < 0) {
+      await tx.overspendingRefund.create({
+        data: {
+          liquidationId,
+          employeeName: updated.submitter.name ?? "Unknown",
+          employeeId:   updated.submitter.employeeId ?? null,
+          amount:       Math.abs(updated.refundRequired),
+          currency:     updated.currency,
+          status:       "PENDING_CEO",
+        },
+      });
+    }
+
+    return updated;
+  });
+
+  // If FM approved and employee overspent, notify the CEO about the refund
+  if (action === "FM_APPROVED" && liq.refundRequired < 0) {
+    const overspentAmount = Math.abs(liq.refundRequired);
 
     // Notify CEO
     try {

@@ -73,6 +73,8 @@ export async function GET(req: Request) {
           employeeId:      employee.id,
           period:          currentPeriod,
           grossSalary:     employee.grossSalary,
+          exchangeRateUsed: rate,
+          grossMWK:        calc.grossMWK,
           paye:            calc.payeMWK,
           pension:         calc.pension,
           pensionEmployer: employerPensionMWK,

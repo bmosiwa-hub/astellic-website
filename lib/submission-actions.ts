@@ -382,33 +382,37 @@ export async function markSubmissionPaid(submissionId: string, formData: FormDat
     }
   }
 
-  await prisma.submission.update({
-    where: { id: submissionId },
-    data: {
-      status: "PAID",
-      notes: paymentNote ? `Payment note: ${paymentNote}` : undefined,
-      ...(liquidationDeadline ? { liquidationDeadline } : {}),
-    },
-  });
-
-  // Record the cash outflow so the dashboard balance reflects this payment
-  if (sub) {
-    const label = sub.type === "INVOICE"
-      ? `Invoice${sub.milestone ? ` — ${sub.milestone}` : ""}${sub.project?.name ? ` (${sub.project.name})` : ""}`
-      : sub.purpose ?? "Expense Request";
-
-    await prisma.expense.create({
+  // Status change and expense record must land together — a paid submission
+  // without its expense is exactly the balance-desync bug this fixes.
+  await prisma.$transaction(async (tx) => {
+    await tx.submission.update({
+      where: { id: submissionId },
       data: {
-        description: `${label} — ${sub.submitter.name}`,
-        amount:      sub.totalAmount,
-        currency:    sub.currency,
-        category:    sub.type === "INVOICE" ? "Invoice" : (sub.budgetLine || "Operations"),
-        paidDate:    new Date(),
-        vendor:      sub.submitter.name,
-        notes:       `Auto-generated from submission payment (Submission ID: ${submissionId})`,
+        status: "PAID",
+        notes: paymentNote ? `Payment note: ${paymentNote}` : undefined,
+        ...(liquidationDeadline ? { liquidationDeadline } : {}),
       },
     });
-  }
+
+    // Record the cash outflow so the dashboard balance reflects this payment
+    if (sub) {
+      const label = sub.type === "INVOICE"
+        ? `Invoice${sub.milestone ? ` — ${sub.milestone}` : ""}${sub.project?.name ? ` (${sub.project.name})` : ""}`
+        : sub.purpose ?? "Expense Request";
+
+      await tx.expense.create({
+        data: {
+          description: `${label} — ${sub.submitter.name}`,
+          amount:      sub.totalAmount,
+          currency:    sub.currency,
+          category:    sub.type === "INVOICE" ? "Invoice" : (sub.budgetLine || "Operations"),
+          paidDate:    new Date(),
+          vendor:      sub.submitter.name,
+          notes:       `Auto-generated from submission payment (Submission ID: ${submissionId})`,
+        },
+      });
+    }
+  });
 
   await auditLog({
     userId: session.user.id!,
