@@ -1989,3 +1989,41 @@ model ConsultantRoster {
   @@index([highestQualification])
 }
 
+
+// ── HerVoice! — inbound SMS/USSD reports (survivor & citizen channel) ────────
+//
+// Populated by the Africa's Talking webhooks at /api/hervoice/sms and
+// /api/hervoice/ussd. Privacy by design: the reporter's phone number is
+// never stored — only a SHA-256 hash (for STATUS lookups / dedup) and the
+// last three digits for operator support.
+
+enum HerVoiceChannel {
+  SMS
+  USSD
+}
+
+enum HerVoiceStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  ESCALATED
+  RESOLVED
+}
+
+model HerVoiceReport {
+  id         String          @id @default(cuid())
+  trackingId String          @unique
+  channel    HerVoiceChannel
+  category   String?
+  district   String?
+  message    String?
+  phoneHash  String?
+  phoneTail  String?
+  status     HerVoiceStatus  @default(NEW)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([phoneHash])
+}
