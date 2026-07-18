@@ -416,7 +416,7 @@ export default async function DocumentsPage({
                 <tr key={doc.id} className="hover:bg-gray-50 group">
                   <td className="px-5 py-3.5">
                     <a
-                      href={doc.url}
+                      href={`/api/documents/proxy?type=library&id=${doc.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium text-brand-navy hover:text-brand-gold transition-colors inline-flex items-center gap-1.5"
@@ -464,7 +464,7 @@ export default async function DocumentsPage({
                   </td>
                   <td className="px-5 py-3.5 hidden sm:table-cell">
                     <a
-                      href={doc.url}
+                      href={`/api/documents/proxy?type=library&id=${doc.id}`}
                       download
                       target="_blank"
                       rel="noopener noreferrer"

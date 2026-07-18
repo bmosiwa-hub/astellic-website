@@ -9,6 +9,11 @@ export async function GET() {
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
+  // Full financial export — CEO and Finance Manager only
+  const role = session.user.role;
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   // Fetch all data
   const [income, expenses, projects, consultants, consultantPayments,

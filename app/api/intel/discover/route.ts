@@ -10,6 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { hashUrl, hashContent, checkDuplicate } from "@/lib/intel/dedup";
 import { extractOpportunity, analyseOpportunity } from "@/lib/intel/ai-pipeline";
@@ -22,7 +23,10 @@ function authOk(req: NextRequest): boolean {
   const key = process.env.INTEL_API_KEY;
   if (!key) return false;
   const header = req.headers.get("authorization") ?? "";
-  return header === `Bearer ${key}`;
+  const expected = Buffer.from(`Bearer ${key}`);
+  const actual   = Buffer.from(header);
+  // Constant-time comparison — a plain === leaks key prefixes via timing
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
 export async function POST(req: NextRequest) {

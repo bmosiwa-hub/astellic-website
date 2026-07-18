@@ -23,7 +23,12 @@ function b64ToBuf(b64: string): ArrayBuffer {
 }
 
 async function importKey(): Promise<CryptoKey> {
-  const secret = process.env.NEXTAUTH_SECRET ?? "dev-secret-change-me";
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) {
+    // Never fall back to a guessable key — a missing secret must fail closed,
+    // otherwise every 2FA cookie could be forged.
+    throw new Error("NEXTAUTH_SECRET is not set — cannot sign/verify 2FA cookies");
+  }
   return crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),

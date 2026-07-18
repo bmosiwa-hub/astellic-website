@@ -30,6 +30,18 @@ export async function sendMail({ to, subject, html }: MailOptions): Promise<void
   });
 }
 
+/* ── HTML escaping ─────────────────────────────────────────────────── */
+// User-supplied values (names, labels, notes) are interpolated into email
+// HTML — escape them so a crafted value can't inject markup into inboxes.
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 /* ── Branded email wrapper ─────────────────────────────────────────── */
 
 function layout(body: string) {
@@ -93,6 +105,8 @@ export async function notifyFMOfNewSubmission({
   amount: number;
   currency: string;
 }): Promise<void> {
+  submitterName   = escapeHtml(submitterName);
+  submissionLabel = escapeHtml(submissionLabel);
   const formatted = new Intl.NumberFormat("en-MW", {
     style: "currency", currency, minimumFractionDigits: 2,
   }).format(amount).replace(currency, currency + " ");
@@ -133,6 +147,9 @@ export async function notifyCEOOfFMApproval({
   currency: string;
   fmNote: string | null;
 }): Promise<void> {
+  submitterName   = escapeHtml(submitterName);
+  submissionLabel = escapeHtml(submissionLabel);
+  fmNote          = fmNote ? escapeHtml(fmNote) : fmNote;
   const formatted = new Intl.NumberFormat("en-MW", {
     style: "currency", currency, minimumFractionDigits: 2,
   }).format(amount).replace(currency, currency + " ");
@@ -172,6 +189,9 @@ export async function notifySubmitterOfFMAction({
   submissionId: string;
   submissionLabel: string;
 }): Promise<void> {
+  submitterName   = escapeHtml(submitterName);
+  submissionLabel = escapeHtml(submissionLabel);
+  note            = note ? escapeHtml(note) : note;
   const verb = ACTION_LABEL[action] ?? action.toLowerCase().replace("_", " ");
   const subject =
     action === "REJECTED"
@@ -213,6 +233,9 @@ export async function notifyFMOfCEOAction({
   submissionId: string;
   submissionLabel: string;
 }): Promise<void> {
+  submitterName   = escapeHtml(submitterName);
+  submissionLabel = escapeHtml(submissionLabel);
+  note            = note ? escapeHtml(note) : note;
   const verb = ACTION_LABEL[action] ?? action.toLowerCase().replace("_", " ");
   const subject =
     action === "REJECTED"
@@ -298,6 +321,8 @@ export async function notifyFMOfUpcomingPayable({
   dueDate: Date;
   vendor?: string | null;
 }): Promise<void> {
+  payableName = escapeHtml(payableName);
+  vendor      = vendor ? escapeHtml(vendor) : vendor;
   const dueDateStr = dueDate.toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric",
   });
@@ -340,6 +365,7 @@ export async function notifyPeriodAction({
   actorRole: string;
   checksum?: string;
 }): Promise<void> {
+  actorName = escapeHtml(actorName);
   const [year, month] = periodKey.split("-");
   const monthName = new Date(parseInt(year), parseInt(month) - 1, 1)
     .toLocaleDateString("en-GB", { month: "long", year: "numeric" });
@@ -387,6 +413,8 @@ export async function notifyProcurementSubmitted({
   procurementId: string;
   quotationCount: number;
 }): Promise<void> {
+  title       = escapeHtml(title);
+  submittedBy = escapeHtml(submittedBy);
   const amountStr = new Intl.NumberFormat("en-MW", {
     style: "currency", currency, minimumFractionDigits: 0,
   }).format(estimatedCost).replace("MWK", "MWK ");
@@ -431,15 +459,15 @@ export async function sendComplianceDigest({
 
   const overdueRows = overdueItems.map((item) => `
     <tr>
-      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${item.label}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${escapeHtml(item.label)}</td>
       <td style="padding:8px;border-bottom:1px solid #f3f4f6;text-align:right">${fmt(item.amount, item.currency)}</td>
       <td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#dc2626;font-weight:bold;text-align:right">${item.daysOverdue}d overdue</td>
     </tr>`).join("");
 
   const grantRows = grantAlerts.map((g) => `
     <tr>
-      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${g.name}</td>
-      <td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#6b7280">${g.donorName}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6">${escapeHtml(g.name)}</td>
+      <td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#6b7280">${escapeHtml(g.donorName)}</td>
       <td style="padding:8px;border-bottom:1px solid #f3f4f6;font-weight:bold;color:${g.pct >= 100 ? "#dc2626" : "#d97706"};text-align:right">${g.pct.toFixed(1)}% of ${fmt(g.totalAmount, g.currency)}</td>
     </tr>`).join("");
 

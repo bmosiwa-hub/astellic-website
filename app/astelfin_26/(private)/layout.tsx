@@ -43,11 +43,29 @@ export default async function PrivateFinanceLayout({
 
   const role = session.user.role;
 
-  // Fetch the user's stored permissions
+  // Fetch the user's stored permissions + active flag
   const dbUser = await prisma.user.findUnique({
     where:  { id: session.user.id! },
-    select: { permissions: true },
+    select: { permissions: true, active: true },
   });
+
+  // Sessions are JWTs, so deactivating a user doesn't kill their token —
+  // enforce it here so a deactivated account loses access immediately.
+  if (!dbUser || !dbUser.active) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-md text-center space-y-3">
+          <p className="text-lg font-bold text-brand-navy">Account Deactivated</p>
+          <p className="text-sm text-gray-500">
+            Your account is no longer active. Contact the administrator if you believe this is a mistake.
+          </p>
+          <a href="/astelfin_26/login" className="inline-block text-sm font-semibold text-brand-gold hover:underline">
+            Return to login
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
 

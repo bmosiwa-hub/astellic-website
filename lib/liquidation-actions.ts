@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
-import { sendMail } from "@/lib/mail";
+import { sendMail, escapeHtml } from "@/lib/mail";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -151,12 +151,14 @@ export async function reviewLiquidation(
         select: { email: true },
       });
       if (ceos.length > 0) {
+        const safeName     = escapeHtml(liq.submitter.name ?? "Unknown");
+        const safeActivity = escapeHtml(liq.activity);
         const body = `
           <h2>Overspending Refund Approval Required</h2>
-          <p><strong>${liq.submitter.name}</strong> spent more than they received on a funded activity and the liquidation has been approved by the Operations Manager.</p>
+          <p><strong>${safeName}</strong> spent more than they received on a funded activity and the liquidation has been approved by the Operations Manager.</p>
           <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
-            <tr><td style="padding:8px 0;color:#6b7280">Employee</td><td style="padding:8px 0;font-weight:bold">${liq.submitter.name}</td></tr>
-            <tr><td style="padding:8px 0;color:#6b7280">Activity</td><td style="padding:8px 0">${liq.activity}</td></tr>
+            <tr><td style="padding:8px 0;color:#6b7280">Employee</td><td style="padding:8px 0;font-weight:bold">${safeName}</td></tr>
+            <tr><td style="padding:8px 0;color:#6b7280">Activity</td><td style="padding:8px 0">${safeActivity}</td></tr>
             <tr><td style="padding:8px 0;color:#6b7280">Amount Owed to Employee</td><td style="padding:8px 0;font-weight:bold;color:#dc2626">${liq.currency} ${overspentAmount.toLocaleString("en-MW", { minimumFractionDigits: 2 })}</td></tr>
           </table>
           <p>Please review and approve or reject this refund in the Finance system.</p>

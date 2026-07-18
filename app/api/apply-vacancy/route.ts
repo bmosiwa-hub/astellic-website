@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
+import { rateLimitOk, clientIp } from "@/lib/simple-rate-limit";
 
 export const runtime = "nodejs";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 export async function POST(request: NextRequest) {
   try {
+    if (!rateLimitOk(`vacancy:${clientIp(request)}`, 3, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const formData = await request.formData();
 
     const postingId      = formData.get("postingId") as string;

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { rateLimitOk, clientIp } from "@/lib/simple-rate-limit";
 
 export const runtime = "nodejs";
 
@@ -7,6 +8,13 @@ const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 
 export async function POST(request: NextRequest) {
   try {
+    if (!rateLimitOk(`partnership:${clientIp(request)}`, 3, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const formData = await request.formData();
 
     const name = (formData.get("name") as string)?.trim();
