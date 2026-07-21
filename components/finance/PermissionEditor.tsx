@@ -26,19 +26,10 @@ export default function PermissionEditor({ userId, userName, current, saveAction
   const [saved, setSaved] = useState(false);
 
   function toggleTab(key: keyof TabPermissions) {
-    setTabs((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
-      // If tab is disabled, disable all its functions too
-      if (!next[key]) {
-        const tabFuncs = TAB_FUNCTIONS[key];
-        setFuncs((pf) => {
-          const nf = { ...pf };
-          tabFuncs.forEach((f) => { nf[f] = false; });
-          return nf;
-        });
-      }
-      return next;
-    });
+    // Tabs (which sections show) and functions (specific capabilities) are
+    // independent — a function like "View Payroll & Tax Dashboard" can be
+    // granted without enabling the whole section.
+    setTabs((prev) => ({ ...prev, [key]: !prev[key] }));
     setSaved(false);
   }
 
@@ -64,7 +55,9 @@ export default function PermissionEditor({ userId, userName, current, saveAction
     <div className="space-y-5">
       <p className="text-sm text-gray-500">
         Configure which sections and functions <span className="font-semibold text-brand-navy">{userName}</span> can access.
-        Changes take effect on their next login or page refresh.
+        Tab access controls which sections appear in the sidebar; function permissions grant specific
+        capabilities and can be enabled on their own (e.g. <span className="font-medium">View Payroll &amp; Tax Dashboard</span> without
+        the full Finance section). Changes take effect on their next login or page refresh.
       </p>
 
       {/* Tab access */}
@@ -88,10 +81,11 @@ export default function PermissionEditor({ userId, userName, current, saveAction
         </div>
       </div>
 
-      {/* Function permissions per tab */}
+      {/* Function permissions per tab — shown independently of tab access so a
+          single capability (e.g. view payroll) can be granted on its own. */}
       {tabEntries.map(([tabKey, tabLabel]) => {
         const tabFuncs = TAB_FUNCTIONS[tabKey];
-        if (!tabs[tabKey]) return null;
+        if (tabFuncs.length === 0) return null;
         return (
           <div key={tabKey} className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{tabLabel} — Functions</p>

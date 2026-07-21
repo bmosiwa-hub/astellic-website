@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
+import { getEffectivePermissions } from "@/lib/permissions";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { PrintButton } from "@/components/finance/PrintButton";
@@ -20,7 +21,15 @@ export default async function PayslipPage({
   if (!session?.user) redirect("/astelfin_26/login");
 
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+  if (role !== "CEO" && role !== "FINANCE_MANAGER") {
+    // Read-only access for users granted "View Payroll & Tax Dashboard"
+    const dbUser = await prisma.user.findUnique({
+      where:  { id: session.user.id! },
+      select: { permissions: true },
+    });
+    const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
+    if (!perms.functions.canViewPayroll) redirect("/astelfin_26/dashboard");
+  }
 
   const payroll = await prisma.payroll.findUnique({
     where: { id },

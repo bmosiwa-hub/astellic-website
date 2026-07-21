@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
+import { getEffectivePermissions } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { sendTaxReport } from "@/lib/mail";
@@ -124,7 +125,20 @@ export default async function TaxDashboardPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+
+  // Access: CEO/FM always; other roles need the "View Payroll & Tax Dashboard"
+  // permission. canManage gates write actions (record/email remittances).
+  const canManage = role === "CEO" || role === "FINANCE_MANAGER";
+  let canView = canManage;
+  if (!canManage) {
+    const dbUser = await prisma.user.findUnique({
+      where:  { id: session.user.id! },
+      select: { permissions: true },
+    });
+    const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
+    canView = perms.functions.canViewPayroll;
+  }
+  if (!canView) redirect("/astelfin_26/dashboard");
 
   const now         = new Date();
   const currentYear = now.getFullYear();
@@ -248,10 +262,12 @@ export default async function TaxDashboardPage({
               Go
             </button>
           </form>
-          <Link href="/astelfin_26/reports/tax/record"
-            className="text-sm bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-            + Record Remittance
-          </Link>
+          {canManage && (
+            <Link href="/astelfin_26/reports/tax/record"
+              className="text-sm bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+              + Record Remittance
+            </Link>
+          )}
           <Link href="/astelfin_26/financial-health"
             className="text-sm text-gray-500 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 font-medium">
             Financial Health
@@ -310,10 +326,12 @@ export default async function TaxDashboardPage({
                 </p>
               </div>
             </div>
-            <Link href="/astelfin_26/reports/tax/record"
-              className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap">
-              Record Remittance →
-            </Link>
+            {canManage && (
+              <Link href="/astelfin_26/reports/tax/record"
+                className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap">
+                Record Remittance →
+              </Link>
+            )}
           </div>
         </div>
       )}
@@ -371,13 +389,15 @@ export default async function TaxDashboardPage({
               PAYE &amp; Pension from payroll runs · WHT from consultant payments
             </p>
           </div>
-          <form action={emailAnnualReport}>
-            <input type="hidden" name="year" value={year} />
-            <button type="submit"
-              className="text-xs bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-1.5 rounded-lg font-semibold transition-colors">
-              📧 Email Annual Report
-            </button>
-          </form>
+          {canManage && (
+            <form action={emailAnnualReport}>
+              <input type="hidden" name="year" value={year} />
+              <button type="submit"
+                className="text-xs bg-brand-gold hover:bg-brand-gold/90 text-white px-4 py-1.5 rounded-lg font-semibold transition-colors">
+                📧 Email Annual Report
+              </button>
+            </form>
+          )}
         </div>
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
@@ -418,7 +438,7 @@ export default async function TaxDashboardPage({
                     {total > 0 ? formatCurrency(total) : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-5 py-3 text-right">
-                    {!isFuture && hasData && (
+                    {canManage && !isFuture && hasData && (
                       <form action={emailMonthlyReport} className="inline">
                         <input type="hidden" name="month" value={monthNum} />
                         <input type="hidden" name="year"  value={year} />

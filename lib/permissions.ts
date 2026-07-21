@@ -164,9 +164,24 @@ export const TAB_PATHS: Record<keyof TabPermissions, string[]> = {
 /** All paths (for /my which is always accessible). */
 export const MY_PATHS = ["/astelfin_26/my"];
 
+/**
+ * Paths unlocked by an individual FUNCTION permission, independent of tab access.
+ * This lets the CEO grant read access to a specific area (e.g. payroll & tax)
+ * without handing over the entire finance tab.
+ */
+export const FUNCTION_PATHS: Partial<Record<keyof FunctionPermissions, string[]>> = {
+  canViewPayroll: ["/astelfin_26/payroll", "/astelfin_26/reports/tax"],
+};
+
 /** Check if a given pathname is accessible with these permissions. */
 export function canAccessPath(pathname: string, perms: EffectivePermissions): boolean {
   if (MY_PATHS.some((p) => pathname.startsWith(p))) return true;
+  // Function-level view grants (finer-grained than tabs)
+  for (const [fn, paths] of Object.entries(FUNCTION_PATHS)) {
+    if (perms.functions[fn as keyof FunctionPermissions]) {
+      if (paths!.some((p) => pathname === p || pathname.startsWith(p + "/"))) return true;
+    }
+  }
   for (const [tab, paths] of Object.entries(TAB_PATHS)) {
     if (perms.tabs[tab as keyof TabPermissions]) {
       if (paths.some((p) => pathname === p || pathname.startsWith(p + "/"))) return true;
@@ -187,7 +202,7 @@ export const FUNCTION_LABELS: Record<keyof FunctionPermissions, string> = {
   canAddDebt:             "Manage Debt",
   canManageAssets:        "Manage Assets",
   canManageExchangeRates: "Manage Exchange Rates",
-  canViewPayroll:         "View Payroll",
+  canViewPayroll:         "View Payroll & Tax Dashboard",
   canCreateInvoice:       "Create Invoices / Requests",
   canManageProcurement:   "Manage Procurement",
   canManagePayables:      "Accounts Payable",

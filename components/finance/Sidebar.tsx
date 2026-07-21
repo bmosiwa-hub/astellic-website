@@ -293,6 +293,11 @@ export default function Sidebar({
   const showHR         = isCEO || isFM || isPM;
   const showASIL       = isCEO || !!(permissions?.tabs.asil);
 
+  // View-only payroll/tax access granted to a non-CEO/FM user (e.g. an Operations
+  // Officer). CEO/FM already reach these via the Finance/HR sections, so this
+  // dedicated block is only for granted users who have no broader section.
+  const showPayrollView = !isCEO && !isFM && !!permissions?.functions.canViewPayroll;
+
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
                           "/astelfin_26/debt", "/astelfin_26/reports", "/astelfin_26/exchange-rates",
@@ -439,6 +444,16 @@ export default function Sidebar({
             {navLink("/astelfin_26/my/training",       "My Training",       Icons.training)}
             {navLink("/astelfin_26/my/travel",         "My Travel",         Icons.travel)}
           </div>
+        )}
+
+        {/* ── Payroll & Tax (view-only grant, non-CEO/FM) ─── */}
+        {showPayrollView && (
+          <>
+            <div className="pt-1" />
+            <p className="px-3 pt-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Finance</p>
+            {navLink("/astelfin_26/payroll",     "Payroll",        Icons.payroll)}
+            {navLink("/astelfin_26/reports/tax", "Tax Dashboard",  Icons.tax)}
+          </>
         )}
 
         {/* ── Finance (FM + CEO) ──────────────────────────── */}
