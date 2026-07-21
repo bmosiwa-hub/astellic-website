@@ -6,6 +6,7 @@ import { auditLog } from "@/lib/audit";
 import { sendMail } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { resolveAccess } from "@/lib/access";
 
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
@@ -188,10 +189,8 @@ export async function submitTimesheet(formData: FormData) {
 export async function reviewTimesheet(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER" && role !== "PROJECT_MANAGER") {
-    redirect("/astelfin_26/dashboard");
-  }
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canReviewTimesheets")) redirect("/astelfin_26/my");
 
   const timesheetId = formData.get("timesheetId") as string;
   const decision    = formData.get("decision")    as string; // APPROVE | REJECT

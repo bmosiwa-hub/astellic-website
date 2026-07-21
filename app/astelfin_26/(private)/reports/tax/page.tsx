@@ -32,7 +32,6 @@ async function emailMonthlyReport(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const month = parseInt(formData.get("month") as string);
   const year  = parseInt(formData.get("year")  as string);
@@ -76,7 +75,6 @@ async function emailAnnualReport(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const year = parseInt(formData.get("year") as string);
 

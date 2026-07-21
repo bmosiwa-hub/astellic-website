@@ -10,6 +10,7 @@ import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sendMail } from "@/lib/mail";
+import { resolveAccess } from "@/lib/access";
 
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
@@ -42,8 +43,8 @@ function fmtMWK(n: number) {
 export async function createTaxRemittance(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "FINANCE_MANAGER" && role !== "CEO") redirect("/astelfin_26/dashboard");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTax")) redirect("/astelfin_26/my");
 
   const taxType       = formData.get("taxType")       as string;
   const remittanceType= formData.get("remittanceType")as string; // PAID | WAIVED

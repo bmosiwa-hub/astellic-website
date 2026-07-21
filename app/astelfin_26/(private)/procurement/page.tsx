@@ -35,7 +35,6 @@ export default async function ProcurementPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const { success } = await searchParams;
   const isCEO = role === "CEO";

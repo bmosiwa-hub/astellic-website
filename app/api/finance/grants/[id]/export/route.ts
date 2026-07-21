@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -33,7 +34,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth();
-  if (!["CEO", "FINANCE_MANAGER"].includes(session?.user?.role ?? "")) {
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageGrants")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

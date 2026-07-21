@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
@@ -6,7 +7,8 @@ import { revalidatePath } from "next/cache";
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER")
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageRecruitment"))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const formData = await request.formData();

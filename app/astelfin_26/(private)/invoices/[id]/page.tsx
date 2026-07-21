@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { checkCEOAuth } from "@/lib/delegation";
+import { resolveAccess } from "@/lib/access";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { reviewSubmission, markSubmissionPaid } from "@/lib/submission-actions";
@@ -21,9 +22,11 @@ export default async function ReviewSubmissionPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const role    = session.user.role;
+  const access  = await resolveAccess(session);
   const ceoAuth = await checkCEOAuth(session);
-  if (!ceoAuth.authorized && role !== "FINANCE_MANAGER") redirect("/astelfin_26/my/submissions");
+  const canReview = !!access?.can("canReviewSubmissions");
+  const canPay    = !!access?.can("canManagePayables");
+  if (!ceoAuth.authorized && !canReview && !canPay) redirect("/astelfin_26/my/submissions");
 
   const sub = await prisma.submission.findUnique({
     where: { id },
@@ -40,14 +43,14 @@ export default async function ReviewSubmissionPage({
 
   if (!sub) notFound();
 
-  const isFM  = role === "FINANCE_MANAGER";
   const isCEO = ceoAuth.authorized;
 
-  // FM can action PENDING_FM; CEO (or delegate) can action PENDING_CEO, APPROVED, or bypass FM stage
-  const canFMAction      = isFM  && sub.status === "PENDING_FM";
+  // FM-stage review is grantable (canReviewSubmissions); the final CEO approval and
+  // bypass stay CEO-only. Marking paid needs the payables capability.
+  const canFMAction      = canReview && sub.status === "PENDING_FM";
   const canCEOBypass     = isCEO && sub.status === "PENDING_FM";   // CEO bypasses FM stage
   const canCEOAction     = isCEO && sub.status === "PENDING_CEO";
-  const canMarkPaid      = (isFM || isCEO) && sub.status === "APPROVED";
+  const canMarkPaid      = (canPay || isCEO) && sub.status === "APPROVED";
 
   // Server action bindings
   const approveFM   = reviewSubmission.bind(null, id, "APPROVED",          "FM");

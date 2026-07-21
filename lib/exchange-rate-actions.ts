@@ -4,19 +4,16 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
-
-function canManageRates(role: string) {
-  return role === "CEO" || role === "FINANCE_MANAGER";
-}
+import { resolveAccess } from "@/lib/access";
 
 /**
- * Manually add or update a single currency's exchange rates (FM/CEO).
+ * Manually add or update a single currency's exchange rates.
  */
 export async function updateRateManually(formData: FormData) {
   const session = await auth();
-  if (!session?.user || !canManageRates(session.user.role)) {
-    redirect("/astelfin_26/dashboard");
-  }
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageExchangeRates")) redirect("/astelfin_26/my");
 
   const currency   = (formData.get("currency") as string).toUpperCase().trim();
   const buyRate    = parseFloat(formData.get("buyRate")    as string);

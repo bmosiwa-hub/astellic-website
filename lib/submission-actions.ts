@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
+import { resolveAccess } from "@/lib/access";
 import { notifySubmitterOfFMAction, notifyFMOfCEOAction, notifyFMOfNewSubmission, notifyCEOOfFMApproval } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -209,6 +210,17 @@ export async function reviewSubmission(
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
+  // Authorise the requested review stage:
+  //  - FM stage  → grantable via canReviewSubmissions
+  //  - CEO / CEO bypass → critical approval, CEO only
+  const access = await resolveAccess(session);
+  if (!access) redirect("/astelfin_26/login");
+  if (reviewerRole === "FM") {
+    if (!access.can("canReviewSubmissions")) redirect("/astelfin_26/my");
+  } else if (!access.isCEO) {
+    redirect("/astelfin_26/my");
+  }
+
   const note = (formData.get("note") as string) || null;
 
   // Fetch submission + submitter email in one query
@@ -348,9 +360,9 @@ export async function reviewSubmission(
 /** FM marks a CEO-approved submission as paid */
 export async function markSubmissionPaid(submissionId: string, formData: FormData): Promise<void> {
   const session = await auth();
-  if (!session?.user || session.user.role !== "FINANCE_MANAGER" && session.user.role !== "CEO") {
-    redirect("/astelfin_26/login");
-  }
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManagePayables")) redirect("/astelfin_26/my");
 
   const paymentNote = (formData.get("paymentNote") as string) || null;
 

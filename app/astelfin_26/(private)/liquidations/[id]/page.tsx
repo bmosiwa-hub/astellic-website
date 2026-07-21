@@ -81,7 +81,6 @@ export default async function ReviewLiquidationPage({
   if (!session?.user) redirect("/astelfin_26/login");
 
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/my/liquidations");
 
   const liq = await prisma.liquidation.findUnique({
     where: { id },

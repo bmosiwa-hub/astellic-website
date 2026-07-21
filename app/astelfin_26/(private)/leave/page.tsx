@@ -20,7 +20,6 @@ async function reviewLeave(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const id = formData.get("id") as string;
   const action = formData.get("action") as string;
@@ -53,7 +52,6 @@ async function upsertPolicy(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const leaveType = formData.get("leaveType") as string;
   const daysPerYear = parseFloat(formData.get("daysPerYear") as string) || 0;
@@ -71,7 +69,6 @@ export default async function LeavePage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const [requests, policies, employees] = await Promise.all([
     prisma.leaveRequest.findMany({

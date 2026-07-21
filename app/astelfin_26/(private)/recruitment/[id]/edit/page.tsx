@@ -9,7 +9,6 @@ export default async function EditPostingPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const posting = await prisma.jobPosting.findUnique({
     where: { id },

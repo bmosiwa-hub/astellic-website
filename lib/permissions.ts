@@ -1,10 +1,14 @@
 /**
  * Permission system for Astelfin IMS.
  *
- * Each User can have a `permissions` JSON field that overrides the role defaults.
- * null permissions = use role defaults.
+ * Design principle: the CEO decides who can do what. Access is driven by
+ * CEO-granted permissions (tabs + functions), NOT by a user's role. The only
+ * role-based rule is that the CEO always has full access. A small set of
+ * critical approvals stays CEO-only (see `isCriticalAction` / CEO checks in
+ * server actions) — everything else is grantable to any user.
  *
- * The CEO always has full access and is never permission-checked.
+ * Each User has a `permissions` JSON field. null = fall back to role defaults
+ * (which exist only for backward-compatibility with pre-existing accounts).
  */
 
 export interface TabPermissions {
@@ -16,25 +20,39 @@ export interface TabPermissions {
 }
 
 export interface FunctionPermissions {
-  // Finance tab
+  // Finance & HR
   canAddIncome:           boolean;
   canAddExpense:          boolean;
   canAddDebt:             boolean;
   canManageAssets:        boolean;
   canManageExchangeRates: boolean;
-  canViewPayroll:         boolean;
-  // Operations tab
+  canViewPayroll:         boolean;  // view Payroll + Tax Dashboard (read-only)
+  canProcessPayroll:      boolean;  // run payroll (period locking stays CEO-only)
+  canManageBudget:        boolean;
+  canManageGrants:        boolean;
+  canManageTax:           boolean;  // record/email tax remittances (approval is CEO)
+  canManageRecruitment:   boolean;
+  canReviewTimesheets:    boolean;
+  canManageLeave:         boolean;
+  canManageTraining:      boolean;
+  canManageTravel:        boolean;
+  canManagePerformance:   boolean;
+  // Operations
   canCreateInvoice:       boolean;
-  canManageProcurement:   boolean;
+  canReviewSubmissions:   boolean;  // FM-stage review of payment requests / invoices
+  canReviewLiquidations:  boolean;  // FM-stage review of liquidations
+  canManageProcurement:   boolean;  // create/manage procurement (approval is CEO)
   canManagePayables:      boolean;
   canManageReceivables:   boolean;
-  // Projects tab
+  canManageRecurring:     boolean;
+  canManageDocuments:     boolean;
+  // Projects
   canAddProject:          boolean;
-  // Business Development tab
+  // Business Development
   canAddOpportunity:      boolean;
   canSubmitOpportunity:   boolean;
-  canRequestOppDeletion:  boolean;  // RM Associate: request deletion of no-feedback opp
-  canUpdateBidStatus:     boolean;  // Mark as won/rejected
+  canRequestOppDeletion:  boolean;  // request deletion of a no-feedback opportunity
+  canUpdateBidStatus:     boolean;  // mark as won/rejected
 }
 
 export interface EffectivePermissions {
@@ -42,28 +60,38 @@ export interface EffectivePermissions {
   functions: FunctionPermissions;
 }
 
+// ── Function key list (single source of truth) ────────────────────────────────
+
+const FUNCTION_KEYS: (keyof FunctionPermissions)[] = [
+  "canAddIncome","canAddExpense","canAddDebt","canManageAssets","canManageExchangeRates",
+  "canViewPayroll","canProcessPayroll","canManageBudget","canManageGrants","canManageTax",
+  "canManageRecruitment","canReviewTimesheets","canManageLeave","canManageTraining",
+  "canManageTravel","canManagePerformance",
+  "canCreateInvoice","canReviewSubmissions","canReviewLiquidations","canManageProcurement",
+  "canManagePayables","canManageReceivables","canManageRecurring","canManageDocuments",
+  "canAddProject",
+  "canAddOpportunity","canSubmitOpportunity","canRequestOppDeletion","canUpdateBidStatus",
+];
+
+function allFunctions(value: boolean): FunctionPermissions {
+  return Object.fromEntries(FUNCTION_KEYS.map((k) => [k, value])) as unknown as FunctionPermissions;
+}
+
 // ── Role defaults ─────────────────────────────────────────────────────────────
+// These are only fallbacks for accounts with no stored permissions. The CEO can
+// override any of them per-user via the permission editor.
 
 const FULL_PERMISSIONS: EffectivePermissions = {
   tabs: { finance: true, operations: true, projects: true, bizdev: true, asil: true },
-  functions: {
-    canAddIncome: true, canAddExpense: true, canAddDebt: true,
-    canManageAssets: true, canManageExchangeRates: true, canViewPayroll: true,
-    canCreateInvoice: true, canManageProcurement: true,
-    canManagePayables: true, canManageReceivables: true,
-    canAddProject: true,
-    canAddOpportunity: true, canSubmitOpportunity: true,
-    canRequestOppDeletion: true, canUpdateBidStatus: true,
-  },
+  functions: allFunctions(true),
 };
 
+// Finance Manager default = full finance + operations + HR operational access,
+// minus the CEO-only critical approvals (which are enforced separately by role).
 const FM_DEFAULTS: EffectivePermissions = {
   tabs: { finance: true, operations: true, projects: false, bizdev: false, asil: false },
   functions: {
-    canAddIncome: true, canAddExpense: true, canAddDebt: true,
-    canManageAssets: true, canManageExchangeRates: false, canViewPayroll: true,
-    canCreateInvoice: true, canManageProcurement: true,
-    canManagePayables: true, canManageReceivables: true,
+    ...allFunctions(true),
     canAddProject: false,
     canAddOpportunity: false, canSubmitOpportunity: false,
     canRequestOppDeletion: false, canUpdateBidStatus: false,
@@ -73,27 +101,17 @@ const FM_DEFAULTS: EffectivePermissions = {
 const PM_DEFAULTS: EffectivePermissions = {
   tabs: { finance: false, operations: false, projects: true, bizdev: false, asil: false },
   functions: {
-    canAddIncome: false, canAddExpense: false, canAddDebt: false,
-    canManageAssets: false, canManageExchangeRates: false, canViewPayroll: false,
-    canCreateInvoice: false, canManageProcurement: false,
-    canManagePayables: false, canManageReceivables: false,
+    ...allFunctions(false),
     canAddProject: true,
-    canAddOpportunity: false, canSubmitOpportunity: false,
-    canRequestOppDeletion: false, canUpdateBidStatus: false,
+    // PMs review their team's timesheets and run performance cycles
+    canReviewTimesheets: true,
+    canManagePerformance: true,
   },
 };
 
 const STAFF_DEFAULTS: EffectivePermissions = {
   tabs: { finance: false, operations: false, projects: false, bizdev: false, asil: false },
-  functions: {
-    canAddIncome: false, canAddExpense: false, canAddDebt: false,
-    canManageAssets: false, canManageExchangeRates: false, canViewPayroll: false,
-    canCreateInvoice: false, canManageProcurement: false,
-    canManagePayables: false, canManageReceivables: false,
-    canAddProject: false,
-    canAddOpportunity: false, canSubmitOpportunity: false,
-    canRequestOppDeletion: false, canUpdateBidStatus: false,
-  },
+  functions: allFunctions(false),
 };
 
 function roleDefaults(role: string): EffectivePermissions {
@@ -138,8 +156,24 @@ export function getEffectivePermissions(
 ): EffectivePermissions {
   if (role === "CEO") return FULL_PERMISSIONS;
   const defaults = roleDefaults(role);
-  if (!storedPermissions || typeof storedPermissions !== "object") return defaults;
-  return deepMerge(defaults, storedPermissions as Partial<EffectivePermissions>);
+  // Start from a full skeleton so any newly-added function keys default to the
+  // role default (or false), never undefined.
+  const base: EffectivePermissions = {
+    tabs:      { ...defaults.tabs },
+    functions: { ...allFunctions(false), ...defaults.functions },
+  };
+  if (!storedPermissions || typeof storedPermissions !== "object") return base;
+  return deepMerge(base, storedPermissions as Partial<EffectivePermissions>);
+}
+
+/** True if the user is the CEO — the only holder of critical-approval rights. */
+export function isCEO(role: string | undefined | null): boolean {
+  return role === "CEO";
+}
+
+/** Convenience: does this user hold a given function permission? */
+export function can(perms: EffectivePermissions, fn: keyof FunctionPermissions): boolean {
+  return !!perms.functions[fn];
 }
 
 /** Paths accessible for each tab permission. */
@@ -148,26 +182,35 @@ export const TAB_PATHS: Record<keyof TabPermissions, string[]> = {
     "/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
     "/astelfin_26/employees",  "/astelfin_26/payroll", "/astelfin_26/consultants",
     "/astelfin_26/debt", "/astelfin_26/assets", "/astelfin_26/reports",
-    "/astelfin_26/exchange-rates", "/astelfin_26/budget", "/astelfin_26/grants", "/astelfin_26/periods",
+    "/astelfin_26/exchange-rates", "/astelfin_26/budget", "/astelfin_26/grants",
+    "/astelfin_26/periods", "/astelfin_26/financial-health", "/astelfin_26/reconciliation",
+    "/astelfin_26/performance", "/astelfin_26/timesheets", "/astelfin_26/leave",
+    "/astelfin_26/recruitment", "/astelfin_26/training", "/astelfin_26/travel",
+    "/astelfin_26/contacts",
   ],
   operations: [
     "/astelfin_26/invoices", "/astelfin_26/liquidations",
     "/astelfin_26/payables", "/astelfin_26/receivables",
     "/astelfin_26/approvals", "/astelfin_26/procurement",
-    "/astelfin_26/recurring", "/astelfin_26/compliance",
+    "/astelfin_26/recurring", "/astelfin_26/compliance", "/astelfin_26/documents",
   ],
   projects:   ["/astelfin_26/projects", "/astelfin_26/deliverables"],
-  bizdev:     ["/astelfin_26/bizdev"],
+  bizdev:     ["/astelfin_26/bizdev", "/astelfin_26/intel"],
   asil:       ["/astelfin_26/asil"],
 };
 
-/** All paths (for /my which is always accessible). */
-export const MY_PATHS = ["/astelfin_26/my"];
+/** Paths any authenticated user may reach (self-service + landing pages). */
+export const MY_PATHS = [
+  "/astelfin_26/my",
+  "/astelfin_26/overview",
+  "/astelfin_26/home",
+  "/astelfin_26/change-password",
+];
 
 /**
  * Paths unlocked by an individual FUNCTION permission, independent of tab access.
- * This lets the CEO grant read access to a specific area (e.g. payroll & tax)
- * without handing over the entire finance tab.
+ * Lets the CEO grant read access to a specific area (e.g. payroll & tax) without
+ * handing over the entire section.
  */
 export const FUNCTION_PATHS: Partial<Record<keyof FunctionPermissions, string[]>> = {
   canViewPayroll: ["/astelfin_26/payroll", "/astelfin_26/reports/tax"],
@@ -203,10 +246,24 @@ export const FUNCTION_LABELS: Record<keyof FunctionPermissions, string> = {
   canManageAssets:        "Manage Assets",
   canManageExchangeRates: "Manage Exchange Rates",
   canViewPayroll:         "View Payroll & Tax Dashboard",
+  canProcessPayroll:      "Process Payroll",
+  canManageBudget:        "Manage Budget Lines",
+  canManageGrants:        "Manage Donor Grants",
+  canManageTax:           "Record Tax Remittances",
+  canManageRecruitment:   "Manage Recruitment",
+  canReviewTimesheets:    "Review Team Timesheets",
+  canManageLeave:         "Manage Leave",
+  canManageTraining:      "Manage Training / CPD",
+  canManageTravel:        "Manage Travel",
+  canManagePerformance:   "Manage Performance",
   canCreateInvoice:       "Create Invoices / Requests",
+  canReviewSubmissions:   "Review Payment Requests (FM stage)",
+  canReviewLiquidations:  "Review Liquidations (FM stage)",
   canManageProcurement:   "Manage Procurement",
   canManagePayables:      "Accounts Payable",
   canManageReceivables:   "Accounts Receivable",
+  canManageRecurring:     "Manage Recurring Expenses",
+  canManageDocuments:     "Manage Document Library",
   canAddProject:          "Add / Edit Projects",
   canAddOpportunity:      "Add Opportunities",
   canSubmitOpportunity:   "Submit Opportunities",
@@ -214,10 +271,18 @@ export const FUNCTION_LABELS: Record<keyof FunctionPermissions, string> = {
   canUpdateBidStatus:     "Update Bid Status (Won / Rejected)",
 };
 
-/** Which functions belong to which tab. */
+/** Which functions belong to which tab (drives the editor grouping). */
 export const TAB_FUNCTIONS: Record<keyof TabPermissions, (keyof FunctionPermissions)[]> = {
-  finance:    ["canAddIncome","canAddExpense","canAddDebt","canManageAssets","canManageExchangeRates","canViewPayroll"],
-  operations: ["canCreateInvoice","canManageProcurement","canManagePayables","canManageReceivables"],
+  finance:    [
+    "canAddIncome","canAddExpense","canAddDebt","canManageAssets","canManageExchangeRates",
+    "canViewPayroll","canProcessPayroll","canManageBudget","canManageGrants","canManageTax",
+    "canManageRecruitment","canReviewTimesheets","canManageLeave","canManageTraining",
+    "canManageTravel","canManagePerformance",
+  ],
+  operations: [
+    "canCreateInvoice","canReviewSubmissions","canReviewLiquidations","canManageProcurement",
+    "canManagePayables","canManageReceivables","canManageRecurring","canManageDocuments",
+  ],
   projects:   ["canAddProject"],
   bizdev:     ["canAddOpportunity","canSubmitOpportunity","canRequestOppDeletion","canUpdateBidStatus"],
   asil:       [],

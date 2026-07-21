@@ -12,6 +12,7 @@
  */
 
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
@@ -21,7 +22,9 @@ export async function GET(
   { params }: { params: Promise<{ key: string }> }
 ) {
   const session = await auth();
-  if (!session?.user || !["CEO","FINANCE_MANAGER"].includes(session.user.role!)) {
+  if (!session?.user) return new NextResponse("Unauthorized", { status: 401 });
+  const access = await resolveAccess(session);
+  if (!access || !access.tab("finance")) {
     return new NextResponse("Forbidden", { status: 403 });
   }
 

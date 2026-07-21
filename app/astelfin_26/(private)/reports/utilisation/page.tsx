@@ -10,7 +10,6 @@ export const metadata = { title: "Utilisation Report | Astelfin IMS", robots: { 
 export default async function UtilisationPage({ searchParams }: { searchParams: Promise<{ year?: string }> }) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const sp = await searchParams;
   const year = parseInt(sp.year ?? new Date().getFullYear().toString());

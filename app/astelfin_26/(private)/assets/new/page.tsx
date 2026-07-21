@@ -33,7 +33,6 @@ async function addAsset(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const name         = formData.get("name") as string;
   const category     = formData.get("category") as string;
@@ -91,7 +90,6 @@ export default async function NewAssetPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   return (
     <div className="max-w-2xl">

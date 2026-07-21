@@ -5,6 +5,7 @@
  */
 
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { buildRateMap, toMWK } from "@/lib/fx";
@@ -12,8 +13,8 @@ import { buildRateMap, toMWK } from "@/lib/fx";
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user) return new NextResponse("Unauthorized", { status: 401 });
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") {
+  const access = await resolveAccess(session);
+  if (!access || !access.tab("finance")) {
     return new NextResponse("Forbidden", { status: 403 });
   }
 

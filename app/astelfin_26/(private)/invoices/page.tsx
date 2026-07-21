@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import Link from "next/link";
@@ -28,14 +29,14 @@ export default async function InvoicesPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/my/submissions");
+  const access = await resolveAccess(session);
+  const isCEO  = !!access?.isCEO;
 
-  // What's "pending" for this role?
-  const pendingStatuses =
-    role === "FINANCE_MANAGER"
-      ? ["PENDING_FM"]
-      : ["PENDING_FM", "PENDING_CEO", "APPROVED"]; // CEO sees all stages
+  // What's "pending" for this user? The CEO sees all stages; a reviewer with the
+  // FM-review grant sees the FM queue.
+  const pendingStatuses = isCEO
+    ? ["PENDING_FM", "PENDING_CEO", "APPROVED"]
+    : ["PENDING_FM"];
 
   const [pending, all] = await Promise.all([
     prisma.submission.findMany({
@@ -63,9 +64,9 @@ export default async function InvoicesPage({
       <div>
         <h1 className="text-2xl font-bold text-brand-navy">Invoices & Requests</h1>
         <p className="text-gray-500 text-sm mt-1">
-          {role === "FINANCE_MANAGER"
-            ? "Review and action submissions from staff and consultants."
-            : "Review FM-approved submissions and manage payment approvals."}
+          {isCEO
+            ? "Review FM-approved submissions and manage payment approvals."
+            : "Review and action submissions from staff and consultants."}
         </p>
       </div>
 

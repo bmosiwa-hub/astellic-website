@@ -7,6 +7,7 @@ import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { sendMail } from "@/lib/mail";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { resolveAccess } from "@/lib/access";
 
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
@@ -156,10 +157,8 @@ export async function submitObjectives(formData: FormData) {
 export async function reviewObjectives(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER" && role !== "PROJECT_MANAGER") {
-    redirect("/astelfin_26/dashboard");
-  }
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManagePerformance")) redirect("/astelfin_26/my");
 
   const cycleId  = formData.get("cycleId")  as string;
   const decision = formData.get("decision") as string; // APPROVE | REJECT
@@ -291,10 +290,8 @@ export async function submitSelfReview(formData: FormData) {
 export async function submitSupervisorReview(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER" && role !== "PROJECT_MANAGER") {
-    redirect("/astelfin_26/dashboard");
-  }
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManagePerformance")) redirect("/astelfin_26/my");
 
   const cycleId       = formData.get("cycleId")      as string;
   const overallRating = formData.get("overallRating") as string;

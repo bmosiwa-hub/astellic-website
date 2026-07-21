@@ -53,7 +53,6 @@ async function updateAsset(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const id           = formData.get("assetId") as string;
   const name         = formData.get("name") as string;
@@ -145,7 +144,6 @@ async function saveInsurance(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const assetId        = formData.get("assetId") as string;
   const insurer        = formData.get("insurer") as string;
@@ -216,7 +214,6 @@ export default async function AssetDetailPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const { id }      = await params;
   const { success } = await searchParams;

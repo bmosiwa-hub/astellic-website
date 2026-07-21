@@ -6,6 +6,7 @@ import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
 import { sendMail, escapeHtml } from "@/lib/mail";
+import { resolveAccess } from "@/lib/access";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -91,9 +92,9 @@ export async function reviewLiquidation(
   formData: FormData
 ): Promise<void> {
   const session = await auth();
-  if (!session?.user || (session.user.role !== "FINANCE_MANAGER" && session.user.role !== "CEO")) {
-    redirect("/astelfin_26/login");
-  }
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canReviewLiquidations")) redirect("/astelfin_26/my");
 
   const note = (formData.get("note") as string) || null;
 

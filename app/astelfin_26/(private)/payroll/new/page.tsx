@@ -24,7 +24,6 @@ async function runPayrollForEmployee(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const employeeId      = formData.get("employeeId") as string;
   const period          = formData.get("period") as string;
@@ -206,7 +205,6 @@ export default async function NewPayrollPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   // Default period to launch month (June 2026) or later
   const currentPeriod = new Date().toISOString().slice(0, 7);

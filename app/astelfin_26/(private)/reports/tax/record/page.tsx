@@ -33,7 +33,6 @@ export default async function RecordTaxRemittancePage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "FINANCE_MANAGER" && role !== "CEO") redirect("/astelfin_26/dashboard");
 
   // ── Fetch outstanding records by type ─────────────────────────────────────
 

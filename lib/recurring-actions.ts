@@ -6,6 +6,7 @@ import { auditLog } from "@/lib/audit";
 import { generateDueDates } from "@/lib/recurring-utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { resolveAccess } from "@/lib/access";
 import type { RecurringFrequency } from "@prisma/client";
 
 /* ── Server actions ───────────────────────────────────────────────── */
@@ -13,7 +14,9 @@ import type { RecurringFrequency } from "@prisma/client";
 /** CEO creates a new recurring expense and pre-generates AccountPayable entries */
 export async function createRecurringExpense(formData: FormData): Promise<void> {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageRecurring")) redirect("/astelfin_26/my");
 
   const name        = formData.get("name") as string;
   const description = (formData.get("description") as string) || null;
@@ -68,7 +71,9 @@ export async function createRecurringExpense(formData: FormData): Promise<void> 
 /** Deactivate / reactivate a recurring expense */
 export async function toggleRecurringExpense(id: string, active: boolean): Promise<void> {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageRecurring")) redirect("/astelfin_26/my");
 
   await prisma.recurringExpense.update({ where: { id }, data: { active } });
 
@@ -90,8 +95,8 @@ export async function toggleRecurringExpense(id: string, active: boolean): Promi
 export async function createAccountPayable(formData: FormData): Promise<void> {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManagePayables")) redirect("/astelfin_26/my");
 
   const description = formData.get("description") as string;
   const vendor      = (formData.get("vendor") as string) || null;
@@ -125,8 +130,8 @@ export async function createAccountPayable(formData: FormData): Promise<void> {
 export async function markPayablePaid(id: string, formData: FormData): Promise<void> {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManagePayables")) redirect("/astelfin_26/my");
 
   const note     = (formData.get("note") as string) || null;
   const paidDate = new Date();
@@ -166,8 +171,8 @@ export async function markPayablePaid(id: string, formData: FormData): Promise<v
 export async function createAccountReceivable(formData: FormData): Promise<void> {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageReceivables")) redirect("/astelfin_26/my");
 
   const description  = formData.get("description") as string;
   const payer        = (formData.get("payer") as string) || null;
@@ -201,8 +206,8 @@ export async function createAccountReceivable(formData: FormData): Promise<void>
 export async function markReceivableReceived(id: string, formData: FormData): Promise<void> {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageReceivables")) redirect("/astelfin_26/my");
 
   const partial = formData.get("partial") === "true";
   const note    = (formData.get("note") as string) || null;

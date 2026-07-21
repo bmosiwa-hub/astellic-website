@@ -286,17 +286,18 @@ export default function Sidebar({
   // Show sections based on role OR granted permissions
   const isPM = userRole === "PROJECT_MANAGER";
 
-  const showFinance    = isCEO || isFM || !!(permissions?.tabs.finance);
-  const showOperations = isCEO || isFM || !!(permissions?.tabs.operations);
-  const showProjects   = isCEO || isPM || !!(permissions?.tabs.projects);
-  const showBizDev     = !!(permissions?.tabs.bizdev);
-  const showHR         = isCEO || isFM || isPM;
-  const showASIL       = isCEO || !!(permissions?.tabs.asil);
+  // Section visibility is permission-driven: the CEO sees everything, everyone
+  // else sees a section when the CEO has granted them its tab.
+  const showFinance    = isCEO || !!permissions?.tabs.finance;
+  const showOperations = isCEO || !!permissions?.tabs.operations;
+  const showProjects   = isCEO || isPM || !!permissions?.tabs.projects;
+  const showBizDev     = isCEO || !!permissions?.tabs.bizdev;
+  const showHR         = isCEO || isPM || !!permissions?.tabs.finance; // HR lives under the Finance & HR tab
+  const showASIL       = isCEO || !!permissions?.tabs.asil;
 
-  // View-only payroll/tax access granted to a non-CEO/FM user (e.g. an Operations
-  // Officer). CEO/FM already reach these via the Finance/HR sections, so this
-  // dedicated block is only for granted users who have no broader section.
-  const showPayrollView = !isCEO && !isFM && !!permissions?.functions.canViewPayroll;
+  // View-only payroll/tax access granted to a user who has NO broader Finance
+  // section — CEO and finance-tab holders already reach these via that section.
+  const showPayrollView = !isCEO && !permissions?.tabs.finance && !!permissions?.functions.canViewPayroll;
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
@@ -469,13 +470,13 @@ export default function Sidebar({
                 {navLink("/astelfin_26/debt",             "Debt",            Icons.debt)}
                 {navLink("/astelfin_26/assets",           "Assets",          Icons.assets)}
                 {navLink("/astelfin_26/reports",          "Reports",         Icons.reports)}
-                {(isCEO || isFM) && navLink("/astelfin_26/reports/tax",          "Tax Dashboard",    Icons.tax)}
-                {(isCEO || isFM) && navLink("/astelfin_26/reports/utilisation", "Utilisation",    Icons.utilisation)}
-                {(isCEO || isFM) && navLink("/astelfin_26/financial-health",    "Financial Health", Icons.health)}
-                {(isCEO || isFM) && navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
-                {(isCEO || isFM) && navLink("/astelfin_26/grants",           "Donor Grants",     Icons.grants)}
-                {(isCEO || isFM) && navLink("/astelfin_26/periods",          "Periods",          Icons.periods)}
-                {(isCEO || isFM) && navLink("/astelfin_26/reconciliation",   "Reconciliation",   Icons.periods)}
+                {navLink("/astelfin_26/reports/tax",          "Tax Dashboard",    Icons.tax)}
+                {navLink("/astelfin_26/reports/utilisation", "Utilisation",    Icons.utilisation)}
+                {navLink("/astelfin_26/financial-health",    "Financial Health", Icons.health)}
+                {navLink("/astelfin_26/budget",           "Budget Lines",     Icons.budget)}
+                {navLink("/astelfin_26/grants",           "Donor Grants",     Icons.grants)}
+                {navLink("/astelfin_26/periods",          "Periods",          Icons.periods)}
+                {navLink("/astelfin_26/reconciliation",   "Reconciliation",   Icons.periods)}
                 {navLink("/astelfin_26/exchange-rates",   "Exchange Rates",  Icons.exchangeRates)}
               </div>
             )}
@@ -501,8 +502,8 @@ export default function Sidebar({
                 {navLink("/astelfin_26/approvals",    "Approvals",            Icons.approvals,    isCEO ? pendingApprovals : undefined)}
                 {navLink("/astelfin_26/procurement",  "Procurement",          Icons.procurement)}
                 {navLink("/astelfin_26/documents",    "Document Library",     Icons.documents)}
-                {(isCEO || isFM) && navLink("/astelfin_26/compliance", "Compliance",       Icons.compliance)}
-                {isCEO && navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
+                {navLink("/astelfin_26/compliance", "Compliance",       Icons.compliance)}
+                {navLink("/astelfin_26/recurring", "Recurring Expenses", Icons.recurring)}
               </div>
             )}
           </>
@@ -520,9 +521,9 @@ export default function Sidebar({
                 {navLink("/astelfin_26/payroll",     "Payroll",          Icons.payroll)}
                 {navLink("/astelfin_26/performance", "Team Performance", Icons.performance)}
                 {navLink("/astelfin_26/timesheets",  "Team Timesheets",  Icons.timesheet)}
-                {(isCEO || isFM) && navLink("/astelfin_26/leave",       "Leave Management", Icons.leave)}
-                {(isCEO || isFM) && navLink("/astelfin_26/recruitment", "Recruitment",      Icons.recruitment)}
-                {(isCEO || isFM) && navLink("/astelfin_26/training",    "Training / CPD",   Icons.training)}
+                {navLink("/astelfin_26/leave",       "Leave Management", Icons.leave)}
+                {navLink("/astelfin_26/recruitment", "Recruitment",      Icons.recruitment)}
+                {navLink("/astelfin_26/training",    "Training / CPD",   Icons.training)}
                 {navLink("/astelfin_26/travel",      "Travel",           Icons.travel)}
                 {navLink("/astelfin_26/contacts",    "Contacts",         Icons.contacts)}
               </div>

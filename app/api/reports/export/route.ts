@@ -4,6 +4,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
 import * as XLSX from "xlsx";
@@ -22,8 +23,8 @@ function fmt(n: number) { return Number(n.toFixed(2)); }
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
-  const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const access = await resolveAccess(session);
+  if (!access || !access.tab("finance")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const sp   = req.nextUrl.searchParams;
   const type = sp.get("type") ?? "pl";

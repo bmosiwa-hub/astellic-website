@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -7,7 +8,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") {
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageRecruitment")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

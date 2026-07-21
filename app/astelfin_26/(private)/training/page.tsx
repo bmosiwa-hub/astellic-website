@@ -11,7 +11,6 @@ async function addTraining(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   await prisma.trainingRecord.create({
     data: {
@@ -33,7 +32,6 @@ async function addQualification(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   await prisma.qualification.create({
     data: {
@@ -50,7 +48,6 @@ async function addQualification(formData: FormData) {
 export default async function TrainingPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  if (session.user.role !== "CEO" && session.user.role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const [employees, trainings, qualifications] = await Promise.all([
     prisma.employee.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }),

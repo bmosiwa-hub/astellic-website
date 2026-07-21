@@ -29,7 +29,6 @@ async function updateMatch(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const txId         = formData.get("txId")         as string;
   const matchStatus  = formData.get("matchStatus")  as string;
@@ -61,7 +60,6 @@ async function markReconciled(formData: FormData) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const statementId = formData.get("statementId") as string;
   const notes       = (formData.get("notes") as string) || null;
@@ -109,7 +107,6 @@ export default async function ReconciliationReviewPage({
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const statement = await prisma.bankStatement.findUnique({
     where:   { id },

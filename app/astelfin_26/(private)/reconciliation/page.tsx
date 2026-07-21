@@ -24,7 +24,6 @@ export default async function ReconciliationPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
-  if (role !== "CEO" && role !== "FINANCE_MANAGER") redirect("/astelfin_26/dashboard");
 
   const statements = await prisma.bankStatement.findMany({
     orderBy: [{ createdAt: "desc" }],

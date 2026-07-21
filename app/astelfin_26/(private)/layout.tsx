@@ -69,24 +69,25 @@ export default async function PrivateFinanceLayout({
 
   const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
 
-  // CEO and FM always have unrestricted access (role defaults cover everything)
-  // For other roles: check if current pathname is permitted
+  // Access is permission-driven: the CEO always has full access; everyone else
+  // (including the Finance Manager, whose defaults grant the finance/operations
+  // sections) is gated by their CEO-granted permissions.
   const isCEO = role === "CEO";
-  const isFM  = role === "FINANCE_MANAGER";
 
-  if (!isCEO && !isFM) {
-
+  if (!isCEO) {
     if (!canAccessPath(pathname, perms)) {
       // Redirect to the first accessible area
-      if (perms.tabs.finance)    redirect("/astelfin_26/dashboard");
-      if (perms.tabs.operations) redirect("/astelfin_26/invoices");
-      if (perms.tabs.projects)   redirect("/astelfin_26/projects");
-      if (perms.tabs.bizdev)     redirect("/astelfin_26/bizdev");
+      if (perms.tabs.finance)         redirect("/astelfin_26/dashboard");
+      if (perms.functions.canViewPayroll) redirect("/astelfin_26/payroll");
+      if (perms.tabs.operations)      redirect("/astelfin_26/invoices");
+      if (perms.tabs.projects)        redirect("/astelfin_26/projects");
+      if (perms.tabs.bizdev)          redirect("/astelfin_26/bizdev");
       redirect("/astelfin_26/my");
     }
   }
 
-  const isLimitedRole = !isCEO && !isFM;
+  // Operational badge counts are shown to users who can act on those queues.
+  const showOpsBadges = isCEO || perms.tabs.operations || perms.tabs.finance;
 
   // Fetch organisations for the switcher
   const [orgs, activeOrgId] = await Promise.all([
@@ -101,14 +102,14 @@ export default async function PrivateFinanceLayout({
   // Fetch sidebar badge counts
   const now = new Date();
   const [pendingCount, pendingInvoices, pendingLiquidations, overduePayables, overdueReceivables] =
-    isLimitedRole
+    !showOpsBadges
       ? [0, 0, 0, 0, 0]
       : await Promise.all([
           prisma.pendingChange.count({ where: { status: "PENDING" } }),
           prisma.submission.count({
             where: {
               status: {
-                in: isFM ? ["PENDING_FM"] : ["PENDING_CEO", "APPROVED"],
+                in: isCEO ? ["PENDING_CEO", "APPROVED"] : ["PENDING_FM"],
               },
             },
           }),
