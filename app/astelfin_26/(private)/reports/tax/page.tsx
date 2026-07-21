@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
-import { getEffectivePermissions } from "@/lib/permissions";
+import { resolveAccess } from "@/lib/access";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { sendTaxReport } from "@/lib/mail";
@@ -31,7 +31,8 @@ async function emailMonthlyReport(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTax")) redirect("/astelfin_26/my");
 
   const month = parseInt(formData.get("month") as string);
   const year  = parseInt(formData.get("year")  as string);
@@ -74,7 +75,8 @@ async function emailAnnualReport(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTax")) redirect("/astelfin_26/my");
 
   const year = parseInt(formData.get("year") as string);
 
@@ -124,19 +126,13 @@ export default async function TaxDashboardPage({
   if (!session?.user) redirect("/astelfin_26/login");
   const role = session.user.role;
 
-  // Access: CEO/FM always; other roles need the "View Payroll & Tax Dashboard"
-  // permission. canManage gates write actions (record/email remittances).
-  const canManage = role === "CEO" || role === "FINANCE_MANAGER";
-  let canView = canManage;
-  if (!canManage) {
-    const dbUser = await prisma.user.findUnique({
-      where:  { id: session.user.id! },
-      select: { permissions: true },
-    });
-    const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
-    canView = perms.functions.canViewPayroll;
-  }
-  if (!canView) redirect("/astelfin_26/dashboard");
+  // Access is permission-driven. canManage gates write actions (record/email
+  // remittances) via the "Record Tax Remittances" grant; canView also allows the
+  // read-only "View Payroll & Tax Dashboard" grant.
+  const access = await resolveAccess(session);
+  const canManage = !!access?.can("canManageTax");
+  const canView   = canManage || !!access?.can("canViewPayroll");
+  if (!canView) redirect("/astelfin_26/my");
 
   const now         = new Date();
   const currentYear = now.getFullYear();

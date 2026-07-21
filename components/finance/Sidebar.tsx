@@ -295,9 +295,11 @@ export default function Sidebar({
   const showHR         = isCEO || isPM || !!permissions?.tabs.finance; // HR lives under the Finance & HR tab
   const showASIL       = isCEO || !!permissions?.tabs.asil;
 
-  // View-only payroll/tax access granted to a user who has NO broader Finance
+  // Payroll/Tax links for a user granted those capabilities but NO broader Finance
   // section — CEO and finance-tab holders already reach these via that section.
-  const showPayrollView = !isCEO && !permissions?.tabs.finance && !!permissions?.functions.canViewPayroll;
+  const showPayroll = !!permissions?.functions.canViewPayroll || !!permissions?.functions.canProcessPayroll;
+  const showTax     = !!permissions?.functions.canViewPayroll || !!permissions?.functions.canManageTax;
+  const showPayrollView = !isCEO && !permissions?.tabs.finance && (showPayroll || showTax);
 
   // ── Determine which section the current path belongs to ──────────────────
   const financePaths   = ["/astelfin_26/dashboard", "/astelfin_26/income", "/astelfin_26/expenses",
@@ -452,8 +454,8 @@ export default function Sidebar({
           <>
             <div className="pt-1" />
             <p className="px-3 pt-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Finance</p>
-            {navLink("/astelfin_26/payroll",     "Payroll",        Icons.payroll)}
-            {navLink("/astelfin_26/reports/tax", "Tax Dashboard",  Icons.tax)}
+            {showPayroll && navLink("/astelfin_26/payroll",     "Payroll",        Icons.payroll)}
+            {showTax     && navLink("/astelfin_26/reports/tax", "Tax Dashboard",  Icons.tax)}
           </>
         )}
 

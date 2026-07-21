@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -19,7 +20,8 @@ async function reviewLeave(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageLeave")) redirect("/astelfin_26/my");
 
   const id = formData.get("id") as string;
   const action = formData.get("action") as string;
@@ -52,6 +54,8 @@ async function upsertPolicy(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageLeave")) redirect("/astelfin_26/my");
 
   const leaveType = formData.get("leaveType") as string;
   const daysPerYear = parseFloat(formData.get("daysPerYear") as string) || 0;

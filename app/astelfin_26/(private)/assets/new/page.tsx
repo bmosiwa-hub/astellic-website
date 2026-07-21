@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { redirect } from "next/navigation";
@@ -32,7 +33,8 @@ async function addAsset(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageAssets")) redirect("/astelfin_26/my");
 
   const name         = formData.get("name") as string;
   const category     = formData.get("category") as string;

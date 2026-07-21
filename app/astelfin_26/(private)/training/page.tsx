@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -11,6 +12,8 @@ async function addTraining(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTraining")) redirect("/astelfin_26/my");
 
   await prisma.trainingRecord.create({
     data: {
@@ -32,6 +35,8 @@ async function addQualification(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTraining")) redirect("/astelfin_26/my");
 
   await prisma.qualification.create({
     data: {

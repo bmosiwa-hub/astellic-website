@@ -1,11 +1,11 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
-import { getEffectivePermissions } from "@/lib/permissions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -79,18 +79,12 @@ export default async function PayrollPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
-  // Access: CEO/FM always; other roles need the "View Payroll & Tax Dashboard"
-  // permission. canManage gates write actions (run payroll, lock, export).
-  const role = session.user.role;
-  const canManage = role === "CEO" || role === "FINANCE_MANAGER";
-  if (!canManage) {
-    const dbUser = await prisma.user.findUnique({
-      where:  { id: session.user.id! },
-      select: { permissions: true },
-    });
-    const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
-    if (!perms.functions.canViewPayroll) redirect("/astelfin_26/dashboard");
-  }
+  // Access is permission-driven: "Process Payroll" or the read-only
+  // "View Payroll & Tax Dashboard" grant. canManage gates the run/export controls.
+  const access = await resolveAccess(session);
+  const canManage = !!access?.can("canProcessPayroll");
+  const canView   = canManage || !!access?.can("canViewPayroll");
+  if (!canView) redirect("/astelfin_26/my");
 
   const now = new Date();
 

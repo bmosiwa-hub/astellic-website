@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { formatCurrency, formatDate } from "@/lib/finance-utils";
@@ -52,7 +53,8 @@ async function updateAsset(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageAssets")) redirect("/astelfin_26/my");
 
   const id           = formData.get("assetId") as string;
   const name         = formData.get("name") as string;
@@ -143,7 +145,8 @@ async function saveInsurance(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageAssets")) redirect("/astelfin_26/my");
 
   const assetId        = formData.get("assetId") as string;
   const insurer        = formData.get("insurer") as string;
@@ -213,7 +216,7 @@ export default async function AssetDetailPage({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
 
   const { id }      = await params;
   const { success } = await searchParams;
@@ -225,7 +228,8 @@ export default async function AssetDetailPage({
 
   if (!asset) notFound();
 
-  const isCEO = role === "CEO";
+  const isCEO      = !!access?.isCEO;
+  const canManage  = !!access?.can("canManageAssets");
 
   const today      = new Date();
   const thirtyDays = new Date(today);

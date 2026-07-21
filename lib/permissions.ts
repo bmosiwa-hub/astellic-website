@@ -213,7 +213,9 @@ export const MY_PATHS = [
  * handing over the entire section.
  */
 export const FUNCTION_PATHS: Partial<Record<keyof FunctionPermissions, string[]>> = {
-  canViewPayroll: ["/astelfin_26/payroll", "/astelfin_26/reports/tax"],
+  canViewPayroll:    ["/astelfin_26/payroll", "/astelfin_26/reports/tax"],
+  canProcessPayroll: ["/astelfin_26/payroll"],
+  canManageTax:      ["/astelfin_26/reports/tax"],
 };
 
 /** Check if a given pathname is accessible with these permissions. */

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/finance-utils";
 import { redirect } from "next/navigation";
@@ -32,7 +33,8 @@ export default async function RecordTaxRemittancePage({
   const { type, error } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canManageTax")) redirect("/astelfin_26/reports/tax");
 
   // ── Fetch outstanding records by type ─────────────────────────────────────
 

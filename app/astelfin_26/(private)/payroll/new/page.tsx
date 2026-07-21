@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
@@ -23,7 +24,8 @@ async function runPayrollForEmployee(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canProcessPayroll")) redirect("/astelfin_26/my");
 
   const employeeId      = formData.get("employeeId") as string;
   const period          = formData.get("period") as string;
@@ -204,7 +206,8 @@ export default async function NewPayrollPage({
 
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const role = session.user.role;
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canProcessPayroll")) redirect("/astelfin_26/my");
 
   // Default period to launch month (June 2026) or later
   const currentPeriod = new Date().toISOString().slice(0, 7);

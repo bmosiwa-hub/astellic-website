@@ -28,7 +28,7 @@ export default async function PayslipPage({
       select: { permissions: true },
     });
     const perms = getEffectivePermissions(role, dbUser?.permissions ?? null);
-    if (!perms.functions.canViewPayroll) redirect("/astelfin_26/dashboard");
+    if (!perms.functions.canViewPayroll && !perms.functions.canProcessPayroll) redirect("/astelfin_26/dashboard");
   }
 
   const payroll = await prisma.payroll.findUnique({
