@@ -121,6 +121,11 @@ export default async function RecordTaxRemittancePage({
           Please enter the CIT amount to remit.
         </div>
       )}
+      {error === "upload_failed" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Your proof document could not be uploaded to storage. Nothing was saved — please re-attach it and submit again.
+        </div>
+      )}
 
       {/* Step 1 — Tax type selector */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">

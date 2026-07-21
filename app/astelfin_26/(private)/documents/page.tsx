@@ -94,11 +94,18 @@ async function uploadDocument(formData: FormData) {
     redirect("/astelfin_26/documents?error=missing_fields");
   }
 
-  const blob = await put(
-    `documents/${Date.now()}-${file!.name}`,
-    file!,
-    { access: "public", addRandomSuffix: true }
-  );
+  let blob;
+  try {
+    blob = await put(
+      `documents/${Date.now()}-${file!.name}`,
+      file!,
+      { access: "public", addRandomSuffix: true }
+    );
+  } catch {
+    // Storage upload failed — surface it so the user can retry, rather than
+    // recording a document row that points at nothing.
+    redirect("/astelfin_26/documents?error=upload_failed");
+  }
 
   const doc = await prisma.document.create({
     data: {
@@ -233,6 +240,11 @@ export default async function DocumentsPage({
       {error === "missing_fields" && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
           Please fill in all required fields and attach a file.
+        </div>
+      )}
+      {error === "upload_failed" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          The file could not be uploaded to storage. Nothing was saved — please try uploading again.
         </div>
       )}
 

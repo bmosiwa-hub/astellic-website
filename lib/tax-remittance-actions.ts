@@ -98,11 +98,18 @@ export async function createTaxRemittance(formData: FormData) {
   let proofUrl:      string | null = null;
   let proofFilename: string | null = null;
   if (proofFile && proofFile.size > 0) {
-    const blob = await put(
-      `tax-remittances/${Date.now()}-${proofFile.name}`,
-      proofFile,
-      { access: "public", addRandomSuffix: true }
-    );
+    let blob;
+    try {
+      blob = await put(
+        `tax-remittances/${Date.now()}-${proofFile.name}`,
+        proofFile,
+        { access: "public", addRandomSuffix: true }
+      );
+    } catch {
+      // Storage upload failed — send the user back with a clear message instead
+      // of a raw 500, so they can retry.
+      redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=upload_failed`);
+    }
     proofUrl      = blob.url;
     proofFilename = proofFile.name;
   }

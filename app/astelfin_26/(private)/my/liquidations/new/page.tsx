@@ -13,9 +13,9 @@ export const metadata = {
 export default async function NewLiquidationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ submissionId?: string }>;
+  searchParams: Promise<{ submissionId?: string; error?: string }>;
 }) {
-  const { submissionId } = await searchParams;
+  const { submissionId, error } = await searchParams;
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
 
@@ -56,6 +56,12 @@ export default async function NewLiquidationPage({
           ← Back
         </Link>
       </div>
+
+      {error === "upload_failed" && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          Your documents could not be uploaded to storage, so nothing was saved. Please re-attach the files and submit again.
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
         <form action={action} className="space-y-6" encType="multipart/form-data">

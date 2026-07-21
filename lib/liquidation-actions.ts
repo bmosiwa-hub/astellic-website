@@ -27,6 +27,35 @@ export async function createLiquidation(formData: FormData): Promise<void> {
   const currency       = (formData.get("currency") as string) || "MWK";
   const refundRequired = fundsReceived - fundsAccountedFor;
 
+  // Upload documents FIRST, before creating any record. If storage fails we
+  // redirect back with an error and nothing is saved — the user re-submits,
+  // rather than ending up with a liquidation whose receipts silently vanished.
+  const docTypes = [
+    { field: "receipts",           type: "RECEIPT" },
+    { field: "refundProof",        type: "REFUND_PROOF" },
+    { field: "overExpenditureProof", type: "OVER_EXPENDITURE_PROOF" },
+    { field: "priorApprovalProof", type: "PRIOR_APPROVAL_PROOF" },
+  ] as const;
+
+  const uploadPrefix = crypto.randomUUID();
+  const uploaded: { docType: (typeof docTypes)[number]["type"]; url: string; filename: string }[] = [];
+  try {
+    for (const { field, type: docType } of docTypes) {
+      const files = formData.getAll(field) as File[];
+      for (const file of files) {
+        if (!file || file.size === 0) continue;
+        const blob = await put(
+          `liquidations/${uploadPrefix}/${docType.toLowerCase()}-${Date.now()}-${file.name}`,
+          file,
+          { access: "public", addRandomSuffix: true }
+        );
+        uploaded.push({ docType, url: blob.url, filename: file.name });
+      }
+    }
+  } catch {
+    redirect(`/astelfin_26/my/liquidations/new?submissionId=${submissionId}&error=upload_failed`);
+  }
+
   const liq = await prisma.liquidation.create({
     data: {
       submissionId,
@@ -41,36 +70,15 @@ export async function createLiquidation(formData: FormData): Promise<void> {
     },
   });
 
-  // Process document uploads
-  const docTypes = [
-    { field: "receipts",           type: "RECEIPT" },
-    { field: "refundProof",        type: "REFUND_PROOF" },
-    { field: "overExpenditureProof", type: "OVER_EXPENDITURE_PROOF" },
-    { field: "priorApprovalProof", type: "PRIOR_APPROVAL_PROOF" },
-  ] as const;
-
-  for (const { field, type: docType } of docTypes) {
-    const files = formData.getAll(field) as File[];
-    for (const file of files) {
-      if (!file || file.size === 0) continue;
-      try {
-        const blob = await put(
-          `liquidations/${liq.id}/${docType.toLowerCase()}-${Date.now()}-${file.name}`,
-          file,
-          { access: "public", addRandomSuffix: true }
-        );
-        await prisma.liquidationDocument.create({
-          data: {
-            liquidationId: liq.id,
-            docType,
-            url: blob.url,
-            filename: file.name,
-          },
-        });
-      } catch {
-        // File upload failed — skip silently (FM will notice missing docs)
-      }
-    }
+  if (uploaded.length > 0) {
+    await prisma.liquidationDocument.createMany({
+      data: uploaded.map((u) => ({
+        liquidationId: liq.id,
+        docType:       u.docType,
+        url:           u.url,
+        filename:      u.filename,
+      })),
+    });
   }
 
   await auditLog({
