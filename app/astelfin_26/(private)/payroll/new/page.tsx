@@ -169,7 +169,7 @@ async function runPayrollForEmployee(formData: FormData) {
         await tx.accountPayable.create({
           data: {
             description: pensionDesc,
-            vendor:      "Pension Fund",
+            vendor:      "NICO Insurance (Pension Fund)",
             amount:      totalPensionMWK,
             currency:    "MWK",
             dueDate,

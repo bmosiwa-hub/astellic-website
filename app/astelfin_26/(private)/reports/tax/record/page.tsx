@@ -13,7 +13,7 @@ export const metadata = {
 
 const TAX_TYPES = [
   { value: "PAYE",    label: "PAYE (Pay As You Earn)",      desc: "Monthly employee income tax deducted from salary" },
-  { value: "PENSION", label: "Pension Contributions",        desc: "Employee pension fund remittances" },
+  { value: "PENSION", label: "Pension Contributions",        desc: "Pension remittances to NICO (employee 5% + employer 10%)" },
   { value: "WHT",     label: "WHT (Withholding Tax)",        desc: "20% withholding on consultant professional fees" },
   { value: "CIT",     label: "CIT (Corporate Income Tax)",   desc: "30% annual tax on company net profit" },
 ];
@@ -62,9 +62,16 @@ export default async function RecordTaxRemittancePage({
       })
     : [];
 
+  // Full pension payable to NICO per record = employee (5%) + employer (10%), in MWK.
+  const pensionMWK = (r: { pension: number; pensionEmployer: number; exchangeRateUsed: number | null }) =>
+    (r.exchangeRateUsed ? r.pension * r.exchangeRateUsed : r.pension) + r.pensionEmployer;
+
   const totalPAYE    = payeRecords.reduce((s, r) => s + r.paye, 0);
-  const totalPension = pensionRecords.reduce((s, r) => s + r.pension, 0);
+  const totalPension = pensionRecords.reduce((s, r) => s + pensionMWK(r), 0);
   const totalWHT     = whtRecords.reduce((s, r) => s + r.withholdingTax, 0);
+
+  // Pension is remitted to NICO Insurance; all other statutory taxes to the MRA.
+  const authority = type === "PENSION" ? "NICO Insurance" : "MRA";
 
   // Group PAYE / PENSION by period
   const payeByPeriod    = payeRecords.reduce<Record<string, typeof payeRecords>>((acc, r) => {
@@ -124,6 +131,11 @@ export default async function RecordTaxRemittancePage({
       {error === "upload_failed" && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
           Your proof document could not be uploaded to storage. Nothing was saved — please re-attach it and submit again.
+        </div>
+      )}
+      {error === "already_pending" && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 text-sm">
+          A remittance for this tax type and period is already awaiting CEO approval. Review or approve that one instead of creating a duplicate.
         </div>
       )}
 
@@ -226,7 +238,7 @@ export default async function RecordTaxRemittancePage({
                   <div className="px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                     <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{period}</span>
                     <span className="text-xs text-orange-600 font-semibold">
-                      {formatCurrency(records.reduce((s, r) => s + r.pension, 0))} Pension
+                      {formatCurrency(records.reduce((s, r) => s + pensionMWK(r), 0))} Pension
                     </span>
                   </div>
                   <table className="w-full text-sm">
@@ -235,7 +247,7 @@ export default async function RecordTaxRemittancePage({
                         <th className="w-10 px-5 py-2" />
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Employee</th>
                         <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Gross</th>
-                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Pension</th>
+                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Pension (15%)</th>
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Status</th>
                       </tr>
                     </thead>
@@ -251,7 +263,7 @@ export default async function RecordTaxRemittancePage({
                             {formatCurrency(r.grossSalary, r.currency)}
                           </td>
                           <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
-                            {formatCurrency(r.pension)}
+                            {formatCurrency(pensionMWK(r))}
                           </td>
                           <td className="px-5 py-2.5">
                             <StatusBadge status={r.pensionStatus} />
@@ -363,16 +375,16 @@ export default async function RecordTaxRemittancePage({
                     <input type="radio" name="remittanceType" value="PAID" defaultChecked
                       className="mt-0.5 text-brand-gold focus:ring-brand-gold" />
                     <div>
-                      <p className="text-sm font-semibold text-brand-navy">Paid to MRA</p>
-                      <p className="text-xs text-gray-500">Tax was remitted and payment made to MRA</p>
+                      <p className="text-sm font-semibold text-brand-navy">Paid to {authority}</p>
+                      <p className="text-xs text-gray-500">Remitted and payment made to {authority}</p>
                     </div>
                   </label>
                   <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 has-[:checked]:border-purple-400 has-[:checked]:bg-purple-50/40">
                     <input type="radio" name="remittanceType" value="WAIVED"
                       className="mt-0.5 text-purple-600 focus:ring-purple-600" />
                     <div>
-                      <p className="text-sm font-semibold text-purple-800">MRA Remission / Waiver</p>
-                      <p className="text-xs text-gray-500">Obligation cleared by MRA without payment</p>
+                      <p className="text-sm font-semibold text-purple-800">{authority} Remission / Waiver</p>
+                      <p className="text-xs text-gray-500">Obligation cleared by {authority} without payment</p>
                     </div>
                   </label>
                 </div>
@@ -382,7 +394,7 @@ export default async function RecordTaxRemittancePage({
                   Proof Document <span className="text-red-500">*</span>
                 </label>
                 <p className="text-xs text-gray-400 mb-2">
-                  Upload MRA receipt (Paid) or MRA waiver/remission letter (Waived).
+                  Upload {authority} receipt (Paid) or {authority} waiver/remission letter (Waived).
                 </p>
                 <input type="file" name="proof" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                   className="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-gold file:text-white hover:file:bg-brand-gold/90 border border-gray-200 rounded-lg px-3 py-2 cursor-pointer" />

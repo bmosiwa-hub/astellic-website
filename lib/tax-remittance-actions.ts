@@ -69,6 +69,16 @@ export async function createTaxRemittance(formData: FormData) {
     redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=no_amount`);
   }
 
+  // Guard against repeated submissions (double-clicks) creating duplicate pending
+  // remittances for the same tax type and period.
+  const existingPending = await prisma.taxRemittance.findFirst({
+    where:  { taxType, period, status: "PENDING_CEO" },
+    select: { id: true },
+  });
+  if (existingPending) {
+    redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=already_pending`);
+  }
+
   // Calculate total
   let amount = isCIT ? manualAmount : 0;
   if (payrollIds.length > 0) {
@@ -88,9 +98,13 @@ export async function createTaxRemittance(formData: FormData) {
   if (pensionIds.length > 0) {
     const records = await prisma.payroll.findMany({
       where: { id: { in: pensionIds } },
-      select: { pension: true },
+      select: { pension: true, pensionEmployer: true, exchangeRateUsed: true },
     });
-    amount = records.reduce((s, r) => s + r.pension, 0);
+    // Full pension payable to NICO = employee (5%) + employer (10%), in MWK.
+    amount = records.reduce((s, r) => {
+      const employeeMWK = r.exchangeRateUsed ? r.pension * r.exchangeRateUsed : r.pension;
+      return s + employeeMWK + r.pensionEmployer;
+    }, 0);
   }
 
   // Upload proof (required)
@@ -240,8 +254,12 @@ export async function approveTaxRemittance(formData: FormData) {
   // Mark the underlying records as REMITTED or WAIVED
   const finalStatus = remittance!.remittanceType === "WAIVED" ? "WAIVED" : "REMITTED";
 
-  // Record the cash outflow so the dashboard balance reflects this remittance
+  // Record the cash outflow so the dashboard balance reflects this remittance.
+  // Pension is remitted to NICO Insurance; all other statutory taxes to the MRA.
   if (finalStatus === "REMITTED") {
+    const remitVendor = remittance!.taxType === "PENSION"
+      ? "NICO Insurance (Pension Fund)"
+      : "Malawi Revenue Authority";
     await prisma.expense.create({
       data: {
         description: `Tax Remittance — ${remittance!.taxType} — ${remittance!.period}`,
@@ -249,7 +267,7 @@ export async function approveTaxRemittance(formData: FormData) {
         currency:    "MWK",
         category:    "Tax",
         paidDate:    new Date(),
-        vendor:      "Malawi Revenue Authority",
+        vendor:      remitVendor,
         notes:       `Auto-generated from tax remittance approval (TaxRemittance ID: ${remittanceId})`,
       },
     });

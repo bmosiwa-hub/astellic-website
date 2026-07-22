@@ -143,7 +143,7 @@ export default async function TaxDashboardPage({
   const activeOrgId = await getActiveOrgId(session);
   const orgFilter   = orgWhere(activeOrgId);
 
-  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, outstandingPAYE, outstandingWHT, outstandingPensionRecords] = await Promise.all([
+  const [payrollRecords, whtRecords, ytdIncome, ytdExpenses, pendingRemittances, recentRemittances, approvedRemittances] = await Promise.all([
     // Payroll PAYE/pension (org-scoped)
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
@@ -177,23 +177,12 @@ export default async function TaxDashboardPage({
       orderBy: { createdAt: "desc" },
       take:    20,
     }),
-    // Outstanding PAYE (org-scoped)
-    prisma.payroll.aggregate({
-      _sum:   { paye: true },
-      where:  { payeStatus: "OUTSTANDING", paye: { gt: 0 }, ...orgFilter },
-    }),
-    // Outstanding WHT (global)
-    prisma.consultantPayment.aggregate({
-      _sum:   { withholdingTax: true },
-      where:  { whtStatus: "OUTSTANDING", withholdingTax: { gt: 0 } },
-    }),
-    // Outstanding Pension (org-scoped) — findMany, not aggregate, so each
-    // record's employee-side pension can be converted to MWK individually
-    // (pension is stored in the employee's native currency; mixing currencies
-    // in a raw SQL SUM would silently misreport foreign-currency salaries)
-    prisma.payroll.findMany({
-      where:  { pensionStatus: "OUTSTANDING", pension: { gt: 0 }, ...orgFilter },
-      select: { pension: true, pensionEmployer: true, grossSalary: true, exchangeRateUsed: true },
+    // Approved remittances this year. The tax owed is the obligation minus what
+    // the CEO has actually approved as remitted (or waived) — so a balance only
+    // reduces on approval, never when salary is merely paid.
+    prisma.taxRemittance.findMany({
+      where:  { status: "CEO_APPROVED", createdAt: { gte: yearStart, lte: yearEnd } },
+      select: { taxType: true, amount: true },
     }),
   ]);
 
@@ -208,6 +197,10 @@ export default async function TaxDashboardPage({
     const impliedRate = (p.pensionEmployer * 10) / p.grossSalary;
     return p.pension * impliedRate;
   }
+  // Total pension payable to NICO = employee (5%) + employer (10%) = 15% of gross.
+  function totalPensionMWK(p: { pension: number; pensionEmployer: number; grossSalary: number; exchangeRateUsed: number | null }): number {
+    return employeePensionMWK(p) + p.pensionEmployer;
+  }
 
   // Group by calendar month
   const payeByMonth    = Array.from({ length: 12 }, () => 0);
@@ -216,7 +209,7 @@ export default async function TaxDashboardPage({
 
   for (const p of payrollRecords) {
     payeByMonth[p.createdAt.getMonth()]    += p.paye;
-    pensionByMonth[p.createdAt.getMonth()] += employeePensionMWK(p);
+    pensionByMonth[p.createdAt.getMonth()] += totalPensionMWK(p);
   }
   for (const w of whtRecords) whtByMonth[w.createdAt.getMonth()] += w.withholdingTax;
 
@@ -227,10 +220,16 @@ export default async function TaxDashboardPage({
   const corpTaxEst          = netBalance > 0 ? netBalance * CORP_TAX_RATE : 0;
   const totalTax            = totalPAYE + totalPension + totalWHT + corpTaxEst;
   const currentMonth        = now.getMonth() + 1; // 1-indexed
-  const outstandingPAYEAmt    = outstandingPAYE._sum.paye ?? 0;
-  const outstandingWHTAmt     = outstandingWHT._sum.withholdingTax ?? 0;
-  const outstandingPensionAmt = outstandingPensionRecords.reduce((s, p) => s + employeePensionMWK(p), 0);
-  const totalOutstanding      = outstandingPAYEAmt + outstandingWHTAmt + outstandingPensionAmt;
+
+  // What has already been remitted (CEO-approved) this year, per tax type.
+  const remitted: Record<string, number> = {};
+  for (const r of approvedRemittances) remitted[r.taxType] = (remitted[r.taxType] ?? 0) + r.amount;
+
+  const outstandingPAYEAmt    = Math.max(0, totalPAYE    - (remitted.PAYE    ?? 0));
+  const outstandingPensionAmt = Math.max(0, totalPension - (remitted.PENSION ?? 0));
+  const outstandingWHTAmt     = Math.max(0, totalWHT     - (remitted.WHT     ?? 0));
+  const outstandingCITAmt     = Math.max(0, corpTaxEst   - (remitted.CIT     ?? 0));
+  const totalOutstanding      = outstandingPAYEAmt + outstandingPensionAmt + outstandingWHTAmt + outstandingCITAmt;
 
   return (
     <div className="max-w-5xl space-y-7">
@@ -316,6 +315,7 @@ export default async function TaxDashboardPage({
                     outstandingPAYEAmt    > 0 && `PAYE: ${formatCurrency(outstandingPAYEAmt)}`,
                     outstandingPensionAmt > 0 && `Pension: ${formatCurrency(outstandingPensionAmt)}`,
                     outstandingWHTAmt     > 0 && `WHT: ${formatCurrency(outstandingWHTAmt)}`,
+                    outstandingCITAmt     > 0 && `CIT: ${formatCurrency(outstandingCITAmt)}`,
                   ].filter(Boolean).join(" · ")}
                 </p>
               </div>
