@@ -147,12 +147,12 @@ export default async function TaxDashboardPage({
     // Payroll PAYE/pension (org-scoped)
     prisma.payroll.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd }, ...orgFilter },
-      select: { paye: true, pension: true, pensionEmployer: true, grossSalary: true, exchangeRateUsed: true, createdAt: true },
+      select: { paye: true, payeRemitted: true, pension: true, pensionEmployer: true, pensionRemitted: true, grossSalary: true, exchangeRateUsed: true, createdAt: true },
     }),
     // WHT from consultant payments (global — ConsultantPayment has no organisationId)
     prisma.consultantPayment.findMany({
       where:  { createdAt: { gte: yearStart, lte: yearEnd } },
-      select: { withholdingTax: true, createdAt: true },
+      select: { withholdingTax: true, whtRemitted: true, createdAt: true },
     }),
     // YTD income (org-scoped)
     prisma.income.aggregate({
@@ -221,14 +221,18 @@ export default async function TaxDashboardPage({
   const totalTax            = totalPAYE + totalPension + totalWHT + corpTaxEst;
   const currentMonth        = now.getMonth() + 1; // 1-indexed
 
-  // What has already been remitted (CEO-approved) this year, per tax type.
-  const remitted: Record<string, number> = {};
-  for (const r of approvedRemittances) remitted[r.taxType] = (remitted[r.taxType] ?? 0) + r.amount;
+  // Outstanding = each record's obligation minus what has actually been remitted
+  // against it (running balance), so partial payments across several remittances
+  // net down precisely. CIT has no records, so it uses the estimate minus
+  // approved CIT remittances.
+  const remittedCIT = approvedRemittances
+    .filter((r) => r.taxType === "CIT")
+    .reduce((s, r) => s + r.amount, 0);
 
-  const outstandingPAYEAmt    = Math.max(0, totalPAYE    - (remitted.PAYE    ?? 0));
-  const outstandingPensionAmt = Math.max(0, totalPension - (remitted.PENSION ?? 0));
-  const outstandingWHTAmt     = Math.max(0, totalWHT     - (remitted.WHT     ?? 0));
-  const outstandingCITAmt     = Math.max(0, corpTaxEst   - (remitted.CIT     ?? 0));
+  const outstandingPAYEAmt    = payrollRecords.reduce((s, p) => s + Math.max(0, p.paye - p.payeRemitted), 0);
+  const outstandingPensionAmt = payrollRecords.reduce((s, p) => s + Math.max(0, totalPensionMWK(p) - p.pensionRemitted), 0);
+  const outstandingWHTAmt     = whtRecords.reduce((s, w) => s + Math.max(0, w.withholdingTax - w.whtRemitted), 0);
+  const outstandingCITAmt     = Math.max(0, corpTaxEst - remittedCIT);
   const totalOutstanding      = outstandingPAYEAmt + outstandingPensionAmt + outstandingWHTAmt + outstandingCITAmt;
 
   return (

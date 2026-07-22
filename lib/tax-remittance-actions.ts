@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
 import { assertNotSelfApproval } from "@/lib/self-approval";
@@ -11,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { sendMail } from "@/lib/mail";
 import { resolveAccess } from "@/lib/access";
+import { allocateRemittance } from "@/lib/finance-utils";
 
 const BASE_URL = process.env.NEXTAUTH_URL ?? "https://astellic.com";
 
@@ -81,31 +83,32 @@ export async function createTaxRemittance(formData: FormData) {
     redirect(`/astelfin_26/reports/tax/record?type=${taxType}&error=already_pending`);
   }
 
-  // Calculate total
+  // Calculate the remaining obligation (net of anything already remitted) for the
+  // selected records — this is the default the amount-paid field was pre-filled with.
   let amount = isCIT ? manualAmount : 0;
   if (payrollIds.length > 0) {
     const records = await prisma.payroll.findMany({
       where: { id: { in: payrollIds } },
-      select: { paye: true },
+      select: { paye: true, payeRemitted: true },
     });
-    amount = records.reduce((s, r) => s + r.paye, 0);
+    amount = records.reduce((s, r) => s + Math.max(0, r.paye - r.payeRemitted), 0);
   }
   if (consultantPaymentIds.length > 0) {
     const records = await prisma.consultantPayment.findMany({
       where: { id: { in: consultantPaymentIds } },
-      select: { withholdingTax: true },
+      select: { withholdingTax: true, whtRemitted: true },
     });
-    amount += records.reduce((s, r) => s + r.withholdingTax, 0);
+    amount += records.reduce((s, r) => s + Math.max(0, r.withholdingTax - r.whtRemitted), 0);
   }
   if (pensionIds.length > 0) {
     const records = await prisma.payroll.findMany({
       where: { id: { in: pensionIds } },
-      select: { pension: true, pensionEmployer: true, exchangeRateUsed: true },
+      select: { pension: true, pensionEmployer: true, exchangeRateUsed: true, pensionRemitted: true },
     });
     // Full pension payable to NICO = employee (5%) + employer (10%), in MWK.
     amount = records.reduce((s, r) => {
       const employeeMWK = r.exchangeRateUsed ? r.pension * r.exchangeRateUsed : r.pension;
-      return s + employeeMWK + r.pensionEmployer;
+      return s + Math.max(0, employeeMWK + r.pensionEmployer - r.pensionRemitted);
     }, 0);
   }
 
@@ -281,49 +284,70 @@ export async function approveTaxRemittance(formData: FormData) {
     });
   }
 
-  // If the amount paid fully covers the obligation of the attached records (or it
-  // was waived), clear them; if it was a partial payment, return them to
-  // OUTSTANDING so the residual can still be remitted later. Small epsilon for
-  // floating-point rounding.
+  // Apply the amount actually paid against each record's running balance.
+  // A waiver clears the full remaining obligation; a payment is allocated across
+  // the selected records in proportion to what each still owes. A record is
+  // marked done (REMITTED/WAIVED) only once its running balance is fully covered;
+  // otherwise it returns to OUTSTANDING so the residual can be remitted later.
   const isWaived = remittance!.remittanceType === "WAIVED";
+
+  /** Attach a proportional allocation to each record based on its remaining balance. */
+  function allocate<T extends { remaining: number }>(records: T[], paid: number): (T & { alloc: number })[] {
+    const allocs = allocateRemittance(records.map((r) => r.remaining), paid, isWaived);
+    return records.map((r, i) => ({ ...r, alloc: allocs[i] }));
+  }
+
+  const txOps: Prisma.PrismaPromise<unknown>[] = [];
 
   if (remittance!.payrollIds.length > 0) {
     const recs = await prisma.payroll.findMany({
-      where: { id: { in: remittance!.payrollIds } }, select: { paye: true },
-    });
-    const obligation = recs.reduce((s, r) => s + r.paye, 0);
-    const covered    = isWaived || remittance!.amount + 0.01 >= obligation;
-    await prisma.payroll.updateMany({
       where: { id: { in: remittance!.payrollIds } },
-      data:  { payeStatus: covered ? finalStatus : "OUTSTANDING" },
+      select: { id: true, paye: true, payeRemitted: true },
     });
+    const alloc = allocate(recs.map((r) => ({ ...r, remaining: Math.max(0, r.paye - r.payeRemitted) })), remittance!.amount);
+    for (const r of alloc) {
+      const newRemitted = r.payeRemitted + r.alloc;
+      txOps.push(prisma.payroll.update({
+        where: { id: r.id },
+        data:  { payeRemitted: newRemitted, payeStatus: newRemitted + 0.01 >= r.paye ? finalStatus : "OUTSTANDING" },
+      }));
+    }
   }
   if (remittance!.consultantPaymentIds.length > 0) {
     const recs = await prisma.consultantPayment.findMany({
-      where: { id: { in: remittance!.consultantPaymentIds } }, select: { withholdingTax: true },
-    });
-    const obligation = recs.reduce((s, r) => s + r.withholdingTax, 0);
-    const covered    = isWaived || remittance!.amount + 0.01 >= obligation;
-    await prisma.consultantPayment.updateMany({
       where: { id: { in: remittance!.consultantPaymentIds } },
-      data:  { whtStatus: covered ? finalStatus : "OUTSTANDING" },
+      select: { id: true, withholdingTax: true, whtRemitted: true },
     });
+    const alloc = allocate(recs.map((r) => ({ ...r, remaining: Math.max(0, r.withholdingTax - r.whtRemitted) })), remittance!.amount);
+    for (const r of alloc) {
+      const newRemitted = r.whtRemitted + r.alloc;
+      txOps.push(prisma.consultantPayment.update({
+        where: { id: r.id },
+        data:  { whtRemitted: newRemitted, whtStatus: newRemitted + 0.01 >= r.withholdingTax ? finalStatus : "OUTSTANDING" },
+      }));
+    }
   }
   if (remittance!.pensionIds.length > 0) {
     const recs = await prisma.payroll.findMany({
       where: { id: { in: remittance!.pensionIds } },
-      select: { pension: true, pensionEmployer: true, exchangeRateUsed: true },
+      select: { id: true, pension: true, pensionEmployer: true, exchangeRateUsed: true, pensionRemitted: true },
     });
-    const obligation = recs.reduce((s, r) => {
+    const withObligation = recs.map((r) => {
       const employeeMWK = r.exchangeRateUsed ? r.pension * r.exchangeRateUsed : r.pension;
-      return s + employeeMWK + r.pensionEmployer;
-    }, 0);
-    const covered = isWaived || remittance!.amount + 0.01 >= obligation;
-    await prisma.payroll.updateMany({
-      where: { id: { in: remittance!.pensionIds } },
-      data:  { pensionStatus: covered ? finalStatus : "OUTSTANDING" },
+      const obligation  = employeeMWK + r.pensionEmployer;
+      return { id: r.id, obligation, pensionRemitted: r.pensionRemitted, remaining: Math.max(0, obligation - r.pensionRemitted) };
     });
+    const alloc = allocate(withObligation, remittance!.amount);
+    for (const r of alloc) {
+      const newRemitted = r.pensionRemitted + r.alloc;
+      txOps.push(prisma.payroll.update({
+        where: { id: r.id },
+        data:  { pensionRemitted: newRemitted, pensionStatus: newRemitted + 0.01 >= r.obligation ? finalStatus : "OUTSTANDING" },
+      }));
+    }
   }
+
+  if (txOps.length > 0) await prisma.$transaction(txOps);
 
   await auditLog({
     userId:   session!.user!.id!,

@@ -256,6 +256,7 @@ model ConsultantPayment {
   status         PaymentStatus @default(PENDING)
   notes          String?
   whtStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
+  whtRemitted    Float         @default(0)   // MWK actually remitted against this WHT
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   // ── Soft delete ─────────────────────────────────────────────────────────────
@@ -341,6 +342,10 @@ model Payroll {
   notes           String?
   payeStatus      String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
   pensionStatus   String        @default("OUTSTANDING") // OUTSTANDING | PENDING_CEO | REMITTED | WAIVED
+  // Running totals actually remitted (MWK) — support partial payments across
+  // multiple remittances. Outstanding = obligation − remitted.
+  payeRemitted    Float         @default(0)
+  pensionRemitted Float         @default(0)   // MWK, against the full 15% pension obligation
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   overspendingRefunds OverspendingRefund[]

@@ -152,6 +152,26 @@ export function calculateEmployerPension(grossMWK: number, employeePensionRate: 
 }
 
 /**
+ * Split a remittance `paid` across records in proportion to how much each still
+ * owes (`remainings`). A waiver clears each record's full remaining balance.
+ * Each allocation is capped at that record's remaining, so an over-payment never
+ * allocates more than is owed. Returns the amount applied to each record.
+ */
+export function allocateRemittance(
+  remainings: number[],
+  paid: number,
+  waived = false,
+): number[] {
+  if (waived) return remainings.map((r) => Math.max(0, r));
+  const total = remainings.reduce((s, r) => s + Math.max(0, r), 0);
+  if (total <= 0) return remainings.map(() => 0);
+  return remainings.map((r) => {
+    const rem = Math.max(0, r);
+    return Math.min(rem, (paid * rem) / total);
+  });
+}
+
+/**
  * Calculate consultant withholding tax.
  * Default rate: 20% for resident consultants
  */

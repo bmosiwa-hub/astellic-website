@@ -66,9 +66,16 @@ export default async function RecordTaxRemittancePage({
   const pensionMWK = (r: { pension: number; pensionEmployer: number; exchangeRateUsed: number | null }) =>
     (r.exchangeRateUsed ? r.pension * r.exchangeRateUsed : r.pension) + r.pensionEmployer;
 
-  const totalPAYE    = payeRecords.reduce((s, r) => s + r.paye, 0);
-  const totalPension = pensionRecords.reduce((s, r) => s + pensionMWK(r), 0);
-  const totalWHT     = whtRecords.reduce((s, r) => s + r.withholdingTax, 0);
+  // Remaining balance still owed on each record (obligation minus what's already
+  // been remitted), so partial payments show only what's left to pay.
+  const payeRemaining    = (r: { paye: number; payeRemitted: number }) => Math.max(0, r.paye - r.payeRemitted);
+  const pensionRemaining = (r: { pension: number; pensionEmployer: number; exchangeRateUsed: number | null; pensionRemitted: number }) =>
+    Math.max(0, pensionMWK(r) - r.pensionRemitted);
+  const whtRemaining     = (r: { withholdingTax: number; whtRemitted: number }) => Math.max(0, r.withholdingTax - r.whtRemitted);
+
+  const totalPAYE    = payeRecords.reduce((s, r) => s + payeRemaining(r), 0);
+  const totalPension = pensionRecords.reduce((s, r) => s + pensionRemaining(r), 0);
+  const totalWHT     = whtRecords.reduce((s, r) => s + whtRemaining(r), 0);
 
   // Pension is remitted to NICO Insurance; all other statutory taxes to the MRA.
   const authority = type === "PENSION" ? "NICO Insurance" : "MRA";
@@ -191,7 +198,7 @@ export default async function RecordTaxRemittancePage({
                   <div className="px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                     <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{period}</span>
                     <span className="text-xs text-orange-600 font-semibold">
-                      {formatCurrency(records.reduce((s, r) => s + r.paye, 0))} PAYE
+                      {formatCurrency(records.reduce((s, r) => s + payeRemaining(r), 0))} PAYE
                     </span>
                   </div>
                   <table className="w-full text-sm">
@@ -200,7 +207,7 @@ export default async function RecordTaxRemittancePage({
                         <th className="w-10 px-5 py-2" />
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Employee</th>
                         <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Gross</th>
-                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">PAYE</th>
+                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">PAYE Outstanding</th>
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Status</th>
                       </tr>
                     </thead>
@@ -216,7 +223,12 @@ export default async function RecordTaxRemittancePage({
                             {formatCurrency(r.grossSalary, r.currency)}
                           </td>
                           <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
-                            {formatCurrency(r.paye)}
+                            {formatCurrency(payeRemaining(r))}
+                            {r.payeRemitted > 0 && (
+                              <span className="block text-[10px] text-gray-400 font-normal">
+                                {formatCurrency(r.payeRemitted)} of {formatCurrency(r.paye)} paid
+                              </span>
+                            )}
                           </td>
                           <td className="px-5 py-2.5">
                             <StatusBadge status={r.payeStatus} />
@@ -245,7 +257,7 @@ export default async function RecordTaxRemittancePage({
                   <div className="px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                     <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{period}</span>
                     <span className="text-xs text-orange-600 font-semibold">
-                      {formatCurrency(records.reduce((s, r) => s + pensionMWK(r), 0))} Pension
+                      {formatCurrency(records.reduce((s, r) => s + pensionRemaining(r), 0))} Pension
                     </span>
                   </div>
                   <table className="w-full text-sm">
@@ -254,7 +266,7 @@ export default async function RecordTaxRemittancePage({
                         <th className="w-10 px-5 py-2" />
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Employee</th>
                         <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Gross</th>
-                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Pension (15%)</th>
+                        <th className="text-right px-5 py-2 font-semibold text-gray-500 text-xs">Pension Outstanding (15%)</th>
                         <th className="text-left px-5 py-2 font-semibold text-gray-500 text-xs">Status</th>
                       </tr>
                     </thead>
@@ -270,7 +282,12 @@ export default async function RecordTaxRemittancePage({
                             {formatCurrency(r.grossSalary, r.currency)}
                           </td>
                           <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
-                            {formatCurrency(pensionMWK(r))}
+                            {formatCurrency(pensionRemaining(r))}
+                            {r.pensionRemitted > 0 && (
+                              <span className="block text-[10px] text-gray-400 font-normal">
+                                {formatCurrency(r.pensionRemitted)} of {formatCurrency(pensionMWK(r))} paid
+                              </span>
+                            )}
                           </td>
                           <td className="px-5 py-2.5">
                             <StatusBadge status={r.pensionStatus} />
@@ -301,7 +318,7 @@ export default async function RecordTaxRemittancePage({
                     <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Consultant</th>
                     <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Description</th>
                     <th className="text-right px-5 py-2.5 font-semibold text-gray-600">Gross Fee</th>
-                    <th className="text-right px-5 py-2.5 font-semibold text-gray-600">WHT (20%)</th>
+                    <th className="text-right px-5 py-2.5 font-semibold text-gray-600">WHT Outstanding</th>
                     <th className="text-left px-5 py-2.5 font-semibold text-gray-600">Status</th>
                   </tr>
                 </thead>
@@ -318,7 +335,12 @@ export default async function RecordTaxRemittancePage({
                         {formatCurrency(r.grossAmount, r.currency)}
                       </td>
                       <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
-                        {formatCurrency(r.withholdingTax)}
+                        {formatCurrency(whtRemaining(r))}
+                        {r.whtRemitted > 0 && (
+                          <span className="block text-[10px] text-gray-400 font-normal">
+                            {formatCurrency(r.whtRemitted)} of {formatCurrency(r.withholdingTax)} paid
+                          </span>
+                        )}
                       </td>
                       <td className="px-5 py-2.5">
                         <StatusBadge status={r.whtStatus} />

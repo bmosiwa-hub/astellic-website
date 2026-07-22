@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateNetPay, calculateEmployerPension, calculateWithholding, calculatePAYE } from "@/lib/finance-utils";
+import { calculateNetPay, calculateEmployerPension, calculateWithholding, calculatePAYE, allocateRemittance } from "@/lib/finance-utils";
 
 describe("calculateNetPay — MWK salary", () => {
   it("computes the CEO's 200,000 MWK salary correctly", () => {
@@ -107,5 +107,36 @@ describe("calculatePAYE — legacy fallback matches banded calculation", () => {
       ]);
       expect(legacy).toBe(banded);
     }
+  });
+});
+
+describe("allocateRemittance — per-record running balances", () => {
+  it("fully clears each record when paid covers the total", () => {
+    expect(allocateRemittance([114_000, 9_000], 123_000)).toEqual([114_000, 9_000]);
+  });
+
+  it("splits a partial payment proportionally to what each still owes", () => {
+    const [a, b] = allocateRemittance([100, 300], 200);
+    expect(a).toBeCloseTo(50, 6);   // 100/400 * 200
+    expect(b).toBeCloseTo(150, 6);  // 300/400 * 200
+    expect(a + b).toBeCloseTo(200, 6);
+  });
+
+  it("never allocates more than a record's remaining balance (over-payment)", () => {
+    const allocs = allocateRemittance([100, 50], 1_000);
+    expect(allocs).toEqual([100, 50]); // capped at each remaining; excess ignored
+  });
+
+  it("a waiver clears every remaining balance regardless of amount", () => {
+    expect(allocateRemittance([114_000, 9_000], 0, true)).toEqual([114_000, 9_000]);
+  });
+
+  it("allocates nothing when nothing is owed", () => {
+    expect(allocateRemittance([0, 0], 500)).toEqual([0, 0]);
+  });
+
+  it("supports paying a residual after an earlier partial payment", () => {
+    // Obligation 123,000; already remitted 100,000 → remaining 23,000; pay it off.
+    expect(allocateRemittance([23_000], 23_000)).toEqual([23_000]);
   });
 });
