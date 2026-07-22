@@ -73,6 +73,13 @@ export default async function RecordTaxRemittancePage({
   // Pension is remitted to NICO Insurance; all other statutory taxes to the MRA.
   const authority = type === "PENSION" ? "NICO Insurance" : "MRA";
 
+  // Outstanding obligation for the selected type — pre-fills the "amount paid"
+  // field, which the user can override (paid less, or more with penalty/interest).
+  const computedTotal =
+    type === "PAYE"    ? totalPAYE    :
+    type === "PENSION" ? totalPension :
+    type === "WHT"     ? totalWHT     : 0;
+
   // Group PAYE / PENSION by period
   const payeByPeriod    = payeRecords.reduce<Record<string, typeof payeRecords>>((acc, r) => {
     (acc[r.period] ??= []).push(r);
@@ -406,6 +413,20 @@ export default async function RecordTaxRemittancePage({
                 </div>
               </div>
             </div>
+            {type !== "CIT" && (
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Amount Actually Paid / Remitted (MWK) <span className="text-red-500">*</span>
+                </label>
+                <input name="amountPaid" type="number" min="0" step="0.01" required
+                  defaultValue={computedTotal.toFixed(2)}
+                  className="w-full max-w-xs border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
+                <p className="text-xs text-gray-400 mt-1">
+                  Pre-filled with the outstanding total for the selected records. Change it if a different amount was
+                  actually paid — less (partial remittance) or more (e.g. with penalty or interest).
+                </p>
+              </div>
+            )}
             <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800">
               <strong>Approval required:</strong> This submission will go to the CEO for review before being recorded.
             </div>
