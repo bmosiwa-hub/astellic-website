@@ -416,8 +416,12 @@ export default async function EmployeeDetailPage({
 
   const linkedUser = allUsers[0] ?? null;
 
-  // Salary calc — uses the live system exchange rate, same as actual payroll runs
-  const rate = await getLiveSalaryRate(employee.currency);
+  // Salary calc — uses the live system exchange rate, same as actual payroll runs.
+  // When a foreign currency has no rate on file we can't compute a correct MWK
+  // figure, so flag it rather than showing a misleading 1:1 result.
+  const liveRate = await getLiveSalaryRate(employee.currency);
+  const rateMissing = liveRate === null;
+  const rate = liveRate ?? 1;
   const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
     payeExempt:       employee.payeExempt,
     nssfApplicable:   employee.nssfApplicable,
@@ -535,10 +539,17 @@ export default async function EmployeeDetailPage({
           <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
             <h2 className="font-bold text-brand-navy text-sm uppercase tracking-wide">Salary</h2>
           </div>
+          {rateMissing && (
+            <div className="px-5 py-2.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-800">
+              ⚠ No live exchange rate for <strong>{employee.currency}</strong>. The MWK figures below are a placeholder
+              (1:1) and payroll for this employee is blocked until a rate is added on the{" "}
+              <Link href="/astelfin_26/exchange-rates" className="underline font-semibold">Exchange Rates</Link> page.
+            </div>
+          )}
           <div className="divide-y divide-gray-50 text-sm">
             <SRow label={`Gross (${employee.currency})`} value={formatCurrency(employee.grossSalary, employee.currency)} />
             {employee.currency !== "MWK" && (
-              <SRow label={`Gross MWK  ×  ${rate.toFixed(4)} (live rate)`} value={formatCurrency(calc.grossMWK, "MWK")} muted />
+              <SRow label={rateMissing ? "Gross MWK (no rate — placeholder)" : `Gross MWK  ×  ${rate.toFixed(4)} (live rate)`} value={formatCurrency(calc.grossMWK, "MWK")} muted />
             )}
             {employee.payeExempt ? (
               <SRow label="PAYE" value="Exempt" exempt />

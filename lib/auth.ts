@@ -212,15 +212,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    // Inactivity timeout enforced server-side: the cookie/JWT expires ~6 minutes
+    // Inactivity timeout enforced server-side: the cookie/JWT expires ~31 minutes
     // after the last request, so a session cannot survive the machine being
     // closed — reopening after an idle gap lands on the login page. The client
-    // InactivityGuard signs out at exactly 5 minutes of no activity (online);
+    // InactivityGuard signs out at exactly 30 minutes of no activity (online);
     // the extra minute here keeps the server from expiring a still-active session
-    // a moment before the client's own 5-minute logout. `updateAge: 0` rolls the
-    // expiry on every request, so navigation + the client keep-alive ping keep an
+    // a moment before the client's own logout. `updateAge: 0` rolls the expiry on
+    // every request, so navigation + the client keep-alive ping keep an
     // actively-used session valid.
-    maxAge:    6 * 60,
+    maxAge:    31 * 60,
     updateAge: 0,
   },
   callbacks: {

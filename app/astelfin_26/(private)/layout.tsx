@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/finance/Sidebar";
 import InactivityGuard from "@/components/finance/InactivityGuard";
+import EnvBanner from "@/components/finance/EnvBanner";
 import { getEffectivePermissions, canAccessPath } from "@/lib/permissions";
 import { getActiveOrgId } from "@/lib/org";
 
@@ -140,6 +141,7 @@ export default async function PrivateFinanceLayout({
         activeOrgId={activeOrgId}
       />
       <div className="flex-1 flex flex-col min-w-0">
+        <EnvBanner />
         <main className="flex-1 p-8 overflow-y-auto">{children}</main>
       </div>
     </>

@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { signOut, getSession } from "next-auth/react";
 
-const TIMEOUT_MS = 5 * 60 * 1000;   // 5 minutes of inactivity → logout
-const WARN_MS    = 4.5 * 60 * 1000; // show warning at 4 min 30 sec
-const WARN_SECS  = 30;               // 30-second countdown before auto-logout
-const KEEPALIVE_MS = 60 * 1000;      // roll the server session at most once a minute
+const TIMEOUT_MS = 30 * 60 * 1000;    // 30 minutes of inactivity → logout
+const WARN_MS    = 29.5 * 60 * 1000;  // show warning at 29 min 30 sec
+const WARN_SECS  = 30;                // 30-second countdown before auto-logout
+const KEEPALIVE_MS = 60 * 1000;       // roll the server session at most once a minute
 
 const STORAGE_KEY = "astelfin_last_activity";
 

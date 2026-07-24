@@ -54,11 +54,14 @@ export async function GET(req: Request) {
     const bandSetInfo = await getActiveBandSet(periodDate);
     let obligationsCreated = 0;
 
+    const skippedNoRate: string[] = [];
     for (const employee of activeEmployees) {
       if (alreadyHasRecord.has(employee.id)) continue;
 
-      // PAYE must use the prevailing system exchange rate, not a hire-time snapshot
+      // PAYE must use the prevailing system exchange rate, not a hire-time snapshot.
+      // Skip (don't create a wrong obligation) if the currency has no live rate.
       const rate = await getLiveSalaryRate(employee.currency);
+      if (rate === null) { skippedNoRate.push(`${employee.name} (${employee.currency})`); continue; }
       const calc = calculateNetPay(employee.grossSalary, employee.pensionRate, rate, {
         payeExempt:       employee.payeExempt,
         nssfApplicable:   employee.nssfApplicable,
@@ -157,6 +160,7 @@ export async function GET(req: Request) {
       obligationsCreated,
       salariesConverted,
       payeConverted,
+      skippedNoRate,
     });
   } catch (err) {
     console.error("[monthly-payables cron]", err);

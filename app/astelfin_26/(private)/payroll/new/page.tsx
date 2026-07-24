@@ -55,8 +55,13 @@ async function runPayrollForEmployee(formData: FormData) {
   }
 
   // PAYE must use the prevailing system exchange rate, not a snapshot from hire time —
-  // foreign-currency salaries' PAYE fluctuates with the rate.
+  // foreign-currency salaries' PAYE fluctuates with the rate. Block the run if the
+  // currency has no live rate rather than silently defaulting to 1:1 (which would
+  // compute PAYE/pension on a figure ~1,700× too small).
   const rate = await getLiveSalaryRate(employee.currency);
+  if (rate === null) {
+    redirect(`/astelfin_26/payroll/new?period=${encodeURIComponent(period)}&error=no_rate&cur=${employee.currency}`);
+  }
 
   // Resolve the active PAYE band set for this period (e.g. "2025-01" → 2025-01-01)
   const [periodYear, periodMonth] = period.split("-").map(Number);
@@ -200,9 +205,9 @@ async function runPayrollForEmployee(formData: FormData) {
 export default async function NewPayrollPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string; success?: string; error?: string }>;
+  searchParams: Promise<{ period?: string; success?: string; error?: string; cur?: string }>;
 }) {
-  const { period: qPeriod, success, error } = await searchParams;
+  const { period: qPeriod, success, error, cur } = await searchParams;
 
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
@@ -224,6 +229,17 @@ export default async function NewPayrollPage({
   const liveRates = await prisma.exchangeRate.findMany({ select: { currency: true, middleRate: true } });
   const liveRateMap: Record<string, number> = {};
   for (const r of liveRates) liveRateMap[r.currency] = r.middleRate;
+
+  // Active employees whose (foreign) salary currency has no live rate — their PAYE
+  // cannot be calculated correctly, so their payroll run is blocked until a rate
+  // is added on the Exchange Rates page.
+  const missingRateCurrencies = [
+    ...new Set(
+      employees
+        .filter((e) => e.currency !== "MWK" && liveRateMap[e.currency] === undefined)
+        .map((e) => e.currency),
+    ),
+  ];
 
   // Payrolls already run for this period
   const existingPayrolls = qPeriod
@@ -326,6 +342,29 @@ export default async function NewPayrollPage({
           ✓ Payroll processed for <strong>{decodeURIComponent(success)}</strong>.
         </div>
       )}
+      {error === "no_rate" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>
+            <strong>No exchange rate for {cur}.</strong> Payroll was not run — PAYE and pension can&apos;t be calculated
+            without a live rate. Add a rate on the <Link href="/astelfin_26/exchange-rates" className="underline font-semibold">Exchange Rates</Link> page, then try again.
+          </span>
+        </div>
+      )}
+      {missingRateCurrencies.length > 0 && (
+        <div className="bg-amber-50 border-2 border-amber-300 text-amber-800 rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>
+            <strong>Missing exchange rate{missingRateCurrencies.length > 1 ? "s" : ""}: {missingRateCurrencies.join(", ")}.</strong> Employees paid in{" "}
+            {missingRateCurrencies.length > 1 ? "these currencies" : "this currency"} can&apos;t be run until a rate is added on the{" "}
+            <Link href="/astelfin_26/exchange-rates" className="underline font-semibold">Exchange Rates</Link> page.
+          </span>
+        </div>
+      )}
 
       {/* PAYE bands info */}
       <div className="bg-brand-light rounded-xl px-4 py-3 text-xs text-brand-navy space-y-0.5">
@@ -343,6 +382,7 @@ export default async function NewPayrollPage({
         <div className="space-y-4">
           {employees.map((emp) => {
             const done    = alreadyRun.has(emp.id);
+            const noRate  = !isMWK(emp.currency) && liveRateMap[emp.currency] === undefined;
             const rate    = isMWK(emp.currency) ? 1 : (liveRateMap[emp.currency] ?? 1);
             const calc    = calculateNetPay(emp.grossSalary, emp.pensionRate, rate, {
               payeExempt:       emp.payeExempt,
@@ -507,10 +547,15 @@ export default async function NewPayrollPage({
                     </div>
 
                     <div className="flex items-center gap-3 pt-1">
-                      <button type="submit"
-                        className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors">
+                      <button type="submit" disabled={noRate}
+                        className="bg-brand-gold hover:bg-brand-gold/90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                         Process Payroll for {emp.name}
                       </button>
+                      {noRate && (
+                        <span className="text-xs text-red-600 font-medium">
+                          No {emp.currency} exchange rate — add one first.
+                        </span>
+                      )}
                       <Link href={`/astelfin_26/payroll/${existingPayrolls.find((p) => p.employeeId === emp.id)?.id ?? ""}/payslip`}
                         className={done ? "text-xs text-brand-gold hover:underline font-semibold" : "hidden"}>
                         View Payslip →

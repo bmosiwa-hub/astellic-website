@@ -232,8 +232,11 @@ export default async function TaxDashboardPage({
   const outstandingPAYEAmt    = payrollRecords.reduce((s, p) => s + Math.max(0, p.paye - p.payeRemitted), 0);
   const outstandingPensionAmt = payrollRecords.reduce((s, p) => s + Math.max(0, totalPensionMWK(p) - p.pensionRemitted), 0);
   const outstandingWHTAmt     = whtRecords.reduce((s, w) => s + Math.max(0, w.withholdingTax - w.whtRemitted), 0);
-  const outstandingCITAmt     = Math.max(0, corpTaxEst - remittedCIT);
-  const totalOutstanding      = outstandingPAYEAmt + outstandingPensionAmt + outstandingWHTAmt + outstandingCITAmt;
+  // Monthly statutory taxes that are genuinely due now. CIT is deliberately NOT
+  // included — it is an annual, MRA-assessed figure shown separately below as an
+  // estimate, so it doesn't read as an overdue monthly amount.
+  const totalOutstanding      = outstandingPAYEAmt + outstandingPensionAmt + outstandingWHTAmt;
+  const citEstimateBalance    = Math.max(0, corpTaxEst - remittedCIT);
 
   return (
     <div className="max-w-5xl space-y-7">
@@ -297,8 +300,8 @@ export default async function TaxDashboardPage({
         <TaxCard label="Total PAYE" value={totalPAYE} color="orange" />
         <TaxCard label="Pension Contributions" value={totalPension} color="orange" />
         <TaxCard label="Withholding Tax (WHT)" value={totalWHT} color="orange" />
-        <TaxCard label="Est. Corporate Tax (30%)" value={corpTaxEst} color="orange"
-          subtitle={`on net ${formatCurrency(netBalance)}`} />
+        <TaxCard label="Est. Corporate Tax (annual)" value={corpTaxEst} color="orange"
+          subtitle="estimate — see below" />
         <TaxCard label="Total Tax Obligations" value={totalTax} color="navy" />
       </div>
 
@@ -319,7 +322,6 @@ export default async function TaxDashboardPage({
                     outstandingPAYEAmt    > 0 && `PAYE: ${formatCurrency(outstandingPAYEAmt)}`,
                     outstandingPensionAmt > 0 && `Pension: ${formatCurrency(outstandingPensionAmt)}`,
                     outstandingWHTAmt     > 0 && `WHT: ${formatCurrency(outstandingWHTAmt)}`,
-                    outstandingCITAmt     > 0 && `CIT: ${formatCurrency(outstandingCITAmt)}`,
                   ].filter(Boolean).join(" · ")}
                 </p>
               </div>
@@ -333,6 +335,27 @@ export default async function TaxDashboardPage({
           </div>
         </div>
       )}
+
+      {/* Corporate income tax — annual estimate, shown separately from the
+          genuinely-due monthly statutory taxes above. */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-brand-navy">Corporate Income Tax — Annual Estimate</p>
+            <p className="text-xs text-gray-500 mt-1 max-w-2xl">
+              An estimate only (30% of net income of {formatCurrency(netBalance)}). CIT is assessed annually by the MRA
+              and depends on allowable deductions and credits — it is <strong>not</strong> a monthly amount due. Record
+              a CIT remittance only against a final MRA assessment.
+            </p>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="text-lg font-bold text-brand-navy tabular-nums">{formatCurrency(citEstimateBalance)}</p>
+            <p className="text-[11px] text-gray-400">
+              est. of {formatCurrency(corpTaxEst)}{remittedCIT > 0 ? ` · ${formatCurrency(remittedCIT)} remitted` : ""}
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Pending CEO approvals */}
       {pendingRemittances.length > 0 && (

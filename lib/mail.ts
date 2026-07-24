@@ -1,14 +1,17 @@
 import nodemailer from "nodemailer";
 
+// STARTTLS on 587 with a modern TLS floor. The previous `ciphers: "SSLv3"`
+// setting was deprecated/insecure and could break the handshake with Office 365.
 const transporter = nodemailer.createTransport({
   host: "smtp.office365.com",
   port: 587,
-  secure: false, // STARTTLS
+  secure: false,        // STARTTLS (upgraded after connect)
+  requireTLS: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-  tls: { ciphers: "SSLv3" },
+  tls: { minVersion: "TLSv1.2" },
 });
 
 interface MailOptions {
@@ -17,17 +20,54 @@ interface MailOptions {
   html: string;
 }
 
-export async function sendMail({ to, subject, html }: MailOptions): Promise<void> {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.warn("[mail] SMTP_USER or SMTP_PASS not set — skipping email");
-    return;
+const MAIL_FROM = process.env.MAIL_FROM ?? `"Astellic Finance" <${process.env.SMTP_USER ?? "finance@astellic.com"}>`;
+
+/**
+ * Send an email. Never throws — a delivery failure must not break the underlying
+ * business action — but failures are logged loudly (they used to be swallowed
+ * silently, which hid the whole notification pipeline going down).
+ *
+ * Uses Resend's HTTP API when RESEND_API_KEY is set (recommended — no dependency
+ * on Office 365 basic auth, which Microsoft is phasing out); otherwise falls back
+ * to SMTP. Returns true on success.
+ */
+export async function sendMail({ to, subject, html }: MailOptions): Promise<boolean> {
+  const recipients = Array.isArray(to) ? to : [to];
+
+  // ── Preferred path: Resend HTTP API (no SMTP basic-auth dependency) ──────────
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ from: MAIL_FROM, to: recipients, subject, html }),
+      });
+      if (!res.ok) {
+        console.error(`[mail] Resend send failed (${res.status}): ${(await res.text()).slice(0, 300)}`);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("[mail] Resend send threw:", err);
+      return false;
+    }
   }
-  await transporter.sendMail({
-    from: `"Astellic Finance" <${process.env.SMTP_USER}>`,
-    to: Array.isArray(to) ? to.join(", ") : to,
-    subject,
-    html,
-  });
+
+  // ── Fallback: Office 365 SMTP ────────────────────────────────────────────────
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.error("[mail] No email transport configured (set RESEND_API_KEY, or SMTP_USER/SMTP_PASS) — email NOT sent:", subject);
+    return false;
+  }
+  try {
+    await transporter.sendMail({ from: MAIL_FROM, to: recipients.join(", "), subject, html });
+    return true;
+  } catch (err) {
+    console.error("[mail] SMTP send failed:", err, "| subject:", subject);
+    return false;
+  }
 }
 
 /* ── HTML escaping ─────────────────────────────────────────────────── */
