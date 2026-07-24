@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { signOut } from "next-auth/react";
+import { signOut, getSession } from "next-auth/react";
 
 const TIMEOUT_MS = 5 * 60 * 1000;   // 5 minutes of inactivity → logout
 const WARN_MS    = 4.5 * 60 * 1000; // show warning at 4 min 30 sec
 const WARN_SECS  = 30;               // 30-second countdown before auto-logout
+const KEEPALIVE_MS = 60 * 1000;      // roll the server session at most once a minute
 
 const STORAGE_KEY = "astelfin_last_activity";
 
@@ -17,6 +18,18 @@ export default function InactivityGuard() {
   const outRef    = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const tickRef   = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const isWarning = useRef(false);
+  const lastKeepAlive = useRef(0);
+
+  /** Roll the 5-minute server session forward while the user is genuinely active. */
+  const keepAlive = useCallback(() => {
+    const now = Date.now();
+    if (now - lastKeepAlive.current < KEEPALIVE_MS) return; // throttle
+    lastKeepAlive.current = now;
+    // Reads /api/auth/session, which re-issues the session cookie (updateAge: 0),
+    // extending the expiry. Fails silently when offline — which is correct: with
+    // no server reachable, the session should be allowed to lapse.
+    getSession().catch(() => {});
+  }, []);
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -74,8 +87,9 @@ export default function InactivityGuard() {
   const onActivity = useCallback(() => {
     if (isWarning.current) return; // don't reset while warning is showing
     stampActivity();
+    keepAlive();
     arm();
-  }, [arm, stampActivity]);
+  }, [arm, stampActivity, keepAlive]);
 
   // ── tab visibility change (handles laptop lid / phone screen) ──────────────
 
@@ -113,6 +127,7 @@ export default function InactivityGuard() {
     // private page after logging in.
     // The visibilitychange handler below covers the "returned to old tab" case.
     stampActivity();
+    lastKeepAlive.current = Date.now(); // this page load already rolled the session cookie
     arm();
 
     const EVENTS = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
@@ -131,8 +146,10 @@ export default function InactivityGuard() {
 
   const handleContinue = useCallback(() => {
     stampActivity();
+    lastKeepAlive.current = 0; // force an immediate session roll
+    keepAlive();
     arm();
-  }, [arm, stampActivity]);
+  }, [arm, stampActivity, keepAlive]);
 
   // ── render ─────────────────────────────────────────────────────────────────
 
