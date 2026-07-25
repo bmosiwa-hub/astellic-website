@@ -2025,6 +2025,7 @@ model HerVoiceReport {
   ta               String?         // Traditional Authority
   gvh              String?         // Group Village Head
   village          String?         // Village (VH)
+  survivorName     String?         // collected for CASE reports so the advocate can follow up
   message          String?
   phoneHash        String?
   phoneTail        String?

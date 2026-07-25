@@ -109,6 +109,17 @@ export async function POST(req: NextRequest) {
     const village = choose(villages, steps[4]);
     if (!village) return ussd(INVALID);
 
+    // Step 5: name (free text) — needed so the advocate can find the survivor
+    if (steps.length === 5) {
+      return ussd(
+        "CON Enter your name\n(or the name of the person you are reporting for)"
+      );
+    }
+    const survivorName = steps.slice(5).join(" ").trim();
+    if (!survivorName) {
+      return ussd("CON Please enter a name so the advocate can find you:");
+    }
+
     // Submit
     await ensureHerVoiceTable();
     const trackingId = newTrackingId();
@@ -121,6 +132,7 @@ export async function POST(req: NextRequest) {
         ta,
         gvh,
         village,
+        survivorName,
         phoneHash: phone ? hashPhone(phone) : null,
         phoneTail: phone ? phoneTail(phone) : null,
       },

@@ -64,6 +64,7 @@ export function ensureHerVoiceTable(): Promise<void> {
            ADD COLUMN IF NOT EXISTS "ta" TEXT,
            ADD COLUMN IF NOT EXISTS "gvh" TEXT,
            ADD COLUMN IF NOT EXISTS "village" TEXT,
+           ADD COLUMN IF NOT EXISTS "survivorName" TEXT,
            ADD COLUMN IF NOT EXISTS "advocateNotified" BOOLEAN NOT NULL DEFAULT false;`
       );
     })().catch((e) => {
@@ -217,6 +218,7 @@ export async function notifyAdvocate(report: {
   ta: string | null;
   gvh: string | null;
   village: string | null;
+  survivorName?: string | null;
 }): Promise<boolean> {
   const districtKey = (report.district ?? "").toUpperCase().replace(/\s+/g, "_");
   const to =
@@ -226,6 +228,7 @@ export async function notifyAdvocate(report: {
 
   const message =
     `HerVoice! NEW CASE ${report.trackingId}\n` +
+    (report.survivorName ? `Name: ${report.survivorName}\n` : "") +
     `Village ${report.village ?? "?"}, GVH ${report.gvh ?? "?"}, TA ${report.ta ?? "?"}, ${report.district ?? "?"}.\n` +
     `Received via USSD. Please make safe contact within 24 hrs. Handle confidentially.`;
   return sendSms(to, message);
