@@ -2,13 +2,12 @@
 import { useState } from "react";
 import Link from "next/link";
 
-type DomainId = "health" | "governance" | "education" | "climate";
+type DomainId = "health" | "climate" | "education";
 
 const DOMAINS = [
-  { id: "health"     as DomainId, label: "Health & Nutrition Systems",           href: "/thematic-areas/health" },
-  { id: "governance" as DomainId, label: "Governance & Public Sector Reform",     href: "/thematic-areas/governance" },
-  { id: "education"  as DomainId, label: "Human Development & Social Systems",    href: "/thematic-areas/education" },
-  { id: "climate"    as DomainId, label: "Climate, Agriculture & Sustainability",  href: "/thematic-areas/climate" },
+  { id: "health"    as DomainId, label: "Health",                       href: "/thematic-areas/health" },
+  { id: "climate"   as DomainId, label: "Environmental Sustainability", href: "/thematic-areas/climate" },
+  { id: "education" as DomainId, label: "Social Development",           href: "/thematic-areas/education" },
 ];
 
 interface SubUnit {
@@ -45,7 +44,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/research-analytics",
         activities: {
           health:     ["Public health research", "Health systems analysis", "Applied & mixed-methods research", "Landscape & needs assessments"],
-          governance: ["Institutional & governance research", "Public sector analysis", "Political economy analysis", "Landscape assessments"],
           education:  ["Social sector research", "Human development analysis", "Applied social research", "Sector needs assessments"],
           climate:    ["Climate & environmental research", "Agricultural systems analysis", "Applied analytics & data analysis", "Landscape assessments"],
         },
@@ -56,7 +54,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/evaluation-learning",
         activities: {
           health:     ["Health programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
-          governance: ["Governance programme evaluation", "MERL frameworks", "Institutional impact assessment", "Learning systems"],
           education:  ["Social programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
           climate:    ["Climate programme evaluation", "Environmental impact assessment", "MERL frameworks", "Learning systems"],
         },
@@ -67,7 +64,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/data-quality",
         activities: {
           health:     ["Data quality assurance", "Research ethics compliance", "Evidence verification", "Internal peer review"],
-          governance: ["Data integrity review", "Research ethics compliance", "Evidence verification", "Quality assurance"],
           education:  ["Data quality assurance", "Research ethics compliance", "Evidence verification", "Internal peer review"],
           climate:    ["Environmental data quality", "Research ethics compliance", "Evidence verification", "Quality control"],
         },
@@ -89,7 +85,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/strategy-development",
         activities: {
           health:     ["Health policy development", "Sector strategy design", "Reform programme design", "Policy advisory"],
-          governance: ["Public sector policy development", "Governance strategy", "Reform design", "Senior advisory"],
           education:  ["Social sector policy", "Education & social strategy", "Reform programme design", "Policy advisory"],
           climate:    ["Climate & sustainability policy", "Environmental strategy", "Reform programme design", "Policy advisory"],
         },
@@ -100,7 +95,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/policy-modelling-and-simulation",
         activities: {
           health:     ["Health policy modelling", "Disease burden simulation", "Health financing scenarios", "Health impact forecasting"],
-          governance: ["Governance policy modelling", "Public sector simulation", "Fiscal scenario analysis", "Institutional modelling"],
           education:  ["Education policy modelling", "Sector simulation", "Education financing scenarios", "Social impact forecasting"],
           climate:    ["Climate policy modelling", "Environmental simulation", "Climate scenario analysis", "Sustainability forecasting"],
         },
@@ -111,7 +105,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/systems-strengthening",
         activities: {
           health:     ["Health systems strengthening", "Institutional capacity building", "Governance & accountability", "Embedded advisory"],
-          governance: ["Public sector systems strengthening", "Institutional development", "Accountability frameworks", "Governance advisory"],
           education:  ["Social sector systems strengthening", "Institutional capacity", "Accountability frameworks", "Embedded advisory"],
           climate:    ["Environmental systems strengthening", "Institutional capacity", "Accountability frameworks", "Sustainability advisory"],
         },
@@ -122,7 +115,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/knowledge-translation",
         activities: {
           health:     ["Health policy briefs", "Strategic communications", "Stakeholder engagement", "Thought leadership"],
-          governance: ["Governance policy briefs", "Reform communications", "Stakeholder engagement", "Thought leadership"],
           education:  ["Social sector policy briefs", "Strategic communications", "Stakeholder engagement", "Knowledge products"],
           climate:    ["Climate policy briefs", "Environmental communications", "Stakeholder engagement", "Thought leadership"],
         },
@@ -144,7 +136,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/programme-design",
         activities: {
           health:     ["Health programme architecture", "Theory of change development", "Intervention modelling & simulation", "Results framework design", "Financing architecture"],
-          governance: ["Governance programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Programme design"],
           education:  ["Social programme architecture", "Theory of change", "Intervention modelling & simulation", "Results framework design", "Programme design"],
           climate:    ["Climate programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Financing architecture"],
         },
@@ -155,7 +146,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/technical-assistance",
         activities: {
           health:     ["Embedded health TA", "Institutional development", "Capacity strengthening", "Professional training"],
-          governance: ["Embedded governance TA", "Institutional development", "Capacity strengthening", "Executive education"],
           education:  ["Embedded social sector TA", "Institutional development", "Capacity strengthening", "Training programmes"],
           climate:    ["Embedded climate TA", "Institutional development", "Capacity strengthening", "Technical training"],
         },
@@ -166,7 +156,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/adaptive-management",
         activities: {
           health:     ["Health programme delivery", "Adaptive management", "Consortium leadership", "Implementing partner services"],
-          governance: ["Governance programme delivery", "Adaptive management", "Consortium leadership", "Implementation management"],
           education:  ["Social programme delivery", "Adaptive management", "Consortium leadership", "Programme management"],
           climate:    ["Climate programme delivery", "Adaptive management", "Consortium leadership", "Programme management"],
         },

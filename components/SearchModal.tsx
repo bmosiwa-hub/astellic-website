@@ -50,11 +50,10 @@ const INDEX: SearchItem[] = [
   { title: "Corporate Institutions",                      href: "/institutions-we-support/corporate-institutions",   category: "Who We Serve", desc: "Private sector ESG, CSR strategy, social investment measurement.", keywords: "ESG CSR corporate social investment impact measurement" },
 
   /* Thematic Areas */
-  { title: "Thematic Areas",                              href: "/thematic-areas",             category: "Thematic Areas", desc: "Health, governance, climate, education — our four primary domains." },
-  { title: "Health & Nutrition Systems",                  href: "/thematic-areas/health",      category: "Thematic Areas", desc: "Primary health care, UHC financing, digital health, immunisation.", keywords: "health UHC health financing primary care digital health immunisation nutrition" },
-  { title: "Governance & Public Sector Reform",           href: "/thematic-areas/governance",  category: "Thematic Areas", desc: "Institutional strengthening, PFM, accountability, decentralisation.", keywords: "governance public sector PFM accountability decentralisation reform" },
-  { title: "Climate, Agriculture & Sustainability",       href: "/thematic-areas/climate",     category: "Thematic Areas", desc: "Climate policy, agricultural systems, resilience, NDCs.", keywords: "climate agriculture sustainability resilience NDC adaptation" },
-  { title: "Human Development & Social Systems",          href: "/thematic-areas/education",   category: "Thematic Areas", desc: "Education, social protection, skills development, human rights.", keywords: "education social protection TVET skills human rights gender" },
+  { title: "Thematic Areas",                              href: "/thematic-areas",             category: "Thematic Areas", desc: "Health, environmental sustainability, and social development — our three primary domains." },
+  { title: "Health",                  href: "/thematic-areas/health",      category: "Thematic Areas", desc: "Primary health care, UHC financing, digital health, immunisation.", keywords: "health UHC health financing primary care digital health immunisation nutrition" },
+  { title: "Environmental Sustainability",       href: "/thematic-areas/climate",     category: "Thematic Areas", desc: "Climate policy, agricultural systems, resilience, NDCs.", keywords: "climate agriculture sustainability resilience NDC adaptation environment" },
+  { title: "Social Development",          href: "/thematic-areas/education",   category: "Thematic Areas", desc: "Education, social protection, skills development, human rights.", keywords: "education social protection TVET skills human rights gender" },
 
   /* Work With Us */
   { title: "Work With Us",        href: "/work-with-us",        category: "Work With Us", desc: "Career openings and opportunities at Astellic." },

@@ -47,7 +47,7 @@ const modelPhases = [
 const thematicDomains = [
   {
     num: "01",
-    title: "Health & Nutrition Systems",
+    title: "Health",
     img: "/images/thematic-health.jpg",
     overlayHex: "#1B2A4A",
     href: "/thematic-areas/health",
@@ -57,33 +57,23 @@ const thematicDomains = [
   },
   {
     num: "02",
-    title: "Governance & Public Sector Reform",
-    img: "/images/thematic-governance.jpg",
-    overlayHex: "#2A1B3A",
-    href: "/thematic-areas/governance",
-    systemsIssue: "Governance reform programmes consistently produce policy change without institutional change, because the accountability architectures that determine whether reforms hold are rarely designed with the same rigour as the reforms themselves.",
-    focus: "ASIL's governance pilots investigate what accountability, data-use, and institutional design architectures are required to make public sector reform durable — from district health management systems to decentralised service delivery governance.",
-    strategicValue: "Governance implementation evidence distinguishes Astellic from analytical-only advisory firms in procurement processes where demonstrated practical governance engagement, not just frameworks, is the differentiator.",
-  },
-  {
-    num: "03",
-    title: "Education & Social Systems",
-    img: "/images/thematic-education.jpg",
-    overlayHex: "#1A2A3A",
-    href: "/thematic-areas/education",
-    systemsIssue: "Social protection and education delivery programmes regularly fail to reach intended beneficiaries — not because the designs are inadequate, but because implementation systems are not built to navigate the political economies and institutional constraints within which they operate.",
-    focus: "ASIL investigates the implementation conditions — governance design, institutional incentive structures, community accountability architectures — that determine whether social programmes produce durable outcomes for the populations they are designed to serve.",
-    strategicValue: "Implementation evidence in education and social systems positions Astellic to compete for increasingly rigorous donor mandates requiring demonstrated adaptive management, honest outcome evaluation, and evidence of community-level accountability.",
-  },
-  {
-    num: "04",
-    title: "Climate Agriculture & Sustainability",
+    title: "Environmental Sustainability",
     img: "/images/thematic-climate.jpg",
     overlayHex: "#1A3A2A",
     href: "/thematic-areas/climate",
     systemsIssue: "Environmental, agricultural, and climate-resilient practice investments consistently fail to produce durable behaviour change — not because the interventions are ineffective, but because the institutional conditions for sustained adoption are absent.",
     focus: "ASIL investigates the governance architectures that determine whether environmental investments in clean energy, climate-resilient agricultural practice and natural resource management produce sustained outcomes rather than brief, sponsored-period adoption.",
     strategicValue: "As climate and environmental finance accelerates into communities that lack institutional governance capacity, demand for credible implementation advisory grows. ASIL's documented pilots create the credentials to compete for this work.",
+  },
+  {
+    num: "03",
+    title: "Social Development",
+    img: "/images/thematic-education.jpg",
+    overlayHex: "#1A2A3A",
+    href: "/thematic-areas/education",
+    systemsIssue: "Social protection and education delivery programmes regularly fail to reach intended beneficiaries — not because the designs are inadequate, but because implementation systems are not built to navigate the political economies and institutional constraints within which they operate.",
+    focus: "ASIL investigates the implementation conditions — governance design, institutional incentive structures, community accountability architectures — that determine whether social programmes produce durable outcomes for the populations they are designed to serve.",
+    strategicValue: "Implementation evidence in social development positions Astellic to compete for increasingly rigorous donor mandates requiring demonstrated adaptive management, honest outcome evaluation, and evidence of community-level accountability.",
   },
 ];
 
@@ -469,7 +459,7 @@ export default function ASILPage() {
                 <div className="p-8">
                   {/* Domain tags */}
                   <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    {["Health & Nutrition Systems", "Climate Agriculture & Sustainability", "Governance & Public Sector Reform"].map((tag) => (
+                    {["Health", "Environmental Sustainability"].map((tag) => (
                       <span key={tag} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-navy/5 text-brand-navy border border-brand-navy/10">
                         {tag}
                       </span>

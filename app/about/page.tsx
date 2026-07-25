@@ -305,11 +305,10 @@ export default function AboutPage() {
                 </h2>
                 <div className="space-y-3 mb-8">
                   {[
-                    { label: "Health & Nutrition Systems",            primary: true },
-                    { label: "Governance & Public Sector Reform",     primary: true },
+                    { label: "Health",            primary: true },
                     { label: "Public Financial Management",           primary: true },
-                    { label: "Human Development & Social Systems",    primary: false },
-                    { label: "Climate, Agriculture & Sustainability", primary: false },
+                    { label: "Social Development",    primary: false },
+                    { label: "Environmental Sustainability", primary: false },
                   ].map((d) => (
                     <div key={d.label} className="flex items-center gap-3">
                       <span className={`w-2 h-2 rounded-full ${d.primary ? "bg-brand-teal" : "bg-gray-300"} shrink-0`} />

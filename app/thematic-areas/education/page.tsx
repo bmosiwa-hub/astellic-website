@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Human Development & Social Systems",
+  title: "Social Development",
   description:
     "Astellic's work in human development and social systems: enhancing delivery systems for education, skills development, social protection, and human rights across Africa.",
 };

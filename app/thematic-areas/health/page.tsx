@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Health & Nutrition Systems",
+  title: "Health",
   description:
     "Astellic's work in health and nutrition systems: strengthening integrated service delivery, primary health care, and evidence-informed decision-making across Africa.",
 };

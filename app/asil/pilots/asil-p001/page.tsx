@@ -327,14 +327,14 @@ export default function ASILPilot001Page() {
             {[
               {
                 num: "01",
-                domain: "Health & Nutrition Systems",
+                domain: "Health",
                 question: "Why does a known-effective women's health intervention fail to produce durable health outcomes?",
                 mechanism: "The failure is not in the intervention; it is in the governance of adoption. The pilot tests whether a community accountability architecture with an explicit equity mandate can close the gap between a distributed product and a sustained health outcome.",
                 learning: "Governance design as the binding constraint on community health intervention durability; equity-disaggregated adoption as a health outcome metric.",
               },
               {
                 num: "02",
-                domain: "Governance & Public Sector Reform",
+                domain: "Social Development",
                 question: "What community-level governance architecture is required for sustained public health programme delivery?",
                 mechanism: "The Community Accountability Committee design is a governance intervention as much as a health one. The pilot tests whether a structured community accountability mechanism can operationalise an equity mandate in practice, not merely commit to it.",
                 learning: "Community governance design as a programme delivery mechanism; conditions under which accountability architecture translates into durable implementation outcomes.",

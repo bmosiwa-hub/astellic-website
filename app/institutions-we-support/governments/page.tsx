@@ -116,11 +116,10 @@ const outcomes = [
 ];
 
 const sectors = [
-  "Health & Nutrition Systems",
-  "Governance & Public Sector Reform",
+  "Health",
   "Education & Social Systems",
   "Public Financial Management",
-  "Climate, Agriculture & Sustainability",
+  "Environmental Sustainability",
   "Civil Registration & Statistics",
 ];
 

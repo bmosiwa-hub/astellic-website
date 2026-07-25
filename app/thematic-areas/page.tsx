@@ -5,13 +5,13 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Thematic Areas",
   description:
-    "Astellic's four strategic domains: Health, Governance, Climate, and Education.",
+    "Astellic's three strategic domains: Health, Environmental Sustainability, and Social Development.",
 };
 
 const areas = [
   {
     num: "01",
-    title: "Health & Nutrition Systems",
+    title: "Health",
     desc: "Strengthening integrated systems that deliver equitable and effective services, with a focus on primary health care, service integration, and evidence-informed decision-making.",
     accent: "bg-brand-gold",
     image: "/images/thematic-health.jpg",
@@ -20,27 +20,18 @@ const areas = [
   },
   {
     num: "02",
-    title: "Governance & Public Sector Reform",
-    desc: "Improving how institutions design, implement, and deliver policy through enhanced accountability, legislative effectiveness, and institutional alignment.",
-    accent: "bg-brand-navy",
-    image: "/images/thematic-governance.jpg",
-    imageAlt: "African government and public sector professionals",
-    href: "/thematic-areas/governance",
-  },
-  {
-    num: "03",
-    title: "Climate, Agriculture & Sustainability",
+    title: "Environmental Sustainability",
     desc: "Supporting resilient systems that integrate climate policy, agricultural productivity, and sustainable resource management.",
-    accent: "bg-brand-gold",
+    accent: "bg-brand-navy",
     image: "/images/thematic-climate.jpg",
     imageAlt: "African farmer working in the field",
     href: "/thematic-areas/climate",
   },
   {
-    num: "04",
-    title: "Human Development & Social Systems",
+    num: "03",
+    title: "Social Development",
     desc: "Enhancing delivery systems for education, skills development, social protection, and human rights to improve equity and human capital outcomes.",
-    accent: "bg-brand-navy",
+    accent: "bg-brand-gold",
     image: "/images/thematic-education.jpg",
     imageAlt: "African students learning",
     href: "/thematic-areas/education",
@@ -65,7 +56,7 @@ export default function ThematicAreasPage() {
             Where We Work
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
-            Astellic applies its integrated delivery model across four strategic
+            Astellic applies its integrated delivery model across three strategic
             areas, each representing a domain where the gap between policy
             intent and operational outcome demands a firm capable of bridging
             both.
@@ -124,7 +115,7 @@ export default function ThematicAreasPage() {
             A model built for complexity
           </h2>
           <p className="text-brand-muted text-lg leading-relaxed">
-            Across all four domains, Astellic brings the same commitment: honest
+            Across all three domains, Astellic brings the same commitment: honest
             analysis, technically sound advice, and delivery that is grounded in
             how African systems actually work.
           </p>

@@ -30,6 +30,13 @@ const nextConfig = {
         destination: "/astelfin_26/overview",
         permanent: false,
       },
+      // The Governance & Public Sector Reform thematic area was retired — send any
+      // old links to the thematic areas overview instead of a 404.
+      {
+        source: "/thematic-areas/governance",
+        destination: "/thematic-areas",
+        permanent: true,
+      },
     ];
   },
 };

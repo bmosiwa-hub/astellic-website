@@ -62,10 +62,9 @@ const comparisons = [
 
 const sectors = [
   "Health Systems & Nutrition",
-  "Governance & Public Sector Reform",
   "Public Financial Management",
   "Education & Social Systems",
-  "Climate, Agriculture & Sustainability",
+  "Environmental Sustainability",
   "Corporate Social Investment",
 ];
 

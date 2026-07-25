@@ -36,12 +36,9 @@ const working = [
 ];
 
 const domains = [
-  "Health & Nutrition Systems",
-  "Governance & Public Sector Reform",
-  "Public Financial Management",
-  "Education & Social Services",
-  "Climate, Agriculture & Sustainability",
-  "Corporate Social Investment",
+  "Health",
+  "Environmental Sustainability",
+  "Social Development",
 ];
 
 export default function Footer() {

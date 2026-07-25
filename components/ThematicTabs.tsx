@@ -6,7 +6,7 @@ import Link from "next/link";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-type DomainId = "health" | "governance" | "education" | "climate";
+type DomainId = "health" | "climate" | "education";
 
 interface ThematicArea {
   id:    DomainId;
@@ -19,31 +19,24 @@ interface ThematicArea {
 const THEMES: ThematicArea[] = [
   {
     id:    "health",
-    title: "Health & Nutrition Systems",
+    title: "Health",
     intro: "Astellic works across the full continuum of health systems — from research and policy design to programme delivery — helping governments, donors, and institutions strengthen health outcomes for African populations.",
     img:   "/images/thematic-health.jpg",
     href:  "/thematic-areas/health",
   },
   {
-    id:    "governance",
-    title: "Governance & Public Sector Reform",
-    intro: "We support governance reforms that improve institutional performance, strengthen accountability systems, and build the public sector capacity needed for sustainable and equitable development.",
-    img:   "/images/thematic-governance.jpg",
-    href:  "/thematic-areas/governance",
-  },
-  {
-    id:    "education",
-    title: "Human Development & Social Systems",
-    intro: "Our work in human development spans education, social protection, and inclusive growth — helping institutions design and deliver interventions that build human capital and strengthen resilient communities.",
-    img:   "/images/thematic-education.jpg",
-    href:  "/thematic-areas/education",
-  },
-  {
     id:    "climate",
-    title: "Climate, Agriculture & Sustainability",
+    title: "Environmental Sustainability",
     intro: "We integrate climate science, sustainable agriculture, and environmental governance to help clients design programmes that advance development outcomes while protecting the ecological systems communities depend on.",
     img:   "/images/thematic-climate.jpg",
     href:  "/thematic-areas/climate",
+  },
+  {
+    id:    "education",
+    title: "Social Development",
+    intro: "Our work in human development spans education, social protection, and inclusive growth — helping institutions design and deliver interventions that build human capital and strengthen resilient communities.",
+    img:   "/images/thematic-education.jpg",
+    href:  "/thematic-areas/education",
   },
 ];
 
@@ -79,7 +72,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/research-analytics",
         activities: {
           health:     ["Public health research", "Health systems analysis", "Applied & mixed-methods research", "Landscape & needs assessments"],
-          governance: ["Institutional & governance research", "Public sector analysis", "Political economy analysis", "Landscape assessments"],
           education:  ["Social sector research", "Human development analysis", "Applied social research", "Sector needs assessments"],
           climate:    ["Climate & environmental research", "Agricultural systems analysis", "Applied analytics & data analysis", "Landscape assessments"],
         },
@@ -89,7 +81,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/evaluation-learning",
         activities: {
           health:     ["Health programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
-          governance: ["Governance programme evaluation", "MERL frameworks", "Institutional impact assessment", "Learning systems"],
           education:  ["Social programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
           climate:    ["Climate programme evaluation", "Environmental impact assessment", "MERL frameworks", "Learning systems"],
         },
@@ -99,7 +90,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/evidence/data-quality",
         activities: {
           health:     ["Data quality assurance", "Research ethics compliance", "Evidence verification", "Internal peer review"],
-          governance: ["Data integrity review", "Research ethics compliance", "Evidence verification", "Quality assurance"],
           education:  ["Data quality assurance", "Research ethics compliance", "Evidence verification", "Internal peer review"],
           climate:    ["Environmental data quality", "Research ethics compliance", "Evidence verification", "Quality control"],
         },
@@ -120,7 +110,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/strategy-development",
         activities: {
           health:     ["Health policy development", "Sector strategy design", "Reform programme design", "Policy advisory"],
-          governance: ["Public sector policy development", "Governance strategy", "Reform design", "Senior advisory"],
           education:  ["Social sector policy", "Education & social strategy", "Reform programme design", "Policy advisory"],
           climate:    ["Climate & sustainability policy", "Environmental strategy", "Reform programme design", "Policy advisory"],
         },
@@ -130,7 +119,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/policy-modelling-and-simulation",
         activities: {
           health:     ["Health policy modelling", "Disease burden simulation", "Health financing scenarios", "Health impact forecasting"],
-          governance: ["Governance policy modelling", "Public sector simulation", "Fiscal scenario analysis", "Institutional modelling"],
           education:  ["Education policy modelling", "Sector simulation", "Education financing scenarios", "Social impact forecasting"],
           climate:    ["Climate policy modelling", "Environmental simulation", "Climate scenario analysis", "Sustainability forecasting"],
         },
@@ -140,7 +128,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/systems-strengthening",
         activities: {
           health:     ["Health systems strengthening", "Institutional capacity building", "Governance & accountability", "Embedded advisory"],
-          governance: ["Public sector systems strengthening", "Institutional development", "Accountability frameworks", "Governance advisory"],
           education:  ["Social sector systems strengthening", "Institutional capacity", "Accountability frameworks", "Embedded advisory"],
           climate:    ["Environmental systems strengthening", "Institutional capacity", "Accountability frameworks", "Sustainability advisory"],
         },
@@ -150,7 +137,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/policy/knowledge-translation",
         activities: {
           health:     ["Health policy briefs", "Strategic communications", "Stakeholder engagement", "Thought leadership"],
-          governance: ["Governance policy briefs", "Reform communications", "Stakeholder engagement", "Thought leadership"],
           education:  ["Social sector policy briefs", "Strategic communications", "Stakeholder engagement", "Knowledge products"],
           climate:    ["Climate policy briefs", "Environmental communications", "Stakeholder engagement", "Thought leadership"],
         },
@@ -171,7 +157,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/programme-design",
         activities: {
           health:     ["Health programme architecture", "Theory of change development", "Intervention modelling & simulation", "Results framework design", "Financing architecture"],
-          governance: ["Governance programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Programme design"],
           education:  ["Social programme architecture", "Theory of change", "Intervention modelling & simulation", "Results framework design", "Programme design"],
           climate:    ["Climate programme architecture", "Theory of change", "Intervention modelling & simulation", "Results frameworks", "Financing architecture"],
         },
@@ -181,7 +166,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/technical-assistance",
         activities: {
           health:     ["Embedded health TA", "Institutional development", "Capacity strengthening", "Professional training"],
-          governance: ["Embedded governance TA", "Institutional development", "Capacity strengthening", "Executive education"],
           education:  ["Embedded social sector TA", "Institutional development", "Capacity strengthening", "Training programmes"],
           climate:    ["Embedded climate TA", "Institutional development", "Capacity strengthening", "Technical training"],
         },
@@ -191,7 +175,6 @@ const PILLARS: Pillar[] = [
         href:  "/what-we-do/implementation/adaptive-management",
         activities: {
           health:     ["Health programme delivery", "Adaptive management", "Consortium leadership", "Implementing partner services"],
-          governance: ["Governance programme delivery", "Adaptive management", "Consortium leadership", "Implementation management"],
           education:  ["Social programme delivery", "Adaptive management", "Consortium leadership", "Programme management"],
           climate:    ["Climate programme delivery", "Adaptive management", "Consortium leadership", "Programme management"],
         },
@@ -221,7 +204,7 @@ export default function ThematicTabs() {
   return (
     <div>
       {/* 2×2 Tab Grid */}
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-4 mb-8">
         {THEMES.map((t) => (
           <button
             key={t.id}

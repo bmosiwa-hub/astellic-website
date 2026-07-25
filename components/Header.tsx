@@ -12,10 +12,9 @@ const institutionsItems = [
 ];
 
 const thematicAreas = [
-  { label: "Health & Nutrition Systems",              href: "/thematic-areas/health"      },
-  { label: "Governance & Public Sector Reform",       href: "/thematic-areas/governance"  },
-  { label: "Climate, Agriculture & Sustainability",   href: "/thematic-areas/climate"     },
-  { label: "Human Development & Social Systems",      href: "/thematic-areas/education"   },
+  { label: "Health",                       href: "/thematic-areas/health"      },
+  { label: "Environmental Sustainability", href: "/thematic-areas/climate"     },
+  { label: "Social Development",           href: "/thematic-areas/education"   },
 ];
 
 const ourApproachItems = [

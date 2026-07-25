@@ -229,7 +229,7 @@ export default function Home() {
                 {[
                   {
                     label: "Sectors",
-                    items: ["Health & Nutrition Systems", "Governance & Public Sector Reform", "Public Financial Management", "Education & Social Systems", "Climate & Sustainability"],
+                    items: ["Health", "Public Financial Management", "Education & Social Systems", "Environmental Sustainability"],
                   },
                   {
                     label: "Clients Supported",
