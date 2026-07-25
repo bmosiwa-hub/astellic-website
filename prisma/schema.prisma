@@ -2016,17 +2016,22 @@ enum HerVoiceStatus {
 }
 
 model HerVoiceReport {
-  id         String          @id @default(cuid())
-  trackingId String          @unique
-  channel    HerVoiceChannel
-  category   String?
-  district   String?
-  message    String?
-  phoneHash  String?
-  phoneTail  String?
-  status     HerVoiceStatus  @default(NEW)
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  id               String          @id @default(cuid())
+  trackingId       String          @unique
+  channel          HerVoiceChannel
+  reportType       String?         // "CASE" (GBV incident) | "COMPLAINT" (service problem)
+  category         String?
+  district         String?
+  ta               String?         // Traditional Authority
+  gvh              String?         // Group Village Head
+  village          String?         // Village (VH)
+  message          String?
+  phoneHash        String?
+  phoneTail        String?
+  status           HerVoiceStatus  @default(NEW)
+  advocateNotified Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   @@index([status])
   @@index([createdAt])
