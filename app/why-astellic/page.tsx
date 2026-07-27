@@ -27,7 +27,7 @@ const commitments = [
   },
   {
     label: "We Are Specialists",
-    expanded: "We do three things with exceptional depth: Adaptive MERL & Learning Systems, Data Quality & Verification, and Policy-to-Implementation Systems Support. We do not try to be everything to everyone. That focus is what makes our work reliable, and what distinguishes it from firms with broad service menus and shallow delivery.",
+    expanded: "We do three things with exceptional depth: Monitoring, Evaluation, Accountability & Learning (MEAL) — including third-party monitoring and independent verification; Data Quality & Research Integrity; and Policy-to-Implementation Systems Support. We do not try to be everything to everyone. That focus is what makes our work reliable, and what distinguishes it from firms with broad service menus and shallow delivery.",
     example: "A specialist firm delivers differently than a firm that adds services to grow its rate card.",
   },
   {

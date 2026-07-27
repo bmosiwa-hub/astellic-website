@@ -273,7 +273,7 @@ export default function AboutPage() {
                 </p>
                 <div className="space-y-3">
                   {[
-                    { num: "01", title: "Adaptive MERL & Learning Systems",                color: "bg-brand-navy",  href: "/what-we-do/evidence/evaluation-learning" },
+                    { num: "01", title: "Monitoring, Evaluation, Accountability & Learning (MEAL)",                color: "bg-brand-navy",  href: "/what-we-do/evidence/evaluation-learning" },
                     { num: "02", title: "Data Quality, Verification & Research Integrity", color: "bg-brand-teal",  href: "/what-we-do/evidence/data-quality" },
                     { num: "03", title: "Policy, Systems Analysis & Implementation Support",color: "bg-brand-green", href: "/what-we-do/implementation" },
                     { num: "+",  title: "Corporate Advisory & Social Investment",           color: "bg-brand-gold",  href: "/institutions-we-support/corporate-institutions" },

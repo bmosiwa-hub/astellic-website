@@ -77,12 +77,12 @@ const PILLARS: Pillar[] = [
         },
       },
       {
-        label: "Evaluation & Learning",
+        label: "Monitoring, Evaluation, Accountability & Learning (MEAL)",
         href:  "/what-we-do/evidence/evaluation-learning",
         activities: {
-          health:     ["Health programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
-          education:  ["Social programme evaluation", "MERL system design", "Impact assessment", "Adaptive learning systems"],
-          climate:    ["Climate programme evaluation", "Environmental impact assessment", "MERL frameworks", "Learning systems"],
+          health:     ["Third-party monitoring (TPM)", "Health programme evaluation", "Data quality assessments", "Adaptive MEAL systems"],
+          education:  ["Third-party monitoring (TPM)", "Social programme evaluation", "Process monitoring", "Adaptive MEAL systems"],
+          climate:    ["Third-party monitoring (TPM)", "Environmental programme evaluation", "Outcome & impact evaluation", "Adaptive MEAL systems"],
         },
       },
       {

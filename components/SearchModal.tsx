@@ -28,7 +28,8 @@ const INDEX: SearchItem[] = [
   /* Services — Pillar 01 */
   { title: "Evidence Generation & Verification",          href: "/what-we-do/evidence",                      category: "Services",       desc: "Astellic's analytical engine — research, evaluation, data quality." },
   { title: "Research & Analytics",                        href: "/what-we-do/evidence/research-analytics",   category: "Services",       desc: "Policy-relevant research, PEA, sector systems analysis, landscape assessments.", keywords: "political economy analysis research applied analytics" },
-  { title: "Evaluation & Learning",                       href: "/what-we-do/evidence/evaluation-learning",  category: "Services",       desc: "Programme evaluation, MERL systems, theory of change, adaptive management.", keywords: "impact assessment formative midterm endline merl evaluation" },
+  { title: "Monitoring, Evaluation, Accountability & Learning (MEAL)", href: "/what-we-do/evidence/evaluation-learning",  category: "Services",       desc: "Third-party monitoring, independent verification & validation, evaluations, data quality assessments, and adaptive learning.", keywords: "MEAL MEL MERL third party monitoring TPM independent verification validation IV&V DQA data quality baseline midline endline process monitoring impact evaluation learning agenda accountability adaptive management" },
+  { title: "Third-Party Monitoring (TPM)",                href: "/what-we-do/evidence/evaluation-learning",  category: "Methods",        desc: "Independent, on-the-ground verification that activities and outputs are delivered as reported.", keywords: "TPM third party monitoring independent verification remote monitoring assurance donor" },
   { title: "Data Quality & Research Integrity",           href: "/what-we-do/evidence/data-quality",         category: "Services",       desc: "DQA protocols, research integrity, ethics compliance, peer review.", keywords: "data quality audit DQA verification research integrity" },
 
   /* Services — Pillar 02 */
@@ -62,7 +63,7 @@ const INDEX: SearchItem[] = [
 
   /* Methods / topics — keyword-heavy entries */
   { title: "Political Economy Analysis (PEA)",      href: "/what-we-do/evidence/research-analytics",  category: "Methods", desc: "Institutional incentive mapping, reform feasibility, stakeholder analysis." },
-  { title: "Adaptive MERL",                         href: "/what-we-do/evidence/evaluation-learning",  category: "Methods", desc: "Real-time monitoring, evaluation, research and learning system design." },
+  { title: "Adaptive MEAL",                         href: "/what-we-do/evidence/evaluation-learning",  category: "Methods", desc: "Real-time monitoring, evaluation, research and learning system design." },
   { title: "Data Quality Audit (DQA)",              href: "/what-we-do/evidence/data-quality",         category: "Methods", desc: "Verification frameworks, reporting credibility, data governance." },
   { title: "Theory of Change",                      href: "/what-we-do/implementation/programme-design",category: "Methods", desc: "Logic models, results chains, impact pathways." },
   { title: "Impact Assessment",                     href: "/what-we-do/evidence/evaluation-learning",  category: "Methods", desc: "Formative, summative and impact evaluations." },
@@ -128,7 +129,7 @@ const SHORTCUTS = [
   { label: "What we do",         href: "/what-we-do"                            },
   { label: "Our projects",       href: "/our-projects"                          },
   { label: "Health systems",     href: "/thematic-areas/health"                 },
-  { label: "Adaptive MERL",      href: "/what-we-do/evidence/evaluation-learning" },
+  { label: "Adaptive MEAL",      href: "/what-we-do/evidence/evaluation-learning" },
   { label: "DQA",                href: "/what-we-do/evidence/data-quality"      },
   { label: "Get in touch",       href: "/contact"                               },
 ];

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const services = [
   { label: "Research & Analytics",                       href: "/what-we-do/evidence/research-analytics" },
-  { label: "Evaluation and Audit",                       href: "/what-we-do/evidence/evaluation-learning" },
+  { label: "Monitoring, Evaluation, Accountability & Learning (MEAL)", href: "/what-we-do/evidence/evaluation-learning" },
   { label: "Policy & Strategy Analysis",                 href: "/what-we-do/policy/strategy-development" },
   { label: "Knowledge Translation & Advisory",           href: "/what-we-do/policy/knowledge-translation" },
   { label: "Programme Design & Readiness",               href: "/what-we-do/implementation/programme-design" },
