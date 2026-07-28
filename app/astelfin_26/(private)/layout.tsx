@@ -125,6 +125,18 @@ export default async function PrivateFinanceLayout({
           }),
         ]);
 
+  // Payroll periods awaiting CEO approval (have records but aren't locked yet).
+  // Only the CEO can approve/lock, so the badge is shown to the CEO.
+  let pendingPayroll = 0;
+  if (isCEO) {
+    const unlockedPeriods = await prisma.payroll.findMany({
+      where:    { lockedAt: null, deletedAt: null },
+      distinct: ["period"],
+      select:   { period: true },
+    });
+    pendingPayroll = unlockedPeriods.length;
+  }
+
   return (
     <>
       <InactivityGuard />
@@ -135,6 +147,7 @@ export default async function PrivateFinanceLayout({
         pendingApprovals={pendingCount}
         pendingInvoices={pendingInvoices}
         pendingLiquidations={pendingLiquidations}
+        pendingPayroll={pendingPayroll}
         overduePayables={overduePayables}
         overdueReceivables={overdueReceivables}
         orgs={orgs}

@@ -154,6 +154,9 @@ export default async function PayrollPage() {
   const flaggedEmployees = Object.values(unliqByEmployee);
   const pendingRefundCount = pendingRefunds.length;
 
+  // Periods that have payroll records but haven't been approved (locked) yet.
+  const pendingApprovalPeriods = periods.filter((p) => !byPeriod[p].some((r) => r.lockedAt != null));
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -189,6 +192,36 @@ export default async function PayrollPage() {
           )}
         </div>
       </div>
+
+      {/* CEO payroll approval prompt */}
+      {isCEO && pendingApprovalPeriods.length > 0 && (
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-amber-800 mb-1">
+                {pendingApprovalPeriods.length} payroll period{pendingApprovalPeriods.length !== 1 ? "s" : ""} awaiting your approval
+              </p>
+              <p className="text-xs text-amber-700 mb-3">
+                Review the figures below, then approve to finalise and lock each period. Once approved, no further records can be added to that period.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {pendingApprovalPeriods.map((p) => (
+                  <form key={p} action={lockPayrollPeriod}>
+                    <input type="hidden" name="period" value={p} />
+                    <button type="submit"
+                      className="text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-3.5 py-1.5 rounded-lg transition-colors">
+                      Approve &amp; Lock {p}
+                    </button>
+                  </form>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Overdue liquidations banner */}
       {flaggedEmployees.length > 0 && (
@@ -290,10 +323,10 @@ export default async function PayrollPage() {
                         <input type="hidden" name="period" value={period} />
                         <button
                           type="submit"
-                          className="text-xs bg-brand-navy hover:bg-brand-navy/90 text-white px-3 py-1.5 rounded-lg font-semibold transition-colors"
-                          title="Lock this period — prevents any further payroll records from being added"
+                          className="text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-semibold transition-colors"
+                          title="Approve this period — finalises it and prevents any further payroll records from being added"
                         >
-                          Lock Period
+                          Approve &amp; Lock
                         </button>
                       </form>
                     )}

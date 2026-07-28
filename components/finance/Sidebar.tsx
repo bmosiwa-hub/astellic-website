@@ -250,6 +250,7 @@ interface SidebarProps {
   pendingApprovals?: number;
   pendingInvoices?: number;
   pendingLiquidations?: number;
+  pendingPayroll?: number;
   overduePayables?: number;
   overdueReceivables?: number;
   orgs?: OrgItem[];
@@ -273,6 +274,7 @@ export default function Sidebar({
   pendingApprovals = 0,
   pendingInvoices = 0,
   pendingLiquidations = 0,
+  pendingPayroll = 0,
   overduePayables = 0,
   overdueReceivables = 0,
   orgs = [],
@@ -454,7 +456,7 @@ export default function Sidebar({
           <>
             <div className="pt-1" />
             <p className="px-3 pt-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 pb-1">Finance</p>
-            {showPayroll && navLink("/astelfin_26/payroll",     "Payroll",        Icons.payroll)}
+            {showPayroll && navLink("/astelfin_26/payroll",     "Payroll",        Icons.payroll, pendingPayroll)}
             {showTax     && navLink("/astelfin_26/reports/tax", "Tax Dashboard",  Icons.tax)}
           </>
         )}
@@ -520,7 +522,7 @@ export default function Sidebar({
               <div className="space-y-0.5 mb-1">
                 {navLink("/astelfin_26/employees",   "Employees",        Icons.employees)}
                 {navLink("/astelfin_26/consultants", "Consultants",      Icons.consultants)}
-                {navLink("/astelfin_26/payroll",     "Payroll",          Icons.payroll)}
+                {navLink("/astelfin_26/payroll",     "Payroll",          Icons.payroll, pendingPayroll)}
                 {navLink("/astelfin_26/performance", "Team Performance", Icons.performance)}
                 {navLink("/astelfin_26/timesheets",  "Team Timesheets",  Icons.timesheet)}
                 {navLink("/astelfin_26/leave",       "Leave Management", Icons.leave)}
