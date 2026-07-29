@@ -5,6 +5,7 @@ import { formatCurrency, fmtPeriod, fmtPeriodList } from "@/lib/finance-utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createTaxRemittance } from "@/lib/tax-remittance-actions";
+import RemittanceSelection from "@/components/finance/RemittanceSelection";
 
 export const metadata = {
   title: "Record Tax Remittance | Astelfin IMS",
@@ -186,6 +187,7 @@ export default async function RecordTaxRemittancePage({
         <form action={createTaxRemittance} encType="multipart/form-data">
           <input type="hidden" name="taxType" value={type} />
           <input type="hidden" name="period"  value={periodLabel || type} />
+          {type !== "CIT" && <RemittanceSelection />}
 
           {/* PAYE records */}
           {type === "PAYE" && (
@@ -216,6 +218,7 @@ export default async function RecordTaxRemittancePage({
                         <tr key={r.id} className="hover:bg-gray-50/50">
                           <td className="px-5 py-2.5 text-center">
                             <input type="checkbox" name="payrollId" value={r.id} defaultChecked
+                              data-remit-item data-remaining={payeRemaining(r)}
                               className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                           </td>
                           <td className="px-5 py-2.5 font-medium text-brand-navy">{r.employee.name}</td>
@@ -275,6 +278,7 @@ export default async function RecordTaxRemittancePage({
                         <tr key={r.id} className="hover:bg-gray-50/50">
                           <td className="px-5 py-2.5 text-center">
                             <input type="checkbox" name="pensionId" value={r.id} defaultChecked
+                              data-remit-item data-remaining={pensionRemaining(r)}
                               className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                           </td>
                           <td className="px-5 py-2.5 font-medium text-brand-navy">{r.employee.name}</td>
@@ -327,6 +331,7 @@ export default async function RecordTaxRemittancePage({
                     <tr key={r.id} className="hover:bg-gray-50/50">
                       <td className="px-5 py-2.5 text-center">
                         <input type="checkbox" name="consultantPaymentId" value={r.id} defaultChecked
+                          data-remit-item data-remaining={whtRemaining(r)}
                           className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                       </td>
                       <td className="px-5 py-2.5 font-medium text-brand-navy">{r.consultant.name}</td>
@@ -444,6 +449,10 @@ export default async function RecordTaxRemittancePage({
             </div>
             {type !== "CIT" && (
               <div>
+                <div className="mb-2 text-xs text-brand-navy bg-brand-light rounded-lg px-3 py-2">
+                  Selected <strong id="remit-selected-count">—</strong> record(s) above ·
+                  Selected total: <strong id="remit-selected-total" className="text-brand-navy">—</strong>
+                </div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Amount Actually Paid / Remitted (MWK) <span className="text-red-500">*</span>
                 </label>
@@ -451,8 +460,8 @@ export default async function RecordTaxRemittancePage({
                   defaultValue={computedTotal.toFixed(2)}
                   className="w-full max-w-xs border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
                 <p className="text-xs text-gray-400 mt-1">
-                  Pre-filled with the outstanding total for the selected records. Change it if a different amount was
-                  actually paid — less (partial remittance) or more (e.g. with penalty or interest).
+                  Tick only the taxes/pensions you are remitting above — this amount updates to match your selection.
+                  Change it if a different amount was actually paid — less (partial remittance) or more (e.g. with penalty or interest).
                 </p>
               </div>
             )}
