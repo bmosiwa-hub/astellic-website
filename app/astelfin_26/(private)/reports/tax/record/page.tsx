@@ -217,9 +217,9 @@ export default async function RecordTaxRemittancePage({
                       {records.map((r) => (
                         <tr key={r.id} className="hover:bg-gray-50/50">
                           <td className="px-5 py-2.5 text-center">
-                            <input type="checkbox" name="payrollId" value={r.id} defaultChecked
-                              data-remit-item data-remaining={payeRemaining(r)}
-                              className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
+                            <input type="checkbox" name="payrollId" value={r.id}
+                              data-remaining={payeRemaining(r)}
+                              className="remit-check rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                           </td>
                           <td className="px-5 py-2.5 font-medium text-brand-navy">{r.employee.name}</td>
                           <td className="px-5 py-2.5 text-right tabular-nums text-gray-600">
@@ -277,9 +277,9 @@ export default async function RecordTaxRemittancePage({
                       {records.map((r) => (
                         <tr key={r.id} className="hover:bg-gray-50/50">
                           <td className="px-5 py-2.5 text-center">
-                            <input type="checkbox" name="pensionId" value={r.id} defaultChecked
-                              data-remit-item data-remaining={pensionRemaining(r)}
-                              className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
+                            <input type="checkbox" name="pensionId" value={r.id}
+                              data-remaining={pensionRemaining(r)}
+                              className="remit-check rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                           </td>
                           <td className="px-5 py-2.5 font-medium text-brand-navy">{r.employee.name}</td>
                           <td className="px-5 py-2.5 text-right tabular-nums text-gray-600">
@@ -330,9 +330,9 @@ export default async function RecordTaxRemittancePage({
                   {whtRecords.map((r) => (
                     <tr key={r.id} className="hover:bg-gray-50/50">
                       <td className="px-5 py-2.5 text-center">
-                        <input type="checkbox" name="consultantPaymentId" value={r.id} defaultChecked
-                          data-remit-item data-remaining={whtRemaining(r)}
-                          className="rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
+                        <input type="checkbox" name="consultantPaymentId" value={r.id}
+                          data-remaining={whtRemaining(r)}
+                          className="remit-check rounded border-gray-300 text-brand-gold focus:ring-brand-gold" />
                       </td>
                       <td className="px-5 py-2.5 font-medium text-brand-navy">{r.consultant.name}</td>
                       <td className="px-5 py-2.5 text-gray-600 text-xs">{r.description}</td>
@@ -457,7 +457,7 @@ export default async function RecordTaxRemittancePage({
                   Amount Actually Paid / Remitted (MWK) <span className="text-red-500">*</span>
                 </label>
                 <input name="amountPaid" type="number" min="0" step="0.01" required
-                  defaultValue={computedTotal.toFixed(2)}
+                  defaultValue="0.00"
                   className="w-full max-w-xs border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold" />
                 <p className="text-xs text-gray-400 mt-1">
                   Tick only the taxes/pensions you are remitting above — this amount updates to match your selection.
