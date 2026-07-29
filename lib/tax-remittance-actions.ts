@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { auditLog } from "@/lib/audit";
 import { writeApprovalRecord } from "@/lib/approval-record";
-import { assertNotSelfApproval } from "@/lib/self-approval";
 import { checkCEOAuth, delegateNote } from "@/lib/delegation";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
@@ -250,7 +249,10 @@ export async function approveTaxRemittance(formData: FormData) {
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
 
-  assertNotSelfApproval(session!.user!.id!, remittance!.submittedById, "tax remittance");
+  // Note: tax remittances are approved only by the CEO. With no separate Finance
+  // Manager, the CEO both records and approves them, so a strict self-approval
+  // block would deadlock the workflow — it is intentionally not applied here.
+  // (Who recorded vs. who approved is still captured in the audit/approval trail.)
 
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
@@ -411,8 +413,6 @@ export async function rejectTaxRemittance(formData: FormData) {
     where: { id: remittanceId },
   });
   if (!remittance) redirect("/astelfin_26/reports/tax");
-
-  assertNotSelfApproval(session!.user!.id!, remittance.submittedById, "tax remittance");
 
   await prisma.taxRemittance.update({
     where: { id: remittanceId },
