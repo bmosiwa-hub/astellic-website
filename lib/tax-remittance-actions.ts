@@ -231,6 +231,7 @@ export async function createTaxRemittance(formData: FormData) {
     });
   }
 
+  ["/astelfin_26/reports/tax", "/astelfin_26/reports/tax/record", "/astelfin_26/dashboard", "/astelfin_26/financial-health", "/astelfin_26/payables"].forEach((p) => revalidatePath(p));
   redirect(`/astelfin_26/reports/tax?success=remittance_submitted`);
 }
 
@@ -396,6 +397,7 @@ export async function approveTaxRemittance(formData: FormData) {
     });
   }
 
+  ["/astelfin_26/reports/tax", "/astelfin_26/reports/tax/record", "/astelfin_26/dashboard", "/astelfin_26/financial-health", "/astelfin_26/payables"].forEach((p) => revalidatePath(p));
   redirect(`/astelfin_26/reports/tax/remittances/${remittanceId}?success=approved`);
 }
 
@@ -489,6 +491,7 @@ export async function rejectTaxRemittance(formData: FormData) {
     });
   }
 
+  ["/astelfin_26/reports/tax", "/astelfin_26/reports/tax/record", "/astelfin_26/dashboard", "/astelfin_26/financial-health", "/astelfin_26/payables"].forEach((p) => revalidatePath(p));
   redirect(`/astelfin_26/reports/tax/remittances/${remittanceId}?success=rejected`);
 }
 

@@ -295,14 +295,19 @@ export default async function TaxDashboardPage({
         </div>
       )}
 
-      {/* Summary cards */}
+      {/* Summary cards — headline is what's still OUTSTANDING (drops as you remit);
+          the gross year-to-date obligation is shown as context underneath. */}
       <div className="grid grid-cols-5 gap-4">
-        <TaxCard label="Total PAYE" value={totalPAYE} color="orange" />
-        <TaxCard label="Pension Contributions" value={totalPension} color="orange" />
-        <TaxCard label="Withholding Tax (WHT)" value={totalWHT} color="orange" />
-        <TaxCard label="Est. Corporate Tax (annual)" value={corpTaxEst} color="orange"
+        <TaxCard label="PAYE Outstanding" value={outstandingPAYEAmt} color="orange"
+          subtitle={`of ${formatCurrency(totalPAYE)} this year`} />
+        <TaxCard label="Pension Outstanding" value={outstandingPensionAmt} color="orange"
+          subtitle={`of ${formatCurrency(totalPension)} this year`} />
+        <TaxCard label="WHT Outstanding" value={outstandingWHTAmt} color="orange"
+          subtitle={`of ${formatCurrency(totalWHT)} this year`} />
+        <TaxCard label="Corporate Tax (est. annual)" value={citEstimateBalance} color="orange"
           subtitle="estimate — see below" />
-        <TaxCard label="Total Tax Obligations" value={totalTax} color="navy" />
+        <TaxCard label="Total Outstanding" value={totalOutstanding} color="navy"
+          subtitle={`of ${formatCurrency(totalPAYE + totalPension + totalWHT)} due`} />
       </div>
 
       {/* Outstanding tax alert */}
