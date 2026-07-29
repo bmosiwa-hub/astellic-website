@@ -75,6 +75,67 @@ async function lockPayrollPeriod(formData: FormData) {
   revalidatePath("/astelfin_26/payroll");
 }
 
+// ── Server action: confirm a payroll record has actually been paid ────────────
+
+async function markPayrollPaid(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user) redirect("/astelfin_26/login");
+  const access = await resolveAccess(session);
+  if (!access || !access.can("canProcessPayroll")) redirect("/astelfin_26/my");
+
+  const payrollId = formData.get("payrollId") as string;
+  if (!payrollId) return;
+
+  const record = await prisma.payroll.findUnique({
+    where:   { id: payrollId },
+    include: { employee: { select: { name: true } } },
+  });
+  if (!record || record.status === "PAID") {
+    revalidatePath("/astelfin_26/payroll");
+    return;
+  }
+
+  const now = new Date();
+  // Mark paid AND record the cash outflow so the dashboard balance reflects it —
+  // unless an Expense for this exact payroll record already exists (avoids
+  // double-counting a salary that was disbursed via a Submission).
+  const existingExpense = await prisma.expense.findFirst({
+    where:  { notes: { contains: `Payroll ID: ${record.id}` } },
+    select: { id: true },
+  });
+
+  await prisma.$transaction(async (tx) => {
+    await tx.payroll.update({
+      where: { id: record.id },
+      data:  { status: "PAID", paidDate: now },
+    });
+    if (!existingExpense) {
+      await tx.expense.create({
+        data: {
+          description: `Payroll — ${record.employee.name} — ${record.period}`,
+          amount:      record.netPay,
+          currency:    record.currency,
+          category:    "Payroll",
+          paidDate:    now,
+          vendor:      record.employee.name,
+          notes:       `Confirmed paid from payroll (Payroll ID: ${record.id})`,
+        },
+      });
+    }
+  });
+
+  await auditLog({
+    userId:   session.user.id!,
+    action:   "PAID",
+    entity:   "Payroll",
+    entityId: record.id,
+    detail:   `${record.employee.name} — ${record.period} — salary confirmed paid (${record.currency} ${record.netPay.toFixed(2)})`,
+  });
+
+  revalidatePath("/astelfin_26/payroll");
+}
+
 export default async function PayrollPage() {
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
@@ -361,10 +422,22 @@ export default async function PayrollPage() {
                           </span>
                         </td>
                         <td className="px-5 py-3">
-                          <Link href={`/astelfin_26/payroll/${p.id}/payslip`}
-                            className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
-                            Payslip →
-                          </Link>
+                          <div className="flex items-center gap-3 justify-end">
+                            {canManage && p.status !== "PAID" && (
+                              <form action={markPayrollPaid}>
+                                <input type="hidden" name="payrollId" value={p.id} />
+                                <button type="submit"
+                                  className="text-xs font-semibold bg-green-600 hover:bg-green-700 text-white px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap"
+                                  title="Confirm this salary has been paid — records the payment and updates the dashboard balance">
+                                  Mark as Paid
+                                </button>
+                              </form>
+                            )}
+                            <Link href={`/astelfin_26/payroll/${p.id}/payslip`}
+                              className="text-xs text-brand-gold font-semibold hover:underline whitespace-nowrap">
+                              Payslip →
+                            </Link>
+                          </div>
                         </td>
                       </tr>
                     ))}
