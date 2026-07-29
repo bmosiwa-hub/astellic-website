@@ -14,12 +14,14 @@ const TYPE_LABELS: Record<string, string> = {
   GRANT: "Grant",
   PRIVATE_SERVICE: "Private Service",
   DONATION: "Donation",
+  CAPITAL_INJECTION: "Capital Injection",
 };
 
 const TYPE_COLORS: Record<string, string> = {
   GRANT: "bg-blue-100 text-blue-700",
   PRIVATE_SERVICE: "bg-purple-100 text-purple-700",
   DONATION: "bg-green-100 text-green-700",
+  CAPITAL_INJECTION: "bg-amber-100 text-amber-700",
 };
 
 export default async function IncomePage({
@@ -37,7 +39,7 @@ export default async function IncomePage({
     prisma.income.findMany({
       where: {
         ...(project ? { projectId: project } : {}),
-        ...(type ? { incomeType: type as "GRANT" | "PRIVATE_SERVICE" | "DONATION" } : {}),
+        ...(type ? { incomeType: type as "GRANT" | "PRIVATE_SERVICE" | "DONATION" | "CAPITAL_INJECTION" } : {}),
         ...orgFilter,
       },
       orderBy: { receivedDate: "desc" },
@@ -112,6 +114,7 @@ export default async function IncomePage({
         >
           <option value="">All Types</option>
           <option value="GRANT">Grant</option>
+          <option value="CAPITAL_INJECTION">Capital Injection</option>
           <option value="PRIVATE_SERVICE">Private Service</option>
           <option value="DONATION">Donation</option>
         </select>

@@ -10,6 +10,7 @@ enum IncomeType {
   GRANT
   PRIVATE_SERVICE
   DONATION
+  CAPITAL_INJECTION
 }
 
 enum ConsultantQualification {

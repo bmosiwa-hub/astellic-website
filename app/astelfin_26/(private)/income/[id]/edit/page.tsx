@@ -42,7 +42,7 @@ async function submitEditRequest(incomeId: string, formData: FormData): Promise<
     await prisma.income.update({
       where: { id: incomeId },
       data: {
-        incomeType: proposed.incomeType as "GRANT" | "PRIVATE_SERVICE" | "DONATION",
+        incomeType: proposed.incomeType as "GRANT" | "PRIVATE_SERVICE" | "DONATION" | "CAPITAL_INJECTION",
         description: proposed.description,
         amount: proposed.amount,
         currency: proposed.currency,
@@ -165,6 +165,7 @@ export default async function EditIncomePage({
                 <option value="GRANT">Grant</option>
                 <option value="PRIVATE_SERVICE">Private Service</option>
                 <option value="DONATION">Donation</option>
+                <option value="CAPITAL_INJECTION">Capital Injection</option>
               </select>
             </div>
 

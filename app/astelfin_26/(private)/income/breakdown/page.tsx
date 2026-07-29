@@ -12,12 +12,14 @@ const TYPE_LABELS: Record<string, string> = {
   GRANT: "Grant",
   PRIVATE_SERVICE: "Private Service",
   DONATION: "Donation",
+  CAPITAL_INJECTION: "Capital Injection",
 };
 
 const TYPE_COLORS: Record<string, string> = {
   GRANT: "#3b82f6",
   PRIVATE_SERVICE: "#8b5cf6",
   DONATION: "#10b981",
+  CAPITAL_INJECTION: "#f59e0b",
 };
 
 const TYPE_BG: Record<string, string> = {

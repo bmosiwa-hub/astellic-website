@@ -23,7 +23,7 @@ async function createIncome(formData: FormData) {
   const activeOrgId = await getActiveOrgId(session);
 
   const data = {
-    incomeType: (formData.get("incomeType") as "GRANT" | "PRIVATE_SERVICE" | "DONATION") || "GRANT",
+    incomeType: (formData.get("incomeType") as "GRANT" | "PRIVATE_SERVICE" | "DONATION" | "CAPITAL_INJECTION") || "GRANT",
     description: formData.get("description") as string,
     amount: parseFloat(formData.get("amount") as string),
     currency: (formData.get("currency") as string) || "MWK",
@@ -88,6 +88,7 @@ export default async function NewIncomePage({
                 <option value="GRANT">Grant</option>
                 <option value="PRIVATE_SERVICE">Private Service</option>
                 <option value="DONATION">Donation</option>
+                <option value="CAPITAL_INJECTION">Capital Injection</option>
               </select>
             </div>
 
