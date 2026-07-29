@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency } from "@/lib/finance-utils";
+import { formatCurrency, fmtPeriod } from "@/lib/finance-utils";
 import { getActiveOrgId, orgWhere } from "@/lib/org";
 import { resolveAccess } from "@/lib/access";
 import { redirect } from "next/navigation";
@@ -376,7 +376,7 @@ export default async function TaxDashboardPage({
                     className="flex items-center justify-between bg-white border border-amber-100 rounded-xl px-4 py-2.5 text-sm">
                     <div>
                       <span className="font-semibold text-brand-navy">{r.taxType}</span>
-                      <span className="ml-2 text-gray-500 text-xs">{r.period}</span>
+                      <span className="ml-2 text-gray-500 text-xs">{fmtPeriod(r.period)}</span>
                       <span className="ml-2 text-xs text-gray-400">
                         · by {r.submittedBy.name}
                       </span>
@@ -524,7 +524,7 @@ export default async function TaxDashboardPage({
               {recentRemittances.map((r) => (
                 <tr key={r.id} className="hover:bg-gray-50/50">
                   <td className="px-5 py-2.5 font-semibold text-brand-navy">{r.taxType}</td>
-                  <td className="px-5 py-2.5 text-gray-600">{r.period}</td>
+                  <td className="px-5 py-2.5 text-gray-600">{fmtPeriod(r.period)}</td>
                   <td className="px-5 py-2.5 text-right tabular-nums font-semibold text-orange-600">
                     {formatCurrency(r.amount)}
                   </td>

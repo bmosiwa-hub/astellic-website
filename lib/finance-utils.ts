@@ -7,6 +7,20 @@ export function formatCurrency(amount: number, currency = "MWK"): string {
   }).format(amount);
 }
 
+/** Turn a "YYYY-MM" period into a readable month (e.g. "July 2026"). Leaves
+ *  anything else (e.g. "CIT 2026", already-formatted labels) untouched. */
+export function fmtPeriod(period: string): string {
+  const m = /^(\d{4})-(\d{2})$/.exec((period ?? "").trim());
+  if (!m) return period;
+  return new Date(Number(m[1]), Number(m[2]) - 1, 1)
+    .toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+}
+
+/** Format a comma-separated list of periods readably. */
+export function fmtPeriodList(label: string): string {
+  return (label ?? "").split(",").map((p) => fmtPeriod(p.trim())).join(", ");
+}
+
 /** Format a date as DD MMM YYYY */
 export function formatDate(date: Date | string): string {
   return new Date(date).toLocaleDateString("en-GB", {

@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency } from "@/lib/finance-utils";
+import { formatCurrency, fmtPeriod } from "@/lib/finance-utils";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { approveTaxRemittance, rejectTaxRemittance } from "@/lib/tax-remittance-actions";
@@ -71,7 +71,7 @@ export default async function RemittanceReviewPage({
         <div>
           <h1 className="text-2xl font-bold text-brand-navy">Tax Remittance Review</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {remittance.taxType} · {remittance.period} · submitted by {remittance.submittedBy.name}
+            {remittance.taxType} · {fmtPeriod(remittance.period)} · submitted by {remittance.submittedBy.name}
           </p>
         </div>
         <Link href="/astelfin_26/reports/tax"
@@ -117,7 +117,7 @@ export default async function RemittanceReviewPage({
         <h2 className="font-bold text-brand-navy mb-4">Remittance Details</h2>
         <div className="grid grid-cols-2 gap-y-3 text-sm">
           <InfoRow label="Tax Type"  value={remittance.taxType} />
-          <InfoRow label="Period"    value={remittance.period} />
+          <InfoRow label="Period"    value={fmtPeriod(remittance.period)} />
           <InfoRow label="Type"      value={typeLabel} />
           <InfoRow label="Submitted" value={remittance.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} />
           <InfoRow label="Submitted by" value={`${remittance.submittedBy.name} (${remittance.submittedBy.email})`} />

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { resolveAccess } from "@/lib/access";
 import { prisma } from "@/lib/prisma";
-import { formatCurrency } from "@/lib/finance-utils";
+import { formatCurrency, fmtPeriod, fmtPeriodList } from "@/lib/finance-utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createTaxRemittance } from "@/lib/tax-remittance-actions";
@@ -196,7 +196,7 @@ export default async function RecordTaxRemittancePage({
               {Object.entries(payeByPeriod).map(([period, records]) => (
                 <div key={period}>
                   <div className="px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                    <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{period}</span>
+                    <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{fmtPeriod(period)}</span>
                     <span className="text-xs text-orange-600 font-semibold">
                       {formatCurrency(records.reduce((s, r) => s + payeRemaining(r), 0))} PAYE
                     </span>
@@ -255,7 +255,7 @@ export default async function RecordTaxRemittancePage({
               {Object.entries(pensionByPeriod).map(([period, records]) => (
                 <div key={period}>
                   <div className="px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                    <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{period}</span>
+                    <span className="text-xs font-bold text-brand-navy uppercase tracking-wide">{fmtPeriod(period)}</span>
                     <span className="text-xs text-orange-600 font-semibold">
                       {formatCurrency(records.reduce((s, r) => s + pensionRemaining(r), 0))} Pension
                     </span>
@@ -393,7 +393,14 @@ export default async function RecordTaxRemittancePage({
 
           {/* Remittance details */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mt-6 space-y-5">
-            <h2 className="font-bold text-brand-navy text-sm">{type === "CIT" ? "3." : "3."} Remittance Details</h2>
+            <h2 className="font-bold text-brand-navy text-sm">3. Remittance Details</h2>
+            {type !== "CIT" && periodLabel && (
+              <div className="bg-brand-light rounded-xl px-4 py-3 text-sm text-brand-navy">
+                You are remitting <strong>{TAX_TYPES.find((t) => t.value === type)?.label ?? type}</strong>
+                {" "}for <strong>{fmtPeriodList(periodLabel)}</strong>
+                {authority ? <> to <strong>{authority}</strong></> : null}.
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
