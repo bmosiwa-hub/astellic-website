@@ -123,6 +123,16 @@ async function markPayrollPaid(formData: FormData) {
         },
       });
     }
+    // Auto-clear the mirror "Unpaid Salary" payable the monthly cron created for
+    // this record, so the Accounts Payable overdue list clears when the salary is
+    // paid here. No Expense is created for it — the cash outflow is recorded above.
+    await tx.accountPayable.updateMany({
+      where: {
+        note:   { contains: `Payroll ID: ${record.id} (salary)` },
+        status: { notIn: ["PAID", "CANCELLED"] },
+      },
+      data: { status: "PAID", paidDate: now },
+    });
   });
 
   await auditLog({
@@ -134,6 +144,7 @@ async function markPayrollPaid(formData: FormData) {
   });
 
   revalidatePath("/astelfin_26/payroll");
+  revalidatePath("/astelfin_26/payables");
 }
 
 export default async function PayrollPage() {

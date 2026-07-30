@@ -141,18 +141,29 @@ export async function markPayablePaid(id: string, formData: FormData): Promise<v
     data: { status: "PAID", paidDate, note: note ?? undefined },
   });
 
-  // Record the cash outflow so the dashboard balance reflects this payment
-  await prisma.expense.create({
-    data: {
-      description: ap.description,
-      amount:      ap.amount,
-      currency:    ap.currency,
-      category:    ap.budgetLine || "Payables",
-      paidDate,
-      vendor:      ap.vendor ?? undefined,
-      notes:       `Auto-generated from accounts payable payment (AccountPayable ID: ${id})`,
-    },
-  });
+  // Some payables are *mirrors* of obligations that are actually paid (and booked
+  // as an Expense) in the Payroll / Tax modules — the monthly cron's "Unpaid
+  // Salary/PAYE" entries and the per-period "Pension Contributions" payable. For
+  // those, marking paid here must NOT create a second Expense (it would double-
+  // count the cash outflow). Only real, standalone payables get an Expense.
+  const isStatutoryMirror =
+    (ap.note?.includes("Auto-converted") ?? false) ||
+    (ap.budgetLine === "Pension" && ap.description.startsWith("Pension Contributions"));
+
+  if (!isStatutoryMirror) {
+    // Record the cash outflow so the dashboard balance reflects this payment
+    await prisma.expense.create({
+      data: {
+        description: ap.description,
+        amount:      ap.amount,
+        currency:    ap.currency,
+        category:    ap.budgetLine || "Payables",
+        paidDate,
+        vendor:      ap.vendor ?? undefined,
+        notes:       `Auto-generated from accounts payable payment (AccountPayable ID: ${id})`,
+      },
+    });
+  }
 
   await auditLog({
     userId: session.user.id!,

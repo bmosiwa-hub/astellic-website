@@ -320,6 +320,11 @@ export async function approveTaxRemittance(formData: FormData) {
   }
 
   const txOps: Prisma.PrismaPromise<unknown>[] = [];
+  // Payroll records fully settled by this remittance — used to auto-clear the
+  // mirror "Unpaid PAYE" / pension payables the cron/payroll run created, so the
+  // Accounts Payable overdue list clears when the tax is remitted here.
+  const coveredPayeIds: string[] = [];
+  const coveredPensionIds: string[] = [];
 
   // ── PAYE ──
   if (remittance!.payrollIds.length > 0) {
@@ -336,6 +341,7 @@ export async function approveTaxRemittance(formData: FormData) {
       txOps.push(prisma.payroll.update({
         where: { id: u.id }, data: { payeRemitted: u.newRemitted, payeStatus: u.covered ? finalStatus : "OUTSTANDING" },
       }));
+      if (u.covered) coveredPayeIds.push(u.id);
     }
   }
 
@@ -375,10 +381,56 @@ export async function approveTaxRemittance(formData: FormData) {
       txOps.push(prisma.payroll.update({
         where: { id: u.id }, data: { pensionRemitted: u.newRemitted, pensionStatus: u.covered ? finalStatus : "OUTSTANDING" },
       }));
+      if (u.covered) coveredPensionIds.push(u.id);
     }
   }
 
   if (txOps.length > 0) await prisma.$transaction(txOps);
+
+  // ── Auto-clear the mirror Accounts Payable entries now that the underlying
+  //    obligation is settled. These payables duplicate the payroll/tax records
+  //    (created by the monthly cron / payroll run), so the cash outflow is already
+  //    booked above as an Expense — we only flip their status, never re-expense. ──
+  if (finalStatus === "REMITTED") {
+    // PAYE: one payable per payroll record, linked by the Payroll ID in its note.
+    if (coveredPayeIds.length > 0) {
+      await prisma.accountPayable.updateMany({
+        where: {
+          status: { notIn: ["PAID", "CANCELLED"] },
+          OR: coveredPayeIds.map((id) => ({ note: { contains: `Payroll ID: ${id} (paye)` } })),
+        },
+        data: { status: "PAID", paidDate: new Date() },
+      });
+    }
+    // Pension: one payable per period. Clear it only once every pension-bearing
+    // payroll record in that period is fully remitted/waived.
+    if (coveredPensionIds.length > 0) {
+      const periods = Array.from(new Set(
+        (await prisma.payroll.findMany({
+          where: { id: { in: coveredPensionIds } }, select: { period: true },
+        })).map((r) => r.period)
+      ));
+      for (const period of periods) {
+        const stillOutstanding = await prisma.payroll.count({
+          where: {
+            period, deletedAt: null,
+            pensionStatus: { notIn: ["REMITTED", "WAIVED"] },
+            OR: [{ pension: { gt: 0 } }, { pensionEmployer: { gt: 0 } }],
+          },
+        });
+        if (stillOutstanding === 0) {
+          await prisma.accountPayable.updateMany({
+            where: {
+              budgetLine: "Pension",
+              description: { contains: period },
+              status: { notIn: ["PAID", "CANCELLED"] },
+            },
+            data: { status: "PAID", paidDate: new Date() },
+          });
+        }
+      }
+    }
+  }
 
   await auditLog({
     userId:   session!.user!.id!,
