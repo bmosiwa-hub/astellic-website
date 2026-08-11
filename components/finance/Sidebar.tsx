@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import type { EffectivePermissions } from "@/lib/permissions";
 import { OrgSwitcher } from "@/components/finance/OrgSwitcher";
+import SearchBox from "@/components/finance/SearchBox";
 
 const ROLE_LABELS: Record<string, string> = {
   CEO:             "Chief Executive Officer",
@@ -431,6 +432,11 @@ export default function Sidebar({
       <div className="px-4 py-2.5 border-b border-white/10 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-brand-gold shrink-0" />
         <span className="text-sm font-semibold text-white truncate">Astellic</span>
+      </div>
+
+      {/* Global search */}
+      <div className="px-3 py-3 border-b border-white/10">
+        <SearchBox variant="sidebar" />
       </div>
 
       {/* Nav */}
