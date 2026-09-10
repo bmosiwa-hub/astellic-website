@@ -81,8 +81,9 @@ async function markPayrollPaid(formData: FormData) {
   "use server";
   const session = await auth();
   if (!session?.user) redirect("/astelfin_26/login");
-  const access = await resolveAccess(session);
-  if (!access || !access.can("canProcessPayroll")) redirect("/astelfin_26/my");
+  // Confirming a salary as paid is what books the cash Expense, so it is
+  // restricted to the CEO only (not delegates, not payroll processors).
+  if (session.user.role !== "CEO") redirect("/astelfin_26/my");
 
   const payrollId = formData.get("payrollId") as string;
   if (!payrollId) return;
@@ -157,6 +158,9 @@ export default async function PayrollPage() {
   const canManage = !!access?.can("canProcessPayroll");
   const canView   = canManage || !!access?.can("canViewPayroll");
   if (!canView) redirect("/astelfin_26/my");
+
+  // Confirming a salary as paid books the cash Expense, so it is CEO-only.
+  const canConfirmPaid = session.user.role === "CEO";
 
   const now = new Date();
 
@@ -434,7 +438,7 @@ export default async function PayrollPage() {
                         </td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3 justify-end">
-                            {canManage && p.status !== "PAID" && (
+                            {canConfirmPaid && p.status !== "PAID" && (
                               <form action={markPayrollPaid}>
                                 <input type="hidden" name="payrollId" value={p.id} />
                                 <button type="submit"
