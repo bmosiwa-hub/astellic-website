@@ -16,6 +16,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // AstelPay is a separate Vercel project (C:\Projects\AstelPay), served
+      // under /astelpay as an unlisted, link-only module.
+      { source: "/astelpay", destination: "https://astelpay.vercel.app/astelpay" },
+      { source: "/astelpay/:path*", destination: "https://astelpay.vercel.app/astelpay/:path*" },
+    ];
+  },
   async redirects() {
     return [
       // The Astelfin company room was removed — send old bookmarks/history
