@@ -4,7 +4,7 @@ import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 import AfricaPresenceMap from "@/components/AfricaPresenceMap";
 import WhoWeWorkWithSection from "@/components/WhoWeWorkWithSection";
 import { Reveal, FadeUp } from "@/components/Reveal";
-import { featuredStories, ACCENT_CLASSES } from "@/lib/stories";
+import { featuredStories, ACCENT_CLASSES, storyImage } from "@/lib/stories";
 
 const featured = featuredStories();
 
@@ -182,6 +182,16 @@ export default function Home() {
                     href={`/astellic-in-action/${s.slug}`}
                     className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full lift"
                   >
+                    <div className="relative h-40 w-full overflow-hidden">
+                      <Image
+                        src={storyImage(s.slug)}
+                        alt=""
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-brand-navy/25" />
+                    </div>
                     <div className={`h-1.5 ${a.bg}`} />
                     <div className="p-6 flex flex-col gap-3 flex-1">
                       <div className="flex items-center gap-2">

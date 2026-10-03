@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal, FadeUp } from "@/components/Reveal";
-import { STORIES, ACCENT_CLASSES, type Portfolio } from "@/lib/stories";
+import { STORIES, ACCENT_CLASSES, storyImage, type Portfolio } from "@/lib/stories";
 
 /**
  * Proof section for a "What We Do" pillar page: surfaces the three stories for
@@ -52,6 +53,16 @@ export default function PillarStories({
                   href={`/astellic-in-action/${s.slug}`}
                   className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full lift"
                 >
+                  <div className="relative h-36 w-full overflow-hidden">
+                    <Image
+                      src={storyImage(s.slug)}
+                      alt=""
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-brand-navy/25" />
+                  </div>
                   <div className={`h-1.5 ${a.bg}`} />
                   <div className="p-6 flex flex-col gap-3 flex-1">
                     <h3 className="font-bold text-brand-navy text-lg leading-snug group-hover:text-brand-teal transition-colors">

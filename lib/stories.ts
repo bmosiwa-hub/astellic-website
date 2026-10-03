@@ -347,43 +347,48 @@ const IMPLEMENTATION: Story[] = [
     cta: "Standing up or rescuing a complex delivery portfolio?",
   },
   {
-    slug: "innovation-to-government-ownership",
+    slug: "kuhes-idsr-hiv",
     portfolio: "Implementation",
     accent: "green",
-    title: "From innovation to government ownership.",
-    subtitle: "Transitioning Health Center by Phone to government stewardship.",
-    angle: "An ownership ladder — pilot to sustainability.",
-    attribution: "Founder experience · VillageReach · 2025",
-    geography: ["Malawi", "Mozambique"],
+    title: "Making HIV visible to the systems that watch for outbreaks.",
+    subtitle:
+      "Strengthening community-anchored IDSR-HIV surveillance under the Blantyre HIV Prevention Strategy.",
+    angle: "A surveillance system — from community hotspots to national response.",
+    attribution:
+      "Founder experience · KUHeS, Blantyre HIV Prevention Strategy (Gates-funded) · 2022–23",
+    geography: ["Malawi", "Blantyre"],
     problem:
-      "Innovations get launched; few get embedded. The hard part is not the pilot — it is whether government takes it on as its own.",
+      "HIV prevention depends on knowing where transmission is actually happening — but HIV has sat outside the routine Integrated Disease Surveillance and Response (IDSR) system that districts use to detect and respond to outbreaks, and the community organisations closest to transmission hotspots often cannot feed data into it. Hotspots stay invisible until late.",
     complexity:
-      "Transition across two countries required cultivating political will, aligning policy and building institutional capacity so the service survives the project — the classic sustainability trap of digital-health pilots.",
+      "Embedding HIV into IDSR across district and national levels, and building case-based and event-based surveillance capacity in community organisations, meant confronting the institutional, technical, reporting, coordination and resourcing gaps that constrain community-anchored surveillance.",
     approach: [
-      "Led organisational policy positioning on primary-health-care reform.",
-      "Supported the Ministries of Health in Malawi and Mozambique to transition Health Center by Phone toward full government ownership — cultivating political will, aligning policy, building institutional capacity.",
-      "Strengthened the Integrated Community Health Information System linking community-level data to the national HMIS.",
+      "Conducted health-systems and policy assessments for the Blantyre HIV Prevention Strategy, a Gates-funded initiative to strengthen HIV surveillance, prevention and response.",
+      "Provided technical input on embedding HIV into the Integrated Disease Surveillance and Response system (IDSR-HIV) as a core part of outbreak detection, preparedness and response at district and national levels.",
+      "Served as the KUHeS focal person in the consortium, and led monitoring, evaluation and a systematic assessment of Ministry of Health capacity to implement IDSR-HIV.",
+      "Assessed community-based organisations' readiness for case-based and event-based surveillance in transmission hotspots, then designed and delivered capacity-building on surveillance reporting, data verification and routine data use.",
     ],
     created: [
-      "The published guide 'Building the Foundations for Responsive Primary Health Care', anchored in the WHO Health Systems Framework",
-      "Policy-reform guidance for responsive PHC",
-      "Strengthened community health information linkage",
+      "Analytical assessment reports on IDSR-HIV readiness and system gaps",
+      "Capacity and gap assessments of community organisations across transmission hotspots",
+      "A capacity-development package for community and district surveillance actors",
+      "Policy briefs and communication materials for Ministry of Health decision-making",
     ],
     changed:
-      "Supported the transition toward government ownership and stewardship. In transparency: the role ended when donor funding was withdrawn — the ownership pathway and published guidance are the enduring outputs, not a completed hand-over.",
+      "Generated the evidence and capacity to integrate HIV into routine surveillance and emergency preparedness, and fed Blantyre HIV Prevention Strategy evidence into national Health Technical Working Group discussions on surveillance integration.",
     frameworks: [
-      "WHO Health Systems Framework",
-      "Responsive PHC",
-      "Ownership-transition pathway",
+      "Integrated Disease Surveillance & Response (IDSR)",
+      "Case-based & event-based surveillance",
+      "Health-systems & capacity assessment",
+      "Routine data use for decision-making",
     ],
     capabilities: [
-      "Policy translation",
-      "Political will & political economy",
+      "Health-systems & surveillance strengthening",
+      "Monitoring & evaluation",
+      "Community-systems capacity building",
+      "Evidence-to-policy",
       "Government engagement",
-      "Digital-health governance",
-      "Sustainability design",
     ],
-    cta: "Transitioning an innovation to government ownership?",
+    cta: "Strengthening disease surveillance or community data systems?",
   },
   {
     slug: "reaching-people-outside-the-clinic",
@@ -443,6 +448,23 @@ export const ACCENT_CLASSES: Record<
   teal: { text: "text-brand-teal", bg: "bg-brand-teal", border: "border-brand-teal", dot: "bg-brand-teal" },
   green: { text: "text-brand-green", bg: "bg-brand-green", border: "border-brand-green", dot: "bg-brand-green" },
 };
+
+/** Thematic banner image per story (atmospheric — not a claim that the photo is from the engagement). */
+export const STORY_IMAGE: Record<string, string> = {
+  "supreme-lifelines": "/images/thematic-health.jpg",
+  "frontline-aids-financing-intelligence": "/images/thematic-governance.jpg",
+  "evaluation-as-a-decision-tool": "/images/hero-approach.jpg",
+  "malawi-health-devolution": "/images/hero-about.jpg",
+  "one-plan-one-budget-one-report": "/images/hero-work.jpg",
+  "evidence-informed-decision-making": "/images/hero-why.jpg",
+  "fact-delivery-operating-system": "/images/hero-home.jpg",
+  "kuhes-idsr-hiv": "/images/thematic-health.jpg",
+  "reaching-people-outside-the-clinic": "/images/thematic-education.jpg",
+};
+
+export function storyImage(slug: string): string {
+  return STORY_IMAGE[slug] ?? "/images/hero-thematic.jpg";
+}
 
 export function getStory(slug: string): Story | undefined {
   return STORIES.find((s) => s.slug === slug);

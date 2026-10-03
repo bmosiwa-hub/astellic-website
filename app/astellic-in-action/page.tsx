@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal, FadeUp } from "@/components/Reveal";
 import {
   STORIES,
   PORTFOLIOS,
   PORTFOLIO_BLURB,
   ACCENT_CLASSES,
+  storyImage,
   type Portfolio,
 } from "@/lib/stories";
 
@@ -27,6 +29,16 @@ function StoryCard({ story }: { story: (typeof STORIES)[number] }) {
       href={`/astellic-in-action/${story.slug}`}
       className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col lift"
     >
+      <div className="relative h-36 w-full overflow-hidden">
+        <Image
+          src={storyImage(story.slug)}
+          alt=""
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-brand-navy/25" />
+      </div>
       <div className={`h-1.5 ${a.bg}`} />
       <div className="p-6 flex flex-col gap-3 flex-1">
         <div className="flex items-center gap-2">

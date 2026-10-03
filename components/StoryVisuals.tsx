@@ -205,20 +205,33 @@ function OperatingSystemHub({ a }: { a: Accent }) {
   );
 }
 
-/* 8 · Health Center by Phone — ownership ladder, rising left→right */
-function OwnershipLadder({ a }: { a: Accent }) {
-  const rungs = ["Pilot", "Evidence", "Policy alignment", "Political ownership", "Institutional capacity", "Government stewardship", "Sustainability"];
+/* 8 · KUHeS IDSR-HIV — surveillance flow: community hotspots → national response */
+function SurveillanceFlow({ a }: { a: Accent }) {
+  const flow = [
+    { t: "Community hotspots", s: "CBOs closest to transmission" },
+    { t: "Case & event detection", s: "Case-based + event-based surveillance" },
+    { t: "District IDSR", s: "Verified, routine data use" },
+    { t: "National response", s: "Preparedness & policy" },
+  ];
   return (
-    <div className="flex items-end gap-1.5 overflow-x-auto pb-2">
-      {rungs.map((r, i) => (
-        <div key={r} className="flex flex-col items-center shrink-0" style={{ width: `${100 / rungs.length}%`, minWidth: 92 }}>
-          <span className="text-[11px] font-semibold text-brand-navy text-center mb-2 h-8 flex items-end leading-tight">{r}</span>
-          <div
-            className={`w-full rounded-t-md ${i === rungs.length - 1 ? a.bg : "bg-brand-navy"}`}
-            style={{ height: 24 + i * 16, opacity: i === rungs.length - 1 ? 1 : 0.4 + i * 0.09 }}
-          />
-        </div>
-      ))}
+    <div>
+      <div className="flex flex-col sm:flex-row items-stretch gap-2">
+        {flow.map((f, i) => (
+          <div key={f.t} className="flex sm:flex-1 items-center gap-2">
+            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm w-full text-center">
+              <span className={`block w-7 h-7 rounded-full ${a.bg} text-white text-xs font-bold flex items-center justify-center mx-auto mb-2`}>
+                {i + 1}
+              </span>
+              <p className="text-sm font-semibold text-brand-navy leading-snug">{f.t}</p>
+              <p className="text-[11px] text-brand-muted mt-1 leading-snug">{f.s}</p>
+            </div>
+            {i < flow.length - 1 && <Arrow className={`${a.text} shrink-0 rotate-90 sm:rotate-0 opacity-60`} />}
+          </div>
+        ))}
+      </div>
+      <div className={`mt-3 ${a.bg} text-white rounded-xl px-5 py-3 text-center text-sm font-semibold`}>
+        Capacity built at every level — reporting, verification, routine data use
+      </div>
     </div>
   );
 }
@@ -249,7 +262,7 @@ const VISUALS: Record<string, (p: { a: Accent }) => React.ReactNode> = {
   "one-plan-one-budget-one-report": ConvergenceFunnel,
   "evidence-informed-decision-making": JourneyRail,
   "fact-delivery-operating-system": OperatingSystemHub,
-  "innovation-to-government-ownership": OwnershipLadder,
+  "kuhes-idsr-hiv": SurveillanceFlow,
   "reaching-people-outside-the-clinic": HumanJourneyPath,
 };
 
@@ -261,7 +274,7 @@ const CAPTIONS: Record<string, string> = {
   "one-plan-one-budget-one-report": "Many funders and priorities, converging on one plan.",
   "evidence-informed-decision-making": "The journey from finding evidence to institutionalising its use.",
   "fact-delivery-operating-system": "The operating system behind simultaneous delivery.",
-  "innovation-to-government-ownership": "From pilot to government stewardship — rung by rung.",
+  "kuhes-idsr-hiv": "From community hotspots to national response — HIV inside routine surveillance.",
   "reaching-people-outside-the-clinic": "Meeting people in the community, all the way to follow-up.",
 };
 

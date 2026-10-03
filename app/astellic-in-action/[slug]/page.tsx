@@ -1,8 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Reveal, FadeUp } from "@/components/Reveal";
 import StoryVisual from "@/components/StoryVisuals";
-import { STORIES, getStory, ACCENT_CLASSES } from "@/lib/stories";
+import { STORIES, getStory, ACCENT_CLASSES, storyImage } from "@/lib/stories";
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }));
@@ -48,8 +49,10 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   return (
     <>
       {/* Hero */}
-      <section className="bg-brand-navy text-white py-20 px-6">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative bg-brand-navy text-white py-20 px-6 overflow-hidden">
+        <Image src={storyImage(story.slug)} alt="" fill className="object-cover opacity-20" priority />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/80 via-brand-navy/85 to-brand-navy pointer-events-none" />
+        <div className="relative max-w-3xl mx-auto">
           <FadeUp>
             <Link
               href="/astellic-in-action"
