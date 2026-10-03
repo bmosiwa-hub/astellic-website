@@ -357,13 +357,6 @@ export default function Home() {
               </Reveal>
             </div>
           </div>
-
-          <FadeUp delay={200}>
-            <p className="text-center text-gray-400 text-xs mt-12 italic max-w-3xl mx-auto">
-              These are institutions and geographies from the founder&rsquo;s experience, not Astellic
-              engagements, and not endorsements. We do not publish client logos without explicit permission.
-            </p>
-          </FadeUp>
         </div>
       </section>
 
