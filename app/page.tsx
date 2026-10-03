@@ -102,9 +102,6 @@ export default function Home() {
       {/* ── Founder-led experience band ──────────────────────────────────── */}
       <section className="bg-[#0b1a38] border-b border-white/10 py-10 px-6">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-gray-400 text-xs font-bold uppercase tracking-[0.2em] mb-6">
-            A new firm, built on established founder experience
-          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-white/10">
             {[
               { value: "12+", label: "Countries",          sub: "Founder-led assignments" },

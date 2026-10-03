@@ -91,16 +91,6 @@ export default function AstellicInActionPage() {
         </div>
       </section>
 
-      {/* Attribution note — the credibility spine */}
-      <section className="bg-[#0b1a38] border-b border-white/10 py-5 px-6">
-        <p className="max-w-5xl mx-auto text-gray-400 text-sm leading-relaxed">
-          Astellic is a new, founder-led firm. Every story below is the{" "}
-          <span className="text-white font-semibold">founder&rsquo;s own experience</span> —
-          prior roles and personal consultancies across African health systems — brought to
-          Astellic. We label each one honestly and never present it as a firm engagement.
-        </p>
-      </section>
-
       {/* Pill nav */}
       <section className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-gray-100 py-3 px-6">
         <div className="max-w-5xl mx-auto flex flex-wrap gap-2 justify-center">

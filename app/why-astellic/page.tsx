@@ -115,9 +115,9 @@ export default function WhyAstellicPage() {
                 Specialist African advisory firm. Three services. Exceptional depth.
               </h2>
               <p className="text-brand-muted text-lg leading-relaxed mb-5">
-                Astellic is a new, founder-led African advisory firm drawing on more than a decade
-                of senior experience across African health systems, policy, research and
-                implementation. We bring the analytical rigour to generate evidence, the systems and
+                Astellic is a development advisory firm drawing on more than a decade of senior
+                experience across African health systems, policy, research and implementation.
+                We bring the analytical rigour to generate evidence, the systems and
                 political-economy grounding to turn it into decisions, and the operational experience
                 to help those decisions work in real institutions.
               </p>
