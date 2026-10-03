@@ -10,12 +10,12 @@ const services = [
 ];
 
 const about = [
-  { label: "About Astellic",   href: "/about" },
-  { label: "Vision & Mission",  href: "/about/vision-mission" },
+  { label: "About Astellic",    href: "/about" },
+  { label: "Astellic in Action", href: "/astellic-in-action" },
   { label: "Our Team",          href: "/about/our-team" },
+  { label: "Vision & Mission",  href: "/about/vision-mission" },
   { label: "Why Astellic",      href: "/why-astellic" },
   { label: "Our Approach",      href: "/approach" },
-  { label: "Our Projects",      href: "/our-projects" },
 ];
 
 const knowledge = [
@@ -75,7 +75,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <p className="text-white font-bold text-xl mb-1">Astellic</p>
             <p className="text-brand-gold text-xs uppercase tracking-[0.18em] font-semibold mb-5">
-              Research · Advisory · Implementation
+              Evidence · Policy · Implementation
             </p>
             <p className="text-sm leading-relaxed mb-5 max-w-xs">
               A specialist African advisory firm working at the intersection of evidence,

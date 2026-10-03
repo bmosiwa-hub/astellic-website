@@ -23,6 +23,12 @@ const ourApproachItems = [
   { label: "Delivery",  sub: "Pillar 03", href: "/what-we-do/implementation",  dot: "bg-brand-green" },
 ];
 
+const whatWeDoItems = [
+  { label: "Evidence",       href: "/what-we-do/evidence"       },
+  { label: "Policy",         href: "/what-we-do/policy"         },
+  { label: "Implementation", href: "/what-we-do/implementation" },
+];
+
 const workWithUsItems = [
   { label: "Check Openings",        href: "/work-with-us"         },
   { label: "Propose Partnership",   href: "/propose-partnership"  },
@@ -245,16 +251,7 @@ export default function Header() {
             <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-brand-gold group-hover:w-full transition-all duration-200 rounded" />
           </Link>
 
-          <FlatDropdown label="Who We Are" items={whoWeAreItems} />
-
-          <Link
-            href="/why-astellic"
-            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
-          >
-            Why Astellic
-          </Link>
-
-          <OurWorkDropdown />
+          <FlatDropdown label="What We Do" items={whatWeDoItems} />
 
           <Link
             href="/astellic-in-action"
@@ -270,7 +267,19 @@ export default function Header() {
             Insights
           </Link>
 
-          <FlatDropdown label="Work With Us" items={workWithUsItems} />
+          <Link
+            href="/about/our-team"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            People
+          </Link>
+
+          <Link
+            href="/about"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            About
+          </Link>
 
           {/* Search trigger */}
           <button
@@ -337,110 +346,24 @@ export default function Header() {
             Home
           </Link>
 
-          {/* Who We Are */}
-          <div className="border-b border-white/10">
-            <button
-              className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
-              onClick={() => setWhoWeAreOpen(!whoWeAreOpen)}
-            >
-              Who We Are
-              <svg className={`w-4 h-4 transition-transform ${whoWeAreOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {whoWeAreOpen && (
-              <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
-                {whoWeAreItems.map((item) => (
-                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <Link href="/why-astellic" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
-            Why Astellic
-          </Link>
-
-          {/* Our Work */}
+          {/* What We Do */}
           <div className="border-b border-white/10">
             <button
               className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
               onClick={() => setOurWorkOpen(!ourWorkOpen)}
             >
-              Our Work
+              What We Do
               <svg className={`w-4 h-4 transition-transform ${ourWorkOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             {ourWorkOpen && (
               <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
-                {/* Institutions */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Link href="/institutions-we-support" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
-                      Institutions We Support
-                    </Link>
-                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setInstitutionsOpen(!institutionsOpen)}>
-                      <svg className={`w-3.5 h-3.5 transition-transform ${institutionsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                  </div>
-                  {institutionsOpen && (
-                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
-                      {institutionsItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>{item.label}</Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {/* Our Approach */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 py-1.5 text-sm">
-                      Our Approach
-                    </span>
-                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setApproachOpen(!approachOpen)}>
-                      <svg className={`w-3.5 h-3.5 transition-transform ${approachOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                  </div>
-                  {approachOpen && (
-                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
-                      {ourApproachItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>
-                          <span className="text-[10px] text-gray-600 block">{item.sub}</span>
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {/* Thematic Areas */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Link href="/thematic-areas" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
-                      Thematic Areas
-                    </Link>
-                    <button className="px-2 text-gray-400 hover:text-white" onClick={() => setThematicOpen(!thematicOpen)}>
-                      <svg className={`w-3.5 h-3.5 transition-transform ${thematicOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                  </div>
-                  {thematicOpen && (
-                    <div className="pl-4 flex flex-col gap-1 border-l border-white/10">
-                      {thematicAreas.map((area) => (
-                        <Link key={area.href} href={area.href} className="text-gray-500 hover:text-white py-1 text-xs" onClick={closeMobile}>{area.label}</Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <Link href="/our-projects" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>Our Projects</Link>
-                <Link href="/resources" className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>Resources</Link>
+                {whatWeDoItems.map((item) => (
+                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>
+                    {item.label}
+                  </Link>
+                ))}
               </div>
             )}
           </div>
@@ -453,25 +376,13 @@ export default function Header() {
             Insights
           </Link>
 
-          {/* Work With Us */}
-          <div className="border-b border-white/10">
-            <button
-              className="flex items-center justify-between w-full py-3 text-gray-300 hover:text-white text-sm font-medium"
-              onClick={() => setWorkWithUsOpen(!workWithUsOpen)}
-            >
-              Work With Us
-              <svg className={`w-4 h-4 transition-transform ${workWithUsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {workWithUsOpen && (
-              <div className="pl-4 pb-2 flex flex-col gap-1 border-l border-white/20">
-                {workWithUsItems.map((item) => (
-                  <Link key={item.href} href={item.href} className="text-gray-400 hover:text-white py-1.5 text-sm" onClick={closeMobile}>{item.label}</Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <Link href="/about/our-team" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
+            People
+          </Link>
+
+          <Link href="/about" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
+            About
+          </Link>
 
           {/* Mobile search shortcut */}
           <button
