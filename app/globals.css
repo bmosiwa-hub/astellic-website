@@ -35,6 +35,20 @@
   animation: astellicSlideRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Hero background — slow continuous zoom (Ken Burns) ──────────────────────── */
+@keyframes heroKenBurns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+.hero-kenburns {
+  animation: heroKenBurns 24s ease-in-out infinite alternate;
+  transform-origin: center;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns { animation: none; }
+}
+
 /* Stagger helpers */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }

@@ -62,7 +62,7 @@ export default function Home() {
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
           fill
-          className="object-cover"
+          className="object-cover hero-kenburns"
           priority
         />
         {/* Gradient scrim — darker where the text sits, for legibility over bright photo areas */}
