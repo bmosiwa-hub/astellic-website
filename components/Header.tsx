@@ -257,6 +257,13 @@ export default function Header() {
           <OurWorkDropdown />
 
           <Link
+            href="/astellic-in-action"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            Astellic in Action
+          </Link>
+
+          <Link
             href="/insights"
             className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
           >
@@ -437,6 +444,10 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          <Link href="/astellic-in-action" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
+            Astellic in Action
+          </Link>
 
           <Link href="/insights" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
             Insights

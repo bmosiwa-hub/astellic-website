@@ -4,6 +4,9 @@ import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 import AfricaPresenceMap from "@/components/AfricaPresenceMap";
 import WhoWeWorkWithSection from "@/components/WhoWeWorkWithSection";
 import { Reveal, FadeUp } from "@/components/Reveal";
+import { featuredStories, ACCENT_CLASSES } from "@/lib/stories";
+
+const featured = featuredStories();
 
 const commitments = [
   {
@@ -31,21 +34,21 @@ const commitments = [
 
 const insightCards = [
   {
-    category: "Implementation Brief",
-    title: "Why Implementation Readiness Reviews Must Happen Before Programmes Launch",
-    desc: "The most preventable programme failures begin not at the point of delivery, but in the design phase, when implementation readiness is assumed rather than assessed.",
+    category: "Peer-reviewed",
+    title: "Gender-Equitable Access to Tuberculosis Care and Prevention in Malawi: A Political Economy Analysis",
+    desc: "Published in World Medical & Health Policy (2025). Political-economy analysis of why gender shapes access to TB services — evidence that fed Malawi's national Gender & TB policy and standards.",
     color: "bg-brand-navy text-white",
   },
   {
-    category: "MERL Insight",
-    title: "When M&E Becomes a Compliance Exercise: The Cost of Learning-Blind Monitoring",
-    desc: "Programmes that design M&E systems around donor reporting frameworks rather than decision-making needs consistently miss the learning they most need.",
+    category: "Technical guide",
+    title: "Building the Foundations for Responsive Primary Health Care: A Practical Guide for Policymakers",
+    desc: "A practical guide for policymakers, anchored in the WHO Health Systems Framework, on building PHC systems that prioritise availability, adaptability and responsiveness.",
     color: "bg-brand-teal text-white",
   },
   {
-    category: "Perspective",
-    title: "Data Quality in African Health Systems: What We Found, and Why It Matters",
-    desc: "After conducting data quality audits across multiple programme cycles, consistent patterns emerge that challenge assumptions about routine data reliability.",
+    category: "Technical report",
+    title: "Market Intelligence Analysis for Priority HIV and TB Products in Malawi",
+    desc: "A national market-intelligence assessment mapping financing, procurement flows and cost drivers for priority commodities — with a roadmap for more affordable, equitable access.",
     color: "bg-brand-gold text-white",
   },
 ];
@@ -66,14 +69,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/40 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
-            Research · Advisory · Implementation
+            Evidence · Policy · Implementation
           </p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl animate-fade-up delay-100">
-            Working at the Intersection of Evidence, Policy and Delivery.
+            We work across the gap between evidence, policy and implementation.
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12 animate-fade-up delay-200">
-            Astellic helps governments, donors, and corporations translate evidence,
-            strategy, and investment into measurable and sustainable outcomes.
+            Astellic helps governments, development organisations and health systems turn
+            complex challenges into better evidence, better decisions and better delivery.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
             <Link
@@ -95,25 +98,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Impact Metrics Band ──────────────────────────────────────────── */}
+      {/* ── Founder-led experience band ──────────────────────────────────── */}
       <section className="bg-[#0b1a38] border-b border-white/10 py-10 px-6">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-white/10">
-          {[
-            { value: "9+",  label: "Countries",              sub: "Across Africa"          },
-            { value: "30+", label: "Engagements",            sub: "Research & advisory"    },
-            { value: "10+", label: "Years Experience",       sub: "In African systems"     },
-            { value: "15+", label: "Institutional Partners", sub: "Donors, UN, NGOs"       },
-          ].map((stat, i) => (
-            <Reveal key={stat.label} variant="up" delay={i * 80}>
-              <div className="text-center px-6 py-4 first:pl-0 last:pr-0">
-                <p className="text-brand-gold font-black text-4xl md:text-5xl leading-none mb-1 tabular-nums">
-                  {stat.value}
-                </p>
-                <p className="text-white font-bold text-sm tracking-wide">{stat.label}</p>
-                <p className="text-gray-500 text-xs mt-0.5">{stat.sub}</p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-gray-400 text-xs font-bold uppercase tracking-[0.2em] mb-6">
+            A new firm, built on established founder experience
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-white/10">
+            {[
+              { value: "12+", label: "Countries",          sub: "Founder-led assignments" },
+              { value: "20+", label: "Engagements",        sub: "Research · policy · delivery" },
+              { value: "Since 2015", label: "Senior experience", sub: "Founder, across African systems" },
+              { value: "5", label: "Publications & guides", sub: "Peer-reviewed + technical" },
+            ].map((stat, i) => (
+              <Reveal key={stat.label} variant="up" delay={i * 80}>
+                <div className="text-center px-4 py-4 first:pl-0 last:pr-0">
+                  <p className="text-brand-gold font-black text-3xl md:text-4xl leading-none mb-1 tabular-nums">
+                    {stat.value}
+                  </p>
+                  <p className="text-white font-bold text-sm tracking-wide">{stat.label}</p>
+                  <p className="text-gray-500 text-xs mt-0.5">{stat.sub}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -136,6 +144,68 @@ export default function Home() {
           <Reveal variant="scale" delay={150}>
             <OperatingModelDiagram />
           </Reveal>
+        </div>
+      </section>
+
+      {/* ── Featured Work ────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <FadeUp>
+            <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
+              <div>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
+                  Astellic in Action
+                </p>
+                <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-3">
+                  Nine problems we know how to solve.
+                </h2>
+                <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
+                  Real work from across African health systems — evidence generated, policy
+                  designed, delivery made to work. Each tells the founder&rsquo;s own story, honestly.
+                </p>
+              </div>
+              <Link
+                href="/astellic-in-action"
+                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-5 py-2.5 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm whitespace-nowrap"
+              >
+                Explore all stories
+              </Link>
+            </div>
+          </FadeUp>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {featured.map((s, i) => {
+              const a = ACCENT_CLASSES[s.accent];
+              return (
+                <Reveal key={s.slug} variant="up" delay={i * 90}>
+                  <Link
+                    href={`/astellic-in-action/${s.slug}`}
+                    className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full lift"
+                  >
+                    <div className={`h-1.5 ${a.bg}`} />
+                    <div className="p-6 flex flex-col gap-3 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${a.dot}`} />
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-brand-muted">
+                          {s.portfolio}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-brand-navy text-lg leading-snug group-hover:text-brand-teal transition-colors">
+                        {s.title}
+                      </h3>
+                      <p className="text-brand-muted text-sm leading-relaxed flex-1">{s.subtitle}</p>
+                      <p className="text-[11px] text-brand-muted/80 border-t border-gray-100 pt-3">
+                        {s.attribution}
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
+                        Read the story →
+                      </span>
+                    </div>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -212,8 +282,12 @@ export default function Home() {
       <section className="bg-brand-navy text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <FadeUp>
-            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-12 text-center">
-              Institutional Track Record
+            <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-2 text-center">
+              Founder Experience &amp; Reach
+            </p>
+            <p className="text-gray-400 text-sm text-center mb-12 max-w-2xl mx-auto">
+              The institutions and geographies behind the founder&rsquo;s work. Astellic is new; this is
+              the experience it is built on, not a claim of firm engagements.
             </p>
           </FadeUp>
 
@@ -232,11 +306,11 @@ export default function Home() {
                     items: ["Health", "Public Financial Management", "Education & Social Systems", "Environmental Sustainability"],
                   },
                   {
-                    label: "Clients Supported",
-                    items: ["Bilateral donors (FCDO, USAID, GIZ)", "Multilateral agencies (WHO, UNICEF, World Bank)", "National line ministries", "International NGOs & implementers", "Corporate foundations"],
+                    label: "Institutions Worked With",
+                    items: ["Bilateral donors (FCDO, USAID)", "Multilateral agencies (WHO, UNICEF, World Bank)", "National line ministries", "International NGOs & implementers"],
                   },
                   {
-                    label: "Partners Engaged",
+                    label: "Institutions Engaged",
                     items: ["Gavi", "Global Fund", "Africa CDC", "Gates Foundation", "AFIDEP", "VillageReach", "Palladium", "DAI"],
                   },
                 ].map((col, i) => (
@@ -281,8 +355,9 @@ export default function Home() {
           </div>
 
           <FadeUp delay={200}>
-            <p className="text-center text-gray-700 text-xs mt-12 italic">
-              We do not publish client logos without explicit permission. These are categories and geographies, not institutional endorsements.
+            <p className="text-center text-gray-400 text-xs mt-12 italic max-w-3xl mx-auto">
+              These are institutions and geographies from the founder&rsquo;s experience, not Astellic
+              engagements, and not endorsements. We do not publish client logos without explicit permission.
             </p>
           </FadeUp>
         </div>
@@ -348,7 +423,7 @@ export default function Home() {
               Start Here
             </p>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-              Ready to Close the Implementation Gap?
+              Working through a complex health-system problem?
             </h2>
           </FadeUp>
           <FadeUp delay={100}>
@@ -363,7 +438,7 @@ export default function Home() {
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-10 py-4 rounded text-base transition-all duration-200 hover:scale-[1.02]"
               >
-                Start a Conversation
+                Discuss a challenge
               </Link>
               <Link
                 href="/about"
