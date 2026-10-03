@@ -95,7 +95,7 @@ export default function WhyAstellicPage() {
             Why Astellic
           </p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-7 max-w-3xl">
-            We are not just different.<br />We are effective.
+            Senior expertise,<br />from evidence to delivery.
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             The implementation gap is real. It is persistent. And it is largely caused
@@ -115,16 +115,15 @@ export default function WhyAstellicPage() {
                 Specialist African advisory firm. Three services. Exceptional depth.
               </h2>
               <p className="text-brand-muted text-lg leading-relaxed mb-5">
-                Astellic is a specialist African advisory firm that helps development
-                programmes learn continuously, trust their data, and make strategy work in practice.
-                We combine the analytical rigour of a research institution with the operational
-                grounding of an organisation that has spent a decade inside African systems.
+                Astellic is a new, founder-led African advisory firm drawing on more than a decade
+                of senior experience across African health systems, policy, research and
+                implementation. We bring the analytical rigour to generate evidence, the systems and
+                political-economy grounding to turn it into decisions, and the operational experience
+                to help those decisions work in real institutions.
               </p>
               <p className="text-brand-muted text-lg leading-relaxed">
-                We are not a research firm that stops at analysis. We are not a policy advisor
-                disconnected from delivery. We are not an implementation partner without analytical
-                depth. We are positioned at the intersection, because that is where sustainable
-                results are produced.
+                We work at the intersection of evidence, policy and implementation &mdash; because that
+                is where sustainable results are produced, and where most advisory work stops short.
               </p>
             </div>
           </SlideLeft>
@@ -192,48 +191,62 @@ export default function WhyAstellicPage() {
         </div>
       </section>
 
-      {/* ── Competitive Differentiation ──────────────────────────────────── */}
+      {/* ── What Makes Us Different ───────────────────────────────────────── */}
       <section className="py-20 px-6 bg-brand-light">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
             <div className="text-center mb-12">
               <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-3">
-                Comparative Positioning
+                What Makes Us Different
               </p>
               <h2 className="text-3xl font-bold text-brand-navy mb-4">
-                How Astellic Compares
+                Five things you can hold us to
               </h2>
               <p className="text-brand-muted text-lg max-w-xl mx-auto leading-relaxed">
-                Every type of institution has a valuable role. This is not about criticism.
-                It is about clarity: so you know exactly what choosing Astellic means.
+                Not claims about what we are not &mdash; positive differences, each one visible in the work.
               </p>
             </div>
           </FadeUp>
-          <ScaleIn delay={100}>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="grid grid-cols-[1fr_1fr_1fr] bg-brand-navy text-white text-sm font-bold uppercase tracking-widest">
-                <div className="px-6 py-4">Compared To</div>
-                <div className="px-6 py-4 border-l border-white/10">Their Limitation</div>
-                <div className="px-6 py-4 border-l border-white/10 text-brand-gold">Astellic&apos;s Distinction</div>
-              </div>
-              {comparisons.map((row, i) => (
-                <div
-                  key={row.competitor}
-                  className={`grid grid-cols-[1fr_1fr_1fr] ${i % 2 === 0 ? "bg-white" : "bg-brand-light"} border-t border-gray-100`}
-                >
-                  <div className="px-6 py-5">
-                    <p className="font-semibold text-brand-navy text-sm">{row.competitor}</p>
-                  </div>
-                  <div className="px-6 py-5 border-l border-gray-100">
-                    <p className="text-brand-muted text-sm leading-relaxed">{row.limitation}</p>
-                  </div>
-                  <div className="px-6 py-5 border-l border-gray-100">
-                    <p className="text-brand-navy text-sm leading-relaxed font-medium">{row.astellic}</p>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              {
+                label: "Senior-present",
+                desc: "The people who design the work stay close to delivery. You get senior judgement throughout, not a pitch team that hands off to juniors.",
+                href: "/astellic-in-action/fact-delivery-operating-system",
+              },
+              {
+                label: "Systems-grounded",
+                desc: "We account for institutions, incentives, financing and governance — not just the technical answer that looks good on paper.",
+                href: "/astellic-in-action/malawi-health-devolution",
+              },
+              {
+                label: "Evidence-led",
+                desc: "We build decisions around evidence, and choose the method to fit the decision a client actually faces — not the report.",
+                href: "/astellic-in-action/supreme-lifelines",
+              },
+              {
+                label: "Implementation-aware",
+                desc: "We understand the realities between a policy document and a working service, and design for them from the start.",
+                href: "/astellic-in-action/kuhes-idsr-hiv",
+              },
+              {
+                label: "African-contextual",
+                desc: "Our work is grounded in African institutional and political contexts — across the continent, rooted in Malawi.",
+                href: "/astellic-in-action/frontline-aids-financing-intelligence",
+              },
+            ].map((d, i) => (
+              <Reveal key={d.label} variant="up" delay={i * 70}>
+                <div className={`bg-white rounded-2xl border border-gray-100 p-7 h-full hover:border-brand-gold/30 transition-colors lift ${i === 4 ? "md:col-span-2" : ""}`}>
+                  <div className="w-8 h-1 bg-brand-gold rounded mb-4" />
+                  <h3 className="text-xl font-bold text-brand-navy mb-2">{d.label}</h3>
+                  <p className="text-brand-muted text-base leading-relaxed mb-4">{d.desc}</p>
+                  <Link href={d.href} className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm hover:gap-2 transition-all">
+                    See it in action →
+                  </Link>
                 </div>
-              ))}
-            </div>
-          </ScaleIn>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
