@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PillarStories from "@/components/PillarStories";
 import PolicyIllustration from "@/components/illustrations/PolicyIllustration";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -100,6 +101,8 @@ export default function PolicyPillarPage() {
       </section>
 
       {/* Sub-units */}
+      <PillarStories portfolio="Policy" />
+
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
           {subUnits.map((s, si) => (

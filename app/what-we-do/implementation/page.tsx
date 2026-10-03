@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PillarStories from "@/components/PillarStories";
 import DeliveryIllustration from "@/components/illustrations/DeliveryIllustration";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
@@ -114,6 +115,8 @@ export default function ImplementationPillarPage() {
       </section>
 
       {/* Sub-units */}
+      <PillarStories portfolio="Implementation" />
+
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
           {subUnits.map((s, si) => (

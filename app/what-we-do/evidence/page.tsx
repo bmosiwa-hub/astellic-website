@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PillarStories from "@/components/PillarStories";
 import EvidenceIllustration from "@/components/illustrations/EvidenceIllustration";
 import Link from "next/link";
 import { Reveal, FadeUp, ScaleIn } from "@/components/Reveal";
@@ -87,6 +88,8 @@ export default function EvidencePillarPage() {
       </section>
 
       {/* Sub-units */}
+      <PillarStories portfolio="Evidence" />
+
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto space-y-14">
           {subUnits.map((s, si) => (
