@@ -109,7 +109,7 @@ export default function Home() {
             {[
               { value: "12+", label: "Countries",          sub: "Founder-led assignments" },
               { value: "20+", label: "Engagements",        sub: "Research · policy · delivery" },
-              { value: "Since 2015", label: "Senior experience", sub: "Founder, across African systems" },
+              { value: "11+", label: "Years experience", sub: "Founder, across African systems" },
               { value: "5", label: "Publications & guides", sub: "Peer-reviewed + technical" },
             ].map((stat, i) => (
               <Reveal key={stat.label} variant="up" delay={i * 80}>
