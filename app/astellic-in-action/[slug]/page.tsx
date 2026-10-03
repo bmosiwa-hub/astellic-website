@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal, FadeUp } from "@/components/Reveal";
+import StoryVisual from "@/components/StoryVisuals";
 import { STORIES, getStory, ACCENT_CLASSES } from "@/lib/stories";
 
 export function generateStaticParams() {
@@ -82,6 +83,9 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
           </FadeUp>
         </div>
       </section>
+
+      {/* Signature visual — distinct per story */}
+      <StoryVisual slug={story.slug} />
 
       {/* Body */}
       <div className="bg-white">
