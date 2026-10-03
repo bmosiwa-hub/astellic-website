@@ -68,7 +68,7 @@ export default function Home() {
         {/* Gradient scrim — darker where the text sits, for legibility over bright photo areas */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/60 to-black/35 pointer-events-none" />
         <div className="relative w-full min-w-0 max-w-3xl mx-auto text-center">
-          <h1 className="text-brand-gold text-xl sm:text-3xl md:text-5xl font-bold uppercase tracking-[0.1em] sm:tracking-[0.14em] leading-snug mb-8 sm:mb-10 animate-fade-up break-words">
+          <h1 className="text-brand-gold text-lg sm:text-2xl md:text-3xl font-bold uppercase tracking-[0.12em] sm:tracking-[0.16em] leading-snug mb-8 sm:mb-10 animate-fade-up break-words">
             Evidence · Policy · Implementation
           </h1>
           <p className="text-gray-200 text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed mb-10 sm:mb-12 animate-fade-up delay-100">
