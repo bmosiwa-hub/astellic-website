@@ -57,7 +57,7 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative bg-brand-navy text-white py-20 sm:py-28 lg:py-32 px-6 overflow-hidden">
+      <section className="relative bg-brand-navy text-white py-24 sm:py-28 lg:py-32 px-6 overflow-hidden min-h-[72vh] flex items-center">
         <Image
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
@@ -67,19 +67,16 @@ export default function Home() {
         />
         {/* Gradient scrim — darker where the text sits, for legibility over bright photo areas */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/60 to-black/35 pointer-events-none" />
-        <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-sm sm:text-base font-bold uppercase tracking-[0.2em] mb-4 sm:mb-6 animate-fade-up">
+        <div className="relative max-w-3xl mx-auto text-center">
+          <h1 className="text-brand-gold text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-[0.14em] leading-snug mb-8 sm:mb-10 animate-fade-up">
             Evidence · Policy · Implementation
-          </p>
-          <h1 className="text-4xl leading-[1.15] sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 max-w-3xl animate-fade-up delay-100">
-            We work across the gap between evidence, policy and implementation.
           </h1>
-          <p className="text-gray-200 text-lg sm:text-xl md:text-2xl max-w-2xl leading-relaxed mb-10 sm:mb-12 animate-fade-up delay-200">
+          <p className="text-gray-200 text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed mb-10 sm:mb-12 animate-fade-up delay-100">
             Astellic is a development advisory firm that helps governments and development partners
             maximize impact through evidence-driven and context-responsive strategy. We exist to
             close the gap between what evidence shows, what policy intends, and what systems actually deliver.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-200">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-8 py-4 rounded font-semibold text-base transition-all duration-200 hover:scale-[1.02]"
