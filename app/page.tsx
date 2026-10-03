@@ -288,11 +288,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <FadeUp>
             <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-2 text-center">
-              Founder Experience &amp; Reach
+              Astellic Team Experience &amp; Reach
             </p>
             <p className="text-gray-400 text-sm text-center mb-12 max-w-2xl mx-auto">
-              The institutions and geographies behind the founder&rsquo;s work. Astellic is new; this is
-              the experience it is built on, not a claim of firm engagements.
+              The institutions and geographies behind the Astellic team&rsquo;s work.
             </p>
           </FadeUp>
 
