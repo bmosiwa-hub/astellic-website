@@ -13,7 +13,7 @@ import {
 export const metadata = {
   title: "Astellic in Action | Evidence, Policy & Implementation",
   description:
-    "Nine problems we know how to solve — curated stories across evidence, policy and implementation, drawn from the founder's experience across African health systems.",
+    "Some of the problems we know how to solve — curated stories across evidence, policy and implementation, drawn from the founder's experience across African health systems.",
 };
 
 const PILL_ANCHOR: Record<Portfolio, string> = {
@@ -80,7 +80,7 @@ export default function AstellicInActionPage() {
               Astellic in Action
             </p>
             <h1 className="text-4xl md:text-5xl font-bold leading-[1.1] mb-6 max-w-3xl">
-              Nine problems we know how to solve.
+              Some of the problems we know how to solve.
             </h1>
             <p className="text-gray-300 text-lg md:text-xl max-w-2xl leading-relaxed">
               Evidence exists. Policies exist. Programmes exist. But somewhere between them,

@@ -75,8 +75,9 @@ export default function Home() {
             We work across the gap between evidence, policy and implementation.
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12 animate-fade-up delay-200">
-            Astellic helps governments, development organisations and health systems turn
-            complex challenges into better evidence, better decisions and better delivery.
+            Astellic helps governments and development partners maximize impact through
+            evidence-driven and context-responsive strategy. We exist to close the gap between
+            what evidence shows, what strategy intends, and what systems actually deliver.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
             <Link
@@ -157,7 +158,7 @@ export default function Home() {
                   Astellic in Action
                 </p>
                 <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-3">
-                  Nine problems we know how to solve.
+                  Some of the problems we know how to solve.
                 </h2>
                 <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
                   Real work from across African health systems — evidence generated, policy

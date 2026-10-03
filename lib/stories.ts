@@ -470,10 +470,11 @@ export function getStory(slug: string): Story | undefined {
   return STORIES.find((s) => s.slug === slug);
 }
 
+// One flagship per specialty, in order: Evidence, Policy, Implementation.
 export const FEATURED_SLUGS = [
-  "malawi-health-devolution",
-  "frontline-aids-financing-intelligence",
-  "supreme-lifelines",
+  "frontline-aids-financing-intelligence", // Evidence
+  "malawi-health-devolution",              // Policy
+  "fact-delivery-operating-system",        // Implementation
 ];
 
 export function featuredStories(): Story[] {
