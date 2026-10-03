@@ -91,7 +91,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <span className="w-1 h-1 rounded-full bg-brand-gold shrink-0" />
-                Pan-African reach · 9+ countries
+                Pan-African reach · 12+ countries
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <span className="w-1 h-1 rounded-full bg-brand-gold shrink-0" />

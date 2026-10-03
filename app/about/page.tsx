@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const highlights = [
   { label: "Headquarters", value: "Lilongwe, Malawi" },
-  { label: "Reach",        value: "Pan-African · 9+ countries" },
+  { label: "Reach",        value: "Pan-African · 12+ countries" },
   { label: "Model",        value: "Senior-present" },
 ];
 
@@ -46,6 +46,50 @@ export default function AboutPage() {
             Astellic exists to close the gap between what evidence is showing,
             what policy intends, and what systems actually deliver.
           </p>
+        </div>
+      </section>
+
+      {/* ── New firm, established experience ─────────────────────────────── */}
+      <section className="py-16 px-6 bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <FadeUp>
+            <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-4">
+              A new firm. Established experience.
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-6 leading-snug">
+              Astellic is new. The experience behind it is not.
+            </h2>
+            <p className="text-brand-muted text-lg leading-relaxed mb-5">
+              We say that plainly, because our credibility rests on honesty rather than on overstating a
+              track record we have not yet built as a firm. What we bring is more than a decade of senior,
+              hands-on experience &mdash; earned by our founder across African health systems, policy and
+              implementation, and now brought to Astellic.
+            </p>
+            <p className="text-brand-muted text-lg leading-relaxed mb-8">
+              So everywhere on this site, we label our work honestly:
+            </p>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                {
+                  t: "Founder experience",
+                  d: "Everything shown today — the founder's own prior roles and consultancies across African health systems.",
+                },
+                {
+                  t: "Astellic engagement",
+                  d: "Work delivered in Astellic's own name. As the firm closes its first engagements, they appear here, clearly marked.",
+                },
+                {
+                  t: "Associate experience",
+                  d: "Expertise brought by Astellic associates, as our senior network grows.",
+                },
+              ].map((x) => (
+                <div key={x.t} className="bg-brand-light rounded-xl p-5 border border-gray-100">
+                  <p className="font-bold text-brand-navy mb-1">{x.t}</p>
+                  <p className="text-brand-muted text-sm leading-relaxed">{x.d}</p>
+                </div>
+              ))}
+            </div>
+          </FadeUp>
         </div>
       </section>
 
