@@ -75,9 +75,9 @@ export default function Home() {
             We work across the gap between evidence, policy and implementation.
           </h1>
           <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12 animate-fade-up delay-200">
-            Astellic helps governments and development partners maximize impact through
-            evidence-driven and context-responsive strategy. We exist to close the gap between
-            what evidence shows, what strategy intends, and what systems actually deliver.
+            Astellic is a development advisory firm that helps governments and development partners
+            maximize impact through evidence-driven and context-responsive strategy. We exist to
+            close the gap between what evidence shows, what policy intends, and what systems actually deliver.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-300">
             <Link
@@ -133,13 +133,10 @@ export default function Home() {
             <p className="text-brand-muted text-base font-bold uppercase tracking-[0.2em] mb-3">
               Our Operating Model
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-4">
-              A Continuous Cycle, Not a Linear Process
-            </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              The implementation gap is not a technical problem. It is a systems problem.
-              We address it as one: by integrating evidence, policy, and delivery into a
-              single adaptive architecture.
+              At Astellic, we believe that the key developmental gap is not a technical problem;
+              it is a systems problem. We address it as one: by integrating evidence, strategy,
+              and delivery into a single adaptive architecture.
             </p>
           </FadeUp>
           <Reveal variant="scale" delay={150}>
