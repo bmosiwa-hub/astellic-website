@@ -90,7 +90,7 @@ export default function Home() {
               </svg>
             </Link>
             <Link
-              href="/what-we-do"
+              href="/astellic-in-action"
               className="inline-flex items-center justify-center gap-2 border border-white/30 hover:border-white text-white px-8 py-4 rounded font-semibold text-base transition-colors"
             >
               Explore Our Work
@@ -154,12 +154,9 @@ export default function Home() {
                 <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
                   Astellic in Action
                 </p>
-                <h2 className="text-3xl md:text-4xl font-bold text-brand-navy mb-3">
-                  Some of the problems we know how to solve.
-                </h2>
                 <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                  Real work from across African health systems — evidence generated, policy
-                  designed, delivery made to work. Each tells the founder&rsquo;s own story, honestly.
+                  Real work from across African development systems — evidence generated, policy
+                  designed, delivery made to work.
                 </p>
               </div>
               <Link
