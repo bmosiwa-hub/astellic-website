@@ -57,24 +57,24 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative bg-brand-navy text-white py-32 px-6 overflow-hidden">
+      <section className="relative bg-brand-navy text-white py-20 sm:py-28 lg:py-32 px-6 overflow-hidden">
         <Image
           src="/images/hero-home.jpg"
           alt="African policy advisory environment"
           fill
-          className="object-cover opacity-90"
+          className="object-cover"
           priority
         />
-        {/* Minimal dark scrim — just enough for text legibility, no blue tint */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        {/* Gradient scrim — darker where the text sits, for legibility over bright photo areas */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/60 to-black/35 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
-          <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-6 animate-fade-up">
+          <p className="text-brand-gold text-sm sm:text-base font-bold uppercase tracking-[0.2em] mb-4 sm:mb-6 animate-fade-up">
             Evidence · Policy · Implementation
           </p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] mb-8 max-w-3xl animate-fade-up delay-100">
+          <h1 className="text-4xl leading-[1.15] sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 max-w-3xl animate-fade-up delay-100">
             We work across the gap between evidence, policy and implementation.
           </h1>
-          <p className="text-gray-300 text-xl md:text-2xl max-w-2xl leading-relaxed mb-12 animate-fade-up delay-200">
+          <p className="text-gray-200 text-lg sm:text-xl md:text-2xl max-w-2xl leading-relaxed mb-10 sm:mb-12 animate-fade-up delay-200">
             Astellic is a development advisory firm that helps governments and development partners
             maximize impact through evidence-driven and context-responsive strategy. We exist to
             close the gap between what evidence shows, what policy intends, and what systems actually deliver.
