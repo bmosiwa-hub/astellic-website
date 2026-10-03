@@ -22,7 +22,7 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            Working through a complex health-system problem?
+            Working through a complex development challenge?
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             We work with governments, donors, development partners and institutions across Africa.

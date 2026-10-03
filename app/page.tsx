@@ -414,7 +414,7 @@ export default function Home() {
               Start Here
             </p>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-              Working through a complex health-system problem?
+              Working through a complex development challenge?
             </h2>
           </FadeUp>
           <FadeUp delay={100}>

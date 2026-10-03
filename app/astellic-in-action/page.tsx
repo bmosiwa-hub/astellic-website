@@ -13,7 +13,7 @@ import {
 export const metadata = {
   title: "Astellic in Action | Evidence, Policy & Implementation",
   description:
-    "Some of the problems we know how to solve — curated stories across evidence, policy and implementation, drawn from the founder's experience across African health systems.",
+    "Real work across the development gap — curated stories across evidence, policy and implementation, drawn from the founder's experience across African development systems.",
 };
 
 const PILL_ANCHOR: Record<Portfolio, string> = {
@@ -80,12 +80,12 @@ export default function AstellicInActionPage() {
               Astellic in Action
             </p>
             <h1 className="text-4xl md:text-5xl font-bold leading-[1.1] mb-6 max-w-3xl">
-              Some of the problems we know how to solve.
+              Real work across the development gap.
             </h1>
             <p className="text-gray-300 text-lg md:text-xl max-w-2xl leading-relaxed">
               Evidence exists. Policies exist. Programmes exist. But somewhere between them,
-              things break down. These are nine real problems from across African health
-              systems — and how they were worked, through evidence, policy and implementation.
+              systems break down. These are real problems from across African development
+              systems — worked through evidence, policy and implementation.
             </p>
           </FadeUp>
         </div>
@@ -137,7 +137,7 @@ export default function AstellicInActionPage() {
         <div className="max-w-3xl mx-auto text-center">
           <FadeUp>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-5">
-              Working through a complex health-system problem?
+              Working through a complex development challenge?
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-8">
               Tell us what you&rsquo;re working on. We&rsquo;ll tell you honestly whether we can help.

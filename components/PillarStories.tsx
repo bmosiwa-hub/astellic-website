@@ -31,7 +31,7 @@ export default function PillarStories({
                 The proof, not the promise.
               </h2>
               <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                Real {portfolio.toLowerCase()} work from across African health systems — drawn from
+                Real {portfolio.toLowerCase()} work from across African development systems — drawn from
                 the founder&rsquo;s experience and labelled honestly.
               </p>
             </div>
