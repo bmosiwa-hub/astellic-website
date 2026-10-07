@@ -18,7 +18,8 @@ const perspectives = [
     author: "Dr. Benjamin Azariah Mosiwa",
     summary:
       "Political economy analysis usually explains power. This inaugural Perspective argues it should help you navigate it — toward specific results. It introduces Results-Based Political Economy Analysis (RB-PEA): an approach that makes the desired development result the unit of analysis, maps the political gates every results pathway must pass — Authorise, Deliver, Adopt, Sustain — and turns that reading into concrete entry points for action.",
-    href: "/documents/Astellic_Perspectives_01_RB-PEA.pdf",
+    href: "/insights/perspectives/rb-pea",
+    pdf: "/documents/Astellic_Perspectives_01_RB-PEA.pdf",
     tags: ["Political Economy", "Implementation", "Framework"],
   },
 ];
@@ -75,7 +76,7 @@ export default function InsightsPage() {
                   <span className="text-xs text-brand-muted">{featured.date}</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-brand-navy leading-snug mb-2">
-                  {featured.title}
+                  <Link href={featured.href} className="hover:text-brand-teal transition-colors">{featured.title}</Link>
                 </h3>
                 <p className="text-brand-gold font-semibold mb-1">{featured.subtitle}</p>
                 <p className="text-sm text-brand-muted mb-5">{featured.author}</p>
@@ -87,17 +88,25 @@ export default function InsightsPage() {
                     </span>
                   ))}
                 </div>
-                <a
-                  href={featured.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors"
-                >
-                  Read the brief (PDF)
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
-                </a>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href={featured.href}
+                    className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors"
+                  >
+                    Read the Perspective →
+                  </Link>
+                  <a
+                    href={featured.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white px-6 py-3 rounded font-semibold text-sm transition-colors"
+                  >
+                    Download PDF
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                  </a>
+                </div>
               </div>
 
               {/* Framework visual — power → results */}
