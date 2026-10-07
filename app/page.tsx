@@ -123,9 +123,9 @@ export default function Home() {
               Our Operating Model
             </p>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              At Astellic, we believe that the key developmental gap is not a technical problem;
-              it is a systems problem. We address it as one: by integrating evidence, strategy,
-              and delivery into a single adaptive architecture.
+              We believe that the key developmental gap is not a technical problem but rather a
+              systems problem, which we address by integrating evidence, strategy, and delivery
+              into a single adaptive architecture.
             </p>
           </FadeUp>
           <Reveal variant="scale" delay={150}>
