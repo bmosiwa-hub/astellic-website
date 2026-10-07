@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal, FadeUp } from "@/components/Reveal";
+import { PERSPECTIVES, perspectiveHref } from "@/lib/perspectives";
 
 export const metadata: Metadata = {
   title: "Insights | Astellic",
@@ -8,24 +9,8 @@ export const metadata: Metadata = {
     "Astellic's knowledge platform — Astellic Perspectives (our analysis of evidence, policy and implementation in Africa) and Inside African Systems (African voices on how development systems really work).",
 };
 
-// ── Astellic Perspectives — published pieces ──────────────────────────────────
-const perspectives = [
-  {
-    no: "No. 01",
-    date: "October 2026",
-    title: "Results-Based Political Economy Analysis",
-    subtitle: "From understanding power to navigating power for results.",
-    author: "Dr. Benjamin Azariah Mosiwa",
-    summary:
-      "Political economy analysis usually explains power. This inaugural Perspective argues it should help you navigate it — toward specific results. It introduces Results-Based Political Economy Analysis (RB-PEA): an approach that makes the desired development result the unit of analysis, maps the political gates every results pathway must pass — Authorise, Deliver, Adopt, Sustain — and turns that reading into concrete entry points for action.",
-    href: "/insights/perspectives/rb-pea",
-    pdf: "/documents/Astellic_Perspectives_01_RB-PEA.pdf",
-    tags: ["Political Economy", "Implementation", "Framework"],
-  },
-];
-
 export default function InsightsPage() {
-  const featured = perspectives[0];
+  const featured = PERSPECTIVES[0];
 
   return (
     <>
@@ -76,7 +61,7 @@ export default function InsightsPage() {
                   <span className="text-xs text-brand-muted">{featured.date}</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-brand-navy leading-snug mb-2">
-                  <Link href={featured.href} className="hover:text-brand-teal transition-colors">{featured.title}</Link>
+                  <Link href={perspectiveHref(featured)} className="hover:text-brand-teal transition-colors">{featured.title}</Link>
                 </h3>
                 <p className="text-brand-gold font-semibold mb-1">{featured.subtitle}</p>
                 <p className="text-sm text-brand-muted mb-5">{featured.author}</p>
@@ -90,7 +75,7 @@ export default function InsightsPage() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    href={featured.href}
+                    href={perspectiveHref(featured)}
                     className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-white px-6 py-3 rounded font-semibold text-sm transition-colors"
                   >
                     Read the Perspective →

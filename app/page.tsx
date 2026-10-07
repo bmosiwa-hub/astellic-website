@@ -5,6 +5,7 @@ import AfricaPresenceMap from "@/components/AfricaPresenceMap";
 import WhoWeWorkWithSection from "@/components/WhoWeWorkWithSection";
 import { Reveal, FadeUp } from "@/components/Reveal";
 import { featuredStories, ACCENT_CLASSES, storyImage } from "@/lib/stories";
+import { LATEST_PERSPECTIVE, perspectiveHref } from "@/lib/perspectives";
 
 const featured = featuredStories();
 
@@ -32,26 +33,6 @@ const commitments = [
 ];
 
 
-const insightCards = [
-  {
-    category: "Peer-reviewed",
-    title: "Gender-Equitable Access to Tuberculosis Care and Prevention in Malawi: A Political Economy Analysis",
-    desc: "Published in World Medical & Health Policy (2025). Political-economy analysis of why gender shapes access to TB services — evidence that fed Malawi's national Gender & TB policy and standards.",
-    color: "bg-brand-navy text-white",
-  },
-  {
-    category: "Technical guide",
-    title: "Building the Foundations for Responsive Primary Health Care: A Practical Guide for Policymakers",
-    desc: "A practical guide for policymakers, anchored in the WHO Health Systems Framework, on building PHC systems that prioritise availability, adaptability and responsiveness.",
-    color: "bg-brand-teal text-white",
-  },
-  {
-    category: "Technical report",
-    title: "Market Intelligence Analysis for Priority HIV and TB Products in Malawi",
-    desc: "A national market-intelligence assessment mapping financing, procurement flows and cost drivers for priority commodities — with a roadmap for more affordable, equitable access.",
-    color: "bg-brand-gold text-white",
-  },
-];
 
 export default function Home() {
   return (
@@ -359,11 +340,10 @@ export default function Home() {
                   Astellic Insights
                 </p>
                 <h2 className="text-3xl font-bold text-brand-navy mb-3">
-                  The Firm That Understands Why Systems Fail
+                  Astellic Perspectives
                 </h2>
                 <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                  Implementation briefs, perspectives, and institutional intelligence
-                  from the front lines of African development.
+                  Our own analysis of evidence, policy and implementation in Africa &mdash; a view, not a summary.
                 </p>
               </div>
               <Link
@@ -375,29 +355,49 @@ export default function Home() {
             </div>
           </FadeUp>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {insightCards.map((card, i) => (
-              <Reveal key={card.title} variant="up" delay={i * 90}>
-                <Link
-                  href="/insights"
-                  className="group bg-white rounded-2xl overflow-hidden flex flex-col lift"
-                >
-                  <div className={`${card.color} px-5 py-2.5`}>
-                    <span className="text-base font-bold uppercase tracking-widest opacity-80">{card.category}</span>
-                  </div>
-                  <div className="p-6 flex flex-col gap-3 flex-1">
-                    <h3 className="font-bold text-brand-navy text-base leading-snug group-hover:text-brand-teal transition-colors">
-                      {card.title}
-                    </h3>
-                    <p className="text-brand-muted text-sm leading-relaxed flex-1">{card.desc}</p>
-                    <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
-                      Read more →
+          <Reveal variant="up">
+            <Link
+              href={perspectiveHref(LATEST_PERSPECTIVE)}
+              className="group grid md:grid-cols-[1.5fr_1fr] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden lift"
+            >
+              <div className="p-8 md:p-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-bold uppercase tracking-widest text-white bg-brand-navy px-2.5 py-1 rounded">
+                    Perspectives {LATEST_PERSPECTIVE.no}
+                  </span>
+                  <span className="text-xs text-brand-muted">{LATEST_PERSPECTIVE.date}</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-brand-navy leading-snug mb-2 group-hover:text-brand-teal transition-colors">
+                  {LATEST_PERSPECTIVE.title}
+                </h3>
+                <p className="text-brand-gold font-semibold mb-4">{LATEST_PERSPECTIVE.subtitle}</p>
+                <p className="text-brand-muted text-base leading-relaxed mb-6">{LATEST_PERSPECTIVE.summary}</p>
+                <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
+                  Read the Perspective →
+                </span>
+              </div>
+              <div className="bg-brand-navy p-8 md:p-10 flex flex-col justify-center">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gold/80 mb-5">The RB-PEA lens</p>
+                <div className="space-y-2.5">
+                  {["Power", "Institutions", "Incentives", "Action", "Results"].map((s, i) => (
+                    <div key={s} className="flex items-center gap-3">
+                      <span className="w-6 h-6 rounded-full bg-white/10 text-brand-gold text-[11px] font-bold flex items-center justify-center shrink-0">
+                        {i + 1}
+                      </span>
+                      <span className={`font-semibold ${i === 4 ? "text-brand-gold" : "text-white"}`}>{s}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-6">
+                  {LATEST_PERSPECTIVE.tags.map((t) => (
+                    <span key={t} className="text-[11px] text-gray-300 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
+                      {t}
                     </span>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+                  ))}
+                </div>
+              </div>
+            </Link>
+          </Reveal>
         </div>
       </section>
 
