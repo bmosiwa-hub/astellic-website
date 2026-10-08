@@ -20,6 +20,7 @@ export interface Perspective {
   summary: string;
   tags: string[];
   pdf: string;       // "/documents/..."
+  cover: string;     // "/perspectives/<slug>/pg-01.jpg" — the branded document cover
 }
 
 export const PERSPECTIVES: Perspective[] = [
@@ -34,6 +35,7 @@ export const PERSPECTIVES: Perspective[] = [
       "Political economy analysis usually explains power. This inaugural Perspective argues it should help you navigate it — toward specific results. It introduces Results-Based Political Economy Analysis (RB-PEA): an approach that makes the desired development result the unit of analysis, maps the political gates every results pathway must pass — Authorise, Deliver, Adopt, Sustain — and turns that reading into concrete entry points for action.",
     tags: ["Political Economy", "Implementation", "Framework"],
     pdf: "/documents/Astellic_Perspectives_01_RB-PEA.pdf",
+    cover: "/perspectives/rb-pea/pg-01.jpg",
   },
 ];
 

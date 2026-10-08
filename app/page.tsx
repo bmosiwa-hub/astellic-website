@@ -184,6 +184,75 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Astellic Perspectives ────────────────────────────────────────── */}
+      <section className="py-20 px-6 bg-brand-light">
+        <div className="max-w-6xl mx-auto">
+          <FadeUp>
+            <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
+              <div>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
+                  Astellic Insights
+                </p>
+                <h2 className="text-3xl font-bold text-brand-navy mb-3">
+                  Astellic Perspectives
+                </h2>
+                <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
+                  Our own analysis of evidence, policy and implementation in Africa &mdash; a view, not a summary.
+                </p>
+              </div>
+              <Link
+                href="/insights"
+                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-5 py-2.5 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm whitespace-nowrap"
+              >
+                All Insights
+              </Link>
+            </div>
+          </FadeUp>
+
+          <Reveal variant="up">
+            <Link
+              href={perspectiveHref(LATEST_PERSPECTIVE)}
+              className="group grid md:grid-cols-[1.4fr_1fr] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden lift"
+            >
+              <div className="p-8 md:p-10 order-2 md:order-1 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-bold uppercase tracking-widest text-white bg-brand-navy px-2.5 py-1 rounded">
+                    Perspectives {LATEST_PERSPECTIVE.no}
+                  </span>
+                  <span className="text-xs text-brand-muted">{LATEST_PERSPECTIVE.date}</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-brand-navy leading-snug mb-2 group-hover:text-brand-teal transition-colors">
+                  {LATEST_PERSPECTIVE.title}
+                </h3>
+                <p className="text-brand-gold font-semibold mb-4">{LATEST_PERSPECTIVE.subtitle}</p>
+                <p className="text-brand-muted text-base leading-relaxed mb-5">{LATEST_PERSPECTIVE.summary}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {LATEST_PERSPECTIVE.tags.map((t) => (
+                    <span key={t} className="text-[11px] font-medium text-brand-navy bg-brand-light px-3 py-1 rounded-full">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
+                  Read the Perspective →
+                </span>
+              </div>
+              <div className="order-1 md:order-2 relative flex items-center justify-center p-8 md:p-10 overflow-hidden bg-gradient-to-br from-[#0d1f44] to-brand-navy">
+                <div aria-hidden className="absolute right-0 top-1/2 -translate-y-1/2 w-56 h-56 rounded-full bg-brand-gold/15 blur-3xl" />
+                <Image
+                  src={LATEST_PERSPECTIVE.cover}
+                  alt={`${LATEST_PERSPECTIVE.title} — cover`}
+                  width={1490}
+                  height={2105}
+                  sizes="(max-width: 768px) 60vw, 360px"
+                  className="relative w-auto h-72 md:h-[27rem] rounded-md shadow-2xl ring-1 ring-white/15 group-hover:-translate-y-1 group-hover:scale-[1.02] transition-transform duration-300"
+                />
+              </div>
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ── Who We Work With ─────────────────────────────────────────────── */}
       <WhoWeWorkWithSection />
 
@@ -327,77 +396,6 @@ export default function Home() {
               </Reveal>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Insights Teaser ──────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-brand-light">
-        <div className="max-w-6xl mx-auto">
-          <FadeUp>
-            <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end mb-10">
-              <div>
-                <p className="text-brand-gold text-base font-bold uppercase tracking-[0.2em] mb-3">
-                  Astellic Insights
-                </p>
-                <h2 className="text-3xl font-bold text-brand-navy mb-3">
-                  Astellic Perspectives
-                </h2>
-                <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                  Our own analysis of evidence, policy and implementation in Africa &mdash; a view, not a summary.
-                </p>
-              </div>
-              <Link
-                href="/insights"
-                className="inline-flex items-center gap-2 border border-brand-navy text-brand-navy font-semibold px-5 py-2.5 rounded hover:bg-brand-navy hover:text-white transition-colors text-sm whitespace-nowrap"
-              >
-                All Insights
-              </Link>
-            </div>
-          </FadeUp>
-
-          <Reveal variant="up">
-            <Link
-              href={perspectiveHref(LATEST_PERSPECTIVE)}
-              className="group grid md:grid-cols-[1.5fr_1fr] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden lift"
-            >
-              <div className="p-8 md:p-10">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs font-bold uppercase tracking-widest text-white bg-brand-navy px-2.5 py-1 rounded">
-                    Perspectives {LATEST_PERSPECTIVE.no}
-                  </span>
-                  <span className="text-xs text-brand-muted">{LATEST_PERSPECTIVE.date}</span>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-brand-navy leading-snug mb-2 group-hover:text-brand-teal transition-colors">
-                  {LATEST_PERSPECTIVE.title}
-                </h3>
-                <p className="text-brand-gold font-semibold mb-4">{LATEST_PERSPECTIVE.subtitle}</p>
-                <p className="text-brand-muted text-base leading-relaxed mb-6">{LATEST_PERSPECTIVE.summary}</p>
-                <span className="inline-flex items-center gap-1 text-brand-gold font-semibold text-sm group-hover:gap-2 transition-all">
-                  Read the Perspective →
-                </span>
-              </div>
-              <div className="bg-brand-navy p-8 md:p-10 flex flex-col justify-center">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gold/80 mb-5">The RB-PEA lens</p>
-                <div className="space-y-2.5">
-                  {["Power", "Institutions", "Incentives", "Action", "Results"].map((s, i) => (
-                    <div key={s} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-white/10 text-brand-gold text-[11px] font-bold flex items-center justify-center shrink-0">
-                        {i + 1}
-                      </span>
-                      <span className={`font-semibold ${i === 4 ? "text-brand-gold" : "text-white"}`}>{s}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-2 mt-6">
-                  {LATEST_PERSPECTIVE.tags.map((t) => (
-                    <span key={t} className="text-[11px] text-gray-300 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          </Reveal>
         </div>
       </section>
 
