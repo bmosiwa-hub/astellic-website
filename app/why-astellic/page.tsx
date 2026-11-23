@@ -61,11 +61,11 @@ const comparisons = [
 ];
 
 const sectors = [
-  "Health Systems & Nutrition",
-  "Public Financial Management",
-  "Education & Social Systems",
-  "Environmental Sustainability",
-  "Corporate Social Investment",
+  "Health policy",
+  "Health systems strengthening",
+  "Primary health care",
+  "Health financing",
+  "Health information and data systems",
 ];
 
 const clientCategories = [
@@ -115,9 +115,9 @@ export default function WhyAstellicPage() {
                 Specialist African advisory firm. Three services. Exceptional depth.
               </h2>
               <p className="text-brand-muted text-lg leading-relaxed mb-5">
-                Astellic is a development advisory firm drawing on more than a decade of senior
-                experience across African development systems — including health, governance,
-                financing and social systems — spanning policy, research and implementation.
+                Astellic is a specialist health-policy and systems-strengthening advisory firm,
+                drawing on more than a decade of senior experience across African health systems —
+                spanning policy, research, financing, and implementation.
                 We bring the analytical rigour to generate evidence, the systems and
                 political-economy grounding to turn it into decisions, and the operational experience
                 to help those decisions work in real institutions.
@@ -133,7 +133,7 @@ export default function WhyAstellicPage() {
               {[
                 { label: "Geography", value: "Africa-focused, operating from Malawi" },
                 { label: "Core services", value: "Adaptive MERL · Data Quality · Policy & Systems Analysis · Implementation Support" },
-                { label: "Clients", value: "Donors, Governments, Development Partners, Corporations" },
+                { label: "Clients", value: "Governments, donors, and health-sector development partners" },
                 { label: "Model", value: "Specialist, senior-present throughout" },
                 { label: "Compliance", value: "MNBC · Helsinki · FCDO & USAID frameworks" },
               ].map((f, i) => (

@@ -6,7 +6,7 @@ import { Reveal, FadeUp, FadeIn, SlideLeft, SlideRight, ScaleIn } from "@/compon
 export const metadata: Metadata = {
   title: "About Astellic | African Advisory & Evidence-to-Delivery Firm",
   description:
-    "Astellic is a specialist African advisory firm helping governments, donors, and corporations close the gap between what evidence shows, what policy intends, and what systems deliver.",
+    "Astellic is a specialist African health-policy and systems-strengthening advisory firm helping institutions close the gap between what evidence shows, what policy intends, and what health systems deliver.",
 };
 
 const highlights = [
@@ -43,7 +43,7 @@ export default function AboutPage() {
             The firm that understands why systems fail.
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed animate-fade-up delay-200">
-            Astellic exists to close the gap between what evidence is showing,
+            We exist to improve population health through closing the gap between what evidence shows,
             what policy intends, and what systems actually deliver.
           </p>
         </div>
@@ -61,10 +61,10 @@ export default function AboutPage() {
 
               {/* First para + pull quote side-by-side */}
               <p className="text-brand-muted text-lg leading-relaxed mb-8">
-                Astellic is a research, advisory, and implementation firm based in Lilongwe, Malawi.
-                We work with governments, donors, development organisations, and corporations to help them
-                generate rigorous evidence, translate it into implementable policy and strategy, and build
-                the institutional conditions that allow well-designed programmes to deliver sustained results.
+                Astellic is a health-policy and systems-strengthening advisory firm based in Lilongwe, Malawi.
+                We work with governments, donors, and development organisations to generate rigorous evidence,
+                translate it into implementable health policy and strategy, and build the institutional conditions
+                that allow health programmes to deliver sustained results.
               </p>
 
               {/* Pull quote */}
@@ -299,22 +299,22 @@ export default function AboutPage() {
             </SlideLeft>
             <SlideRight>
               <div>
-                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">Primary Domains</p>
+                <p className="text-brand-gold text-base font-bold uppercase tracking-widest mb-4">Specialist Focus</p>
                 <h2 className="text-2xl font-bold text-brand-navy mb-5">
                   Where We Currently Work
                 </h2>
                 <div className="space-y-3 mb-8">
                   {[
-                    { label: "Health",            primary: true },
-                    { label: "Public Financial Management",           primary: true },
-                    { label: "Social Development",    primary: false },
-                    { label: "Environmental Sustainability", primary: false },
+                    { label: "Health policy", primary: true },
+                    { label: "Health systems strengthening", primary: true },
+                    { label: "Health financing", primary: true },
+                    { label: "Primary health care", primary: true },
                   ].map((d) => (
                     <div key={d.label} className="flex items-center gap-3">
                       <span className={`w-2 h-2 rounded-full ${d.primary ? "bg-brand-teal" : "bg-gray-300"} shrink-0`} />
                       <span className={`text-sm ${d.primary ? "text-brand-navy font-medium" : "text-brand-muted"}`}>
                         {d.label}
-                        {d.primary && <span className="ml-2 text-xs text-brand-teal font-semibold">(Primary)</span>}
+                        {d.primary && <span className="ml-2 text-xs text-brand-teal font-semibold">(Specialist)</span>}
                       </span>
                     </div>
                   ))}

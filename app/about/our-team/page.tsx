@@ -56,7 +56,7 @@ export default function OurTeamPage() {
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic is founder-led. The person who designs your engagement is the person
             who delivers it — bringing over a decade of embedded experience in African
-            development systems to every client relationship.
+            health and development systems to every client relationship.
           </p>
         </div>
       </section>

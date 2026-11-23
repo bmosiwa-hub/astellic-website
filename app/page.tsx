@@ -50,7 +50,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/60 to-black/35 pointer-events-none" />
         <div className="relative w-full min-w-0 max-w-3xl mx-auto text-center">
           <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold leading-snug mb-10 sm:mb-12 animate-fade-up">
-            We exist to close the gap between what evidence shows, what policy intends, and what systems actually deliver.
+            Health policy advisory and systems strengthening for stronger, more equitable health systems.
           </h1>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-200">
             <Link
@@ -104,9 +104,8 @@ export default function Home() {
               Our Operating Model
             </p>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              We believe that the key developmental gap is not a technical problem but rather a
-              systems problem, which we address by integrating evidence, strategy, and delivery
-              into a single adaptive architecture.
+              We help health institutions connect evidence, policy, and delivery into a single
+              adaptive architecture that improves how health systems perform in practice.
             </p>
           </FadeUp>
           <Reveal variant="scale" delay={150}>
@@ -125,8 +124,8 @@ export default function Home() {
                   Astellic in Action
                 </p>
                 <p className="text-brand-muted text-lg max-w-xl leading-relaxed">
-                  Real work from across African development systems — evidence generated, policy
-                  designed, delivery made to work.
+                  Real work from across African health and development systems — evidence generated,
+                  policy designed, delivery made to work.
                 </p>
               </div>
               <Link
@@ -346,7 +345,7 @@ export default function Home() {
                 {[
                   {
                     label: "Sectors",
-                    items: ["Health", "Public Financial Management", "Education & Social Systems", "Environmental Sustainability"],
+                    items: ["Health policy", "Health financing", "Primary health care", "Health information systems"],
                   },
                   {
                     label: "Institutions Worked With",

@@ -108,7 +108,7 @@ export default async function WorkWithUsPage() {
             <h2 className="text-2xl font-bold mb-3">Join Our Roster</h2>
             <p className="text-gray-300 text-lg mb-6 max-w-xl mx-auto">
               We maintain a roster of senior consultants and associates across our
-              thematic areas. If you have the experience and want to work with
+              health policy and systems strengthening. If you have the experience and want to work with
               Astellic on a consultancy basis, apply to join our roster.
             </p>
             <Link

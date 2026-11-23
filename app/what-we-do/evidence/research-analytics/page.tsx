@@ -5,13 +5,13 @@ import { Reveal, FadeUp } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Research & Analytics | Evidence Generation | Astellic",
   description:
-    "Astellic's Research & Analytics sub-unit: applied policy research, sector systems analysis, political economy analysis, and evidence synthesis calibrated for decision-makers across all thematic domains.",
+    "Astellic's Research & Analytics sub-unit: applied health-policy research, health-systems analysis, political economy analysis, and evidence synthesis calibrated for health-sector decision-makers.",
 };
 
 const services = [
   {
     label: "Primary Data Collection & Analysis",
-    desc: "Quantitative surveys, qualitative fieldwork, and mixed-methods studies across health, governance, education, and climate domains, producing datasets that are analytically robust and operationally actionable.",
+    desc: "Quantitative surveys, qualitative fieldwork, and mixed-methods studies for health policy and health systems, producing datasets that are analytically robust and operationally actionable.",
   },
   {
     label: "Political Economy Analysis",
@@ -19,7 +19,7 @@ const services = [
   },
   {
     label: "Sector Systems & Policy Analysis",
-    desc: "In-depth analysis of how systems perform, where they fail, and what constrains them, applied across health systems, public sector governance, social services, and climate and agricultural systems.",
+    desc: "In-depth analysis of how health systems perform, where they fail, and what constrains them across governance, financing, service delivery, workforce, and data systems.",
   },
   {
     label: "Landscape Assessments & Institutional Diagnostics",
@@ -51,7 +51,7 @@ export default function ResearchAnalyticsPage() {
           <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
             We produce research that is not only analytically sound but operationally actionable,
             combining quantitative rigour with qualitative depth and political economy awareness
-            across all of Astellic&apos;s thematic domains.
+            for health policy and health-system priorities.
           </p>
         </div>
       </section>
@@ -60,7 +60,7 @@ export default function ResearchAnalyticsPage() {
         <div className="max-w-4xl mx-auto">
           <p className="text-lg text-gray-700 leading-relaxed mb-12">
             Our Research & Analytics sub-unit is Astellic&apos;s primary engine of evidence production.
-            It conducts primary and secondary research across the firm&apos;s thematic domains,
+            It conducts primary and secondary research for health-sector institutions,
             specialising in applied policy research, sector systems analysis, political economy analysis,
             programme evaluations, institutional diagnostics, and rapid evidence synthesis.
             What distinguishes us is the production of research positioned at the precise point

@@ -30,15 +30,8 @@ const working = [
   { label: "Institutions We Support",  href: "/institutions-we-support" },
   { label: "Donors & Governments",     href: "/institutions-we-support/donors-and-governments" },
   { label: "Development Partners",     href: "/institutions-we-support/development-partners" },
-  { label: "Corporate Institutions",   href: "/institutions-we-support/corporate-institutions" },
   { label: "Work With Us",             href: "/work-with-us" },
   { label: "Propose a Partnership",    href: "/propose-partnership" },
-];
-
-const domains = [
-  "Health",
-  "Environmental Sustainability",
-  "Social Development",
 ];
 
 export default function Footer() {
@@ -50,7 +43,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_auto] gap-6 items-center">
           <div>
             <p className="text-white font-semibold text-lg leading-snug max-w-2xl">
-              &ldquo;Astellic exists to close the gap between what evidence is showing,
+              &ldquo;We exist to improve population health through closing the gap between what evidence shows,
               what policy intends, and what systems actually deliver.&rdquo;
             </p>
 
@@ -78,9 +71,9 @@ export default function Footer() {
               Evidence · Policy · Implementation
             </p>
             <p className="text-sm leading-relaxed mb-5 max-w-xs">
-              A specialist African advisory firm working at the intersection of evidence,
-              policy, and delivery. We help governments, donors, and corporations close
-              the gap between what evidence shows, what policy intends, and what systems deliver.
+              A specialist African health-policy and systems-strengthening advisory firm.
+              We help governments, donors, and implementing partners close the gap between
+              what evidence shows, what policy intends, and what health systems deliver.
             </p>
 
             {/* Quick facts */}
@@ -99,14 +92,9 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Thematic domains */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-3">Thematic Domains</p>
-              <ul className="space-y-1.5">
-                {domains.map((d) => (
-                  <li key={d} className="text-xs text-gray-500 leading-snug">{d}</li>
-                ))}
-              </ul>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-1">Specialist focus</p>
+              <p className="text-xs text-gray-500 leading-snug">Health policy and systems strengthening</p>
             </div>
           </div>
 

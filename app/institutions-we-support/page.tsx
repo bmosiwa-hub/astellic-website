@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Who We Work With | Astellic",
   description:
-    "Astellic works with governments, bilateral and multilateral donors, NGOs and implementing partners, and private corporations to close the gap between evidence, policy, and delivery.",
+    "Astellic works with governments, bilateral and multilateral donors, NGOs, and implementing partners to strengthen health policy and health systems through evidence-to-delivery advisory.",
 };
 
 const segments = [

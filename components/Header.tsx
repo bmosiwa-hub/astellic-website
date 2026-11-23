@@ -11,12 +11,6 @@ const institutionsItems = [
   { label: "Private Corporations",          href: "/institutions-we-support/corporations",      dot: "bg-brand-green" },
 ];
 
-const thematicAreas = [
-  { label: "Health",                       href: "/thematic-areas/health"      },
-  { label: "Environmental Sustainability", href: "/thematic-areas/climate"     },
-  { label: "Social Development",           href: "/thematic-areas/education"   },
-];
-
 const ourApproachItems = [
   { label: "Evidence",  sub: "Pillar 01", href: "/what-we-do/evidence",        dot: "bg-brand-navy"  },
   { label: "Policy",    sub: "Pillar 02", href: "/what-we-do/policy",          dot: "bg-brand-teal"  },
@@ -143,27 +137,6 @@ function OurWorkDropdown() {
             </div>
           </div>
 
-          {/* Thematic Areas — nested flyout */}
-          <div className="relative group/thematic">
-            <div className="flex items-center justify-between px-5 py-3 hover:bg-brand-light cursor-pointer">
-              <Link href="/thematic-areas" className="text-brand-navy text-sm font-medium hover:text-brand-gold transition-colors flex-1">
-                Thematic Areas
-              </Link>
-              <svg className="w-3.5 h-3.5 text-brand-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-            <div className="absolute left-full top-0 pl-1 hidden group-hover/thematic:block z-50">
-              <div className="bg-white rounded-xl shadow-2xl py-2 min-w-[280px] border border-gray-100">
-                {thematicAreas.map((area) => (
-                  <Link key={area.href} href={area.href} className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
-                    {area.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <Link href="/our-projects" className="block px-5 py-3 text-brand-navy text-sm font-medium hover:bg-brand-light hover:text-brand-gold transition-colors">
             Our Projects
           </Link>
@@ -182,7 +155,6 @@ export default function Header() {
   const [ourWorkOpen,    setOurWorkOpen]     = useState(false);
   const [institutionsOpen, setInstitutionsOpen] = useState(false);
   const [approachOpen,   setApproachOpen]   = useState(false);
-  const [thematicOpen,   setThematicOpen]   = useState(false);
   const [workWithUsOpen, setWorkWithUsOpen] = useState(false);
   const [scrolled,       setScrolled]       = useState(false);
   const [searchOpen,     setSearchOpen]     = useState(false);
@@ -211,7 +183,6 @@ export default function Header() {
     setOurWorkOpen(false);
     setInstitutionsOpen(false);
     setApproachOpen(false);
-    setThematicOpen(false);
     setWorkWithUsOpen(false);
   };
 
@@ -249,6 +220,13 @@ export default function Header() {
           >
             Home
             <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-brand-gold group-hover:w-full transition-all duration-200 rounded" />
+          </Link>
+
+          <Link
+            href="/health-policy-and-systems-strengthening"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            Health Policy
           </Link>
 
           <FlatDropdown label="What We Do" items={whatWeDoItems} />
@@ -344,6 +322,14 @@ export default function Header() {
               <polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Home
+          </Link>
+
+          <Link
+            href="/health-policy-and-systems-strengthening"
+            className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10"
+            onClick={closeMobile}
+          >
+            Health Policy &amp; Systems
           </Link>
 
           {/* What We Do */}

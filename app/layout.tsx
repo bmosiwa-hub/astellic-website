@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | Astellic",
   },
   description:
-    "Astellic is a research, advisory, and implementation firm working at the intersection of evidence, policy, and delivery across Africa.",
+    "Astellic is a specialist African health-policy and systems-strengthening advisory firm working at the intersection of evidence, policy, and delivery.",
   metadataBase: new URL("https://astellic.com"),
   icons: {
     icon: [

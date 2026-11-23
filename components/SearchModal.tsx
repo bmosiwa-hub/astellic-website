@@ -50,11 +50,8 @@ const INDEX: SearchItem[] = [
   { title: "Development Partners",                        href: "/institutions-we-support/development-partners",     category: "Who We Serve", desc: "UN agencies, INGOs, implementing organisations, NGOs." },
   { title: "Corporate Institutions",                      href: "/institutions-we-support/corporate-institutions",   category: "Who We Serve", desc: "Private sector ESG, CSR strategy, social investment measurement.", keywords: "ESG CSR corporate social investment impact measurement" },
 
-  /* Thematic Areas */
-  { title: "Thematic Areas",                              href: "/thematic-areas",             category: "Thematic Areas", desc: "Health, environmental sustainability, and social development — our three primary domains." },
-  { title: "Health",                  href: "/thematic-areas/health",      category: "Thematic Areas", desc: "Primary health care, UHC financing, digital health, immunisation.", keywords: "health UHC health financing primary care digital health immunisation nutrition" },
-  { title: "Environmental Sustainability",       href: "/thematic-areas/climate",     category: "Thematic Areas", desc: "Climate policy, agricultural systems, resilience, NDCs.", keywords: "climate agriculture sustainability resilience NDC adaptation environment" },
-  { title: "Social Development",          href: "/thematic-areas/education",   category: "Thematic Areas", desc: "Education, social protection, skills development, human rights.", keywords: "education social protection TVET skills human rights gender" },
+  /* Specialist focus */
+  { title: "Health Policy & Systems Strengthening", href: "/health-policy-and-systems-strengthening", category: "Specialist Focus", desc: "Health policy advisory, health systems strengthening, primary health care, and health financing.", keywords: "health policy health systems strengthening UHC health financing primary care digital health immunisation nutrition" },
 
   /* Work With Us */
   { title: "Work With Us",        href: "/work-with-us",        category: "Work With Us", desc: "Career openings and opportunities at Astellic." },
@@ -68,8 +65,7 @@ const INDEX: SearchItem[] = [
   { title: "Theory of Change",                      href: "/what-we-do/implementation/programme-design",category: "Methods", desc: "Logic models, results chains, impact pathways." },
   { title: "Impact Assessment",                     href: "/what-we-do/evidence/evaluation-learning",  category: "Methods", desc: "Formative, summative and impact evaluations." },
   { title: "Implementation Readiness Review",       href: "/what-we-do/implementation",                category: "Methods", desc: "Pre-launch diagnostic before programmes begin." },
-  { title: "Health Financing Diagnostics",          href: "/thematic-areas/health",                    category: "Methods", desc: "UHC costing, public expenditure, health budget analysis." },
-  { title: "ESG & Impact Measurement",              href: "/institutions-we-support/corporate-institutions", category: "Methods", desc: "Corporate social investment strategy and evidence systems." },
+  { title: "Health Financing Diagnostics",          href: "/health-policy-and-systems-strengthening",  category: "Methods", desc: "UHC costing, public expenditure, health budget analysis." },
   { title: "Institutional Diagnostics",             href: "/what-we-do/evidence/research-analytics",  category: "Methods", desc: "Capacity gap analysis, organisational assessments, reform readiness." },
 
   /* People */
@@ -117,7 +113,7 @@ const CAT_COLORS: Record<string, string> = {
   Pages:          "bg-gray-100 text-gray-600",
   Services:       "bg-brand-navy/10 text-brand-navy",
   "Who We Serve": "bg-brand-teal/10 text-brand-teal",
-  "Thematic Areas":"bg-brand-green/10 text-brand-green",
+  "Specialist Focus":"bg-brand-green/10 text-brand-green",
   Methods:        "bg-brand-gold/15 text-amber-700",
   "Work With Us": "bg-purple-50 text-purple-700",
   Team:           "bg-rose-50 text-rose-700",
@@ -128,7 +124,7 @@ const CAT_COLORS: Record<string, string> = {
 const SHORTCUTS = [
   { label: "What we do",         href: "/what-we-do"                            },
   { label: "Our projects",       href: "/our-projects"                          },
-  { label: "Health systems",     href: "/thematic-areas/health"                 },
+  { label: "Health systems",     href: "/health-policy-and-systems-strengthening" },
   { label: "Adaptive MEAL",      href: "/what-we-do/evidence/evaluation-learning" },
   { label: "DQA",                href: "/what-we-do/evidence/data-quality"      },
   { label: "Get in touch",       href: "/contact"                               },
@@ -231,7 +227,7 @@ export default function SearchModal({ open, onClose }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Search pages, services, thematic areas, methods…"
+            placeholder="Search pages, services, health systems, methods…"
             className="flex-1 text-brand-navy placeholder-gray-400 text-base outline-none bg-transparent"
             aria-label="Search"
             autoComplete="off"
@@ -300,7 +296,7 @@ export default function SearchModal({ open, onClose }: Props) {
               ) : (
                 <div className="py-14 text-center">
                   <p className="text-brand-muted text-sm">No results for <span className="font-semibold text-brand-navy">&ldquo;{query}&rdquo;</span></p>
-                  <p className="text-gray-400 text-xs mt-2">Try searching for a service, thematic area, or method.</p>
+                  <p className="text-gray-400 text-xs mt-2">Try searching for a service, health-system topic, or method.</p>
                 </div>
               )}
             </>

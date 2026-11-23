@@ -192,7 +192,7 @@ export default function JoinOurRosterPage() {
           </h1>
           <p className="text-gray-300 text-xl max-w-2xl leading-relaxed">
             Astellic maintains a roster of senior consultants and associates
-            across our thematic areas. Complete the form below to be considered
+            in health policy and systems strengthening. Complete the form below to be considered
             for current and future engagements.
           </p>
         </div>
