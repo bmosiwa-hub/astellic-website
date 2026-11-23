@@ -49,9 +49,12 @@ export default function Home() {
         {/* Gradient scrim — darker where the text sits, for legibility over bright photo areas */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/60 to-black/35 pointer-events-none" />
         <div className="relative w-full min-w-0 max-w-3xl mx-auto text-center">
-          <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold leading-snug mb-10 sm:mb-12 animate-fade-up">
-            Policy advisory and systems strengthening for stronger, more equitable health systems.
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold leading-snug mb-4 animate-fade-up">
+            Health Policy and Systems Advisory
           </h1>
+          <p className="text-gray-200 text-base sm:text-lg italic leading-relaxed mb-10 sm:mb-12 animate-fade-up delay-100">
+            Bridging the gap between what evidence shows, what policy intends and what systems deliver
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-200">
             <Link
               href="/contact"
@@ -104,8 +107,9 @@ export default function Home() {
               Our Operating Model
             </p>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-              We help health institutions connect evidence, policy, and delivery into a single
-              adaptive architecture that improves how health systems perform in practice.
+              We help governments, development partners and private institutions connect evidence,
+              policy, and delivery into a single adaptive architecture that improves how health systems
+              perform in practice.
             </p>
           </FadeUp>
           <Reveal variant="scale" delay={150}>
