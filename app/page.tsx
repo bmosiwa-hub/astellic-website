@@ -3,6 +3,7 @@ import Image from "next/image";
 import OperatingModelDiagram from "@/components/OperatingModelDiagram";
 import AfricaPresenceMap from "@/components/AfricaPresenceMap";
 import WhoWeWorkWithSection from "@/components/WhoWeWorkWithSection";
+import ExpertiseSection from "@/components/ExpertiseSection";
 import { Reveal, FadeUp } from "@/components/Reveal";
 import { featuredStories, ACCENT_CLASSES, storyImage } from "@/lib/stories";
 import { LATEST_PERSPECTIVE, perspectiveHref } from "@/lib/perspectives";
@@ -117,6 +118,9 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+
+      {/* ── Areas of Expertise ───────────────────────────────────────────── */}
+      <ExpertiseSection />
 
       {/* ── Featured Work ────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-white">
