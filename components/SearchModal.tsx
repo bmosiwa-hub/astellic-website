@@ -50,8 +50,6 @@ const INDEX: SearchItem[] = [
   { title: "Development Partners",                        href: "/institutions-we-support/development-partners",     category: "Who We Serve", desc: "UN agencies, INGOs, implementing organisations, NGOs." },
   { title: "Corporate Institutions",                      href: "/institutions-we-support/corporate-institutions",   category: "Who We Serve", desc: "Private sector ESG, CSR strategy, social investment measurement.", keywords: "ESG CSR corporate social investment impact measurement" },
 
-  /* Specialist focus */
-  { title: "Health Policy & Systems Strengthening", href: "/health-policy-and-systems-strengthening", category: "Specialist Focus", desc: "Health policy advisory, health systems strengthening, primary health care, and health financing.", keywords: "health policy health systems strengthening UHC health financing primary care digital health immunisation nutrition" },
 
   /* Work With Us */
   { title: "Work With Us",        href: "/work-with-us",        category: "Work With Us", desc: "Career openings and opportunities at Astellic." },
@@ -65,7 +63,7 @@ const INDEX: SearchItem[] = [
   { title: "Theory of Change",                      href: "/what-we-do/implementation/programme-design",category: "Methods", desc: "Logic models, results chains, impact pathways." },
   { title: "Impact Assessment",                     href: "/what-we-do/evidence/evaluation-learning",  category: "Methods", desc: "Formative, summative and impact evaluations." },
   { title: "Implementation Readiness Review",       href: "/what-we-do/implementation",                category: "Methods", desc: "Pre-launch diagnostic before programmes begin." },
-  { title: "Health Financing Diagnostics",          href: "/health-policy-and-systems-strengthening",  category: "Methods", desc: "UHC costing, public expenditure, health budget analysis." },
+  { title: "Health Financing Diagnostics",          href: "/what-we-do/policy/systems-strengthening",  category: "Methods", desc: "UHC costing, public expenditure, health budget analysis." },
   { title: "Institutional Diagnostics",             href: "/what-we-do/evidence/research-analytics",  category: "Methods", desc: "Capacity gap analysis, organisational assessments, reform readiness." },
 
   /* People */
@@ -113,7 +111,6 @@ const CAT_COLORS: Record<string, string> = {
   Pages:          "bg-gray-100 text-gray-600",
   Services:       "bg-brand-navy/10 text-brand-navy",
   "Who We Serve": "bg-brand-teal/10 text-brand-teal",
-  "Specialist Focus":"bg-brand-green/10 text-brand-green",
   Methods:        "bg-brand-gold/15 text-amber-700",
   "Work With Us": "bg-purple-50 text-purple-700",
   Team:           "bg-rose-50 text-rose-700",
@@ -124,7 +121,7 @@ const CAT_COLORS: Record<string, string> = {
 const SHORTCUTS = [
   { label: "What we do",         href: "/what-we-do"                            },
   { label: "Our projects",       href: "/our-projects"                          },
-  { label: "Health systems",     href: "/health-policy-and-systems-strengthening" },
+  { label: "Health systems",     href: "/what-we-do/policy/systems-strengthening" },
   { label: "Adaptive MEAL",      href: "/what-we-do/evidence/evaluation-learning" },
   { label: "DQA",                href: "/what-we-do/evidence/data-quality"      },
   { label: "Get in touch",       href: "/contact"                               },

@@ -40,7 +40,12 @@ const nextConfig = {
       },
       {
         source: "/thematic-areas/:path*",
-        destination: "/health-policy-and-systems-strengthening",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/health-policy-and-systems-strengthening",
+        destination: "/",
         permanent: true,
       },
     ];

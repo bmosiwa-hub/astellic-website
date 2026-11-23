@@ -222,13 +222,6 @@ export default function Header() {
             <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-brand-gold group-hover:w-full transition-all duration-200 rounded" />
           </Link>
 
-          <Link
-            href="/health-policy-and-systems-strengthening"
-            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
-          >
-            Health Policy
-          </Link>
-
           <FlatDropdown label="What We Do" items={whatWeDoItems} />
 
           <Link
@@ -322,14 +315,6 @@ export default function Header() {
               <polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Home
-          </Link>
-
-          <Link
-            href="/health-policy-and-systems-strengthening"
-            className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10"
-            onClick={closeMobile}
-          >
-            Health Policy &amp; Systems
           </Link>
 
           {/* What We Do */}
