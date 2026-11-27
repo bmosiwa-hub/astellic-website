@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
+import { hpHubSitemap } from "@/lib/hp-hub/sitemap";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Regenerated hourly so newly published HP-Hub documents appear.
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://www.astellic.com";
 
   const routes = [
@@ -21,10 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/contact", priority: 0.7, changeFrequency: "yearly" },
   ] as const;
 
-  return routes.map((route) => ({
+  const site = routes.map((route) => ({
     url: `${base}${route.url}`,
     lastModified: new Date(),
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));
+
+  return [...site, ...(await hpHubSitemap(base))];
 }

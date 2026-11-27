@@ -216,6 +216,30 @@ async function toggleActive(formData: FormData) {
   redirect("/astelfin_26/settings");
 }
 
+// Astelfin and HP-Hub access are granted independently. An account without
+// Astelfin access can still sign in to HP-Hub if it has an HP-Hub role.
+async function toggleAstelfinAccess(formData: FormData) {
+  "use server";
+  const session = await auth();
+  if (!session?.user || session.user.role !== "CEO") redirect("/astelfin_26/dashboard");
+
+  const userId = formData.get("userId") as string;
+  const astelfinAccess = formData.get("astelfinAccess") === "true";
+  if (userId === session.user.id && !astelfinAccess) return; // can't lock yourself out
+
+  await prisma.user.update({ where: { id: userId }, data: { astelfinAccess } });
+
+  await auditLog({
+    userId: session.user.id,
+    action: "UPDATE",
+    entity: "User",
+    entityId: userId,
+    detail: astelfinAccess ? "Astelfin access granted" : "Astelfin access removed",
+  });
+
+  redirect("/astelfin_26/settings");
+}
+
 async function deleteUser(formData: FormData) {
   "use server";
   const session = await auth();
@@ -305,7 +329,8 @@ export default async function SettingsPage({
         id: true, name: true, email: true, role: true, active: true,
         createdAt: true, lastLoginAt: true, lockedUntil: true,
         mustChangePassword: true, employeeId: true, consultantId: true,
-        permissions: true,
+        permissions: true, astelfinAccess: true,
+        hpMember: { select: { role: true, active: true } },
       },
     }) : Promise.resolve([]),
     isCEO ? prisma.employee.findMany({ where: { active: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }) : Promise.resolve([]),
@@ -453,6 +478,16 @@ export default async function SettingsPage({
                             Locked
                           </span>
                         )}
+                        {!u.astelfinAccess && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full w-fit bg-gray-100 text-gray-500">
+                            No Astelfin access
+                          </span>
+                        )}
+                        {u.hpMember?.active && (
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full w-fit bg-teal-50 text-teal-700">
+                            HP-Hub
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-5 py-3 text-xs text-gray-400 hidden xl:table-cell whitespace-nowrap">
@@ -474,6 +509,14 @@ export default async function SettingsPage({
                               <button type="submit"
                                 className={`text-xs font-semibold hover:underline ${u.active ? "text-orange-500" : "text-green-600"}`}>
                                 {u.active ? "Deactivate" : "Reactivate"}
+                              </button>
+                            </form>
+                            <form action={toggleAstelfinAccess}>
+                              <input type="hidden" name="userId" value={u.id} />
+                              <input type="hidden" name="astelfinAccess" value={u.astelfinAccess ? "false" : "true"} />
+                              <button type="submit"
+                                className={`text-xs font-semibold hover:underline ${u.astelfinAccess ? "text-gray-500" : "text-green-600"}`}>
+                                {u.astelfinAccess ? "Remove Astelfin" : "Grant Astelfin"}
                               </button>
                             </form>
                             {!u.mustChangePassword && (

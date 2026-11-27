@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "test": "vitest run"
+    "test": "vitest run",
+    "hp-hub:seed": "ts-node -P prisma/tsconfig.seed.json prisma/seed-hp-hub.ts",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

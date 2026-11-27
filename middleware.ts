@@ -8,6 +8,8 @@ const { auth } = NextAuth(authConfig);
 // Paths that are exempt from the 2FA check (the challenge page itself + login)
 const TOTP_EXEMPT = ["/astelfin_26/login", "/astelfin_26/2fa"];
 
+const HP_LOGIN = "/hp-hub/admin/login";
+
 // Roles that must complete 2FA when totpEnabled
 const TOTP_ROLES = ["CEO", "FINANCE_MANAGER"];
 
@@ -23,6 +25,29 @@ export default auth(async (req) => {
     if (!req.auth) {
       const loginUrl = new URL("/astelfin_26/login", req.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // ── 1b. Astelfin access (granted separately from HP-Hub access) ───────────
+  if (
+    req.auth &&
+    pathname.startsWith("/astelfin_26") &&
+    !TOTP_EXEMPT.includes(pathname) &&
+    req.auth.user?.astelfinAccess === false
+  ) {
+    const loginUrl = new URL("/astelfin_26/login", req.url);
+    loginUrl.searchParams.set("error", "no_access");
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // ── 1c. HP-Hub admin guard ─────────────────────────────────────────────────
+  // Coarse check only; pages and server actions re-check the role in the DB.
+  if (pathname.startsWith("/hp-hub/admin") && pathname !== HP_LOGIN) {
+    if (!req.auth || !req.auth.user?.hpRole) {
+      const loginUrl = new URL(HP_LOGIN, req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      if (req.auth) loginUrl.searchParams.set("error", "no_access");
       return NextResponse.redirect(loginUrl);
     }
   }

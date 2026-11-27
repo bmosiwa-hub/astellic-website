@@ -31,7 +31,9 @@ export default async function RootLayout({
   const pathname = headersList.get("x-pathname") ?? "";
   const isFinance = pathname.startsWith("/astelfin_26");
   const isHerVoice = pathname.startsWith("/hervoice_26");
-  const isStandalone = isFinance || isHerVoice;
+  // HP-Hub's admin portal has its own shell; the public HP-Hub pages use the site chrome.
+  const isHpAdmin = pathname.startsWith("/hp-hub/admin");
+  const isStandalone = isFinance || isHerVoice || isHpAdmin;
 
   return (
     <html lang="en">

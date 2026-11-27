@@ -92,6 +92,11 @@ model User {
   totpSecret        String?            // base32 TOTP secret; null = 2FA not configured
   totpEnabled       Boolean            @default(false) // true once user completes setup verification
   totpBackupCodes   String[]           @default([])    // bcrypt-hashed one-time backup codes (8 codes)
+  // ── System access ───────────────────────────────────────────────────────────
+  // Astelfin and HP-Hub access are granted independently. HP-Hub access is an
+  // active HpMember row; Astelfin access is this flag (existing users keep it).
+  astelfinAccess    Boolean            @default(true)
+  hpMember          HpMember?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   auditLogs           AuditLog[]
@@ -2038,4 +2043,465 @@ model HerVoiceReport {
   @@index([status])
   @@index([createdAt])
   @@index([phoneHash])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HEALTH POLICY INTELLIGENCE HUB (HP-Hub)
+// Public repository of health policy documents and grey literature.
+// Every table is prefixed `Hp` and is independent of the finance models, apart
+// from HpMember -> User (shared login accounts). See docs/hp-hub/ARCHITECTURE.md.
+// ══════════════════════════════════════════════════════════════════════════════
+
+enum HpRole {
+  SUPER_ADMIN // everything, including member management
+  REPO_ADMIN // publish, archive, delete, taxonomies, imports
+  EDITOR // create/edit any record, verify, review submissions
+  CONTRIBUTOR // create drafts and submit them for review; cannot publish
+}
+
+enum HpPublicationStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+// Independent of publication status: a document can be published but unverified.
+enum HpVerificationStatus {
+  UNVERIFIED
+  PENDING_VERIFICATION
+  VERIFIED
+  DISPUTED
+}
+
+enum HpAccessType {
+  HOSTED // Astellic stores the file; public download allowed
+  EXTERNAL // metadata only; users go to the original source
+  RESTRICTED // not publicly downloadable; request-access only
+}
+
+enum HpPermissionStatus {
+  UNKNOWN
+  NOT_REQUIRED // metadata-only record, nothing is redistributed
+  REQUESTED
+  GRANTED // rights holder has given permission to host
+  OPEN_LICENSE // published under a licence that permits redistribution
+  DENIED
+}
+
+enum HpAcquisitionStatus {
+  ACQUIRED
+  MISSING
+  NEEDS_VERIFICATION
+  BROKEN_LINK
+  PERMISSION_REQUIRED
+  NEEDS_UPDATING
+}
+
+enum HpSubmissionStatus {
+  NEW
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+  DUPLICATE
+}
+
+enum HpFeedbackType {
+  CORRECTION
+  BROKEN_LINK
+  TAKEDOWN
+  ACCESS_REQUEST
+  OTHER
+}
+
+enum HpFeedbackStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum HpActivityKind {
+  NOTE
+  OUTREACH
+  EVIDENCE
+  STATUS_CHANGE
+  TASK
+}
+
+enum HpRecipientType {
+  MINISTRY
+  GOVERNMENT_INSTITUTION
+  RESEARCHER
+  UNIVERSITY
+  NGO
+  DONOR
+  IMPLEMENTING_PARTNER
+  OTHER
+}
+
+enum HpOutreachStatus {
+  DRAFT
+  SENT
+  AWAITING_RESPONSE
+  RESPONDED
+  DOCUMENT_RECEIVED
+  DECLINED
+  NO_RESPONSE
+}
+
+model HpMember {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        HpRole   @default(CONTRIBUTOR)
+  active      Boolean  @default(true)
+  grantedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  documentsCreated   HpDocument[]            @relation("HpDocumentCreator")
+  versionsUploaded   HpDocumentVersion[]
+  submissionsReviewd HpSubmission[]          @relation("HpSubmissionReviewer")
+  feedbackResolved   HpFeedback[]            @relation("HpFeedbackResolver")
+  acquisitionsOwned  HpAcquisitionItem[]     @relation("HpAcquisitionOwner")
+  activities         HpAcquisitionActivity[]
+  outreach           HpOutreachRequest[]
+}
+
+model HpCountry {
+  id        String  @id @default(cuid())
+  slug      String  @unique // lowercase route segment, e.g. "malawi"
+  name      String  @unique
+  isoCode   String  @unique // ISO 3166-1 alpha-2
+  intro     String?
+  isActive  Boolean @default(false) // public country page is live
+  sortOrder Int     @default(0)
+
+  documents    HpDocument[]
+  publishers   HpPublisher[]
+  acquisitions HpAcquisitionItem[]
+  submissions  HpSubmission[]
+}
+
+model HpTheme {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String  @unique
+  description String?
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  documents        HpDocumentTheme[]
+  primaryDocuments HpDocument[]      @relation("HpPrimaryTheme")
+}
+
+model HpDocumentType {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String  @unique
+  description String?
+  sortOrder   Int     @default(0)
+
+  documents    HpDocument[]
+  acquisitions HpAcquisitionItem[]
+}
+
+model HpPublisher {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  name      String     @unique
+  acronym   String?
+  website   String?
+  countryId String?
+  country   HpCountry? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  createdAt DateTime   @default(now())
+
+  documents    HpDocument[]
+  acquisitions HpAcquisitionItem[]
+}
+
+model HpKeyword {
+  id        String              @id @default(cuid())
+  name      String              @unique // stored lowercase
+  documents HpDocumentKeyword[]
+}
+
+model HpDocument {
+  id                 String               @id @default(cuid())
+  title              String
+  slug               String               @unique
+  countryId          String
+  country            HpCountry            @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  documentTypeId     String
+  documentType       HpDocumentType       @relation(fields: [documentTypeId], references: [id], onDelete: Restrict)
+  publisherId        String
+  publisher          HpPublisher          @relation(fields: [publisherId], references: [id], onDelete: Restrict)
+  primaryThemeId     String?
+  primaryTheme       HpTheme?             @relation("HpPrimaryTheme", fields: [primaryThemeId], references: [id], onDelete: SetNull)
+  authors            String[]             @default([])
+  publicationYear    Int?
+  publicationDate    DateTime?
+  startYear          Int? // period covered
+  endYear            Int?
+  description        String?
+  abstract           String?
+  language           String               @default("English")
+  version            String?
+  edition            String?
+  citationText       String? // manual override; otherwise generated
+  notes              String? // internal only, never shown publicly
+  // Source & file
+  sourceUrl          String?
+  storageProvider    String? // e.g. "vercel-blob", see lib/hp-hub/storage.ts
+  storagePath        String? // provider-specific key; never sent to browsers
+  fileName           String?
+  fileType           String? // MIME type
+  fileSize           Int? // bytes
+  // Rights & access
+  accessType         HpAccessType         @default(EXTERNAL)
+  rightsStatement    String?
+  rightsHolder       String?
+  permissionStatus   HpPermissionStatus   @default(UNKNOWN)
+  // Workflow
+  status             HpPublicationStatus  @default(DRAFT)
+  verificationStatus HpVerificationStatus @default(UNVERIFIED)
+  verificationNotes  String?
+  isFeatured         Boolean              @default(false)
+  // Development-only test data. Never shown on the production site.
+  isSynthetic        Boolean              @default(false)
+  downloadCount      Int                  @default(0)
+  supersededById     String?
+  supersededBy       HpDocument?          @relation("HpSupersession", fields: [supersededById], references: [id], onDelete: SetNull)
+  supersedes         HpDocument[]         @relation("HpSupersession")
+  createdById        String?
+  createdBy          HpMember?            @relation("HpDocumentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  publishedAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  // Maintained by the SQL function hp_document_refresh_search(); see migration.
+  searchVector       Unsupported("tsvector")?
+
+  themes      HpDocumentTheme[]
+  keywords    HpDocumentKeyword[]
+  versions    HpDocumentVersion[]
+  related     HpRelatedDocument[] @relation("HpRelatedFrom")
+  relatedTo   HpRelatedDocument[] @relation("HpRelatedTo")
+  downloads   HpDownloadEvent[]
+  feedback    HpFeedback[]
+  acquisition HpAcquisitionItem?
+  submissions HpSubmission[]
+
+  @@index([countryId, status])
+  @@index([documentTypeId])
+  @@index([publisherId])
+  @@index([publicationYear])
+  @@index([status, createdAt])
+  @@index([downloadCount])
+}
+
+model HpDocumentTheme {
+  documentId String
+  themeId    String
+  document   HpDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  theme      HpTheme    @relation(fields: [themeId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, themeId])
+  @@index([themeId])
+}
+
+model HpDocumentKeyword {
+  documentId String
+  keywordId  String
+  document   HpDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  keyword    HpKeyword  @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, keywordId])
+  @@index([keywordId])
+}
+
+model HpRelatedDocument {
+  documentId String
+  relatedId  String
+  document   HpDocument @relation("HpRelatedFrom", fields: [documentId], references: [id], onDelete: Cascade)
+  related    HpDocument @relation("HpRelatedTo", fields: [relatedId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, relatedId])
+}
+
+// Previous files of a document, kept when a file is replaced.
+model HpDocumentVersion {
+  id              String     @id @default(cuid())
+  documentId      String
+  document        HpDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  versionLabel    String?
+  storageProvider String
+  storagePath     String
+  fileName        String
+  fileType        String
+  fileSize        Int
+  note            String?
+  replacedAt      DateTime   @default(now())
+  replacedById    String?
+  replacedBy      HpMember?  @relation(fields: [replacedById], references: [id], onDelete: SetNull)
+
+  @@index([documentId])
+}
+
+// One row per counted download or source visit. No IP or personal data is
+// stored: visitorHash is a salted daily hash used only to drop repeats.
+model HpDownloadEvent {
+  id           String     @id @default(cuid())
+  documentId   String
+  document     HpDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  day          String // YYYY-MM-DD (UTC)
+  method       String // "DOWNLOAD" | "EXTERNAL_SOURCE"
+  country      String? // ISO code from the edge network, when available
+  referrerHost String?
+  visitorHash  String
+
+  @@unique([documentId, method, day, visitorHash])
+  @@index([createdAt])
+  @@index([documentId])
+}
+
+model HpSubmission {
+  id               String             @id @default(cuid())
+  title            String
+  countryId        String?
+  country          HpCountry?         @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  publisherName    String?
+  documentTypeName String?
+  year             Int?
+  sourceUrl        String?
+  storageProvider  String?
+  storagePath      String?
+  fileName         String?
+  fileType         String?
+  fileSize         Int?
+  submitterName    String
+  submitterEmail   String
+  info             String?
+  status           HpSubmissionStatus @default(NEW)
+  reviewNotes      String?
+  reviewedById     String?
+  reviewedBy       HpMember?          @relation("HpSubmissionReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt       DateTime?
+  documentId       String?
+  document         HpDocument?        @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  createdAt        DateTime           @default(now())
+
+  @@index([status, createdAt])
+}
+
+// Public corrections, broken-link reports, takedown and access requests.
+model HpFeedback {
+  id           String           @id @default(cuid())
+  documentId   String?
+  document     HpDocument?      @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  type         HpFeedbackType
+  message      String
+  name         String?
+  email        String?
+  organisation String?
+  status       HpFeedbackStatus @default(OPEN)
+  resolution   String?
+  resolvedById String?
+  resolvedBy   HpMember?        @relation("HpFeedbackResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt   DateTime?
+  createdAt    DateTime         @default(now())
+
+  @@index([status, createdAt])
+}
+
+// Missing Documents tracker and acquisition programme
+
+model HpAcquisitionItem {
+  id                String              @id @default(cuid())
+  title             String
+  countryId         String
+  country           HpCountry           @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  publisherId       String?
+  publisher         HpPublisher?        @relation(fields: [publisherId], references: [id], onDelete: SetNull)
+  publisherName     String? // free text when the publisher is not catalogued yet
+  documentTypeId    String?
+  documentType      HpDocumentType?     @relation(fields: [documentTypeId], references: [id], onDelete: SetNull)
+  year              Int?
+  evidence          String? // citation or evidence that the document exists
+  sourceUrl         String?
+  status            HpAcquisitionStatus @default(MISSING)
+  unavailableReason String?
+  lastVerifiedAt    DateTime?
+  ownerId           String?
+  owner             HpMember?           @relation("HpAcquisitionOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  nextAction        String?
+  nextActionDue     DateTime?
+  notes             String?
+  // The repository record, once the document is catalogued (one-to-one).
+  documentId        String?             @unique
+  document          HpDocument?         @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  activities HpAcquisitionActivity[]
+  outreach   HpOutreachRequest[]
+
+  @@index([countryId, status])
+  @@index([nextActionDue])
+}
+
+// Notes, evidence, outreach attempts, status changes and follow-up tasks.
+model HpAcquisitionActivity {
+  id             String            @id @default(cuid())
+  itemId         String
+  item           HpAcquisitionItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  kind           HpActivityKind
+  body           String
+  attachmentPath String?
+  attachmentName String?
+  dueAt          DateTime? // TASK only
+  completedAt    DateTime? // TASK only
+  authorId       String?
+  author         HpMember?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt      DateTime          @default(now())
+
+  @@index([itemId, createdAt])
+}
+
+model HpRequestTemplate {
+  id        String              @id @default(cuid())
+  name      String              @unique
+  subject   String
+  body      String // supports {{title}}, {{publisher}}, {{year}}, {{recipient}}, {{sender}}
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  requests  HpOutreachRequest[]
+}
+
+model HpOutreachRequest {
+  id                String              @id @default(cuid())
+  itemId            String?
+  item              HpAcquisitionItem?  @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  templateId        String?
+  template          HpRequestTemplate?  @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  recipientName     String
+  recipientOrg      String
+  recipientEmail    String?
+  recipientType     HpRecipientType     @default(OTHER)
+  subject           String
+  body              String
+  status            HpOutreachStatus    @default(DRAFT)
+  sentAt            DateTime?
+  reminderDueAt     DateTime?
+  remindersSent     Int                 @default(0)
+  responseAt        DateTime?
+  responseSummary   String?
+  permissionOutcome HpPermissionStatus?
+  outcome           String?
+  createdById       String?
+  createdBy         HpMember?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([status, reminderDueAt])
 }

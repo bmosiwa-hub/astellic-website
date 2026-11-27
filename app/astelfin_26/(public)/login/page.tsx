@@ -22,7 +22,9 @@ export default function LoginPage() {
 
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [error,    setError]    = useState("");
+  const [error,    setError]    = useState(
+    searchParams.get("error") === "no_access" ? "This account doesn't have Astelfin access." : "",
+  );
   const [loading,  setLoading]  = useState(false);
 
   // Lockout UI state

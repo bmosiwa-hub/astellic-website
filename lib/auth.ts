@@ -124,6 +124,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password:  { label: "Password",  type: "password" },
         ipAddress: { label: "IP",        type: "text"     },
         userAgent: { label: "UserAgent", type: "text"     },
+        // Which system the login form belongs to: "astelfin" (default) or "hphub".
+        // Access to each is granted separately (User.astelfinAccess / HpMember).
+        portal:    { label: "Portal",    type: "text"     },
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
@@ -149,7 +152,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           select: {
             id: true, name: true, email: true, passwordHash: true, role: true,
             active: true, lockedUntil: true, mustChangePassword: true,
-            totpEnabled: true,
+            totpEnabled: true, astelfinAccess: true,
+            hpMember: { select: { role: true, active: true } },
           },
         });
 
@@ -179,6 +183,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        // ── 2b. System access ────────────────────────────────────────────────
+        const portal    = credentials?.portal === "hphub" ? "hphub" : "astelfin";
+        const hpRole    = user.hpMember?.active ? user.hpMember.role : null;
+        const hasAccess = portal === "hphub" ? !!hpRole : user.astelfinAccess;
+
         // ── 3. Password check ────────────────────────────────────────────────
         const valid = await bcrypt.compare(password, user.passwordHash);
 
@@ -189,6 +198,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             failureReason: locked
               ? `ACCOUNT_LOCKED_AFTER_${MAX_ATTEMPTS}_ATTEMPTS`
               : `INVALID_PASSWORD (${attemptsLeft} attempts left)`,
+          });
+          return null;
+        }
+
+        // Checked after the password, so the response can't be used to probe
+        // which accounts exist or which systems they can use.
+        if (!hasAccess) {
+          await recordLoginEvent({
+            email, userId: user.id, success: false, ipAddress, userAgent,
+            failureReason: portal === "hphub" ? "NO_HPHUB_ACCESS" : "NO_ASTELFIN_ACCESS",
           });
           return null;
         }
@@ -206,6 +225,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           role:               user.role,
           mustChangePassword: user.mustChangePassword,
           totpEnabled:        user.totpEnabled,
+          astelfinAccess:     user.astelfinAccess,
+          hpRole,
         };
       },
     }),
@@ -230,6 +251,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.role              = (user as { role: string }).role;
         token.mustChangePassword = (user as { mustChangePassword?: boolean }).mustChangePassword ?? false;
         token.totpEnabled       = (user as { totpEnabled?: boolean }).totpEnabled ?? false;
+        token.astelfinAccess    = (user as { astelfinAccess?: boolean }).astelfinAccess ?? true;
+        token.hpRole            = (user as { hpRole?: string | null }).hpRole ?? null;
       }
       return token;
     },
@@ -239,6 +262,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role              = token.role as string;
         session.user.mustChangePassword = token.mustChangePassword as boolean | undefined;
         session.user.totpEnabled        = token.totpEnabled as boolean | undefined;
+        // Tokens issued before this field existed count as having Astelfin access.
+        session.user.astelfinAccess     = token.astelfinAccess !== false;
+        session.user.hpRole             = (token.hpRole as string | null | undefined) ?? null;
       }
       return session;
     },

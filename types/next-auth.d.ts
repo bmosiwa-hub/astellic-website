@@ -5,6 +5,8 @@ declare module "next-auth" {
     role?: string;
     mustChangePassword?: boolean;
     totpEnabled?: boolean;
+    astelfinAccess?: boolean;
+    hpRole?: string | null;
   }
   interface Session {
     user: {
@@ -15,6 +17,8 @@ declare module "next-auth" {
       role: string;
       mustChangePassword?: boolean;
       totpEnabled?: boolean;
+      astelfinAccess?: boolean;
+      hpRole?: string | null;
     };
   }
 }
@@ -25,5 +29,7 @@ declare module "next-auth/jwt" {
     role?: string;
     mustChangePassword?: boolean;
     totpEnabled?: boolean;
+    astelfinAccess?: boolean;
+    hpRole?: string | null;
   }
 }
