@@ -141,6 +141,14 @@ export const getFilterPanelData = cache(async () => {
   return { countries, themes, types, years, languages };
 });
 
+/** The panel data trimmed to what the browser needs (never throws). */
+export async function getFilterPanelProps() {
+  const raw = await getFilterPanelData().catch(() => null);
+  if (!raw) return null;
+  const slim = (xs: { slug: string; name: string; count: number }[]) => xs.map(({ slug, name, count }) => ({ slug, name, count }));
+  return { ...raw, countries: slim(raw.countries), themes: slim(raw.themes), types: slim(raw.types) };
+}
+
 /** Published counts per active country, for the hub's "Browse by country". */
 export async function getCountriesWithCounts(): Promise<(CountedItem & { isoCode: string; intro: string | null })[]> {
   const rows = await prisma.$queryRaw<{ id: string; slug: string; name: string; isoCode: string; intro: string | null; count: bigint }[]>`

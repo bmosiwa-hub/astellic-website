@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import HubFilterPanel from "@/components/hp-hub/HubFilterPanel";
 import HubSearchBar from "@/components/hp-hub/HubSearchBar";
 import { DocumentList } from "@/components/hp-hub/DocumentList";
 import {
   countPublicDocuments,
   getCountriesWithCounts,
+  getFilterPanelProps,
   getRecentDocuments,
   getThemesWithCounts,
 } from "@/lib/hp-hub/queries";
@@ -38,11 +41,12 @@ function plural(n: number, one: string, many = `${one}s`) {
 }
 
 export default async function HpHubHome() {
-  const [total, countries, themes, recent] = await Promise.all([
+  const [total, countries, themes, recent, panelData] = await Promise.all([
     countPublicDocuments(),
     getCountriesWithCounts(),
     getThemesWithCounts(),
     getRecentDocuments(6),
+    getFilterPanelProps(),
   ]);
 
   // Show the launch country always; other countries only once they hold documents.
@@ -87,6 +91,21 @@ export default async function HpHubHome() {
 
 
       <div className="px-4 sm:px-6 py-12 sm:py-16 space-y-14 sm:space-y-16">
+        {/* ── Phones: the filters, open and in plain view ─────────────────── */}
+        {panelData && (
+          <section aria-labelledby="find-documents" className="md:hidden max-w-6xl mx-auto">
+            <h2 id="find-documents" className="text-xl font-bold text-brand-navy mb-1">
+              Find documents
+            </h2>
+            <p className="text-sm text-brand-muted mb-5">Choose a country, theme or document type, then search.</p>
+            <div className="rounded-lg border border-gray-200 bg-brand-light px-4 py-5">
+              <Suspense>
+                <HubFilterPanel data={panelData} idPrefix="home" />
+              </Suspense>
+            </div>
+          </section>
+        )}
+
         {/* ── B. Explore by country ────────────────────────────────────────── */}
         {shownCountries.length > 0 && (
           <section aria-labelledby="countries" className="max-w-6xl mx-auto">
