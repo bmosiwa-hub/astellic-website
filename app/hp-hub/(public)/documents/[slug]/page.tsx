@@ -4,15 +4,15 @@ import { notFound } from "next/navigation";
 import CopyButton from "@/components/hp-hub/CopyButton";
 import { DocumentList } from "@/components/hp-hub/DocumentList";
 import FeedbackForm from "@/components/hp-hub/FeedbackForm";
-import { AccessBadge, Breadcrumbs, jsonLdString, SectionHeading, VerificationBadge } from "@/components/hp-hub/ui";
-import { ACCESS_DESCRIPTIONS, HP_HUB_BASE_URL, PERMISSION_LABELS } from "@/lib/hp-hub/constants";
+import { Breadcrumbs, jsonLdString, VerificationBadge } from "@/components/hp-hub/ui";
+import { ACCESS_DESCRIPTIONS, ACCESS_LABELS, HP_HUB_BASE_URL, PERMISSION_LABELS } from "@/lib/hp-hub/constants";
 import { getPublicDocument, getRelatedDocuments } from "@/lib/hp-hub/queries";
 import { buildCitation, excerpt, fileTypeLabel, formatFileSize, periodLabel } from "@/lib/hp-hub/text";
 import { isPubliclyDownloadable, showSyntheticRecords } from "@/lib/hp-hub/visibility";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ action?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const doc = await getPublicDocument((await params).slug);
@@ -40,22 +40,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[minmax(0,9rem)_minmax(0,1fr)] sm:grid-cols-[11rem_minmax(0,1fr)] gap-4 py-3 border-b border-gray-100 text-[15px]">
+    <div className="grid grid-cols-[minmax(0,8rem)_minmax(0,1fr)] sm:grid-cols-[10rem_minmax(0,1fr)] gap-4 py-2.5 border-b border-gray-100 text-[15px]">
       <dt className="text-brand-muted">{label}</dt>
       <dd className="text-brand-navy min-w-0 break-words">{children}</dd>
     </div>
   );
 }
 
-export default async function DocumentPage({ params }: Props) {
+const linkCls = "hover:text-brand-teal underline-offset-4 hover:underline";
+
+const ACTIONS = {
+  correction: "CORRECTION",
+  access: "ACCESS_REQUEST",
+  removal: "TAKEDOWN",
+} as const;
+
+export default async function DocumentPage({ params, searchParams }: Props) {
   const doc = await getPublicDocument((await params).slug);
   if (!doc) notFound();
+  const sp = await searchParams;
 
   const related = await getRelatedDocuments(doc, 4);
   const themes = doc.themes.map((t) => t.theme);
   const keywords = doc.keywords.map((k) => k.keyword.name);
   const period = periodLabel(doc.startYear, doc.endYear);
   const downloadable = isPubliclyDownloadable(doc);
+  const sourceVisible = !!doc.sourceUrl && doc.accessType !== "RESTRICTED";
+  const base = `/hp-hub/documents/${doc.slug}`;
   const citation =
     doc.citationText ||
     buildCitation({
@@ -65,20 +76,22 @@ export default async function DocumentPage({ params }: Props) {
       publicationYear: doc.publicationYear,
       countryName: doc.country.name,
       documentTypeName: doc.documentType.name,
-      sourceUrl: doc.sourceUrl || `${HP_HUB_BASE_URL}/hp-hub/documents/${doc.slug}`,
+      sourceUrl: doc.sourceUrl || `${HP_HUB_BASE_URL}${base}`,
       edition: doc.edition,
       version: doc.version,
     });
   const visible = (d: { status: string; isSynthetic: boolean }) => d.status === "PUBLISHED" && (!d.isSynthetic || showSyntheticRecords());
   const supersededBy = doc.supersededBy && visible(doc.supersededBy) ? doc.supersededBy : null;
   const supersedes = doc.supersedes.filter(visible);
+  const formType =
+    ACTIONS[sp.action as keyof typeof ACTIONS] ?? (doc.accessType === "RESTRICTED" ? "ACCESS_REQUEST" : "CORRECTION");
   const startedAt = Date.now();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Report",
     name: doc.title,
-    url: `${HP_HUB_BASE_URL}/hp-hub/documents/${doc.slug}`,
+    url: `${HP_HUB_BASE_URL}${base}`,
     description: excerpt(doc.description || doc.abstract, 300) || undefined,
     inLanguage: doc.language,
     datePublished: doc.publicationDate?.toISOString().slice(0, 10) ?? (doc.publicationYear ? String(doc.publicationYear) : undefined),
@@ -94,38 +107,75 @@ export default async function DocumentPage({ params }: Props) {
     includedInDataCatalog: { "@type": "DataCatalog", name: "Health Policy Intelligence Hub (HP-Hub)", url: `${HP_HUB_BASE_URL}/hp-hub` },
   };
 
+  const btn = "inline-flex items-center justify-center gap-2 h-12 px-6 rounded font-semibold transition-colors";
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
-      <section className="bg-brand-light border-b border-gray-200 px-6 pt-8 pb-12">
+
+      {/* ── Top: what it is and how to get it ───────────────────────────────── */}
+      <section className="bg-brand-light border-b border-gray-200 px-4 sm:px-6 pt-6 pb-8 sm:pb-10">
         <div className="max-w-6xl mx-auto">
           <Breadcrumbs
             items={[
               { label: "HP-Hub", href: "/hp-hub" },
               { label: doc.country.name, href: `/hp-hub/${doc.country.slug}` },
-              { label: doc.documentType.name, href: `/hp-hub/types/${doc.documentType.slug}` },
               { label: doc.title },
             ]}
           />
           {doc.isSynthetic && (
-            <p className="mt-6 inline-block text-xs font-bold uppercase tracking-wider text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded">
+            <p className="mt-5 inline-block text-xs font-bold uppercase tracking-wider text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded">
               Synthetic development record: not a real document
             </p>
           )}
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-brand-teal">{doc.documentType.name}</p>
-          <h1 className="mt-2 text-3xl md:text-4xl font-bold text-brand-navy leading-tight max-w-4xl">{doc.title}</h1>
-          <p className="mt-4 text-lg text-brand-muted">
+          <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-brand-teal">
+            <Link href={`/hp-hub/types/${doc.documentType.slug}`} className="hover:underline underline-offset-4">
+              {doc.documentType.name}
+            </Link>
+          </p>
+          <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-brand-navy leading-tight max-w-4xl">{doc.title}</h1>
+          <p className="mt-3 text-base sm:text-lg text-brand-muted">
             {[doc.publisher.name, doc.publicationYear, doc.country.name].filter(Boolean).join(" · ")}
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <AccessBadge access={doc.accessType} />
-            <VerificationBadge status={doc.verificationStatus} />
+          {doc.verificationStatus === "VERIFIED" && (
+            <p className="mt-2">
+              <VerificationBadge status="VERIFIED" />
+            </p>
+          )}
+
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+            {downloadable ? (
+              <a href={`${base}/download`} className={`${btn} bg-brand-gold hover:bg-[#b8973f] text-white`}>
+                <svg aria-hidden className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download {fileTypeLabel(doc.fileType, doc.fileName)}
+                {doc.fileSize ? <span className="font-normal opacity-90">({formatFileSize(doc.fileSize)})</span> : null}
+              </a>
+            ) : sourceVisible ? (
+              <a href={`${base}/source`} rel="nofollow noopener" className={`${btn} bg-brand-navy hover:bg-brand-navy/90 text-white`}>
+                Access original source <span aria-hidden>↗</span>
+              </a>
+            ) : (
+              <a href={`${base}?action=access#help`} className={`${btn} border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white`}>
+                Request access
+              </a>
+            )}
+            {downloadable && sourceVisible && (
+              <a href={`${base}/source`} rel="nofollow noopener" className="text-sm font-semibold text-brand-teal hover:underline">
+                View at original source ↗
+              </a>
+            )}
+            <a href="#cite" className="text-sm font-semibold text-brand-navy hover:text-brand-teal">
+              Cite this document
+            </a>
           </div>
+          <p className="mt-3 text-sm text-brand-muted">{ACCESS_DESCRIPTIONS[doc.accessType]}</p>
         </div>
       </section>
 
       {supersededBy && (
-        <div className="px-6 bg-amber-50 border-b border-amber-200">
+        <div className="px-4 sm:px-6 bg-amber-50 border-b border-amber-200">
           <p className="max-w-6xl mx-auto py-3 text-sm text-amber-900">
             This document has been superseded by{" "}
             <Link href={`/hp-hub/documents/${supersededBy.slug}`} className="font-semibold underline underline-offset-2">
@@ -136,44 +186,40 @@ export default async function DocumentPage({ params }: Props) {
         </div>
       )}
 
-      <div className="px-6 py-12">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_340px] gap-12 lg:gap-16">
-          <div className="min-w-0 space-y-12">
+      <div className="px-4 sm:px-6 py-10 sm:py-12">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_320px] gap-10 lg:gap-16">
+          <div className="min-w-0 space-y-10">
             {(doc.abstract || doc.description) && (
-              <section aria-labelledby="summary">
-                <h2 id="summary" className="text-xl font-bold text-brand-navy mb-4">
-                  {doc.abstract ? "Abstract" : "Description"}
+              <section aria-labelledby="about">
+                <h2 id="about" className="text-xl font-bold text-brand-navy mb-3">
+                  About the document
                 </h2>
-                <div className="text-[17px] leading-relaxed text-gray-700 space-y-4 max-w-3xl whitespace-pre-line">{doc.abstract || doc.description}</div>
-                {doc.abstract && doc.description && (
-                  <div className="mt-6 text-[15px] leading-relaxed text-gray-600 max-w-3xl whitespace-pre-line">{doc.description}</div>
-                )}
+                <div className="text-[17px] leading-relaxed text-gray-700 max-w-3xl whitespace-pre-line">{doc.abstract || doc.description}</div>
+                {doc.abstract && doc.description && <div className="mt-4 text-[15px] leading-relaxed text-gray-600 max-w-3xl whitespace-pre-line">{doc.description}</div>}
               </section>
             )}
 
             <section aria-labelledby="details">
-              <h2 id="details" className="text-xl font-bold text-brand-navy mb-2">
+              <h2 id="details" className="text-xl font-bold text-brand-navy mb-1">
                 Document details
               </h2>
               <dl>
-                <Row label="Title">{doc.title}</Row>
                 <Row label="Publisher">
-                  <Link href={`/hp-hub/search?publisher=${doc.publisher.slug}`} className="hover:text-brand-teal underline-offset-4 hover:underline">
+                  <Link href={`/hp-hub/search?publisher=${doc.publisher.slug}`} className={linkCls}>
                     {doc.publisher.name}
                     {doc.publisher.acronym ? ` (${doc.publisher.acronym})` : ""}
                   </Link>
                 </Row>
                 {doc.authors.length > 0 && <Row label={doc.authors.length > 1 ? "Authors" : "Author"}>{doc.authors.join("; ")}</Row>}
                 <Row label="Publication year">{doc.publicationYear ?? "Not stated"}</Row>
-                {period && <Row label="Period covered">{period}</Row>}
-                <Row label="Country">
-                  <Link href={`/hp-hub/${doc.country.slug}`} className="hover:text-brand-teal underline-offset-4 hover:underline">
-                    {doc.country.name}
+                <Row label="Document type">
+                  <Link href={`/hp-hub/types/${doc.documentType.slug}`} className={linkCls}>
+                    {doc.documentType.name}
                   </Link>
                 </Row>
-                <Row label="Document type">
-                  <Link href={`/hp-hub/types/${doc.documentType.slug}`} className="hover:text-brand-teal underline-offset-4 hover:underline">
-                    {doc.documentType.name}
+                <Row label="Country">
+                  <Link href={`/hp-hub/${doc.country.slug}`} className={linkCls}>
+                    {doc.country.name}
                   </Link>
                 </Row>
                 {themes.length > 0 && (
@@ -181,7 +227,7 @@ export default async function DocumentPage({ params }: Props) {
                     <ul className="flex flex-wrap gap-x-4 gap-y-1">
                       {themes.map((t) => (
                         <li key={t.slug}>
-                          <Link href={`/hp-hub/themes/${t.slug}`} className="hover:text-brand-teal underline-offset-4 hover:underline">
+                          <Link href={`/hp-hub/themes/${t.slug}`} className={linkCls}>
                             {t.name}
                           </Link>
                         </li>
@@ -189,6 +235,9 @@ export default async function DocumentPage({ params }: Props) {
                     </ul>
                   </Row>
                 )}
+                {period && <Row label="Period covered">{period}</Row>}
+                <Row label="Language">{doc.language}</Row>
+                {(doc.version || doc.edition) && <Row label="Version / edition">{[doc.version, doc.edition].filter(Boolean).join(" · ")}</Row>}
                 {keywords.length > 0 && (
                   <Row label="Keywords">
                     <ul className="flex flex-wrap gap-2">
@@ -202,28 +251,10 @@ export default async function DocumentPage({ params }: Props) {
                     </ul>
                   </Row>
                 )}
-                <Row label="Language">{doc.language}</Row>
-                {(doc.version || doc.edition) && <Row label="Version / edition">{[doc.version, doc.edition].filter(Boolean).join(" · ")}</Row>}
-                <Row label="Verification">
-                  <VerificationBadge status={doc.verificationStatus} />
-                </Row>
-                {doc.fileType && downloadable && (
-                  <Row label="File">
-                    {fileTypeLabel(doc.fileType, doc.fileName)}
-                    {doc.fileSize ? `, ${formatFileSize(doc.fileSize)}` : ""}
-                  </Row>
-                )}
-                {doc.sourceUrl && doc.accessType !== "RESTRICTED" && (
-                  <Row label="Original source">
-                    <a href={`/hp-hub/documents/${doc.slug}/source`} rel="nofollow noopener" className="text-brand-teal hover:underline break-all">
-                      {new URL(doc.sourceUrl).hostname}
-                    </a>
-                  </Row>
-                )}
                 {supersedes.length > 0 && (
                   <Row label="Replaces">
                     {supersedes.map((s) => (
-                      <Link key={s.slug} href={`/hp-hub/documents/${s.slug}`} className="block hover:text-brand-teal">
+                      <Link key={s.slug} href={`/hp-hub/documents/${s.slug}`} className={`block ${linkCls}`}>
                         {s.title}
                       </Link>
                     ))}
@@ -232,79 +263,94 @@ export default async function DocumentPage({ params }: Props) {
               </dl>
             </section>
 
-            <section aria-labelledby="cite">
-              <h2 id="cite" className="text-xl font-bold text-brand-navy mb-3">
+            <section aria-labelledby="rights" className="text-sm text-gray-600">
+              <h2 id="rights" className="text-base font-bold text-brand-navy mb-2">
+                Source and rights
+              </h2>
+              <ul className="space-y-1.5 leading-relaxed">
+                <li>
+                  <span className="text-brand-muted">Access:</span> {ACCESS_LABELS[doc.accessType]}
+                  {downloadable && doc.fileType && (
+                    <>
+                      {" "}
+                      ({fileTypeLabel(doc.fileType, doc.fileName)}
+                      {doc.fileSize ? `, ${formatFileSize(doc.fileSize)}` : ""})
+                    </>
+                  )}
+                </li>
+                {sourceVisible && (
+                  <li>
+                    <span className="text-brand-muted">Original source:</span>{" "}
+                    <a href={`${base}/source`} rel="nofollow noopener" className="text-brand-teal hover:underline break-all">
+                      {new URL(doc.sourceUrl!).hostname}
+                    </a>
+                  </li>
+                )}
+                {doc.rightsHolder && (
+                  <li>
+                    <span className="text-brand-muted">Rights holder:</span> {doc.rightsHolder}
+                  </li>
+                )}
+                <li>
+                  <span className="text-brand-muted">Permission:</span> {PERMISSION_LABELS[doc.permissionStatus]}
+                </li>
+                {doc.rightsStatement && <li>{doc.rightsStatement}</li>}
+                {doc.verificationStatus !== "VERIFIED" && (
+                  <li>
+                    <span className="text-brand-muted">Verification:</span> <VerificationBadge status={doc.verificationStatus} />
+                  </li>
+                )}
+              </ul>
+            </section>
+
+            <section id="cite" aria-labelledby="cite-h" className="scroll-mt-28">
+              <h2 id="cite-h" className="text-base font-bold text-brand-navy mb-2">
                 Cite this document
               </h2>
-              <p className="text-[15px] leading-relaxed text-gray-700 bg-brand-light border-l-2 border-brand-gold px-5 py-4 mb-3 break-words">{citation}</p>
+              <p className="text-[15px] leading-relaxed text-gray-700 bg-brand-light border-l-2 border-brand-gold px-4 py-3 mb-3 break-words">{citation}</p>
               <CopyButton text={citation} />
             </section>
 
             {related.length > 0 && (
               <section aria-labelledby="related">
-                <SectionHeading id="related" title="Related documents" />
+                <h2 id="related" className="text-xl font-bold text-brand-navy border-b border-gray-200 pb-3">
+                  Related documents
+                </h2>
                 <DocumentList docs={related} compact />
               </section>
             )}
           </div>
 
-          {/* ── Access panel ─────────────────────────────────────────────── */}
-          <aside className="space-y-8 lg:sticky lg:top-24 self-start">
-            <div className="border border-gray-200 rounded-lg p-6">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-muted mb-3">Access</p>
-              <AccessBadge access={doc.accessType} />
-              <p className="text-sm text-gray-600 leading-relaxed mt-3 mb-5">{ACCESS_DESCRIPTIONS[doc.accessType]}</p>
-              {downloadable ? (
-                <a
-                  href={`/hp-hub/documents/${doc.slug}/download`}
-                  className="flex items-center justify-center gap-2 h-12 rounded bg-brand-gold hover:bg-[#b8973f] text-white font-semibold transition-colors"
-                >
-                  <svg aria-hidden className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download {fileTypeLabel(doc.fileType, doc.fileName)}
-                  {doc.fileSize ? <span className="font-normal opacity-90">({formatFileSize(doc.fileSize)})</span> : null}
+          {/* ── Help: corrections, access and removal ────────────────────── */}
+          <aside id="help" className="scroll-mt-28 lg:sticky lg:top-24 self-start">
+            <h2 className="text-lg font-bold text-brand-navy mb-1">Need something?</h2>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm mb-4">
+              <li>
+                <a href={`${base}?action=correction#help`} className="text-brand-teal hover:underline">
+                  Report an error
                 </a>
-              ) : doc.accessType !== "RESTRICTED" && doc.sourceUrl ? (
-                <a
-                  href={`/hp-hub/documents/${doc.slug}/source`}
-                  rel="nofollow noopener"
-                  className="flex items-center justify-center gap-2 h-12 rounded bg-brand-navy hover:bg-brand-navy/90 text-white font-semibold transition-colors"
-                >
-                  Access at original source <span aria-hidden>↗</span>
-                </a>
-              ) : (
-                <a href="#request-access" className="flex items-center justify-center h-12 rounded border-2 border-brand-navy text-brand-navy font-semibold hover:bg-brand-navy hover:text-white transition-colors">
+              </li>
+              <li>
+                <a href={`${base}?action=access#help`} className="text-brand-teal hover:underline">
                   Request access
                 </a>
-              )}
-              {downloadable && doc.sourceUrl && (
-                <a href={`/hp-hub/documents/${doc.slug}/source`} rel="nofollow noopener" className="block text-center text-sm text-brand-teal hover:underline mt-3">
-                  View at original source ↗
+              </li>
+              <li>
+                <a href={`${base}?action=removal#help`} className="text-brand-teal hover:underline">
+                  Request removal
                 </a>
-              )}
-              <dl className="mt-6 pt-5 border-t border-gray-100 space-y-2 text-sm">
-                {doc.rightsHolder && (
-                  <div>
-                    <dt className="text-brand-muted inline">Rights holder: </dt>
-                    <dd className="inline text-brand-navy">{doc.rightsHolder}</dd>
-                  </div>
-                )}
-                <div>
-                  <dt className="text-brand-muted inline">Permission: </dt>
-                  <dd className="inline text-brand-navy">{PERMISSION_LABELS[doc.permissionStatus]}</dd>
-                </div>
-                {doc.rightsStatement && <dd className="text-gray-600 leading-relaxed">{doc.rightsStatement}</dd>}
-              </dl>
-            </div>
-
-            <div id={doc.accessType === "RESTRICTED" ? "request-access" : "report"} className="scroll-mt-28">
-              <h2 className="text-lg font-bold text-brand-navy mb-1">{doc.accessType === "RESTRICTED" ? "Request access or report an issue" : "Report an issue"}</h2>
-              <p className="text-sm text-brand-muted mb-4">
-                Spotted an error, a broken link, or hold the rights to this document? Let us know.
-              </p>
-              <FeedbackForm documentId={doc.id} defaultType={doc.accessType === "RESTRICTED" ? "ACCESS_REQUEST" : "CORRECTION"} startedAt={startedAt} />
-            </div>
+              </li>
+            </ul>
+            {/* Collapsed until a visitor picks an action (or the document is restricted). */}
+            <details open={!!sp.action || doc.accessType === "RESTRICTED"} className="group rounded-lg border border-gray-200">
+              <summary className="flex items-center justify-between cursor-pointer list-none px-4 h-12 text-sm font-semibold text-brand-navy">
+                Send us a message
+                <span aria-hidden className="text-brand-muted transition-transform group-open:rotate-180">⌄</span>
+              </summary>
+              <div className="px-4 pb-5 pt-1">
+                <FeedbackForm key={formType} documentId={doc.id} defaultType={formType} startedAt={startedAt} />
+              </div>
+            </details>
           </aside>
         </div>
       </div>

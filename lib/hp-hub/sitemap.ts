@@ -25,6 +25,7 @@ export async function hpHubSitemap(base: string): Promise<MetadataRoute.Sitemap>
     const now = new Date();
     return [
       { url: `${base}/hp-hub`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+      { url: `${base}/hp-hub/countries`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
       { url: `${base}/hp-hub/themes`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
       { url: `${base}/hp-hub/types`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
       { url: `${base}/hp-hub/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },

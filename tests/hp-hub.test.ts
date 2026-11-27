@@ -214,6 +214,13 @@ describe("search helpers", () => {
     expect(parseSearchParams({}).sort).toBe("newest");
   });
 
+  it("parses and serialises the period-covered filter", () => {
+    const p = parseSearchParams({ covers: "2025" });
+    expect(p.covers).toBe(2025);
+    expect(toQueryString(p)).toBe("?covers=2025");
+    expect(parseSearchParams({ covers: "abc" }).covers).toBeUndefined();
+  });
+
   it("round-trips params to a query string", () => {
     const p = parseSearchParams({ q: "tb", type: "policy", yearFrom: "2010" });
     expect(toQueryString(p, { page: 2 })).toBe("?q=tb&type=policy&yearFrom=2010&page=2");

@@ -30,7 +30,7 @@ export default async function ThemePage({ params, searchParams }: Props) {
   if (!theme) notFound();
   const sp = parseSearchParams(await searchParams);
   return (
-    <div className="px-6 py-12">
+    <div className="px-4 sm:px-6 py-10 sm:py-12">
       <div className="max-w-6xl mx-auto">
         <Breadcrumbs items={[{ label: "HP-Hub", href: "/hp-hub" }, { label: "Themes", href: "/hp-hub/themes" }, { label: theme.name }]} />
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-muted mt-6 mb-2">Theme</p>

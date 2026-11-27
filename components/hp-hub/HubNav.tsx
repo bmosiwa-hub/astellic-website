@@ -4,35 +4,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/hp-hub", label: "Home", exact: true },
-  { href: "/hp-hub/malawi", label: "Malawi" },
-  { href: "/hp-hub/search", label: "Search" },
-  { href: "/hp-hub/themes", label: "Themes" },
-  { href: "/hp-hub/types", label: "Document types" },
-  { href: "/hp-hub/submit", label: "Submit a document" },
-  { href: "/hp-hub/about", label: "About" },
+  { href: "/hp-hub/search", label: "Search", match: ["/hp-hub/search", "/hp-hub/types"] },
+  { href: "/hp-hub/countries", label: "Countries", match: ["/hp-hub/countries", "/hp-hub/malawi"] },
+  { href: "/hp-hub/themes", label: "Themes", match: ["/hp-hub/themes"] },
+  { href: "/hp-hub/about", label: "About", match: ["/hp-hub/about"] },
 ];
 
-/** Section navigation under the site header. Scrolls sideways on phones. */
+/**
+ * Compact section navigation under the site header. On phones "Submit" sits
+ * at the end of the (swipeable) list; from tablet width up it's a separate
+ * outlined button.
+ */
 export default function HubNav() {
   const pathname = usePathname();
+  const isActive = (l: (typeof LINKS)[number]) => l.match.some((m) => pathname === m || pathname.startsWith(`${m}/`));
+  const onSubmit = pathname === "/hp-hub/submit";
   return (
     <div className="bg-white border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-6 flex items-center gap-6 lg:gap-10">
-        <Link href="/hp-hub" className="shrink-0 py-3.5 flex items-baseline gap-2" aria-label="HP-Hub home">
-          <span className="font-bold text-brand-navy tracking-tight">HP-Hub</span>
-          <span className="hidden lg:inline text-xs text-brand-muted">Health Policy Intelligence Hub</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center gap-3.5 sm:gap-8">
+        <Link href="/hp-hub" className="shrink-0 py-3 font-bold text-brand-navy tracking-tight" aria-label="HP-Hub home">
+          HP-Hub
         </Link>
-        <nav aria-label="HP-Hub" className="min-w-0 flex-1 -mr-6 lg:mr-0">
-          <ul className="flex items-center gap-5 lg:gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pr-6 lg:pr-0 lg:justify-end">
+        <nav aria-label="HP-Hub" className="min-w-0 flex-1">
+          <ul className="flex items-center gap-3.5 sm:gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {LINKS.map((l) => {
-              const active = l.exact ? pathname === l.href : pathname === l.href || pathname.startsWith(`${l.href}/`);
+              const active = isActive(l);
               return (
                 <li key={l.href} className="shrink-0">
                   <Link
                     href={l.href}
                     aria-current={active ? "page" : undefined}
-                    className={`block py-3.5 text-sm border-b-2 transition-colors whitespace-nowrap ${
+                    className={`block py-3 text-sm border-b-2 transition-colors ${
                       active ? "border-brand-gold text-brand-navy font-semibold" : "border-transparent text-brand-muted hover:text-brand-navy"
                     }`}
                   >
@@ -41,8 +43,24 @@ export default function HubNav() {
                 </li>
               );
             })}
+            <li className="shrink-0 sm:hidden">
+              <Link
+                href="/hp-hub/submit"
+                aria-current={onSubmit ? "page" : undefined}
+                className={`block py-3 text-sm font-semibold border-b-2 ${onSubmit ? "border-brand-gold text-brand-navy" : "border-transparent text-brand-teal"}`}
+              >
+                Submit
+              </Link>
+            </li>
           </ul>
         </nav>
+        <Link
+          href="/hp-hub/submit"
+          aria-current={onSubmit ? "page" : undefined}
+          className="shrink-0 hidden sm:inline-flex items-center h-8 px-3 rounded border border-brand-navy/25 text-xs font-semibold text-brand-navy hover:border-brand-navy hover:bg-brand-light transition-colors"
+        >
+          Submit a document
+        </Link>
       </div>
     </div>
   );

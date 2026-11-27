@@ -4,13 +4,12 @@ import { notFound, permanentRedirect } from "next/navigation";
 import HubSearchBar from "@/components/hp-hub/HubSearchBar";
 import RepositoryBrowser from "@/components/hp-hub/RepositoryBrowser";
 import { DocumentList } from "@/components/hp-hub/DocumentList";
-import { Breadcrumbs, CountList, EmptyState, SectionHeading } from "@/components/hp-hub/ui";
+import { Breadcrumbs, CountList, SectionHeading } from "@/components/hp-hub/ui";
 import {
   countPublicDocuments,
   getCountryBySlug,
   getFeaturedDocuments,
   getPublishersWithCounts,
-  getRecentDocuments,
   getThemesWithCounts,
   getTypesWithCounts,
   getYearsWithCounts,
@@ -43,121 +42,93 @@ export default async function CountryPage({ params, searchParams }: Props) {
   if (!country || !country.isActive) notFound();
 
   const sp = parseSearchParams(await searchParams);
-  const [total, featured, recent, themes, types, publishers, years] = await Promise.all([
+  const [total, featured, themes, types, publishers, years] = await Promise.all([
     countPublicDocuments(country.id),
     getFeaturedDocuments(4, country.id),
-    getRecentDocuments(5, country.id),
     getThemesWithCounts(country.id),
     getTypesWithCounts(country.id),
-    getPublishersWithCounts(country.id, 30),
+    getPublishersWithCounts(country.id, 20),
     getYearsWithCounts(country.id),
   ]);
   const base = `/hp-hub/${country.slug}`;
   const withCountry = (q: string) => `/hp-hub/search?country=${country.slug}&${q}`;
-  const latestYear = years[0]?.year;
-  const earliestYear = years.at(-1)?.year;
+  const usedThemes = themes.filter((t) => t.count > 0);
+  const usedTypes = types.filter((t) => t.count > 0);
+  const span = years.length ? (years.length > 1 ? `${years.at(-1)!.year}–${years[0].year}` : String(years[0].year)) : null;
+  const searching = !!(sp.q || sp.theme?.length || sp.type?.length || sp.publisher?.length || sp.yearFrom || sp.yearTo || sp.covers || sp.page && sp.page > 1);
 
   return (
     <>
-      <section className="bg-brand-navy text-white px-6 pt-10 pb-14">
+      <section className="bg-brand-navy text-white px-4 sm:px-6 pt-6 pb-10 sm:pb-12">
         <div className="max-w-6xl mx-auto">
-          <Breadcrumbs tone="dark" items={[{ label: "HP-Hub", href: "/hp-hub" }, { label: country.name }]} />
-          <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-10 mt-8 items-end">
-            <div>
-              <p className="text-brand-gold text-sm font-bold uppercase tracking-[0.2em] mb-4">Country repository</p>
-              <h1 className="text-4xl md:text-5xl font-bold mb-5">{country.name}</h1>
-              {country.intro && <p className="text-gray-300 text-lg leading-relaxed max-w-2xl mb-8">{country.intro}</p>}
-              <div className="max-w-2xl">
-                <HubSearchBar country={country.slug} size="md" label={`Search within ${country.name}`} />
-              </div>
-            </div>
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-6 lg:pl-10 lg:border-l border-white/15">
-              <div>
-                <dd className="text-3xl font-bold tabular-nums">{total.toLocaleString("en-GB")}</dd>
-                <dt className="text-sm text-gray-400 mt-1">Published documents</dt>
-              </div>
-              <div>
-                <dd className="text-3xl font-bold tabular-nums">{publishers.length}</dd>
-                <dt className="text-sm text-gray-400 mt-1">Publishers</dt>
-              </div>
-              <div>
-                <dd className="text-3xl font-bold tabular-nums">{themes.filter((t) => t.count > 0).length}</dd>
-                <dt className="text-sm text-gray-400 mt-1">Themes covered</dt>
-              </div>
-              <div>
-                <dd className="text-3xl font-bold tabular-nums">{earliestYear && latestYear ? `${earliestYear}–${latestYear}` : "—"}</dd>
-                <dt className="text-sm text-gray-400 mt-1">Years covered</dt>
-              </div>
-            </dl>
+          <Breadcrumbs tone="dark" items={[{ label: "HP-Hub", href: "/hp-hub" }, { label: "Countries", href: "/hp-hub/countries" }, { label: country.name }]} />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-6 mb-3">{country.name}</h1>
+          {total > 0 ? (
+            <p className="text-gray-300 text-base sm:text-lg mb-6">
+              {total.toLocaleString("en-GB")} {total === 1 ? "document" : "documents"}
+              {publishers.length > 0 && ` from ${publishers.length} ${publishers.length === 1 ? "publisher" : "publishers"}`}
+              {span && `, ${span}`}
+            </p>
+          ) : (
+            country.intro && <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-2xl mb-6">{country.intro}</p>
+          )}
+          <div className="max-w-2xl">
+            <HubSearchBar country={country.slug} size="md" label={`Search within ${country.name}`} />
           </div>
         </div>
       </section>
 
-      <div className="px-6 py-14 space-y-16">
-        {(featured.length > 0 || recent.length > 0) && (
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-14">
-            <section aria-labelledby="featured">
-              <SectionHeading id="featured" eyebrow="Selected" title="Featured documents" />
-              {featured.length ? <DocumentList docs={featured} compact /> : <EmptyState title="No featured documents yet." />}
+      <div className="px-4 sm:px-6 py-10 sm:py-12 space-y-12">
+        {total === 0 ? (
+          <section className="max-w-6xl mx-auto rounded-lg border border-gray-200 px-5 py-6 sm:px-8 sm:py-7">
+            <h2 className="text-lg font-bold text-brand-navy">{country.name}&rsquo;s collection is growing</h2>
+            <p className="text-[15px] text-brand-muted leading-relaxed mt-1 max-w-2xl">
+              We&rsquo;re actively sourcing, cataloguing and verifying health-policy documents. Published documents will appear here
+              as soon as they&rsquo;re ready.
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-sm font-semibold">
+              <Link href="/hp-hub/themes" className="text-brand-teal hover:text-brand-navy">
+                Browse themes
+              </Link>
+              <Link href="/hp-hub/submit" className="text-brand-teal hover:text-brand-navy">
+                Submit a document from {country.name}
+              </Link>
+            </div>
+          </section>
+        ) : (
+          <>
+            {!searching && featured.length > 0 && (
+              <section aria-labelledby="featured" className="max-w-6xl mx-auto">
+                <SectionHeading id="featured" title="Featured documents" />
+                <DocumentList docs={featured} compact showCountry={false} />
+              </section>
+            )}
+
+            {!searching && (usedThemes.length > 0 || usedTypes.length > 0) && (
+              <div className="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-10 lg:gap-14">
+                {usedThemes.length > 0 && (
+                  <section aria-labelledby="themes">
+                    <SectionHeading id="themes" title="Themes" />
+                    <CountList columns={2} items={usedThemes.map((t) => ({ key: t.slug, label: t.name, count: t.count }))} hrefFor={(s) => withCountry(`theme=${s}`)} />
+                  </section>
+                )}
+                {usedTypes.length > 0 && (
+                  <section aria-labelledby="types">
+                    <SectionHeading id="types" title="Document types" />
+                    <CountList columns={1} items={usedTypes.map((t) => ({ key: t.slug, label: t.name, count: t.count }))} hrefFor={(s) => withCountry(`type=${s}`)} />
+                  </section>
+                )}
+              </div>
+            )}
+
+            <section aria-labelledby="all-docs" className="max-w-6xl mx-auto" id="publishers">
+              <SectionHeading id="all-docs" title={searching ? "Results" : "All documents"} />
+              <div className="pt-5">
+                <RepositoryBrowser params={sp} basePath={base} locked={{ country: [country.slug] }} showCountry={false} />
+              </div>
             </section>
-            <section aria-labelledby="recent">
-              <SectionHeading id="recent" eyebrow="Latest" title="Recently added" action={{ href: withCountry("sort=added"), label: "View all" }} />
-              <DocumentList docs={recent} compact />
-            </section>
-          </div>
+          </>
         )}
-
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-14">
-          <section aria-labelledby="themes">
-            <SectionHeading id="themes" eyebrow="Browse" title="Themes" />
-            <CountList columns={2} items={themes.map((t) => ({ key: t.slug, label: t.name, count: t.count }))} hrefFor={(s) => withCountry(`theme=${s}`)} />
-          </section>
-          <section aria-labelledby="types">
-            <SectionHeading id="types" eyebrow="Browse" title="Document types" />
-            {types.some((t) => t.count > 0) ? (
-              <CountList columns={1} hideEmpty items={types.map((t) => ({ key: t.slug, label: t.name, count: t.count }))} hrefFor={(s) => withCountry(`type=${s}`)} />
-            ) : (
-              <EmptyState title="No documents published yet." />
-            )}
-          </section>
-        </div>
-
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-14">
-          <section aria-labelledby="publishers" id="publishers">
-            <SectionHeading id="publishers-h" eyebrow="Browse" title="Publishers" />
-            {publishers.length ? (
-              <CountList columns={2} items={publishers.map((p) => ({ key: p.slug, label: p.name, count: p.count }))} hrefFor={(s) => withCountry(`publisher=${s}`)} />
-            ) : (
-              <EmptyState title="Publishers appear here once their documents are published." />
-            )}
-          </section>
-          <section aria-labelledby="years">
-            <SectionHeading id="years" eyebrow="Browse" title="By year" />
-            {years.length ? (
-              <ul className="flex flex-wrap gap-2 pt-4">
-                {years.map((y) => (
-                  <li key={y.year}>
-                    <Link
-                      href={withCountry(`yearFrom=${y.year}&yearTo=${y.year}`)}
-                      className="inline-flex items-baseline gap-1.5 border border-gray-200 rounded px-3 py-1.5 text-sm text-brand-navy hover:border-brand-navy"
-                    >
-                      {y.year} <span className="text-xs text-brand-muted tabular-nums">{y.count}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <EmptyState title="No dated documents yet." />
-            )}
-          </section>
-        </div>
-
-        <section aria-labelledby="all-docs" className="max-w-6xl mx-auto">
-          <SectionHeading id="all-docs" eyebrow={country.name} title="All documents" />
-          <div className="pt-6">
-            <RepositoryBrowser params={sp} basePath={base} locked={{ country: [country.slug] }} showCountry={false} />
-          </div>
-        </section>
       </div>
     </>
   );

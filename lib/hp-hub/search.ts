@@ -32,6 +32,8 @@ export interface SearchParams {
   publisher?: string[];
   yearFrom?: number;
   yearTo?: number;
+  /** Documents whose period covered includes this year. */
+  covers?: number;
   language?: string[];
   access?: string[];
   verification?: string[];
@@ -48,7 +50,8 @@ type Dimension =
   | "year"
   | "language"
   | "access"
-  | "verification";
+  | "verification"
+  | "period";
 
 const ACCESS_VALUES = new Set(["HOSTED", "EXTERNAL", "RESTRICTED"]);
 const VERIFICATION_VALUES = new Set(["UNVERIFIED", "PENDING_VERIFICATION", "VERIFIED", "DISPUTED"]);
@@ -81,6 +84,7 @@ export function parseSearchParams(sp: Record<string, string | string[] | undefin
     publisher: list(sp.publisher),
     yearFrom: year(sp.yearFrom),
     yearTo: year(sp.yearTo),
+    covers: year(sp.covers),
     language: list(sp.language),
     access: list(sp.access).filter((a) => ACCESS_VALUES.has(a)),
     verification: list(sp.verification).filter((v) => VERIFICATION_VALUES.has(v)),
@@ -99,6 +103,7 @@ export function toQueryString(p: SearchParams, overrides: Partial<SearchParams> 
   }
   if (merged.yearFrom) usp.set("yearFrom", String(merged.yearFrom));
   if (merged.yearTo) usp.set("yearTo", String(merged.yearTo));
+  if (merged.covers) usp.set("covers", String(merged.covers));
   const defaultSort = merged.q ? "relevance" : "newest";
   if (merged.sort && merged.sort !== defaultSort) usp.set("sort", merged.sort);
   if (merged.page && merged.page > 1) usp.set("page", String(merged.page));
@@ -186,6 +191,14 @@ function whereSql(p: SearchParams, tsq: Prisma.Sql | null, except?: Dimension): 
       "year",
       p.yearFrom || p.yearTo
         ? Prisma.sql`d."publicationYear" BETWEEN ${p.yearFrom ?? 1900} AND ${p.yearTo ?? 2100}`
+        : null,
+    ],
+    [
+      "period",
+      p.covers
+        ? Prisma.sql`(d."startYear" IS NOT NULL OR d."endYear" IS NOT NULL)
+                     AND coalesce(d."startYear", d."endYear") <= ${p.covers}
+                     AND coalesce(d."endYear", d."startYear") >= ${p.covers}`
         : null,
     ],
     ["language", inList(Prisma.sql`d."language"`, p.language)],

@@ -189,10 +189,10 @@ export function CountList({
         <li key={i.key} className="border-b border-gray-100">
           <Link
             href={hrefFor(i.key)}
-            className="group flex items-baseline justify-between gap-4 py-3 text-[15px] text-brand-navy hover:text-brand-teal transition-colors"
+            className={`group flex items-baseline justify-between gap-4 py-3 text-[15px] hover:text-brand-teal transition-colors ${i.count ? "text-brand-navy" : "text-gray-500"}`}
           >
             <span className="group-hover:underline underline-offset-4 decoration-brand-teal/40">{i.label}</span>
-            <span className={`tabular-nums text-sm ${i.count ? "text-brand-muted" : "text-gray-300"}`}>{i.count}</span>
+            {i.count > 0 && <span className="tabular-nums text-sm text-brand-muted">{i.count}</span>}
           </Link>
         </li>
       ))}
