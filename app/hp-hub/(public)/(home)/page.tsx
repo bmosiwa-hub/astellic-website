@@ -220,6 +220,9 @@ export default async function HpHubHome() {
             <p className="text-[15px] text-brand-muted leading-relaxed mt-1">
               Have a policy, strategy, guideline or report that isn&rsquo;t in HP-Hub? Share it with us.
             </p>
+            <Link href="/hp-hub/about" className="inline-block mt-2 py-1 text-sm font-semibold text-brand-teal hover:text-brand-navy">
+              About HP-Hub →
+            </Link>
           </div>
           <Link
             href="/hp-hub/submit"

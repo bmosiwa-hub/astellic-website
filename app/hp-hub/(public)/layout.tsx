@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import HubNav from "@/components/hp-hub/HubNav";
 import { HP_HUB_NAME } from "@/lib/hp-hub/constants";
 import { hpHubIndexable } from "@/lib/hp-hub/visibility";
 
@@ -20,7 +19,6 @@ export function generateMetadata(): Metadata {
 export default function HpHubPublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-white">
-      <HubNav />
       {children}
     </div>
   );
