@@ -252,6 +252,13 @@ export default function Header() {
             About
           </Link>
 
+          <Link
+            href="/hp-hub"
+            className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+          >
+            Policy Hub
+          </Link>
+
           {/* Search trigger */}
           <button
             onClick={() => setSearchOpen(true)}
@@ -353,6 +360,10 @@ export default function Header() {
 
           <Link href="/about" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
             About
+          </Link>
+
+          <Link href="/hp-hub" className="py-3 text-gray-300 hover:text-white text-sm font-medium border-b border-white/10" onClick={closeMobile}>
+            Policy Hub
           </Link>
 
           {/* Mobile search shortcut */}

@@ -19,6 +19,7 @@ const about = [
 ];
 
 const knowledge = [
+  { label: "Health Policy Intelligence Hub", href: "/hp-hub" },
   { label: "Insights & Thinking",      href: "/insights" },
   { label: "Implementation Briefs",    href: "/insights" },
   { label: "MERL Insights",            href: "/insights" },
