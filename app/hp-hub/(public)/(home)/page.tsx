@@ -2,14 +2,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import HubSearchBar from "@/components/hp-hub/HubSearchBar";
 import { DocumentList } from "@/components/hp-hub/DocumentList";
-import HubFilterPanel from "@/components/hp-hub/HubFilterPanel";
 import {
   countPublicDocuments,
   getCountriesWithCounts,
   getRecentDocuments,
   getThemesWithCounts,
-  getTypesWithCounts,
-  getYearsWithCounts,
 } from "@/lib/hp-hub/queries";
 
 export const dynamic = "force-dynamic";
@@ -41,33 +38,19 @@ function plural(n: number, one: string, many = `${one}s`) {
 }
 
 export default async function HpHubHome() {
-  const [total, countries, themes, recent, types, years] = await Promise.all([
+  const [total, countries, themes, recent] = await Promise.all([
     countPublicDocuments(),
     getCountriesWithCounts(),
     getThemesWithCounts(),
     getRecentDocuments(6),
-    getTypesWithCounts(),
-    getYearsWithCounts(),
   ]);
 
   // Show the launch country always; other countries only once they hold documents.
   const shownCountries = countries.filter((c) => c.slug === LAUNCH_COUNTRY || c.count > 0);
   const featuredThemes = FEATURED_THEME_SLUGS.map((s) => themes.find((t) => t.slug === s)).filter((t): t is NonNullable<typeof t> => !!t);
 
-  const panel = (id: string) => <HubFilterPanel countries={countries} themes={themes} types={types} years={years} idPrefix={id} />;
-
   return (
-    <div className="lg:flex lg:items-stretch">
-      {/* ── Left panel: search with filters (laptop and up) ───────────────── */}
-      <aside aria-label="Find documents" className="hidden lg:block w-72 xl:w-80 shrink-0 bg-brand-light border-r border-gray-200">
-        <div className="sticky top-[72px] max-h-[calc(100vh-72px)] overflow-y-auto px-6 py-8">
-          <h2 className="text-lg font-bold text-brand-navy mb-1">Find documents</h2>
-          <p className="text-sm text-brand-muted mb-6">Combine keywords and filters, then search.</p>
-          {panel("side")}
-        </div>
-      </aside>
-
-      <div className="flex-1 min-w-0">
+    <>
       {/* ── A. Hero and search ─────────────────────────────────────────────── */}
       <section className="bg-brand-navy text-white px-4 sm:px-6 pt-10 pb-12 md:pt-16 md:pb-16">
         <div className="max-w-3xl mx-auto text-center">
@@ -102,16 +85,6 @@ export default async function HpHubHome() {
         </div>
       </section>
 
-      {/* Phones and tablets: the same panel, folded under the hero */}
-      <div className="lg:hidden px-4 sm:px-6 pt-6">
-        <details className="group rounded-lg border border-gray-200 bg-brand-light">
-          <summary className="flex items-center justify-between cursor-pointer list-none px-4 h-12 font-semibold text-brand-navy">
-            Search with filters
-            <span aria-hidden className="text-brand-muted transition-transform group-open:rotate-180">⌄</span>
-          </summary>
-          <div className="px-4 pb-5 pt-2 border-t border-gray-200">{panel("mobile")}</div>
-        </details>
-      </div>
 
       <div className="px-4 sm:px-6 py-12 sm:py-16 space-y-14 sm:space-y-16">
         {/* ── B. Explore by country ────────────────────────────────────────── */}
@@ -232,7 +205,6 @@ export default async function HpHubHome() {
           </Link>
         </section>
       </div>
-      </div>
-    </div>
+    </>
   );
 }

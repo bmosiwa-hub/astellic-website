@@ -115,6 +115,32 @@ export async function getYearsWithCounts(countryId?: string): Promise<{ year: nu
   return rows.map((r) => ({ year: Number(r.year), count: Number(r.count) }));
 }
 
+/** Languages of published documents, for the filter panel. */
+export async function getLanguagesWithCounts(): Promise<{ language: string; count: number }[]> {
+  const rows = await prisma.$queryRaw<{ language: string; count: bigint }[]>`
+    SELECT d."language" AS language, count(*) AS count
+    FROM "HpDocument" d
+    WHERE d."status" = 'PUBLISHED' ${syntheticSql()}
+    GROUP BY d."language"
+    ORDER BY count(*) DESC`;
+  return rows.map((r) => ({ language: r.language, count: Number(r.count) }));
+}
+
+/**
+ * Everything the "Find documents" panel needs, loaded once per request and
+ * shared by the layout (the panel appears on every public HP-Hub page).
+ */
+export const getFilterPanelData = cache(async () => {
+  const [countries, themes, types, years, languages] = await Promise.all([
+    getCountriesWithCounts(),
+    getThemesWithCounts(),
+    getTypesWithCounts(),
+    getYearsWithCounts(),
+    getLanguagesWithCounts(),
+  ]);
+  return { countries, themes, types, years, languages };
+});
+
 /** Published counts per active country, for the hub's "Browse by country". */
 export async function getCountriesWithCounts(): Promise<(CountedItem & { isoCode: string; intro: string | null })[]> {
   const rows = await prisma.$queryRaw<{ id: string; slug: string; name: string; isoCode: string; intro: string | null; count: bigint }[]>`

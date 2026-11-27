@@ -28,7 +28,8 @@ export default function AutoSubmitForm({
       className={className}
       onChange={(e) => {
         const t = e.target as unknown as HTMLInputElement;
-        if (t.type === "checkbox" || t.tagName === "SELECT") ref.current?.requestSubmit();
+        // Unnamed checkboxes belong to widgets (e.g. FilterDropdown) that submit themselves.
+        if ((t.type === "checkbox" && t.name) || t.tagName === "SELECT") ref.current?.requestSubmit();
       }}
       onSubmit={(e) => {
         // Drop empty fields so URLs stay short and shareable.
