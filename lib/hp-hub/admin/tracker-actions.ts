@@ -79,6 +79,53 @@ export async function createAcquisition(formData: FormData): Promise<void> {
   back(item.id, `ok=${enc("Added to the tracker.")}`);
 }
 
+/**
+ * Records a document found through Discovery in the tracker as "needs
+ * verification" (found online; not yet checked or catalogued), with the
+ * source as evidence. Returns to the same search results.
+ */
+export async function addDiscoveredToTracker(formData: FormData): Promise<void> {
+  const actor = await requireHp("acquisition.edit");
+  const get = (k: string, max: number) => String(formData.get(k) ?? "").trim().slice(0, max);
+  const rawBack = get("back", 2000);
+  const back = rawBack.startsWith("/hp-hub/admin/discover") ? rawBack : "/hp-hub/admin/discover";
+  const sep = back.includes("?") ? "&" : "?";
+  const title = get("title", 500);
+  const countryId = get("countryId", 60);
+  const sourceUrl = get("sourceUrl", 2000);
+  if (!title || !countryId) redirect(`${back}${sep}err=${enc("Choose a country before adding to the tracker.")}`);
+  if (!(await prisma.hpCountry.count({ where: { id: countryId } }))) redirect(`${back}${sep}err=${enc("Unknown country.")}`);
+
+  const dup = await prisma.hpAcquisitionItem.findFirst({
+    where: { countryId, OR: [{ title: { equals: title, mode: "insensitive" } }, ...(sourceUrl ? [{ sourceUrl }] : [])] },
+    select: { id: true },
+  });
+  if (dup) redirect(`${back}${sep}err=${enc("That document is already in the tracker.")}`);
+
+  const year = Number(get("year", 4));
+  const docTypeId = get("documentTypeId", 60) || null;
+  const item = await prisma.hpAcquisitionItem.create({
+    data: {
+      title,
+      countryId,
+      publisherName: get("publisher", 300) || null,
+      documentTypeId: docTypeId && (await prisma.hpDocumentType.count({ where: { id: docTypeId } })) ? docTypeId : null,
+      year: Number.isInteger(year) && year > 1900 ? year : null,
+      sourceUrl: sourceUrl.startsWith("https://") ? sourceUrl : null,
+      evidence: get("evidence", 5000) || null,
+      status: "NEEDS_VERIFICATION",
+      lastVerifiedAt: new Date(),
+      ownerId: actor.memberId,
+      nextAction: "Check this is the official, current version, then catalogue it",
+    },
+  });
+  await prisma.hpAcquisitionActivity.create({
+    data: { itemId: item.id, kind: "EVIDENCE", body: get("evidence", 5000) || `Found online: ${sourceUrl}`, authorId: actor.memberId },
+  });
+  await hpAudit(actor, { action: "CREATE", entityType: "HpAcquisitionItem", entityId: item.id, detail: "Added from Discovery search" });
+  redirect(`${back}${sep}ok=${enc(`Added “${title.slice(0, 80)}” to the tracker.`)}`);
+}
+
 export async function updateAcquisition(formData: FormData): Promise<void> {
   const actor = await requireHp("acquisition.edit");
   const id = String(formData.get("id"));

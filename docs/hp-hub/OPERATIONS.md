@@ -16,6 +16,7 @@ HP-Hub adds the following. All are optional; see `.env.example`.
 | `HP_HUB_BLOB_ACCESS` | `private` | Set `public` only if the store can't hold private blobs |
 | `HP_HUB_INDEXING` | off | Set `true` at launch to allow indexing and add HP-Hub to the sitemap |
 | `HP_HUB_SHOW_SYNTHETIC` | off | Development only: show synthetic test records |
+| `RELIEFWEB_APPNAME` | unset | Adds ReliefWeb to *Find documents*. Request a free app name at https://apidoc.reliefweb.int/#appname |
 
 Never commit `.env.local` or `.vercel`.
 

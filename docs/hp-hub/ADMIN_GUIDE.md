@@ -56,6 +56,22 @@ On a document's page in the admin portal:
 
 **Reports & requests** collects corrections, broken links, access requests and takedown requests from document pages. **Handle takedown requests first.** Usually that means switching the record to *External* or *Restricted*, or archiving it. Then reply to the requester by email, and mark the item resolved with a note.
 
+## Finding documents that aren't in HP-Hub
+
+**Find documents** searches public repositories for health documents:
+- **World Bank Documents & Reports:** analysis and policy material only. Project paperwork such as procurement plans and safeguard reviews is left out.
+- **WHO IRIS:** includes each document's licence.
+- **ReliefWeb:** NGO and UN reports, once it's enabled (see OPERATIONS.md).
+
+How to use it:
+1. Choose a **country** (any country in Taxonomy, live or not), add keywords if you like, and press **Search**.
+2. Results are checked against the catalogue and the tracker. By default only documents **not in HP-Hub** are shown. Tick *Also show documents already in HP-Hub* to see the rest, labelled *In HP-Hub* or *In tracker*.
+3. For each find you can:
+   - **Catalogue:** opens Add document prefilled with the title, publisher, year, country, a suggested type, the source link and the licence. It's saved as a draft like any other.
+   - **Add to tracker:** records it as *Needs verification*, with the source as evidence and a follow-up to check it's the official, current version.
+
+Being listed in a repository doesn't make a file hostable. New finds start as **External source** with permission **Unknown**. Change that only when the licence or the rights holder allows hosting.
+
 ## Missing Documents tracker
 
 Use the tracker for documents you know exist but don't have yet.

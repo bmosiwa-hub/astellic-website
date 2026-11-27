@@ -34,6 +34,7 @@ export default async function HpAdminLayout({ children }: { children: React.Reac
     { href: "/hp-hub/admin/documents", label: "Documents", badge: pendingReview },
     ...(can(actor.role, "submission.review") ? [{ href: "/hp-hub/admin/submissions", label: "Submissions", badge: newSubmissions }] : []),
     ...(can(actor.role, "feedback.review") ? [{ href: "/hp-hub/admin/feedback", label: "Reports & requests", badge: openFeedback }] : []),
+    { href: "/hp-hub/admin/discover", label: "Find documents" },
     { href: "/hp-hub/admin/tracker", label: "Missing documents", badge: dueFollowUps },
     ...(can(actor.role, "outreach.manage") ? [{ href: "/hp-hub/admin/outreach", label: "Acquisition requests" }] : []),
     ...(can(actor.role, "import.csv") ? [{ href: "/hp-hub/admin/import", label: "CSV import" }] : []),

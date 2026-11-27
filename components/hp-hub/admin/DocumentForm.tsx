@@ -16,6 +16,7 @@ export interface DocumentFormValues {
   countryId?: string;
   documentTypeId?: string;
   publisherId?: string;
+  newPublisherName?: string;
   publicationYear?: number | null;
   publicationDate?: string;
   startYear?: number | null;
@@ -168,7 +169,7 @@ export default function DocumentForm({
           </Field>
           {publisherId === "__new" && (
             <Field id="newPublisherName" label="New publisher name" required error={e.newPublisherName}>
-              <input id="newPublisherName" name="newPublisherName" maxLength={300} className={input} placeholder="e.g. Ministry of Health, Malawi" />
+              <input id="newPublisherName" name="newPublisherName" defaultValue={values.newPublisherName} maxLength={300} className={input} placeholder="e.g. Ministry of Health, Malawi" />
             </Field>
           )}
         </div>
